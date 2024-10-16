@@ -20,15 +20,20 @@ export default function Home() {
     const particles = [];
     const particleCount = 100;
 
-    for (let i = 0; i < particleCount; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        radius: Math.random() * 2 + 1,
-        color: `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.5})`,
-        velocity: { x: Math.random() * 2 - 1, y: Math.random() * 2 - 1 }
-      });
-    }
+    const initParticles = () => {
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 2 + 1,
+          color: `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.5})`,
+          velocity: { 
+            x: (Math.random() - 0.5) * 2, 
+            y: (Math.random() - 0.5) * 2 
+          }
+        });
+      }
+    };
 
     const drawParticles = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -41,16 +46,25 @@ export default function Home() {
         particle.x += particle.velocity.x;
         particle.y += particle.velocity.y;
 
-        if (particle.x < 0 || particle.x > canvas.width) particle.velocity.x *= -1;
-        if (particle.y < 0 || particle.y > canvas.height) particle.velocity.y *= -1;
+        if (particle.x < 0 || particle.x > canvas.width) {
+          particle.velocity.x *= -1;
+        }
+        if (particle.y < 0 || particle.y > canvas.height) {
+          particle.velocity.y *= -1;
+        }
       });
 
       animationFrameId = requestAnimationFrame(drawParticles);
     };
 
     resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    initParticles();
     drawParticles();
+
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+      initParticles();
+    });
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
@@ -59,10 +73,10 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="relative flex flex-col min-h-screen overflow-hidden bg-gray-900 w-full">
+    <div className="relative flex flex-col min-h-screen w-full overflow-hidden bg-gray-900">
       <canvas ref={canvasRef} className="absolute inset-0 z-0" />
       <div className="relative z-10 flex-grow">
-        <main className="container mx-auto w-full px-4">
+        <main className="container mx-auto px-4">
           <div className="space-y-16 py-16">
             {/* Hero Section */}
             <section className="text-center">
@@ -113,7 +127,7 @@ export default function Home() {
             <section id="contact" className="py-16 text-center">
               <h2 className="text-3xl font-bold mb-8 text-white">Contáctanos</h2>
               <p className="text-lg mb-4 text-gray-300">¿Tienes preguntas? Estamos aquí para ayudarte.</p>
-              <div className="flex justify-center space-x-8">
+              <div className="flex  justify-center space-x-4">
                 <div className="flex items-center text-white">
                   <Mail className="h-6 w-6 mr-2" />
                   <span>gaulabcontact@gmail.com</span>
