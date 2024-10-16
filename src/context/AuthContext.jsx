@@ -1,8 +1,8 @@
+import PropTypes from 'prop-types'; // Importa PropTypes
 import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
-import { Alert, AlertDescription } from "../components/ui/alert";
 
 const AuthContext = createContext();
 export default AuthContext;
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
             navigate('/dashboard')
         }
         else {
-            alert('Invalvalid credentials')
+            alert('Invalid credentials')
         }
     }
 
@@ -80,20 +80,25 @@ export const AuthProvider = ({ children }) => {
             updateToken()
         }
 
-        // Cada cierto tiempo ejecuta una funcion
         let interval = setInterval(() => {
             if (authToken) {
                 updateToken()
             }
         }, 240000) // 4 minutos
-        return () => clearInterval(interval) // Evita loop infinito
+        return () => clearInterval(interval)
 
     }, [authToken, loading])
 
     return (
         <AuthContext.Provider value={contextData}>
-            {loading ? null : children}
+            {/* {loading ? null : children} */}
+            {children}
+
         </AuthContext.Provider>
-        // loading ? null : children solucionar
     )
 }
+
+// Agrega la validación de PropTypes
+AuthProvider.propTypes = {
+    children: PropTypes.node.isRequired
+};
