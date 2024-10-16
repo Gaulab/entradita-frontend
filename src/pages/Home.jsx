@@ -1,78 +1,135 @@
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "../components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
+import { QrCode, Zap, Users, Mail, Phone } from 'lucide-react';
 
 export default function Home() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    const particles = [];
+    const particleCount = 100;
+
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2 + 1,
+        color: `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.5})`,
+        velocity: { x: Math.random() * 2 - 1, y: Math.random() * 2 - 1 }
+      });
+    }
+
+    const drawParticles = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(particle => {
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+        ctx.fillStyle = particle.color;
+        ctx.fill();
+
+        particle.x += particle.velocity.x;
+        particle.y += particle.velocity.y;
+
+        if (particle.x < 0 || particle.x > canvas.width) particle.velocity.x *= -1;
+        if (particle.y < 0 || particle.y > canvas.height) particle.velocity.y *= -1;
+      });
+
+      animationFrameId = requestAnimationFrame(drawParticles);
+    };
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    drawParticles();
+
+    return () => {
+      window.removeEventListener('resize', resizeCanvas);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
   return (
-    <div className="flex flex-col min-h-screen w-screen">
-      <main className="flex-grow">
-        <div className="space-y-16 py-16">
-          {/* Hero Section */}
-          <section className="text-center px-4">
-            <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-4 text-white">
-              Gestiona tus Eventos con entradita.com
-            </h1>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-8">
-              Simplifica la venta y verificación de tickets con nuestra plataforma de códigos QR intuitiva y segura.
-            </p>
-            <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white">
-              <Link to="/login">Comenzar Ahora</Link>
-            </Button>
-          </section>
-
-          {/* Features Section */}
-          <section id="features" className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-8 text-white">Características Principales</h2>
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              <Card className="bg-gray-800 border-gray-700">
-                <CardHeader>
-                  <CardTitle className="text-white">Generación de QR</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-300">Crea tickets QR únicos para cada asistente con información personalizada.</p>
-                </CardContent>
-              </Card>
-              <Card className="bg-gray-800 border-gray-700">
-                <CardHeader>
-                  <CardTitle className="text-white">Verificación Rápida</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-300">Escanea y verifica tickets en segundos con nuestra aplicación móvil.</p>
-                </CardContent>
-              </Card>
-              <Card className="bg-gray-800 border-gray-700">
-                <CardHeader>
-                  <CardTitle className="text-white">Gestión de Vendedores</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-300">Asigna y controla múltiples vendedores para cada evento.</p>
-                </CardContent>
-              </Card>
-            </div>
-          </section>
-
-          {/* About Section */}
-          <section id="about" className="bg-gray-800 py-16">
-            <div className="container mx-auto px-4">
-              <h2 className="text-3xl font-bold text-center mb-8 text-white">Sobre Nosotros</h2>
-              <p className="text-lg text-center text-gray-300 max-w-3xl mx-auto">
-                Ticket QR nació de la necesidad de simplificar la gestión de eventos. Nuestra misión es proporcionar una plataforma fácil de usar que ayude a organizadores, vendedores y asistentes a tener una experiencia sin complicaciones.
+    <div className="relative flex flex-col min-h-screen overflow-hidden bg-gray-900 w-full">
+      <canvas ref={canvasRef} className="absolute inset-0 z-0" />
+      <div className="relative z-10 flex-grow">
+        <main className="container mx-auto w-full px-4">
+          <div className="space-y-16 py-16">
+            {/* Hero Section */}
+            <section className="text-center">
+              <h1 className="text-4xl font-extrabold tracking-tight lg:text-6xl mb-4 text-white animate-fade-in-down">
+                Gestiona tus eventos con entradita.com
+              </h1>
+              <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-8 animate-fade-in-up">
+                Simplifica la venta y verificación de tickets con nuestra plataforma de códigos QR intuitiva y segura.
               </p>
-            </div>
-          </section>
+              <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white animate-pulse">
+                <Link to="/login">Comenzar Ahora</Link>
+              </Button>
+            </section>
 
-          {/* Contact Section */}
-          <section id="contact" className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold mb-8 text-white">Contáctanos</h2>
-            <p className="text-lg mb-4 text-gray-300">¿Tienes preguntas? Estamos aquí para ayudarte.</p>
-            <p className="text-xl font-semibold text-white">Email: info@ticketqr.com</p>
-            <p className="text-xl font-semibold text-white">Teléfono: +1 (123) 456-7890</p>
-          </section>
-        </div>
-      </main>
-      <footer className="bg-gray-800 border-t border-gray-700 py-8">
+            {/* Features Section */}
+            <section id="features" className="py-16">
+              <h2 className="text-3xl font-bold text-center mb-12 text-white">Características Principales</h2>
+              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <FeatureCard
+                  icon={<QrCode className="h-12 w-12 text-blue-400" />}
+                  title="Generación de QR"
+                  description="Crea tickets QR únicos para cada asistente con información personalizada."
+                />
+                <FeatureCard
+                  icon={<Zap className="h-12 w-12 text-yellow-400" />}
+                  title="Verificación Rápida"
+                  description="Escanea y verifica tickets en segundos con nuestra aplicación móvil."
+                />
+                <FeatureCard
+                  icon={<Users className="h-12 w-12 text-green-400" />}
+                  title="Gestión de Vendedores"
+                  description="Asigna y controla múltiples vendedores para cada evento."
+                />
+              </div>
+            </section>
+
+            {/* About Section */}
+            <section id="about" className="bg-gray-800 py-16 rounded-lg shadow-xl">
+              <div className="container mx-auto px-4">
+                <h2 className="text-3xl font-bold text-center mb-8 text-white">Sobre Nosotros</h2>
+                <p className="text-lg text-center text-gray-300 max-w-3xl mx-auto">
+                  entradita.com nació de la necesidad de simplificar la gestión de eventos. Nuestra misión es proporcionar una plataforma fácil de usar que ayude a organizadores, vendedores y asistentes a tener una experiencia sin complicaciones.
+                </p>
+              </div>
+            </section>
+
+            {/* Contact Section */}
+            <section id="contact" className="py-16 text-center">
+              <h2 className="text-3xl font-bold mb-8 text-white">Contáctanos</h2>
+              <p className="text-lg mb-4 text-gray-300">¿Tienes preguntas? Estamos aquí para ayudarte.</p>
+              <div className="flex justify-center space-x-8">
+                <div className="flex items-center text-white">
+                  <Mail className="h-6 w-6 mr-2" />
+                  <span>gaulabcontact@gmail.com</span>
+                </div>
+                <div className="flex items-center text-white">
+                  <Phone className="h-6 w-6 mr-2" />
+                  <span>+543482586525</span>
+                </div>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+      <footer className="relative z-10 bg-gray-800 border-t border-gray-700 py-8">
         <div className="container mx-auto px-4 text-center text-gray-400">
-          <p>© 2024 Ticket QR App. Todos los derechos reservados.</p>
+          <p>© 2024 entradita.com todos los derechos reservados.</p>
           <div className="mt-4 flex justify-center space-x-4">
             <a href="#" className="hover:text-white transition-colors">Términos de Servicio</a>
             <a href="#" className="hover:text-white transition-colors">Política de Privacidad</a>
@@ -80,5 +137,19 @@ export default function Home() {
         </div>
       </footer>
     </div>
+  );
+}
+
+function FeatureCard({ icon, title, description }) {
+  return (
+    <Card className="bg-gray-800 border-gray-700 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 hover:-translate-y-1">
+      <CardHeader>
+        <div className="flex justify-center mb-4">{icon}</div>
+        <CardTitle className="text-white text-center">{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="text-gray-300 text-center">{description}</p>
+      </CardContent>
+    </Card>
   );
 }

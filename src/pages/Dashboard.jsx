@@ -71,7 +71,7 @@ export default function Dashboard() {
             <CardTitle className="text-xl text-white">Acciones Rápidas</CardTitle>
             <CardDescription className="text-gray-400">Crea un nuevo evento o gestiona los existentes</CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col space-y-4 sm:flex-row sm:space-y-0  sm:space-x-4">
+          {/* <CardContent className="flex flex-col space-y-4 sm:flex-row sm:space-y-0  sm:space-x-4">
             <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white">
               <Link to="/eventos/crear">
                 <PlusIcon className="mr-2 h-4 w-4" /> Crear Nuevo Evento
@@ -83,7 +83,7 @@ export default function Dashboard() {
             <Button variant="outline" className="bg-gray-700 text-white hover:bg-gray-600">
               Ver Estadísticas
             </Button>
-          </CardContent>
+          </CardContent> */}
         </Card>
       </div>
     </div>
