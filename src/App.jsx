@@ -15,9 +15,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<h1>Bienvenido a la aplicación Ticket QR</h1>} />
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<AuthProvider><Login /></AuthProvider>} />
-        <Route path="/home" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/create-event" element={<CreateEvent />} />
         <Route path="/event-details/:id" element={<EventDetails />} />
