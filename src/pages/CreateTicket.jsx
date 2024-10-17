@@ -25,7 +25,6 @@ export default function CreateTicket() {
         name: e.target.name.value,
         surname: e.target.surname.value,
         dni: e.target.dni.value,
-        qr_payload: `${e.target.name.value} ${e.target.surname.value} ${e.target.dni.value}`,
         seller: "Organizer"
       }),
     });

@@ -5,32 +5,32 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Download, AlertTriangle } from "lucide-react";
-import AuthContext from '../context/AuthContext';
+import { jwtDecode } from "jwt-decode";
 
 export default function TicketPage() {
-    const { ticketId } = useParams();
-    const { authToken } = useContext(AuthContext);
-    const [ticketData, setTicketData] = useState(null);
+    const { ticketToken } = useParams();
+    const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
-    // Datos ficticios
-    const mockData = {
-        event: {
-            image_address: 'https://via.placeholder.com/150',
-        },
-        qr_payload: 'mock-qr-code-payload',
-        name: 'John',
-        surname: 'Doe',
-        dni: '12345678',
-    };
+    const eventName = jwtDecode(ticketToken).event;
 
     useEffect(() => {
-        // Simula una carga de datos
-        setTimeout(() => {
-            setTicketData(mockData);
-            setLoading(false);
-        }, 1000);
+        const getdata = async () => {
+            const response = await fetch(`http://localhost:8000/api/v1/tickets/${ticketToken}`, {
+                headers: {
+                    'Authorization': `Bearer ${ticketToken}`
+                }
+            });
+            const data = await response.json();
+            console.log(data);
+            if (response.status === 200) {
+                setData(data);
+                setLoading(false);
+            } else {
+                setError('QR inexistente');
+            }
+        }
+        getdata();
     }, []);
 
     const handleDownload = () => {
@@ -59,27 +59,27 @@ export default function TicketPage() {
         <div className="flex justify-center items-center min-h-screen bg-gray-900 p-4">
             <Card className="w-full max-w-md bg-gray-800 border-gray-700">
                 <CardHeader>
-                    <CardTitle className="text-2xl font-bold text-center text-white">Tu Entrada</CardTitle>
+                    <CardTitle className="text-2xl font-bold text-center text-white">Tu Entrada para {eventName}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                    <div className="flex justify-center">
+                    {/* <div className="flex justify-center">
                         <img 
-                            src={ticketData.event.image_address} 
+                            src={data.event.image_address} 
                             alt="Event" 
                             className="w-full max-w-xs rounded-lg shadow-lg"
                         />
-                    </div>
+                    </div> */}
                     <div className="flex justify-center bg-white p-4 rounded-lg">
                         <QRCodeSVG
                             id="qr-code"
-                            value={ticketData.qr_payload}
+                            value={data.qr_payload}
                             size={200}
                             level="H"
                         />
                     </div>
                     <div className="text-center text-gray-300">
-                        <p>{ticketData.name} {ticketData.surname}</p>
-                        <p>DNI: {ticketData.dni}</p>
+                        <p>{data.name} {data.surname}</p>
+                        <p>DNI: {data.dni}</p>
                     </div>
                     <Alert variant="destructive">
                         <AlertTriangle className="h-4 w-4" />

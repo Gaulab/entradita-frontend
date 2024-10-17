@@ -27,7 +27,7 @@ function App() {
         <Route path="/create-ticket/:id" element={<AuthProvider><PrivateRoute><CreateTicket /></PrivateRoute></AuthProvider>} />
         <Route path="/scan-ticket/:id" element={<AuthProvider><PrivateRoute><ScanTicket /></PrivateRoute></AuthProvider>} />
         <Route path="/edit-event/:id" element={<AuthProvider><PrivateRoute><EditEvent /></PrivateRoute></AuthProvider>} />
-        <Route path="/ticket/:ticketId" element={<AuthProvider><PrivateRoute><TicketPage /></PrivateRoute></AuthProvider>} />
+        <Route path="/ticket/:ticketToken" element={<TicketPage />} />
         <Route path="/vendedor/:eventId/:vendedorId" element={<AuthProvider><PrivateRoute><VendorView /></PrivateRoute></AuthProvider>} />
       </Routes>
     </Router>
