@@ -25,13 +25,11 @@ export default function CreateTicket() {
         name: e.target.name.value,
         surname: e.target.surname.value,
         dni: e.target.dni.value,
-        event: id,
         qr_payload: `${e.target.name.value} ${e.target.surname.value} ${e.target.dni.value}`,
-        seller: "Event Organizer"
+        seller: "Organizer"
       }),
     });
     const data = await response.json();
-    console.log(data);
 
     if (response.status === 201) {
       navigate(`/event-details/${id}/`);
@@ -54,7 +52,7 @@ export default function CreateTicket() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-gray-200">Nombre Completo</Label>
+              <Label htmlFor="name" className="text-gray-200">Nombre</Label>
               <Input
                 id="name"
                 required

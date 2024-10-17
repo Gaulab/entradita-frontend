@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Button } from "../components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
-import { LogOutIcon } from "lucide-react";
+import { LogOutIcon, PlusIcon } from "lucide-react";
 import { useState, useContext, useEffect } from 'react';
 import AuthContext from '../context/AuthContext';
 
@@ -68,7 +68,7 @@ export default function Dashboard() {
                       <TableCell className="text-gray-300">{event.tickets_counter}</TableCell>
                       <TableCell>
                         <Button asChild variant="link" className="p-0 text-blue-400 hover:text-blue-300">
-                          <Link to={`/event-details/${event.id}`} state={{event}}>Ver Detalles</Link>
+                          <Link to={`/event-details/${event.id}`} state={{ event }}>Ver Detalles</Link>
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -84,9 +84,9 @@ export default function Dashboard() {
             <CardTitle className="text-xl text-white">Acciones Rápidas</CardTitle>
             <CardDescription className="text-gray-400">Crea un nuevo evento o gestiona los existentes</CardDescription>
           </CardHeader>
-          {/* <CardContent className="flex flex-col space-y-4 sm:flex-row sm:space-y-0  sm:space-x-4">
+          <CardContent className="flex flex-col space-y-4 sm:flex-row sm:space-y-0  sm:space-x-4">
             <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white">
-              <Link to="/eventos/crear">
+              <Link to="/create-event">
                 <PlusIcon className="mr-2 h-4 w-4" /> Crear Nuevo Evento
               </Link>
             </Button>
@@ -96,7 +96,7 @@ export default function Dashboard() {
             <Button variant="outline" className="bg-gray-700 text-white hover:bg-gray-600">
               Ver Estadísticas
             </Button>
-          </CardContent> */}
+          </CardContent>
         </Card>
       </div>
     </div>
