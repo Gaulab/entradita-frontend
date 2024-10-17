@@ -26,8 +26,7 @@ export default function CreateEvent() {
           date: e.target.date.value,
           place: e.target.place.value,
           capacity: e.target.capacity.value ? parseInt(e.target.capacity.value) : 0,
-          image_address: e.target.image_address.value,
-          creator: user.user_id
+          image_address: e.target.image_address.value
         }),
       });
       const data = await response.json();

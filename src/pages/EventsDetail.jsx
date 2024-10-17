@@ -30,18 +30,20 @@ export default function EventDetails() {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const itemsPerPage = 10;
+
+  const handleGenerarTicket = useCallback(() => {
   // Functions
   const handleGenerarTicket = () => {
     navigate(`/create-ticket/${id}`);
-  };
+  }, []);
 
   const handleEliminarTicket = useCallback((id_ticket) => {
     setItemToDelete({ type: 'ticket', id: id_ticket });
     setDeleteConfirmOpen(true);
   }, []);
 
-  const handleViewTicket = useCallback((ticketId) => {
-    window.open(`/ticket/${ticketId}`, '_blank');
+  const handleViewTicket = useCallback((ticketToken) => {
+    window.open(`/ticket/${ticketToken}`, '_blank');
   }, []);
 
   const handleGenerarURL = useCallback((isSeller) => {
@@ -89,6 +91,8 @@ export default function EventDetails() {
 
   const handleConfirmDelete = useCallback(() => {
     if (!itemToDelete) return;
+    console.log('en funcion')
+
   
     const deleteItem = async () => {
       let response;
@@ -120,6 +124,8 @@ export default function EventDetails() {
         }
         setReload(!reload);
       } else {
+        data = await response.json();
+        console.log(data);
         alert(`Error al eliminar ${itemToDelete.type}`);
       }
     };
@@ -247,7 +253,7 @@ export default function EventDetails() {
                         <TableCell className="text-gray-300 hidden md:table-cell">{ticket.dni}</TableCell>
                         <TableCell className="text-gray-300 hidden md:table-cell">{ticket.seller}</TableCell>
                         <TableCell className="text-right space-x-2">
-                          <Button variant="outline" onClick={() => handleViewTicket(ticket.id)} size="sm" title="Ver ticket">
+                          <Button variant="outline" onClick={() => handleViewTicket(ticket.qr_payload)} size="sm" title="Ver ticket">
                             <EyeIcon className="h-4 w-4" />
                             <span className="sr-only">Ver ticket</span>
                           </Button>
