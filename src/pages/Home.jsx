@@ -26,7 +26,7 @@ export default function Home() {
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
           radius: Math.random() * 2 + 1,
-          color: `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.5})`,
+          color: `rgba(17, 24, 100, ${Math.random() * 0.5 + 0.5})`,
           velocity: { 
             x: (Math.random() - 0.5) * 2, 
             y: (Math.random() - 0.5) * 2 
