@@ -5,7 +5,8 @@ import { Input } from "../components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
-import { PlusIcon, SearchIcon } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "../components/ui/dialog";
+import { PlusIcon, SearchIcon, ArrowLeftIcon, EditIcon, EyeIcon, Trash2Icon } from "lucide-react";
 import AuthContext from '../context/AuthContext';
 
 export default function EventDetails() {
@@ -13,7 +14,6 @@ export default function EventDetails() {
   const { authToken, logoutUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  let cont = 1;
   const [event, setEvent] = useState({});
   const [tickets, setTickets] = useState([]);
   const [vendedores, setVendedores] = useState([]);
@@ -23,6 +23,11 @@ export default function EventDetails() {
   const [activeTab, setActiveTab] = useState("tickets");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newUrlName, setNewUrlName] = useState("");
+  const [isSellerUrl, setIsSellerUrl] = useState(true);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   const itemsPerPage = 10;
 
@@ -31,31 +36,23 @@ export default function EventDetails() {
   };
 
   const handleEliminarTicket = useCallback((id_ticket) => {
-    if (window.confirm("¿Estás seguro de que deseas eliminar este ticket?")) {
-      const deleteTicket = async () => {
-        const response = await fetch(`http://localhost:8000/api/v1/events/${id}/tickets/${id_ticket}/`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authToken.access}`
-          },
-        })
-        if (response.status === 204) {
-          setTickets(tickets.filter(ticket => ticket.id !== id_ticket))
-          setReload(!reload)
-        }
-        else {
-          alert('Error al eliminar ticket')
-        }
-      }
-      deleteTicket();
-    };
-  }, [authToken.access, tickets, id]);
+    setItemToDelete({ type: 'ticket', id: id_ticket });
+    setDeleteConfirmOpen(true);
+  }, []);
+
+  const handleViewTicket = useCallback((ticketId) => {
+    window.open(`/ticket/${ticketId}`, '_blank');
+  }, []);
 
   const handleGenerarURL = useCallback((isSeller) => {
+    setIsSellerUrl(isSeller);
+    setIsDialogOpen(true);
+  }, []);
+
+  const handleConfirmGenerarURL = useCallback(() => {
     const createURL = async () => {
-      const urlDetail = isSeller ? 'seller' : 'escaner';
-      const urlNumber = isSeller ? vendedores.length + 1 : escaners.length + 1;
+      const urlDetail = isSellerUrl ? 'seller' : 'escaner';
+      const urlNumber = isSellerUrl ? vendedores.length + 1 : escaners.length + 1;
       const url = `https://entradita.com/events/${id}/${urlDetail}/${urlNumber}/`
       const response = await fetch(`http://localhost:8000/api/v1/events/${id}/urlAccess/`, {
         method: 'POST',
@@ -63,11 +60,11 @@ export default function EventDetails() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${authToken.access}`
         },
-        body: JSON.stringify({ is_seller: isSeller, assigned_name: 'TBD', url: url })
+        body: JSON.stringify({ is_seller: isSellerUrl, assigned_name: newUrlName, url: url })
       })
       const data = await response.json()
       if (response.status === 201) {
-        if (isSeller) {
+        if (isSellerUrl) {
           setVendedores([...vendedores, data])
         }
         else {
@@ -81,7 +78,60 @@ export default function EventDetails() {
       }
     }
     createURL();
-  }, [authToken.access, vendedores, escaners, id]);
+    setIsDialogOpen(false);
+    setNewUrlName("");
+  }, [authToken.access, vendedores, escaners, id, isSellerUrl, newUrlName]);
+
+  const handleEliminarURL = useCallback((urlId, isSeller) => {
+    setItemToDelete({ type: isSeller ? 'vendedor' : 'escaner', id: urlId });
+    setDeleteConfirmOpen(true);
+  }, []);
+
+  const handleConfirmDelete = useCallback(() => {
+    if (!itemToDelete) return;
+
+    const deleteItem = async () => {
+      let response;
+      if (itemToDelete.type === 'ticket') {
+        response = await fetch(`http://localhost:8000/api/v1/events/${id}/tickets/${itemToDelete.id}/`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken.access}`
+          },
+        });
+      } else {
+        response = await fetch(`http://localhost:8000/api/v1/events/${id}/urlAccess/${itemToDelete.id}/`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken.access}`
+          },
+        });
+      }
+
+      if (response.status === 204) {
+        if (itemToDelete.type === 'ticket') {
+          setTickets(tickets.filter(ticket => ticket.id !== itemToDelete.id));
+        } else if (itemToDelete.type === 'vendedor') {
+          setVendedores(vendedores.filter(v => v.id !== itemToDelete.id));
+        } else if (itemToDelete.type === 'escaner') {
+          setEscaners(escaners.filter(e => e.id !== itemToDelete.id));
+        }
+        setReload(!reload);
+      } else {
+        alert(`Error al eliminar ${itemToDelete.type}`);
+      }
+    };
+
+    deleteItem();
+    setDeleteConfirmOpen(false);
+    setItemToDelete(null);
+  }, [authToken.access, id, itemToDelete, tickets, vendedores, escaners]);
+
+  const handleEditEvent = () => {
+    navigate(`/edit-event/${id}`);
+  };
 
   const filteredTickets = tickets.filter(ticket =>
     ticket.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -116,12 +166,21 @@ export default function EventDetails() {
       }
     }
     getEventData();
-    console.log("useEffect")
-  }, [reload]);
+  }, [reload, authToken.access, id, logoutUser]);
 
   return (
-    <div className="space-y-6 pb-8 bg-gray-900 text-white p-4 w-screen min-h-screen">
-      <Card className="bg-gray-800 border-gray-700">
+    <div className="space-y-6 pb-8 bg-gray-900 text-white p-4 w-full min-h-screen ">
+      <div className='max-w-6xl mx-auto'>
+      <div className="flex justify-between items-center mb-8">
+        <Button onClick={() => navigate('/dashboard')} variant="outline" className="bg-gray-800 text-white hover:bg-gray-700">
+          <ArrowLeftIcon className="mr-2 h-4 w-4" /> Volver al Dashboard
+        </Button>
+        <Button onClick={handleEditEvent} variant="outline" className="bg-gray-800 text-white hover:bg-gray-700">
+          <EditIcon className="mr-2 h-4 w-4" /> Editar Evento
+        </Button>
+      </div>
+
+      <Card className="bg-gray-800 border-gray-700 mb-8">
         <CardHeader>
           <CardTitle className="text-white text-2xl">{event.name}</CardTitle>
           <CardDescription className="text-gray-400">ID del Evento: {id}</CardDescription>
@@ -172,23 +231,28 @@ export default function EventDetails() {
                 <Table>
                   <TableHeader>
                     <TableRow className="border-gray-700">
-                      <TableHead className="text-gray-300">ID</TableHead>
+                      <TableHead className="text-gray-300 hidden md:table-cell">ID</TableHead>
                       <TableHead className="text-gray-300">Nombre</TableHead>
-                      <TableHead className="text-gray-300">DNI</TableHead>
-                      <TableHead className="text-gray-300">Vendedor</TableHead>
+                      <TableHead className="text-gray-300 hidden md:table-cell">DNI</TableHead>
+                      <TableHead className="text-gray-300 hidden md:table-cell">Vendedor</TableHead>
                       <TableHead className="text-gray-300 text-right">Acciones</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {paginatedTickets.map(ticket => (
+                    {paginatedTickets.map((ticket, index) => (
                       <TableRow key={ticket.id} className="border-gray-700">
-                        <TableCell className="font-medium text-white">{cont++}</TableCell>
+                        <TableCell className="font-medium text-white hidden md:table-cell">{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
                         <TableCell className="text-gray-300">{ticket.name + " " + ticket.surname}</TableCell>
-                        <TableCell className="text-gray-300">{ticket.dni}</TableCell>
-                        <TableCell className="text-gray-300">{ticket.seller}</TableCell>
-                        <TableCell className="text-right">
-                          <Button variant="destructive" onClick={() => handleEliminarTicket(ticket.id)} size="sm">
-                            Eliminar
+                        <TableCell className="text-gray-300 hidden md:table-cell">{ticket.dni}</TableCell>
+                        <TableCell className="text-gray-300 hidden md:table-cell">{ticket.seller}</TableCell>
+                        <TableCell className="text-right space-x-2">
+                          <Button variant="outline" onClick={() => handleViewTicket(ticket.id)} size="sm" title="Ver ticket">
+                            <EyeIcon className="h-4 w-4" />
+                            <span className="sr-only">Ver ticket</span>
+                          </Button>
+                          <Button variant="destructive" onClick={() => handleEliminarTicket(ticket.id)} size="sm" title="Eliminar ticket">
+                            <Trash2Icon className="h-4 w-4" />
+                            <span className="sr-only">Eliminar ticket</span>
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -234,6 +298,7 @@ export default function EventDetails() {
                     <TableRow className="border-gray-700">
                       <TableHead className="text-gray-300">Nombre</TableHead>
                       <TableHead className="text-gray-300">Enlace</TableHead>
+                      <TableHead  className="text-gray-300 text-right">Acciones</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -244,6 +309,12 @@ export default function EventDetails() {
                           <Link to={`${vendedor.url}`} className="text-blue-400 hover:text-blue-300 break-all">
                             {`${vendedor.url}`}
                           </Link>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button variant="destructive" onClick={() => handleEliminarURL(vendedor.id, true)} size="sm" title="Eliminar enlace">
+                            <Trash2Icon className="h-4 w-4" />
+                            <span className="sr-only">Eliminar enlace</span>
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -269,6 +340,7 @@ export default function EventDetails() {
                     <TableRow className="border-gray-700">
                       <TableHead className="text-gray-300">Nombre</TableHead>
                       <TableHead className="text-gray-300">Enlace</TableHead>
+                      <TableHead className="text-gray-300 text-right">Acciones</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -280,6 +352,12 @@ export default function EventDetails() {
                             {`${escaner.url}`}
                           </Link>
                         </TableCell>
+                        <TableCell className="text-right">
+                          <Button variant="destructive" onClick={() => handleEliminarURL(escaner.id, false)} size="sm" title="Eliminar enlace">
+                            <Trash2Icon className="h-4 w-4" />
+                            <span className="sr-only">Eliminar enlace</span>
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -289,6 +367,51 @@ export default function EventDetails() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="bg-gray-800 text-white">
+          <DialogHeader>
+            <DialogTitle>Asignar Nombre a la Nueva URL</DialogTitle>
+            <DialogDescription>
+              Ingrese un nombre para la nueva URL de {isSellerUrl ? "vendedor" : "escáner"}.
+            </DialogDescription>
+          </DialogHeader>
+          <Input
+            value={newUrlName}
+            onChange={(e) => setNewUrlName(e.target.value)}
+            placeholder="Nombre para la URL"
+            className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+          />
+          <DialogFooter>
+            <Button onClick={() => setIsDialogOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600">
+              Cancelar
+            </Button>
+            <Button onClick={handleConfirmGenerarURL} className="bg-blue-600 hover:bg-blue-700 text-white">
+              Confirmar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <DialogContent className="bg-gray-800 text-white">
+          <DialogHeader>
+            <DialogTitle>Confirmar Eliminación</DialogTitle>
+            <DialogDescription>
+              ¿Estás seguro de que deseas eliminar este {itemToDelete?.type}?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={() => setDeleteConfirmOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600">
+              Cancelar
+            </Button>
+            <Button onClick={handleConfirmDelete} variant="destructive">
+              Eliminar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      </div>
     </div>
   );
 }

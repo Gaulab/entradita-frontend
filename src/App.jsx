@@ -11,6 +11,9 @@ import CreateEvent from './pages/CreateEvent';
 import EventDetails from './pages/EventsDetail';
 import CreateTicket from './pages/CreateTicket';
 import ScanTicket from './pages/ScanTicket';
+import EditEvent from './pages/EditEvent';
+import TicketPage from './pages/TicketPage';
+import VendorView from './pages/VendedorView';
 
 function App() {
   return (
@@ -23,6 +26,9 @@ function App() {
         <Route path="/event-details/:id" element={<AuthProvider><PrivateRoute><EventDetails /></PrivateRoute></AuthProvider>} />
         <Route path="/create-ticket/:id" element={<AuthProvider><PrivateRoute><CreateTicket /></PrivateRoute></AuthProvider>} />
         <Route path="/scan-ticket/:id" element={<AuthProvider><PrivateRoute><ScanTicket /></PrivateRoute></AuthProvider>} />
+        <Route path="/edit-event/:id" element={<AuthProvider><PrivateRoute><EditEvent /></PrivateRoute></AuthProvider>} />
+        <Route path="/ticket/:ticketId" element={<AuthProvider><PrivateRoute><TicketPage /></PrivateRoute></AuthProvider>} />
+        <Route path="/vendedor/:eventId/:vendedorId" element={<AuthProvider><PrivateRoute><VendorView /></PrivateRoute></AuthProvider>} />
       </Routes>
     </Router>
   );

@@ -22,19 +22,18 @@ export const AuthProvider = ({ children }) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ 'username': e.target.username.value, 'password': e.target.password.value })
-        })
-        const data = await response.json()
-
+        });
+        const data = await response.json();
+    
         if (response.status === 200) {
-            setAuthToken(data)
-            setUser(jwtDecode(data.access))
-            localStorage.setItem('authTokens', JSON.stringify(data))
-            navigate('/dashboard')
+            setAuthToken(data);
+            setUser(jwtDecode(data.access));
+            localStorage.setItem('authTokens', JSON.stringify(data));
+            return { success: true }; // Devuelve éxito
+        } else {
+            return { success: false }; // Devuelve fallo
         }
-        else {
-            alert('Invalid credentials')
-        }
-    }
+    };
 
     const logoutUser = () => {
         setUser(null)

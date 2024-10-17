@@ -1,22 +1,48 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../components/ui/card";
 import { Alert, AlertDescription } from "../components/ui/alert";
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import AuthContext from '../context/AuthContext';
 
-export default function CreateEvent() {
-  const { authToken, user } = useContext(AuthContext);
+export default function EditEvent() {
+  const { id } = useParams();
+  const { authToken } = useContext(AuthContext);
   const [error, setError] = useState('');
+  const [event, setEvent] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/api/v1/events/${id}/`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken.access}`
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setEvent(data);
+        } else {
+          setError('Error al cargar el evento');
+        }
+      } catch (error) {
+        setError('Error al cargar el evento');
+      }
+    };
+
+    fetchEvent();
+  }, [id, authToken.access]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/events/`, {
-        method: 'POST',
+      const response = await fetch(`http://localhost:8000/api/v1/events/${id}/`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${authToken.access}`
@@ -26,30 +52,31 @@ export default function CreateEvent() {
           date: e.target.date.value,
           place: e.target.place.value,
           capacity: e.target.capacity.value ? parseInt(e.target.capacity.value) : 0,
-          image_address: e.target.image_address.value,
-          creator: user.user_id
+          image_address: e.target.image_address.value
         }),
       });
-      const data = await response.json();
-
-      if (response.status === 201) {
-        navigate('/dashboard');
+      
+      if (response.ok) {
+        navigate(`/event-details/${id}`);
       } else {
-        console.log(user);
-        console.log(data);
-        setError('Error al crear el evento: ' + JSON.stringify(data));
+        const data = await response.json();
+        setError('Error al actualizar el evento: ' + JSON.stringify(data));
       }
     } catch (error) {
-      setError('Error al crear el evento');
+      setError('Error al actualizar el evento');
     }
   };
+
+  if (!event) {
+    return <div className="text-white">Cargando...</div>;
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 p-4 w-screen">
       <Card className="w-full max-w-md bg-gray-800 border-gray-700">
         <CardHeader>
-          <CardTitle className="text-white">Crear Nuevo Evento</CardTitle>
-          <CardDescription className="text-gray-400">Ingresa los detalles de tu nuevo evento</CardDescription>
+          <CardTitle className="text-white">Editar Evento</CardTitle>
+          <CardDescription className="text-gray-400">Modifica los detalles de tu evento</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -57,6 +84,7 @@ export default function CreateEvent() {
               <Label htmlFor="name" className="text-gray-200">Nombre del Evento</Label>
               <Input
                 id="name"
+                defaultValue={event.name}
                 required
                 className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
               />
@@ -66,6 +94,7 @@ export default function CreateEvent() {
               <Input
                 type="date"
                 id="date"
+                defaultValue={event.date}
                 required
                 className="bg-gray-700 border-gray-600 text-white"
               />
@@ -74,6 +103,7 @@ export default function CreateEvent() {
               <Label htmlFor="place" className="text-gray-200">Lugar</Label>
               <Input
                 id="place"
+                defaultValue={event.place}
                 required
                 className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
               />
@@ -83,6 +113,7 @@ export default function CreateEvent() {
               <Input
                 id="capacity"
                 type="number"
+                defaultValue={event.capacity}
                 className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
               />
             </div>
@@ -90,6 +121,7 @@ export default function CreateEvent() {
               <Label htmlFor="image_address" className="text-gray-200">Dirección de la Imagen (Logo)</Label>
               <Input
                 id="image_address"
+                defaultValue={event.image_address}
                 className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
               />
             </div>
@@ -98,7 +130,7 @@ export default function CreateEvent() {
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white">Crear Evento</Button>
+            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white">Actualizar Evento</Button>
           </form>
         </CardContent>
       </Card>

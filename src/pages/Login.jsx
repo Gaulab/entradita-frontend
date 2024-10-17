@@ -1,7 +1,5 @@
-// src/pages/Login.jsx
-
 import { useNavigate, Link } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
 import AuthContext from '../context/AuthContext';
 import { Button } from "../components/ui/button";
@@ -10,8 +8,21 @@ import { Label } from "../components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../components/ui/card";
 
 export default function Login() {
-  const { loginUser } = useContext(AuthContext)
+  const { loginUser } = useContext(AuthContext);
+  const [errorMessage, setErrorMessage] = useState(null); // Estado para almacenar el mensaje de error
   const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const response = await loginUser(e);
+    
+    if (!response.success) {
+      setErrorMessage("Credenciales incorrectas, intente nuevamente.");
+    } else {
+      setErrorMessage(null);
+      navigate('/dashboard');
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-4 w-screen">
@@ -28,12 +39,13 @@ export default function Login() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={loginUser} className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="username" className="text-gray-200">Username</Label>
               <Input
                 id="username"
-                type="username"
+                type="text"
+                name="username"
                 required
                 className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
               />
@@ -43,10 +55,18 @@ export default function Login() {
               <Input
                 id="password"
                 type="password"
+                name="password"
                 required
                 className="bg-gray-700 border-gray-600 text-white"
               />
             </div>
+
+            {errorMessage && (
+              <p className="text-sm text-red-500">
+                {errorMessage}
+              </p>
+            )}
+
             <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white">
               Iniciar Sesión
             </Button>
