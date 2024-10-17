@@ -3,20 +3,41 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../components/ui/card";
-import { useState } from 'react';
+import { Alert, AlertDescription } from "../components/ui/alert";
+import { useState, useContext } from 'react';
+import AuthContext from '../context/AuthContext';
 
 export default function CreateEvent() {
-  const [nombre, setNombre] = useState('');
-  const [fecha, setFecha] = useState('');
-  const [lugar, setLugar] = useState('');
+  const { authToken, user } = useContext(AuthContext);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Aquí iría la lógica para enviar los datos al backend
-    console.log('Evento creado:', { nombre, fecha, lugar });
-    // Redirigir a la página de detalles del evento (asumiendo que el backend devuelve un ID)
-    navigate('/eventos/1');
+    const response = await fetch(`http://localhost:8000/api/v1/events/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken.access}`
+      },
+      body: JSON.stringify({
+        name: e.target.name.value,
+        date: e.target.date.value,
+        place: e.target.place.value,
+        capacity: e.target.capacity.value ? e.target.capacity.value : 0,
+        creator: user.user_id
+      }),
+    });
+    const data = await response.json();
+
+    if (response.status === 201) {
+      navigate('/dashboard');
+    }
+    else {
+      console.log(user)
+      console.log(data)
+      setError('Error al crear el evento');
+    }
   };
 
   return (
@@ -29,41 +50,46 @@ export default function CreateEvent() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="nombre" className="text-gray-200">Nombre del Evento</Label>
+              <Label htmlFor="name" className="text-gray-200">Nombre del Evento</Label>
               <Input
-                id="nombre"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
+                id="name"
                 required
                 className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="fecha" className="text-gray-200">Fecha</Label>
+              <Label htmlFor="date" className="text-gray-200">Fecha</Label>
               <Input
                 type="date"
-                id="fecha"
-                value={fecha}
-                onChange={(e) => setFecha(e.target.value)}
+                id="date"
                 required
                 className="bg-gray-700 border-gray-600 text-white"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="lugar" className="text-gray-200">Lugar</Label>
+              <Label htmlFor="place" className="text-gray-200">Lugar</Label>
               <Input
-                id="lugar"
-                value={lugar}
-                onChange={(e) => setLugar(e.target.value)}
+                id="place"
                 required
                 className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
               />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="capacity" className="text-gray-200">Capacidad</Label>
+              <Input
+                id="capacity"
+                type="number"
+                className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+              />
+            </div>
+            {error && (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white">Crear Evento</Button>
           </form>
         </CardContent>
-        <CardFooter>
-          <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white">Crear Evento</Button>
-        </CardFooter>
       </Card>
     </div>
   );

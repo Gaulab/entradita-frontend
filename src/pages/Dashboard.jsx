@@ -67,7 +67,7 @@ export default function Dashboard() {
                       <TableCell className="text-gray-300">{event.place}</TableCell>
                       <TableCell className="text-gray-300">{event.tickets_counter}</TableCell>
                       <TableCell>
-                        <Button asChild variant="link" className="text-blue-400 hover:text-blue-300">
+                        <Button asChild variant="link" className="p-0 text-blue-400 hover:text-blue-300">
                           <Link to={`/event-details/${event.id}`} state={{event}}>Ver Detalles</Link>
                         </Button>
                       </TableCell>
