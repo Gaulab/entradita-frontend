@@ -10,9 +10,10 @@ import AuthContext from '../context/AuthContext';
 
 export default function EventDetails() {
   const { id } = useParams();
-  const { authToken } = useContext(AuthContext);
+  const { authToken, logoutUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  let cont = 1;
   const [event, setEvent] = useState({});
   const [tickets, setTickets] = useState([]);
   const [vendedores, setVendedores] = useState([]);
@@ -51,6 +52,37 @@ export default function EventDetails() {
     };
   }, [authToken.access, tickets, id]);
 
+  const handleGenerarURL = useCallback((isSeller) => {
+    const createURL = async () => {
+      const urlDetail = isSeller ? 'seller' : 'escaner';
+      const urlNumber = isSeller ? vendedores.length + 1 : escaners.length + 1;
+      const url = `https://entradita.com/events/${id}/${urlDetail}/${urlNumber}/`
+      const response = await fetch(`http://localhost:8000/api/v1/events/${id}/urlAccess/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken.access}`
+        },
+        body: JSON.stringify({ is_seller: isSeller, assigned_name: 'TBD', url: url })
+      })
+      const data = await response.json()
+      if (response.status === 201) {
+        if (isSeller) {
+          setVendedores([...vendedores, data])
+        }
+        else {
+          setEscaners([...escaners, data])
+        }
+        setReload(!reload)
+      }
+      else {
+        alert('Error al generar URL')
+        console.log(data)
+      }
+    }
+    createURL();
+  }, [authToken.access, vendedores, escaners, id]);
+
   const filteredTickets = tickets.filter(ticket =>
     ticket.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     ticket.dni.includes(searchTerm)
@@ -79,7 +111,8 @@ export default function EventDetails() {
         setEscaners(data.escaners)
       }
       else {
-        alert('Error al obtener tickets')
+        alert('Error al obtener datos del evento')
+        logoutUser()
       }
     }
     getEventData();
@@ -149,7 +182,7 @@ export default function EventDetails() {
                   <TableBody>
                     {paginatedTickets.map(ticket => (
                       <TableRow key={ticket.id} className="border-gray-700">
-                        <TableCell className="font-medium text-white">{ticket.id}</TableCell>
+                        <TableCell className="font-medium text-white">{cont++}</TableCell>
                         <TableCell className="text-gray-300">{ticket.name + " " + ticket.surname}</TableCell>
                         <TableCell className="text-gray-300">{ticket.dni}</TableCell>
                         <TableCell className="text-gray-300">{ticket.seller}</TableCell>
@@ -192,10 +225,8 @@ export default function EventDetails() {
               <CardDescription className="text-gray-400">Gestiona los enlaces para vendedores</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button asChild className="mb-4 w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
-                <Link to={`/eventos/${id}/crear-enlace?tipo=vendedor`}>
-                  <PlusIcon className="mr-2 h-4 w-4" /> Crear Nuevo Enlace para Vendedor
-                </Link>
+              <Button onClick={() => handleGenerarURL(true)} className="mb-4 w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
+                <PlusIcon className="mr-2 h-4 w-4" /> Crear Nuevo Enlace para Vendedor
               </Button>
               <div className="overflow-x-auto">
                 <Table>
@@ -210,8 +241,8 @@ export default function EventDetails() {
                       <TableRow key={vendedor.id} className="border-gray-700">
                         <TableCell className="text-gray-300">{vendedor.assigned_name}</TableCell>
                         <TableCell>
-                          <Link to={`/eventos/${vendedor.url}`} className="text-blue-400 hover:text-blue-300 break-all">
-                            {`https://tudominio.com/eventos/${vendedor.url}`}
+                          <Link to={`${vendedor.url}`} className="text-blue-400 hover:text-blue-300 break-all">
+                            {`${vendedor.url}`}
                           </Link>
                         </TableCell>
                       </TableRow>
@@ -229,10 +260,8 @@ export default function EventDetails() {
               <CardDescription className="text-gray-400">Gestiona los enlaces para escáneres</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button asChild className="mb-4 w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
-                <Link to={`/eventos/${id}/crear-enlace?tipo=escaner`}>
-                  <PlusIcon className="mr-2 h-4 w-4" /> Crear Nuevo Enlace para Escáner
-                </Link>
+              <Button onClick={() => handleGenerarURL(false)} className="mb-4 w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
+                <PlusIcon className="mr-2 h-4 w-4" /> Crear Nuevo Enlace para Escáner
               </Button>
               <div className="overflow-x-auto">
                 <Table>
@@ -247,8 +276,8 @@ export default function EventDetails() {
                       <TableRow key={escaner.id} className="border-gray-700">
                         <TableCell className="text-gray-300">{escaner.assigned_name}</TableCell>
                         <TableCell>
-                          <Link to={`/eventos/${escaner.url}`} className="text-blue-400 hover:text-blue-300 break-all">
-                            {`https://tudominio.com/eventos/${escaner.url}`}
+                          <Link to={`${escaner.url}`} className="text-blue-400 hover:text-blue-300 break-all">
+                            {`${escaner.url}`}
                           </Link>
                         </TableCell>
                       </TableRow>

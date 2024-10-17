@@ -29,7 +29,6 @@ export const AuthProvider = ({ children }) => {
             setAuthToken(data)
             setUser(jwtDecode(data.access))
             localStorage.setItem('authTokens', JSON.stringify(data))
-            alert('User logged in successfully')
             navigate('/dashboard')
         }
         else {
@@ -92,7 +91,7 @@ export const AuthProvider = ({ children }) => {
     return (
         <AuthContext.Provider value={contextData}>
             {/* {loading ? null : children} */}
-            {children}
+            {loading ? null : children}
         </AuthContext.Provider>
     )
 }

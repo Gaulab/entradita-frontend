@@ -68,7 +68,7 @@ export default function Dashboard() {
                       <TableCell className="text-gray-300">{event.tickets_counter}</TableCell>
                       <TableCell>
                         <Button asChild variant="link" className="p-0 text-blue-400 hover:text-blue-300">
-                          <Link to={`/event-details/${event.id}`} state={{event}}>Ver Detalles</Link>
+                          <Link to={`/event-details/${event.id}`} state={{ event }}>Ver Detalles</Link>
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -86,7 +86,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent className="flex flex-col space-y-4 sm:flex-row sm:space-y-0  sm:space-x-4">
             <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white">
-              <Link to="/eventos/crear">
+              <Link to="/create-event">
                 <PlusIcon className="mr-2 h-4 w-4" /> Crear Nuevo Evento
               </Link>
             </Button>
@@ -95,7 +95,11 @@ export default function Dashboard() {
             </Button>
             <Button variant="outline" className="bg-gray-700 text-white hover:bg-gray-600">
               Ver Estadísticas
+<<<<<<< HEAD
             </Button> */}
+=======
+            </Button>
+>>>>>>> origin/main
           </CardContent>
         </Card>
       </div>
