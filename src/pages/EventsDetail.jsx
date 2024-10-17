@@ -10,16 +10,17 @@ import { PlusIcon, SearchIcon, ArrowLeftIcon, EditIcon, EyeIcon, Trash2Icon } fr
 import AuthContext from '../context/AuthContext';
 
 export default function EventDetails() {
+  // Get the event ID from the URL
   const { id } = useParams();
   const { authToken, logoutUser } = useContext(AuthContext);
   const navigate = useNavigate();
-
+  // State variables
   const [event, setEvent] = useState({});
   const [tickets, setTickets] = useState([]);
   const [vendedores, setVendedores] = useState([]);
   const [escaners, setEscaners] = useState([]);
   const [reload, setReload] = useState(false);
-
+  // Tabs state
   const [activeTab, setActiveTab] = useState("tickets");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,9 +29,8 @@ export default function EventDetails() {
   const [isSellerUrl, setIsSellerUrl] = useState(true);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
-
   const itemsPerPage = 10;
-
+  // Functions
   const handleGenerarTicket = () => {
     navigate(`/create-ticket/${id}`);
   };
@@ -89,7 +89,7 @@ export default function EventDetails() {
 
   const handleConfirmDelete = useCallback(() => {
     if (!itemToDelete) return;
-
+  
     const deleteItem = async () => {
       let response;
       if (itemToDelete.type === 'ticket') {
@@ -109,7 +109,7 @@ export default function EventDetails() {
           },
         });
       }
-
+  
       if (response.status === 204) {
         if (itemToDelete.type === 'ticket') {
           setTickets(tickets.filter(ticket => ticket.id !== itemToDelete.id));
@@ -123,11 +123,12 @@ export default function EventDetails() {
         alert(`Error al eliminar ${itemToDelete.type}`);
       }
     };
-
+  
     deleteItem();
     setDeleteConfirmOpen(false);
     setItemToDelete(null);
   }, [authToken.access, id, itemToDelete, tickets, vendedores, escaners]);
+  
 
   const handleEditEvent = () => {
     navigate(`/edit-event/${id}`);
