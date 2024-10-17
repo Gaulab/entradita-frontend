@@ -4,30 +4,42 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { Alert, AlertDescription } from "../components/ui/alert";
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import AuthContext from '../context/AuthContext';
 
 export default function CreateTicket() {
+  const { authToken } = useContext(AuthContext);
   const { id } = useParams();
-  const [nombre, setNombre] = useState('');
-  const [dni, setDni] = useState('');
-  const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    const response = await fetch(`http://localhost:8000/api/v1/events/${id}/tickets/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken.access}`
+      },
+      body: JSON.stringify({
+        name: e.target.name.value,
+        surname: e.target.surname.value,
+        dni: e.target.dni.value,
+        event: id,
+        qr_payload: `${e.target.name.value} ${e.target.surname.value} ${e.target.dni.value}`,
+        seller: "Event Organizer"
+      }),
+    });
+    const data = await response.json();
+    console.log(data);
 
-    // Aquí iría la lógica para crear el ticket
-    try {
-      // Simular una llamada a la API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Si la creación es exitosa, redirigir al usuario
-      navigate(`/tickets/${id}-${Date.now()}`);
-    } catch (err) {
-      setError('Error al crear el ticket. Por favor, intente de nuevo.');
+    if (response.status === 201) {
+      navigate(`/event-details/${id}/`);
     }
+    else {
+      setError('Error al crear el ticket');
+    }
+
   };
 
   return (
@@ -42,11 +54,17 @@ export default function CreateTicket() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="nombre" className="text-gray-200">Nombre Completo</Label>
+              <Label htmlFor="name" className="text-gray-200">Nombre Completo</Label>
               <Input
-                id="nombre"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
+                id="name"
+                required
+                className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="surname" className="text-gray-200">Apellido</Label>
+              <Input
+                id="surname"
                 required
                 className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
               />
@@ -55,19 +73,6 @@ export default function CreateTicket() {
               <Label htmlFor="dni" className="text-gray-200">DNI</Label>
               <Input
                 id="dni"
-                value={dni}
-                onChange={(e) => setDni(e.target.value)}
-                required
-                className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-gray-200">Correo Electrónico</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 required
                 className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
               />

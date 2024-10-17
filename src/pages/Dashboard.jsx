@@ -1,30 +1,43 @@
 
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Button } from "../components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
-import { PlusIcon, LogOutIcon } from "lucide-react";
-import { useState } from 'react';
+import { LogOutIcon } from "lucide-react";
+import { useState, useContext, useEffect } from 'react';
+import AuthContext from '../context/AuthContext';
 
 export default function Dashboard() {
-  const navigate = useNavigate();
-  const [events, setEvents] = useState([
-    { id: '1', name: 'Concierto de Rock', date: '2024-07-15', location: 'Estadio Nacional', ticketsSold: 500 },
-    { id: '2', name: 'Festival de Jazz', date: '2024-08-20', location: 'Parque Central', ticketsSold: 250 },
-    { id: '3', name: 'Obra de Teatro', date: '2024-09-10', location: 'Teatro Municipal', ticketsSold: 150 },
-  ]);
+  const { logoutUser, authToken } = useContext(AuthContext);
+  const [events, setEvents] = useState([]);
 
-  const handleLogout = () => {
-    // Aquí iría la lógica para cerrar sesión
-    navigate('/login');
-  };
+  useEffect(() => {
+    const getEvents = async () => {
+      const response = await fetch('http://localhost:8000/api/v1/events/', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken.access}`
+        },
+      })
+      const data = await response.json()
+      console.log(data)
+      if (response.status === 200) {
+        setEvents(data)
+      }
+      else {
+        alert('Error al obtener eventos')
+      }
+    }
+    getEvents();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 p-4 md:p-8 w-screen">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Dashboard</h1>
-          <Button onClick={handleLogout} variant="outline" className="bg-gray-800 text-white hover:bg-gray-700">
+          <Button onClick={logoutUser} variant="outline" className="bg-gray-800 text-white hover:bg-gray-700">
             <LogOutIcon className="mr-2 h-4 w-4" /> Cerrar Sesión
           </Button>
         </div>
@@ -51,11 +64,11 @@ export default function Dashboard() {
                     <TableRow key={event.id} className="border-gray-700">
                       <TableCell className="font-medium text-white">{event.name}</TableCell>
                       <TableCell className="text-gray-300">{event.date}</TableCell>
-                      <TableCell className="text-gray-300">{event.location}</TableCell>
-                      <TableCell className="text-gray-300">{event.ticketsSold}</TableCell>
+                      <TableCell className="text-gray-300">{event.place}</TableCell>
+                      <TableCell className="text-gray-300">{event.tickets_counter}</TableCell>
                       <TableCell>
                         <Button asChild variant="link" className="text-blue-400 hover:text-blue-300">
-                          <Link to={`/eventos/${event.id}`}>Ver Detalles</Link>
+                          <Link to={`/event-details/${event.id}`} state={{event}}>Ver Detalles</Link>
                         </Button>
                       </TableCell>
                     </TableRow>

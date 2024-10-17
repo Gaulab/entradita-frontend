@@ -1,57 +1,58 @@
-import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useState, useContext, useEffect, useCallback } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { PlusIcon, SearchIcon } from "lucide-react";
+import AuthContext from '../context/AuthContext';
 
 export default function EventDetails() {
   const { id } = useParams();
+  const { authToken } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const [event, setEvent] = useState({});
+  const [tickets, setTickets] = useState([]);
+  const [vendedores, setVendedores] = useState([]);
+  const [escaners, setEscaners] = useState([]);
+  const [reload, setReload] = useState(false);
+
   const [activeTab, setActiveTab] = useState("tickets");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+
   const itemsPerPage = 10;
 
-  const [event, setEvent] = useState({
-    id: id,
-    nombre: "Concierto de Rock",
-    fecha: "2024-07-15",
-    lugar: "Estadio Nacional",
-    capacidad: 1000,
-    vendidos: 750,
-  });
-
-  const [tickets, setTickets] = useState(
-    Array.from({ length: 100 }, (_, i) => ({
-      id: i + 1,
-      nombre: `Asistente ${i + 1}`,
-      dni: `${10000000 + i}`,
-      vendedor: `Vendedor${(i % 5) + 1}`,
-    }))
-  );
-
-  const [vendedores, setVendedores] = useState([
-    { id: 1, nombre: 'Vendedor1', enlace: `${id}/vender/1` },
-    { id: 2, nombre: 'Vendedor2', enlace: `${id}/vender/2` },
-  ]);
-
-  const [escaners, setEscaners] = useState([
-    { id: 1, nombre: 'Escaner1', enlace: `${id}/escanear/1` },
-    { id: 2, nombre: 'Escaner2', enlace: `${id}/escanear/2` },
-  ]);
-
   const handleGenerarTicket = () => {
-    console.log('Generando nuevo ticket');
+    navigate(`/create-ticket/${id}`);
   };
 
-  const handleEliminarTicket = (id) => {
-    setTickets(tickets.filter(ticket => ticket.id !== id));
-  };
+  const handleEliminarTicket = useCallback((id_ticket) => {
+    if (window.confirm("¿Estás seguro de que deseas eliminar este ticket?")) {
+      const deleteTicket = async () => {
+        const response = await fetch(`http://localhost:8000/api/v1/events/${id}/tickets/${id_ticket}/`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken.access}`
+          },
+        })
+        if (response.status === 204) {
+          setTickets(tickets.filter(ticket => ticket.id !== id_ticket))
+          setReload(!reload)
+        }
+        else {
+          alert('Error al eliminar ticket')
+        }
+      }
+      deleteTicket();
+    };
+  }, [authToken.access, tickets, id]);
 
   const filteredTickets = tickets.filter(ticket =>
-    ticket.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    ticket.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     ticket.dni.includes(searchTerm)
   );
 
@@ -61,22 +62,46 @@ export default function EventDetails() {
     currentPage * itemsPerPage
   );
 
+  useEffect(() => {
+    const getEventData = async () => {
+      const response = await fetch(`http://localhost:8000/api/v1/eventData/${id}/tickets/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken.access}`
+        },
+      })
+      const data = await response.json()
+      if (response.status === 200) {
+        setEvent(data.event)
+        setTickets(data.tickets)
+        setVendedores(data.vendedores)
+        setEscaners(data.escaners)
+      }
+      else {
+        alert('Error al obtener tickets')
+      }
+    }
+    getEventData();
+    console.log("useEffect")
+  }, [reload]);
+
   return (
     <div className="space-y-6 pb-8 bg-gray-900 text-white p-4 w-screen min-h-screen">
       <Card className="bg-gray-800 border-gray-700">
         <CardHeader>
-          <CardTitle className="text-white text-2xl">{event.nombre}</CardTitle>
-          <CardDescription className="text-gray-400">ID del Evento: {event.id}</CardDescription>
+          <CardTitle className="text-white text-2xl">{event.name}</CardTitle>
+          <CardDescription className="text-gray-400">ID del Evento: {id}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <p className="text-gray-400">Fecha: <span className="text-white">{event.fecha}</span></p>
-              <p className="text-gray-400">Lugar: <span className="text-white">{event.lugar}</span></p>
+              <p className="text-gray-400">Fecha: <span className="text-white">{event.date}</span></p>
+              <p className="text-gray-400">Lugar: <span className="text-white">{event.place}</span></p>
             </div>
             <div>
-              <p className="text-gray-400">Capacidad: <span className="text-white">{event.capacidad}</span></p>
-              <p className="text-gray-400">Tickets Vendidos: <span className="text-white">{event.vendidos}</span></p>
+              <p className="text-gray-400">Capacidad: <span className="text-white">{event.capacity}</span></p>
+              <p className="text-gray-400">Tickets Vendidos: <span className="text-white">{event.tickets_counter}</span></p>
             </div>
           </div>
         </CardContent>
@@ -125,9 +150,9 @@ export default function EventDetails() {
                     {paginatedTickets.map(ticket => (
                       <TableRow key={ticket.id} className="border-gray-700">
                         <TableCell className="font-medium text-white">{ticket.id}</TableCell>
-                        <TableCell className="text-gray-300">{ticket.nombre}</TableCell>
+                        <TableCell className="text-gray-300">{ticket.name + " " + ticket.surname}</TableCell>
                         <TableCell className="text-gray-300">{ticket.dni}</TableCell>
-                        <TableCell className="text-gray-300">{ticket.vendedor}</TableCell>
+                        <TableCell className="text-gray-300">{ticket.seller}</TableCell>
                         <TableCell className="text-right">
                           <Button variant="destructive" onClick={() => handleEliminarTicket(ticket.id)} size="sm">
                             Eliminar
@@ -183,10 +208,10 @@ export default function EventDetails() {
                   <TableBody>
                     {vendedores.map(vendedor => (
                       <TableRow key={vendedor.id} className="border-gray-700">
-                        <TableCell className="text-gray-300">{vendedor.nombre}</TableCell>
+                        <TableCell className="text-gray-300">{vendedor.assigned_name}</TableCell>
                         <TableCell>
-                          <Link to={`/eventos/${vendedor.enlace}`} className="text-blue-400 hover:text-blue-300 break-all">
-                            {`https://tudominio.com/eventos/${vendedor.enlace}`}
+                          <Link to={`/eventos/${vendedor.url}`} className="text-blue-400 hover:text-blue-300 break-all">
+                            {`https://tudominio.com/eventos/${vendedor.url}`}
                           </Link>
                         </TableCell>
                       </TableRow>
@@ -220,10 +245,10 @@ export default function EventDetails() {
                   <TableBody>
                     {escaners.map(escaner => (
                       <TableRow key={escaner.id} className="border-gray-700">
-                        <TableCell className="text-gray-300">{escaner.nombre}</TableCell>
+                        <TableCell className="text-gray-300">{escaner.assigned_name}</TableCell>
                         <TableCell>
-                          <Link to={`/eventos/${escaner.enlace}`} className="text-blue-400 hover:text-blue-300 break-all">
-                            {`https://tudominio.com/eventos/${escaner.enlace}`}
+                          <Link to={`/eventos/${escaner.url}`} className="text-blue-400 hover:text-blue-300 break-all">
+                            {`https://tudominio.com/eventos/${escaner.url}`}
                           </Link>
                         </TableCell>
                       </TableRow>
