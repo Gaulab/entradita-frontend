@@ -12,7 +12,11 @@ const VendedorView = ({ uuid }) => {
     const [filteredTickets, setFilteredTickets] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [vendedor, setVendedor] = useState(null); 
-    const [vendedorNotFound, setVendedorNotFound] = useState(false); // Estado para manejar si el vendedor no fue encontrado
+    const [eventId, setEventId] = useState(null);  // Estado para almacenar el ID del evento
+    const [vendedorNotFound, setVendedorNotFound] = useState(false);
+    const [password, setPassword] = useState('');
+    const [isPasswordCorrect, setIsPasswordCorrect] = useState(false);
+    const [passwordError, setPasswordError] = useState('');
     const navigate = useNavigate();
     
     useEffect(() => {
@@ -26,7 +30,7 @@ const VendedorView = ({ uuid }) => {
                 });
                 
                 if (response.status === 404) {
-                    setVendedorNotFound(true); // Cambiar el estado si el vendedor no fue encontrado
+                    setVendedorNotFound(true);
                     return;
                 }
 
@@ -35,10 +39,10 @@ const VendedorView = ({ uuid }) => {
                 }
 
                 const data = await response.json();
-                console.log(data);
                 setVendedor(data.vendedor);
                 setTickets(data.tickets);
                 setFilteredTickets(data.tickets);
+                setEventId(data.vendedor.event); // Obtener el ID del evento del vendedor
             } catch (error) {
                 console.error('Error fetching tickets:', error);
             }
@@ -46,6 +50,32 @@ const VendedorView = ({ uuid }) => {
 
         fetchTickets();
     }, [uuid]);
+
+    const verifyPassword = async () => {
+        if (!eventId) {
+            setPasswordError('ID de evento no disponible.');
+            return;
+        }
+        
+        try {
+            const response = await fetch(`http://localhost:8000/api/v1/events/${eventId}/check-password/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ password }), // Enviamos la contraseña ingresada
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                setIsPasswordCorrect(true); // Contraseña correcta, continuar con la vista
+            } else {
+                setPasswordError(data.error || 'Error verificando la contraseña.');
+            }
+        } catch (error) {
+            setPasswordError('Error de red al verificar la contraseña.');
+        }
+    };
 
     const handleSearch = (event) => {
         const term = event.target.value.toLowerCase();
@@ -98,6 +128,37 @@ const VendedorView = ({ uuid }) => {
         );
     }
 
+    // Mostrar formulario de contraseña si no ha sido verificada aún
+    if (!isPasswordCorrect) {
+        if (!eventId) {
+            return <div className="flex items-center justify-center h-screen bg-gray-900 text-white">Cargando...</div>;
+        }
+
+        return (
+            <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
+                <Card className="bg-gray-800 border-gray-700 p-6 max-w-md w-full">
+                    <CardHeader>
+                        <CardTitle className="text-white text-xl">Ingrese la contraseña del evento</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Input
+                            type="password"
+                            placeholder="Contraseña"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="mb-4 bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                        />
+                        {passwordError && <p className="text-red-500 mb-2">{passwordError}</p>}
+                        <Button onClick={verifyPassword} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                            Verificar
+                        </Button>
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
+
+    // Si la contraseña es correcta, mostrar la vista completa
     return (
         <div className="space-y-6 pb-8 bg-gray-900 text-white p-4 w-full min-h-screen">
             <div className='max-w-6xl mx-auto'>
@@ -110,7 +171,7 @@ const VendedorView = ({ uuid }) => {
                         {vendedor && (
                             <div className="mb-4">
                                 <h3 className="text-gray-300">Vendedor: {vendedor.assigned_name}</h3>
-                                <p className="text-gray-400">Puedes vender: {vendedor.seller_capacity - vendedor.ticket_counter} tickets</p>
+                                <p className="text-gray-400">Puedes vender: #{vendedor.seller_capacity ? vendedor.seller_capacity - vendedor.ticket_counter : "ilimitados"} tickets</p>
                             </div>
                         )}
                         <div className="flex justify-between items-center mb-4">

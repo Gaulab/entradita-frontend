@@ -25,8 +25,8 @@ export default function CreateEvent() {
           name: e.target.name.value,
           date: e.target.date.value,
           place: e.target.place.value,
-          capacity: e.target.capacity.value ? parseInt(e.target.capacity.value) : 0,
-          image_address: e.target.image_address.value,
+          capacity: e.target.capacity.value ? parseInt(e.target.capacity.value) : null,
+          image_address: e.target.image_address.value ? e.target.image_address.value : null,
           password_employee: e.target.password_employee.value
         }),
       });
@@ -97,6 +97,7 @@ export default function CreateEvent() {
               <Label htmlFor="password_employee" className="text-gray-200">Contraseña para Empleados</Label>
               <Input
                 id="password_employee"
+                required
                 className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
               />
             </div>

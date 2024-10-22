@@ -46,7 +46,7 @@ export default function EventDetails() {
           },
         });
         const data = await response.json();
-        // console.log(data);
+        console.log(data);
         if (response.status === 200) {
           setEvent(data.event);
           setTickets(data.tickets);
@@ -283,7 +283,7 @@ export default function EventDetails() {
                 <p className="text-gray-400">Lugar: <span className="text-white">{event.place}</span></p>
               </div>
               <div>
-                <p className="text-gray-400">Capacidad: <span className="text-white">{(event.capacity !== 0) ? event.capacity : "Ilimitada"}</span></p>
+                <p className="text-gray-400">Capacidad: <span className="text-white">{event.capacity ? event.capacity : "Ilimitada"}</span></p>
                 <p className="text-gray-400">Tickets Vendidos: <span className="text-white">{event.tickets_counter}</span></p>
               </div>
             </div>
