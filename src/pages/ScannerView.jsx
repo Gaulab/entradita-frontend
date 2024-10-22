@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Button } from "../components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { Alert, AlertDescription } from "../components/ui/alert";
-import { QrScanner } from '@yudiel/react-qr-scanner';
+import { Scanner } from '@yudiel/react-qr-scanner';
 
 export default function ScanTicket() {
   const { id } = useParams();
@@ -13,10 +13,11 @@ export default function ScanTicket() {
 
   const handleScan = (result) => {
     if (result) {
-      setResultado(result);
       setEscaneando(false);
+      setResultado(result.rawValue); // Asegúrate de usar el valor apropiado del objeto
       // Aquí iría la lógica para validar el ticket con el backend
       // Por ahora, solo mostraremos el resultado
+      console.log(result);  
     }
   };
 
@@ -43,10 +44,9 @@ export default function ScanTicket() {
         <CardContent className="space-y-4">
           {escaneando ? (
             <div className="aspect-square">
-              <QrScanner
-                onDecode={handleScan}
+              <Scanner
+                onScan={handleScan}
                 onError={handleError}
-                constraints={{ facingMode: 'environment' }}
               />
             </div>
           ) : (

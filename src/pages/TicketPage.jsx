@@ -1,37 +1,43 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Download, AlertTriangle } from "lucide-react";
-import { jwtDecode } from "jwt-decode";
+import { Download, AlertTriangle, Calendar, MapPin } from "lucide-react";
 
 export default function TicketPage() {
-    const { ticketToken } = useParams();
+    const { ticket_uuid } = useParams();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const eventName = jwtDecode(ticketToken).event;
 
     useEffect(() => {
-        const getdata = async () => {
-            const response = await fetch(`http://localhost:8000/api/v1/tickets/${ticketToken}`, {
-                headers: {
-                    'Authorization': `Bearer ${ticketToken}`
+        if (ticket_uuid) {
+            const getdata = async () => {
+                try {
+                    const response = await fetch(`http://localhost:8000/api/v1/tickets/public/${ticket_uuid}/`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        setData(data);
+                        setLoading(false);
+                    } else {
+                        setError('QR inexistente');
+                    }
+                } catch {
+                    setError('Error al obtener los datos del ticket');
                 }
-            });
-            const data = await response.json();
-            console.log(data);
-            if (response.status === 200) {
-                setData(data);
-                setLoading(false);
-            } else {
-                setError('QR inexistente');
-            }
+            };
+            getdata();
+        } else {
+            setError('No se proporcionó un UUID válido');
         }
-        getdata();
-    }, []);
+    }, [ticket_uuid]);
 
     const handleDownload = () => {
         const svg = document.getElementById('qr-code');
@@ -40,58 +46,76 @@ export default function TicketPage() {
         const ctx = canvas.getContext('2d');
         const img = new Image();
         img.onload = () => {
-            canvas.width = img.width;
-            canvas.height = img.height;
+            // Increase the size of the canvas for better resolution
+            const scale = 4;
+            canvas.width = img.width * scale;
+            canvas.height = img.height * scale;
+            ctx.scale(scale, scale);
             ctx.drawImage(img, 0, 0);
             const pngFile = canvas.toDataURL('image/png');
             const downloadLink = document.createElement('a');
-            downloadLink.download = `ticket-${ticketId}.png`;
+            downloadLink.download = `ticket-qr-${ticket_uuid}.png`;
             downloadLink.href = pngFile;
             downloadLink.click();
         };
         img.src = `data:image/svg+xml;base64,${btoa(svgData)}`;
     };
 
-    if (loading) return <div className="text-center text-white">Cargando...</div>;
-    if (error) return <div className="text-center text-red-500">Error: {error}</div>;
+    if (loading) return <div className="flex justify-center items-center min-h-screen bg-gray-900"><div className="text-white">Cargando...</div></div>;
+    if (error) return <div className="flex justify-center items-center min-h-screen bg-gray-900"><div className="text-red-500">Error: {error}</div></div>;
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-900 p-4">
-            <Card className="w-full max-w-md bg-gray-800 border-gray-700">
-                <CardHeader>
-                    <CardTitle className="text-2xl font-bold text-center text-white">Tu Entrada para {eventName}</CardTitle>
+        <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 p-4">
+            <Card className="w-full max-w-md bg-gray-800 border-gray-700 shadow-xl overflow-hidden relative">
+                <CardHeader className="relative pb-0 pt-2 px-2">
+                    <div className="flex flex-col items-center mb-0">
+                        <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-700 mr-4">
+                            <img 
+                                src={data.event_image_address} 
+                                alt="Event Logo" 
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
+                        <CardTitle className="text-2xl font-bold text-white">{data.event_name}</CardTitle>
+                    </div>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                    {/* <div className="flex justify-center">
-                        <img 
-                            src={data.event.image_address} 
-                            alt="Event" 
-                            className="w-full max-w-xs rounded-lg shadow-lg"
-                        />
-                    </div> */}
-                    <div className="flex justify-center bg-white p-4 rounded-lg">
+                <CardContent className="space-y-6 pt-4 px-6">
+                    <div className="flex justify-center bg-white p-1 rounded-lg shadow-inner">
                         <QRCodeSVG
                             id="qr-code"
                             value={data.qr_payload}
-                            size={200}
+                            size={300}
                             level="H"
                         />
                     </div>
-                    <div className="text-center text-gray-300">
-                        <p>{data.name} {data.surname}</p>
-                        <p>DNI: {data.dni}</p>
+                    <div className="text-center text-gray-300 space-y-2">
+                        <p className="text-lg font-semibold">{data.owner_name} {data.owner_lastname}</p>
+                        <p className="text-sm">DNI: {data.owner_dni}</p>
                     </div>
-                    <Alert variant="destructive">
+                    <div className="flex flex-col space-y-2 text-gray-400 text-sm">
+                        <div className="flex items-center justify-center">
+                            <Calendar className="mr-2 h-4 w-4" />
+                            <span>{data.event_date}</span>
+                        </div>
+                        <div className="flex items-center justify-center">
+                            <MapPin className="mr-2 h-4 w-4" />
+                            <span>{data.event_place}</span>
+                        </div>
+                    </div>
+                    <Alert variant="destructive" className="bg-red-900 border-red-700">
                         <AlertTriangle className="h-4 w-4" />
-                        <AlertDescription>
+                        <AlertDescription className="text-sm">
                             No compartas esta entrada con nadie. Es única y personal.
                         </AlertDescription>
                     </Alert>
                 </CardContent>
-                <CardFooter className="flex justify-center">
-                    <Button onClick={handleDownload} className="bg-blue-600 hover:bg-blue-700">
-                        <Download className="mr-2 h-4 w-4" /> Descargar Entrada
+                <CardFooter className="flex flex-col items-center pt-2 pb-6 space-y-4">
+                    <Button onClick={handleDownload} className="bg-blue-600 hover:bg-blue-700 transition-colors">
+                        <Download className="mr-2 h-4 w-4" /> Descargar QR
                     </Button>
+                    <div className="text-gray-500 text-sm">
+                        entradita.com
+                    </div>
                 </CardFooter>
             </Card>
         </div>

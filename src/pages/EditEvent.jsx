@@ -4,6 +4,7 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../components/ui/card";
 import { Alert, AlertDescription } from "../components/ui/alert";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "../components/ui/dialog";
 import { useState, useContext, useEffect } from 'react';
 import AuthContext from '../context/AuthContext';
 
@@ -13,11 +14,14 @@ export default function EditEvent() {
   const [error, setError] = useState('');
   const [event, setEvent] = useState(null);
   const navigate = useNavigate();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [deleteConfirmationCode, setDeleteConfirmationCode] = useState('');
+  const [userInputCode, setUserInputCode] = useState('');
 
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/v1/event/${id}/`, {
+        const response = await fetch(`http://localhost:8000/api/v1/events/${id}/`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -27,10 +31,11 @@ export default function EditEvent() {
         if (response.ok) {
           const data = await response.json();
           setEvent(data);
+          setDeleteConfirmationCode(generateConfirmationCode());
         } else {
           setError('Error al cargar el evento');
         }
-      } catch (error) {
+      } catch {
         setError('Error al cargar el evento');
       }
     };
@@ -52,18 +57,47 @@ export default function EditEvent() {
           date: e.target.date.value,
           place: e.target.place.value,
           capacity: e.target.capacity.value ? parseInt(e.target.capacity.value) : 0,
-          image_address: e.target.image_address.value
+          image_address: e.target.image_address.value,
+          password_employee: e.target.password_employee.value
         }),
       });
-      
       if (response.ok) {
         navigate(`/event-details/${id}`);
       } else {
         const data = await response.json();
         setError('Error al actualizar el evento: ' + JSON.stringify(data));
       }
-    } catch (error) {
+    } catch {
       setError('Error al actualizar el evento');
+    }
+  };
+
+  const generateConfirmationCode = () => {
+    return Math.random().toString(36).substring(2, 8).toUpperCase();
+  };
+
+  const handleDeleteEvent = async () => {
+    if (userInputCode !== deleteConfirmationCode) {
+      setError('Código de confirmación incorrecto');
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8000/api/v1/events/${id}/`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken.access}`
+        },
+      });
+      if (response.ok) {
+        navigate('/dashboard');
+      } else {
+        const data = await response.json();
+        setError('Error al eliminar el evento: ' + JSON.stringify(data));
+      }
+    } catch {
+      setError('Error al eliminar el evento');
     }
   };
 
@@ -125,6 +159,14 @@ export default function EditEvent() {
                 className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
               />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="password_employee" className="text-gray-200">Contraseña para Empleados</Label>
+              <Input
+                id="password_employee"
+                defaultValue={event.password_employee}
+                className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+              />
+            </div>
             {error && (
               <Alert variant="destructive">
                 <AlertDescription>{error}</AlertDescription>
@@ -133,7 +175,42 @@ export default function EditEvent() {
             <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white">Actualizar Evento</Button>
           </form>
         </CardContent>
+        <CardFooter className="flex flex-col items-stretch">
+          <Button 
+            onClick={() => setIsDeleteDialogOpen(true)} 
+            variant="destructive" 
+            className="w-full mt-4"
+          >
+            Eliminar Evento
+          </Button>
+        </CardFooter>
       </Card>
+
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent className="bg-gray-800 text-white">
+          <DialogHeader>
+            <DialogTitle>Confirmar Eliminación del Evento</DialogTitle>
+            <DialogDescription>
+              Esta acción no se puede deshacer. Por favor, ingrese el siguiente código para confirmar: 
+              <span className="font-bold text-red-500"> {deleteConfirmationCode}</span>
+            </DialogDescription>
+          </DialogHeader>
+          <Input
+            value={userInputCode}
+            onChange={(e) => setUserInputCode(e.target.value)}
+            placeholder="Ingrese el código de confirmación"
+            className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+          />
+          <DialogFooter>
+            <Button onClick={() => setIsDeleteDialogOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600">
+              Cancelar
+            </Button>
+            <Button onClick={handleDeleteEvent} variant="destructive">
+              Eliminar Evento
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

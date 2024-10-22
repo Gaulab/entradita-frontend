@@ -7,9 +7,9 @@ import { Alert, AlertDescription } from "../components/ui/alert";
 import { useState, useContext } from 'react';
 import AuthContext from '../context/AuthContext';
 
-export default function CreateTicket() {
+export default function CreateTicketBySeller() {
   const { authToken } = useContext(AuthContext);
-  const { id } = useParams();
+  const { uuid } = useParams(); // Cambiado a 'uuid' para el vendedor
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -17,24 +17,23 @@ export default function CreateTicket() {
     e.preventDefault();
     
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/tickets/`, {
+      const response = await fetch(`http://localhost:8000/api/v1/employees/seller/${uuid}/create-ticket/`, { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken.access}` // Corrected authorization token
+          'Authorization': `Bearer ${authToken.access}` 
         },
         body: JSON.stringify({
-          event: id, // Event ID from URL params
           owner_name: e.target.name.value,
           owner_lastname: e.target.surname.value,
           owner_dni: e.target.dni.value,
         }),
       });
       
-      // const data = await response.json();
-      // console.log(data);
+      const data = await response.json();
+      console.log(data);
       if (response.status === 201) {
-        navigate(`/event-details/${id}/`); // Navigate to event details on success
+        navigate(`/vendedor/${uuid}`); // Redirige a la vista del vendedor tras crear el ticket
       } else {
         setError('Error al crear el ticket');
       }
@@ -50,7 +49,7 @@ export default function CreateTicket() {
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center text-white">Crear Ticket</CardTitle>
           <CardDescription className="text-center text-gray-400">
-            Ingrese los datos del asistente para el evento
+            Ingrese los datos del asistente {/* Cambiado a UUID */}
           </CardDescription>
         </CardHeader>
         <CardContent>

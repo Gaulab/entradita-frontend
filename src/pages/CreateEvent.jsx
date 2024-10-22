@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { useState, useContext } from 'react';
 import AuthContext from '../context/AuthContext';
@@ -15,7 +15,7 @@ export default function CreateEvent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/events/`, {
+      const response = await fetch(`http://localhost:8000/api/v1/events/create/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -26,7 +26,8 @@ export default function CreateEvent() {
           date: e.target.date.value,
           place: e.target.place.value,
           capacity: e.target.capacity.value ? parseInt(e.target.capacity.value) : 0,
-          image_address: e.target.image_address.value
+          image_address: e.target.image_address.value,
+          password_employee: e.target.password_employee.value
         }),
       });
       const data = await response.json();
@@ -38,7 +39,7 @@ export default function CreateEvent() {
         console.log(data);
         setError('Error al crear el evento: ' + JSON.stringify(data));
       }
-    } catch (error) {
+    } catch {
       setError('Error al crear el evento');
     }
   };
@@ -89,6 +90,13 @@ export default function CreateEvent() {
               <Label htmlFor="image_address" className="text-gray-200">Dirección de la Imagen (Logo)</Label>
               <Input
                 id="image_address"
+                className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password_employee" className="text-gray-200">Contraseña para Empleados</Label>
+              <Input
+                id="password_employee"
                 className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
               />
             </div>

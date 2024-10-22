@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "../components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
 import { QrCode, Zap, Users, Mail, Phone } from 'lucide-react';
+import PropTypes from 'prop-types'; // Importar PropTypes
 
 export default function Home() {
   const canvasRef = useRef(null);
@@ -167,3 +168,10 @@ function FeatureCard({ icon, title, description }) {
     </Card>
   );
 }
+
+// Definir las propTypes para validar las props
+FeatureCard.propTypes = {
+  icon: PropTypes.node.isRequired,
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+};
