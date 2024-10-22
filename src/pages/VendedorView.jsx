@@ -12,14 +12,20 @@ const VendedorView = ({ uuid }) => {
     const [filteredTickets, setFilteredTickets] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [vendedor, setVendedor] = useState(null); 
-    const [eventId, setEventId] = useState(null);  // Estado para almacenar el ID del evento
+    const [eventId, setEventId] = useState(null); 
     const [vendedorNotFound, setVendedorNotFound] = useState(false);
     const [password, setPassword] = useState('');
     const [isPasswordCorrect, setIsPasswordCorrect] = useState(false);
     const [passwordError, setPasswordError] = useState('');
     const navigate = useNavigate();
     
+    
     useEffect(() => {
+        const storedPasswordStatus = localStorage.getItem('isPasswordCorrect');
+        if (storedPasswordStatus) {
+            setIsPasswordCorrect(JSON.parse(storedPasswordStatus));
+        }
+
         const fetchTickets = async () => {
             try {
                 const response = await fetch(`http://localhost:8000/api/v1/employees/seller/${uuid}/info/`, {
@@ -39,10 +45,11 @@ const VendedorView = ({ uuid }) => {
                 }
 
                 const data = await response.json();
+                // console.log(data);
                 setVendedor(data.vendedor);
                 setTickets(data.tickets);
                 setFilteredTickets(data.tickets);
-                setEventId(data.vendedor.event); // Obtener el ID del evento del vendedor
+                setEventId(data.vendedor.event); 
             } catch (error) {
                 console.error('Error fetching tickets:', error);
             }
@@ -63,16 +70,17 @@ const VendedorView = ({ uuid }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ password }), // Enviamos la contraseña ingresada
+                body: JSON.stringify({ password }), 
             });
 
             const data = await response.json();
             if (response.ok) {
-                setIsPasswordCorrect(true); // Contraseña correcta, continuar con la vista
+                setIsPasswordCorrect(true);
+                localStorage.setItem('isPasswordCorrect', true); // Guardar en localStorage
             } else {
                 setPasswordError(data.error || 'Error verificando la contraseña.');
             }
-        } catch (error) {
+        } catch {
             setPasswordError('Error de red al verificar la contraseña.');
         }
     };
@@ -171,7 +179,9 @@ const VendedorView = ({ uuid }) => {
                         {vendedor && (
                             <div className="mb-4">
                                 <h3 className="text-gray-300">Vendedor: {vendedor.assigned_name}</h3>
-                                <p className="text-gray-400">Puedes vender: #{vendedor.seller_capacity ? vendedor.seller_capacity - vendedor.ticket_counter : "ilimitados"} tickets</p>
+                                {vendedor.status == false ? <p className="text-gray-400">El organizador te deshabilito</p> : <p className="text-gray-400">Puedes vender: {vendedor.seller_capacity ? vendedor.seller_capacity - vendedor.ticket_counter : "ilimitados"} tickets</p>}
+                                
+                                <p className="text-gray-400">Tickets vendidos: {vendedor.ticket_counter}</p>
                             </div>
                         )}
                         <div className="flex justify-between items-center mb-4">
