@@ -4,11 +4,9 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { Alert, AlertDescription } from "../components/ui/alert";
-import { useState, useContext } from 'react';
-import AuthContext from '../context/AuthContext';
+import { useState } from 'react';
 
 export default function CreateTicketBySeller() {
-  const { authToken } = useContext(AuthContext);
   const { uuid } = useParams(); // Cambiado a 'uuid' para el vendedor
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -20,8 +18,7 @@ export default function CreateTicketBySeller() {
       const response = await fetch(`http://localhost:8000/api/v1/employees/seller/${uuid}/create-ticket/`, { 
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken.access}` 
+          'Content-Type': 'application/json', 
         },
         body: JSON.stringify({
           owner_name: e.target.name.value,

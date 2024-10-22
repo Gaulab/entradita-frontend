@@ -19,6 +19,17 @@ const VendedorView = ({ uuid }) => {
     const [passwordError, setPasswordError] = useState('');
     const navigate = useNavigate();
     
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            localStorage.removeItem('isPasswordCorrect'); // Clear localStorage when leaving the page
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, []);
     
     useEffect(() => {
         const storedPasswordStatus = localStorage.getItem('isPasswordCorrect');
@@ -45,7 +56,7 @@ const VendedorView = ({ uuid }) => {
                 }
 
                 const data = await response.json();
-                // console.log(data);
+                //console.log(data);
                 setVendedor(data.vendedor);
                 setTickets(data.tickets);
                 setFilteredTickets(data.tickets);
@@ -179,13 +190,13 @@ const VendedorView = ({ uuid }) => {
                         {vendedor && (
                             <div className="mb-4">
                                 <h3 className="text-gray-300">Vendedor: {vendedor.assigned_name}</h3>
-                                {vendedor.status == false ? <p className="text-gray-400">El organizador te deshabilito</p> : <p className="text-gray-400">Puedes vender: {vendedor.seller_capacity ? vendedor.seller_capacity - vendedor.ticket_counter : "ilimitados"} tickets</p>}
+                                {vendedor.status === false ? <p className="text-gray-400">El organizador te deshabilito</p> : <p className="text-gray-400">Puedes vender: {vendedor.seller_capacity ? vendedor.seller_capacity - vendedor.ticket_counter : "ilimitados"} tickets</p>}
                                 
                                 <p className="text-gray-400">Tickets vendidos: {vendedor.ticket_counter}</p>
                             </div>
                         )}
                         <div className="flex justify-between items-center mb-4">
-                            <Button onClick={handleCreateTicket} className="w-auto bg-blue-600 hover:bg-blue-700 text-white">
+                            <Button disabled={vendedor.status === false} onClick={handleCreateTicket} className="w-auto bg-blue-600 hover:bg-blue-700 text-white">
                                 <PlusIcon className="mr-2 h-4 w-4" /> Crear Nuevo Ticket
                             </Button>
                             <div className="relative">

@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "../components/ui/dialog";
-import { PlusIcon, SearchIcon, ArrowLeftIcon, EditIcon, EyeIcon, Trash2Icon, PencilIcon, TicketX} from "lucide-react";
+import { PlusIcon, SearchIcon, ArrowLeftIcon, EditIcon, EyeIcon, Trash2Icon, PencilIcon, TicketX } from "lucide-react";
 import { Label } from "../components/ui/label";
 import AuthContext from '../context/AuthContext';
 
@@ -32,7 +32,7 @@ export default function EventDetails() {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [editingEmpleado, setEditingEmpleado] = useState(null);
-  
+
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -218,8 +218,8 @@ export default function EventDetails() {
           setTickets(tickets.filter(ticket => ticket.id !== itemToDelete.id));
         } else if (itemToDelete.status === 1) {
           // Update the employee's status in the state
-          const updateEmpleado = (empleados) => 
-            empleados.map(e => e.id === itemToDelete.id ? {...e, status: 0} : e);
+          const updateEmpleado = (empleados) =>
+            empleados.map(e => e.id === itemToDelete.id ? { ...e, status: 0 } : e);
           if (itemToDelete.type === 'vendedor') {
             setVendedores(updateEmpleado);
           } else {
@@ -324,7 +324,7 @@ export default function EventDetails() {
                     <TableHeader>
                       <TableRow className="border-gray-700">
                         <TableHead className="text-gray-300 hidden sm:table-cell">ID</TableHead>
-                        <TableHead  className="text-gray-300">Nombre</TableHead>
+                        <TableHead className="text-gray-300">Nombre</TableHead>
                         <TableHead className="text-gray-300 hidden sm:table-cell">DNI</TableHead>
                         <TableHead className="text-gray-300 hidden sm:table-cell">Vendedor</TableHead>
                         <TableHead className="text-gray-300 text-right">Acciones</TableHead>
@@ -401,7 +401,7 @@ export default function EventDetails() {
                         <TableRow key={vendedor.id} className={`border-gray-700 ${vendedor.status === false ? 'opacity-50' : ''}`}>
                           <TableCell className="text-gray-300">{vendedor.assigned_name}</TableCell>
                           <TableCell className="hidden sm:table-cell">
-                            <Link to={`/vendedor/${vendedor.uuid}`} className="text-blue-400 hover:text-blue-300 break-all">
+                            <Link to={`/vendedor/${vendedor.uuid}`} target='_blank' className="text-blue-400 hover:text-blue-300 break-all">
                               {`${vendedor.uuid}`}
                             </Link>
                           </TableCell>
@@ -412,10 +412,10 @@ export default function EventDetails() {
                               <PencilIcon className="h-4 w-4" />
                               <span className="sr-only">Editar vendedor</span>
                             </Button>
-                            <Button 
-                              variant="destructive" 
-                              onClick={() => handleEliminarEmpleado(vendedor)} 
-                              size="sm" 
+                            <Button
+                              variant="destructive"
+                              onClick={() => handleEliminarEmpleado(vendedor)}
+                              size="sm"
                               title={vendedor.status === true ? "Deshabilitar vendedor" : "Eliminar vendedor"}
                             >
                               {vendedor.status === true ? <TicketX className="h-4 w-4" /> : <Trash2Icon className="h-4 w-4" />}
@@ -455,7 +455,7 @@ export default function EventDetails() {
                         <TableRow key={escaner.id} className={`border-gray-700 ${escaner.status === false ? 'opacity-50' : ''}`}>
                           <TableCell className="text-gray-300">{escaner.assigned_name}</TableCell>
                           <TableCell className="hidden sm:table-cell">
-                            <Link to={`/scanner/${escaner.uuid}`} className="text-blue-400 hover:text-blue-300 break-all">
+                            <Link to={`/scanner/${escaner.uuid}`} target='_blank' className="text-blue-400 hover:text-blue-300 break-all">
                               {`${escaner.uuid}`}
                             </Link>
                           </TableCell>
@@ -464,14 +464,14 @@ export default function EventDetails() {
                               <PencilIcon className="h-4 w-4" />
                               <span className="sr-only">Editar escáner</span>
                             </Button>
-                            <Button 
-                              variant="destructive" 
-                              onClick={() => handleEliminarEmpleado(escaner)} 
-                              size="sm" 
+                            <Button
+                              variant="destructive"
+                              onClick={() => handleEliminarEmpleado(escaner)}
+                              size="sm"
                               title={escaner.status === true ? "Deshabilitar escáner" : "Eliminar escáner"}
                             >
                               {escaner.status === true ? <TicketX className="h-4 w-4" /> : <Trash2Icon className="h-4 w-4" />}
-                              <span className="sr-only">{escaner.status === 1 ? "Deshabilitar escáner" : "Eliminar escáner"}</span>
+                              <span className="sr-only">{escaner.status === true ? "Deshabilitar escáner" : "Eliminar escáner"}</span>
                             </Button>
                           </TableCell>
                         </TableRow>
@@ -578,12 +578,21 @@ export default function EventDetails() {
               <DialogTitle>
                 {itemToDelete?.status === true ? "Deshabilitar" : "Eliminar"} {itemToDelete?.type}
               </DialogTitle>
-              <DialogDescription>
-                {itemToDelete?.status === true
-                  ? `¿Estás seguro de que deseas deshabilitar este ${itemToDelete?.type}? Los tickets no se eliminarán, pero el ${itemToDelete?.type} no podrá vender más tickets.`
-                  : `¿Estás seguro de que deseas eliminar este ${itemToDelete?.type}? Esta acción eliminará todos los tickets asociados.`
-                }
-              </DialogDescription>
+              {itemToDelete?.type === 'vendedor' ?
+                <DialogDescription>
+                  {itemToDelete?.status === true
+                    ? `¿Estás seguro de que deseas deshabilitar este ${itemToDelete?.type}? Los tickets no se eliminarán, pero el ${itemToDelete?.type} no podrá vender más tickets.`
+                    : `¿Estás seguro de que deseas eliminar este ${itemToDelete?.type}? Esta acción eliminará la información del empleado y todos los tickets asociados.`
+                  }
+                </DialogDescription>
+                :
+                <DialogDescription>
+                  {itemToDelete?.status === true
+                    ? `¿Estás seguro de que deseas deshabilitar este ${itemToDelete?.type}? Los tickets escaneados mantendrán su estado.`
+                    : `¿Estás seguro de que deseas eliminar este ${itemToDelete?.type}? Esta acción eliminará la información del empleado.`
+                  }
+                </DialogDescription>
+              }
             </DialogHeader>
             <DialogFooter>
               <Button onClick={() => setDeleteConfirmOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600">

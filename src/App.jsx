@@ -17,24 +17,22 @@ import ScannerView from './pages/ScannerView';
 function App() {
   return (
     <Router>
-      <AuthProvider>
         <Routes>
           {/* Rutas públicas */}
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<AuthProvider><Login /></AuthProvider>} />
           <Route path="/ticket/:ticket_uuid" element={<TicketPage />} />
           <Route path="/vendedor/:uuid" element={<VendedorWrapper />} />
           <Route path="/vendedor/:uuid/create-ticket" element={<CreateTicketBySeller />} />
           {/* <Route path="/scanner/:uuid" element={<ScanTicket />} /> */}
-          <Route path="/scanner/:uuid" element={<ScannerView />} />
+          <Route path="/scanner/:uuid" element={<EscanerWrapper />} />
           {/* Rutas protegidas */}
-          <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-          <Route path="/create-event" element={<PrivateRoute><CreateEvent /></PrivateRoute>} />
-          <Route path="/event-details/:id" element={<PrivateRoute><EventDetails /></PrivateRoute>} />
-          <Route path="/event/:id/create-ticket" element={<PrivateRoute><CreateTicket /></PrivateRoute>} />
-          <Route path="/edit-event/:id" element={<PrivateRoute><EditEvent /></PrivateRoute>} />
+          <Route path="/dashboard" element={<AuthProvider><PrivateRoute><Dashboard /></PrivateRoute></AuthProvider>} />
+          <Route path="/create-event" element={<AuthProvider><PrivateRoute><CreateEvent /></PrivateRoute></AuthProvider>} />
+          <Route path="/event-details/:id" element={<AuthProvider><PrivateRoute><EventDetails /></PrivateRoute></AuthProvider>} />
+          <Route path="/event/:id/create-ticket" element={<AuthProvider><PrivateRoute><CreateTicket /></PrivateRoute></AuthProvider>} />
+          <Route path="/edit-event/:id" element={<AuthProvider><PrivateRoute><EditEvent /></PrivateRoute></AuthProvider>} />
         </Routes>
-      </AuthProvider>
     </Router>
   );
 }
@@ -42,6 +40,11 @@ function App() {
 const VendedorWrapper = () => {
   const { uuid } = useParams(); // Obtén el UUID de la URL
   return <VendorView uuid={uuid} />; // Pasa el UUID al componente VendorView
+};
+
+const EscanerWrapper = () => {
+  const { uuid } = useParams(); // Obtén el UUID de la URL
+  return <ScannerView uuid={uuid} />; // Pasa el UUID al componente VendorView
 };
 
 export default App;
