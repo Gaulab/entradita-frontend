@@ -35,6 +35,22 @@ export default function EventDetails() {
 
   const itemsPerPage = 10;
 
+  const [copyMessage, setCopyMessage] = useState("");
+
+  const copyToClipboard = useCallback((text) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        setCopyMessage("Copiado");
+        setTimeout(() => setCopyMessage(""), 2000); // El mensaje desaparece después de 2 segundos
+      })
+      .catch((err) => {
+        console.error("Error al copiar: ", err);
+        setCopyMessage("Error al copiar");
+        setTimeout(() => setCopyMessage(""), 2000);
+      });
+  }, []);
+
   useEffect(() => {
     const getEventData = async () => {
       try {
@@ -343,6 +359,10 @@ export default function EventDetails() {
                           <TableCell className="text-gray-300 hidden sm:table-cell">{ticket.owner_dni}</TableCell>
                           <TableCell className="text-gray-300 hidden sm:table-cell">{ticket.seller_name === "Unknown" ? "Organizer" : ticket.seller_name}</TableCell>
                           <TableCell className="text-right space-x-1 space-y-1">
+                            <Button variant="outline" onClick={() => copyToClipboard(`${window.location.origin}/ticket/${ticket.uuid}`)} size="sm" title="Copiar enlace de ticket">
+                              <LinkIcon className="h-4 w-4" />
+                              <span className="sr-only">Copiar enlace de ticket</span>
+                            </Button>
                             <Button variant="outline" onClick={() => handleViewTicket(ticket.uuid)} size="sm" title="Ver ticket">
                               <EyeIcon className="h-4 w-4" />
                               <span className="sr-only">Ver ticket</span>
@@ -399,9 +419,9 @@ export default function EventDetails() {
                           <TableCell className="text-gray-300 hidden sm:table-cell">{vendedor.seller_capacity !== null ? vendedor.seller_capacity : "sin límite"}</TableCell>
                           <TableCell className="text-gray-300 hidden sm:table-cell">{vendedor.ticket_counter}</TableCell>
                           <TableCell className="text-right space-x-1 space-y-1">
-                            <Button variant="outline" onClick={() => window.open(`/vendedor/${vendedor.uuid}`, "_blank")} size="sm" title="Ver enlace de vendedor">
+                            <Button variant="outline" onClick={() => copyToClipboard(`${window.location.origin}/vendedor/${vendedor.uuid}`)} size="sm" title="Copiar enlace de vendedor">
                               <LinkIcon className="h-4 w-4" />
-                              <span className="sr-only">Ver enlace de vendedor</span>
+                              <span className="sr-only">Copiar enlace de vendedor</span>
                             </Button>
                             <Button variant="outline" onClick={() => handleEditEmpleado(vendedor)} size="sm" title="Editar vendedor">
                               <PencilIcon className="h-4 w-4" />
@@ -444,9 +464,9 @@ export default function EventDetails() {
                         <TableRow key={escaner.id} className={`border-gray-700 ${escaner.status === false ? "opacity-50" : ""}`}>
                           <TableCell className="text-gray-300">{escaner.assigned_name}</TableCell>
                           <TableCell className="text-right space-x-1 space-y-1">
-                            <Button variant="outline" onClick={() => window.open(`/scanner/${escaner.uuid}`, "_blank")} size="sm" title="Ver enlace de escáner">
+                            <Button variant="outline" onClick={() => copyToClipboard(`${window.location.origin}/scanner/${escaner.uuid}`)} size="sm" title="Copiar enlace de escaner">
                               <LinkIcon className="h-4 w-4" />
-                              <span className="sr-only">Ver enlace de escáner</span>
+                              <span className="sr-only">Copiar enlace de escaner</span>
                             </Button>
                             <Button variant="outline" onClick={() => handleEditEmpleado(escaner)} size="sm" title="Editar escáner">
                               <PencilIcon className="h-4 w-4" />
@@ -466,6 +486,8 @@ export default function EventDetails() {
             </Card>
           </TabsContent>
         </Tabs>
+        {/* Mensaje de copiado simple */}
+        {copyMessage && <div className="fixed bottom-4 right-4 bg-green-400 text-black px-4 py-2 rounded-md shadow-lg">{copyMessage}</div>}
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="bg-gray-800 text-white">

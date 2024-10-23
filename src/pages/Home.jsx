@@ -74,7 +74,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className=" flex flex-col min-h-screen w-full overflow-hidden bg-gray-900">
+    <div className="flex flex-col min-h-screen w-screen overflow-hidden bg-gray-900">
       <canvas ref={canvasRef} className="absolute inset-0 z-0" />
       <div className="relative z-10 flex-grow">
         <main className="container mx-auto px-4">
