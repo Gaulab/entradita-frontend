@@ -257,8 +257,8 @@ export default function EventDetails() {
   const paginatedTickets = filteredTickets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
-    <div className="space-y-6 pb-8 bg-gray-900 text-white p-4 w-full min-h-screen">
-      <div className="max-w-6xl mx-auto">
+    <div className="flex justify-center space-y-6 pb-8 bg-gray-900 text-white p-4 w-full min-h-screen">
+      <div className="max-w-6xl w-full mx-4">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
           <Button onClick={() => navigate("/dashboard")} variant="outline" className="w-full sm:w-auto bg-gray-800 text-white hover:bg-gray-700">
             <ArrowLeftIcon className="mr-2 h-4 w-4" /> Volver al Dashboard
@@ -342,7 +342,7 @@ export default function EventDetails() {
                           <TableCell className="text-gray-300">{ticket.owner_name + " " + ticket.owner_lastname}</TableCell>
                           <TableCell className="text-gray-300 hidden sm:table-cell">{ticket.owner_dni}</TableCell>
                           <TableCell className="text-gray-300 hidden sm:table-cell">{ticket.seller_name === "Unknown" ? "Organizer" : ticket.seller_name}</TableCell>
-                          <TableCell className="text-right space-x-2">
+                          <TableCell className="text-right space-x-2 space-y-2">
                             <Button variant="outline" onClick={() => handleViewTicket(ticket.uuid)} size="sm" title="Ver ticket">
                               <EyeIcon className="h-4 w-4" />
                               <span className="sr-only">Ver ticket</span>
@@ -398,7 +398,7 @@ export default function EventDetails() {
                           <TableCell className="text-gray-300">{vendedor.assigned_name}</TableCell>
                           <TableCell className="text-gray-300 hidden sm:table-cell">{vendedor.seller_capacity !== null ? vendedor.seller_capacity : "sin límite"}</TableCell>
                           <TableCell className="text-gray-300 hidden sm:table-cell">{vendedor.ticket_counter}</TableCell>
-                          <TableCell className="text-right space-x-2">
+                          <TableCell className="text-right space-x-2 space-y-2">
                             <Button variant="outline" onClick={() => window.open(`/vendedor/${vendedor.uuid}`, "_blank")} size="sm" title="Ver enlace de vendedor">
                               <LinkIcon className="h-4 w-4" />
                               <span className="sr-only">Ver enlace de vendedor</span>
