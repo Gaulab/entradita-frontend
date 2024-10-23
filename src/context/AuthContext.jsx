@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
 
     const loginUser = async (e) => {
         e.preventDefault();
-        const response = await fetch('http://127.0.0.1:8000/auth/token/', {
+        const response = await fetch(`https://entraditaback-production.up.railway.app/auth/token/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     const updateToken = async () => {
-        const response = await fetch('http://127.0.0.1:8000/auth/token/refresh/', {
+        const response = await fetch(`https://entraditaback-production.up.railway.app/auth/token/refresh/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

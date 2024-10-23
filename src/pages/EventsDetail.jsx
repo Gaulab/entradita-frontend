@@ -38,7 +38,7 @@ export default function EventDetails() {
   useEffect(() => {
     const getEventData = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/v1/events/${id}/details`, {
+        const response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/events/${id}/details`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ export default function EventDetails() {
 
   const handleConfirmGenerarEmpleado = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/employees/`, {
+      const response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/employees/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -134,7 +134,7 @@ export default function EventDetails() {
 
   const handleConfirmEditEmpleado = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/employees/${editingEmpleado.id}/`, {
+      const response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/employees/${editingEmpleado.id}/`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -179,7 +179,7 @@ export default function EventDetails() {
     try {
       let response;
       if (itemToDelete.type === 'ticket') {
-        response = await fetch(`http://localhost:8000/api/v1/tickets/${itemToDelete.id}/`, {
+        response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/tickets/${itemToDelete.id}/`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
@@ -191,7 +191,7 @@ export default function EventDetails() {
           // Disable the employee
           console.log("Disabling employee");
           console.log(itemToDelete);
-          response = await fetch(`http://localhost:8000/api/v1/employees/${itemToDelete.id}/`, {
+          response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/employees/${itemToDelete.id}/`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json',
@@ -203,7 +203,7 @@ export default function EventDetails() {
           console.log("Deleting employee");
           console.log(itemToDelete);
 
-          response = await fetch(`http://localhost:8000/api/v1/employees/${itemToDelete.id}/`, {
+          response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/employees/${itemToDelete.id}/`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json',

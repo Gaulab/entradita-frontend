@@ -21,7 +21,7 @@ export default function EditEvent() {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/v1/events/${id}/`, {
+        const response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/events/${id}/`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ export default function EditEvent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/events/${id}/`, {
+      const response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/events/${id}/`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ export default function EditEvent() {
     }
 
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/events/${id}/`, {
+      const response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/events/${id}/`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

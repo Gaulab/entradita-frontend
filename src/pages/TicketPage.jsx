@@ -16,7 +16,7 @@ export default function TicketPage() {
         if (ticket_uuid) {
             const getdata = async () => {
                 try {
-                    const response = await fetch(`http://localhost:8000/api/v1/tickets/public/${ticket_uuid}/`, {
+                    const response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/tickets/public/${ticket_uuid}/`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',

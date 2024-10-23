@@ -17,7 +17,7 @@ export default function CreateTicket() {
     e.preventDefault();
     
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/tickets/`, {
+      const response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/tickets/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

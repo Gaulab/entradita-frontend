@@ -41,7 +41,7 @@ const ScannerView = ({ uuid }) => {
     const fecthScanner = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/api/v1/employees/scanner/${uuid}/info/`,
+          `https://entraditaback-production.up.railway.app/api/v1/employees/scanner/${uuid}/info/`,
           {
             method: "GET",
             headers: {
@@ -76,7 +76,7 @@ const ScannerView = ({ uuid }) => {
       // console.log("resultado escaneo",result[0].rawValue);
       setEscaneando(false);
       try {
-        const response = await fetch(`http://localhost:8000/api/v1/tickets/scan/${result[0].rawValue}/`,
+        const response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/tickets/scan/${result[0].rawValue}/`,
           {
             method: "PUT",
             headers: {
@@ -124,7 +124,7 @@ const ScannerView = ({ uuid }) => {
     setEscaneando(false);
     setError(""); // Reiniciar el error antes de hacer la solicitud
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/tickets/scan/dni/${dni}/`, {
+      const response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/tickets/scan/dni/${dni}/`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -163,7 +163,7 @@ const ScannerView = ({ uuid }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/events/${eventId}/check-password/`,
+        `https://entraditaback-production.up.railway.app/api/v1/events/${eventId}/check-password/`,
         {
           method: "POST",
           headers: {
