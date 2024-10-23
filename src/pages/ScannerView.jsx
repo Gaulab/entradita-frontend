@@ -204,7 +204,7 @@ const ScannerView = ({ uuid }) => {
     }
 
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
+      <div className="flex items-center justify-center h-screen bg-gray-900 text-white w-screen">
         <Card className="bg-gray-800 border-gray-700 p-6 max-w-md w-full">
           <CardHeader>
             <CardTitle className="text-white text-xl">
@@ -235,7 +235,7 @@ const ScannerView = ({ uuid }) => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900 p-4">
+    <div className="flex items-center justify-center min-h-screen bg-gray-900 p-4 w-screen">
       <Card className="w-full max-w-md bg-gray-800 border-gray-700">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center text-white">
