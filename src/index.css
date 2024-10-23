@@ -30,9 +30,10 @@ body {
   margin: 0;
   /* display: flex; */
   place-items: center;
-  min-width: 320px;
+  padding: 0%;
   width: 100%;
   min-height: 100vh;
+  min-width: 100vw;
 }
 
 h1 {
