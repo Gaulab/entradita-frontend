@@ -233,7 +233,7 @@ export default function VendedorView({ uuid }) {
 
   return (
     <div className="flex justify-center pb-8 bg-gray-900 text-white pt-4 min-h-screen w-screen">
-      <div className="max-w-6xl w-full mx-auto">
+      <div className="max-w-6xl w-full mx-2">
         <Card className="bg-gray-800 border-gray-700 ">
           <CardHeader>
             <CardTitle className="text-white text-2xl">
