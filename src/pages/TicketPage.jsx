@@ -48,10 +48,13 @@ export default function TicketPage() {
         img.onload = () => {
             // Increase the size of the canvas for better resolution
             const scale = 4;
-            canvas.width = img.width * scale;
-            canvas.height = img.height * scale;
+            const borderSize = 20; // Size of the white border
+            canvas.width = (img.width + borderSize * 2) * scale;
+            canvas.height = (img.height + borderSize * 2) * scale;
             ctx.scale(scale, scale);
-            ctx.drawImage(img, 0, 0);
+            ctx.fillStyle = 'white'; // Set the border color to white
+            ctx.fillRect(0, 0, canvas.width, canvas.height); // Draw the white border
+            ctx.drawImage(img, borderSize, borderSize);
             const pngFile = canvas.toDataURL('image/png');
             const downloadLink = document.createElement('a');
             downloadLink.download = `ticket-qr-${ticket_uuid}.png`;

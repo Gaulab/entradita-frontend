@@ -589,7 +589,7 @@ export default function EventDetails() {
                 <DialogDescription>
                   {itemToDelete?.status === true
                     ? `¿Estás seguro de que deseas deshabilitar este ${itemToDelete?.type}? Los tickets escaneados mantendrán su estado.`
-                    : `¿Estás seguro de que deseas eliminar este ${itemToDelete?.type}? Esta acción eliminará la información del empleado.`
+                    : `¿Estás seguro de que deseas eliminar este ${itemToDelete?.type}?`
                   }
                 </DialogDescription>
               }
