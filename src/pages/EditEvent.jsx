@@ -102,7 +102,7 @@ export default function EditEvent() {
   };
 
   if (!event) {
-    return <div className="text-white">Cargando...</div>;
+    return <div className="text-white w-screen">Cargando...</div>;
   }
 
   return (

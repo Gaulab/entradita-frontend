@@ -197,7 +197,7 @@ const ScannerView = ({ uuid }) => {
   if (!isPasswordCorrect) {
     if (!eventId) {
       return (
-        <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
+        <div className="flex items-center justify-center h-screen bg-gray-900 text-white w-screen">
           Cargando...
         </div>
       );

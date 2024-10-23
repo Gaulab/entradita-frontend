@@ -64,7 +64,7 @@ export default function TicketPage() {
         img.src = `data:image/svg+xml;base64,${btoa(svgData)}`;
     };
 
-    if (loading) return <div className="flex justify-center items-center min-h-screen bg-gray-900"><div className="text-white">Cargando...</div></div>;
+    if (loading) return <div className="flex justify-center items-center min-h-screen bg-gray-900 w-screen"><div className="text-white">Cargando...</div></div>;
     if (error) return <div className="flex justify-center items-center min-h-screen bg-gray-900"><div className="text-red-500">Error: {error}</div></div>;
 
     return (
