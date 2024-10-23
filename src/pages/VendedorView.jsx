@@ -166,7 +166,7 @@ export default function VendedorView({ uuid }) {
 
         return (
             <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
-                <Card className="bg-gray-800 border-gray-700 p-6 max-w-md w-full">
+                <Card className="bg-gray-800 border-gray-700 p-6 max-w-md w-full mx-4">
                     <CardHeader>
                         <CardTitle className="text-white text-xl">Ingrese la contraseña del evento</CardTitle>
                     </CardHeader>
@@ -189,7 +189,7 @@ export default function VendedorView({ uuid }) {
     }
 
     return (
-        <div className="space-y-6 pb-8 bg-gray-900 text-white p-4 w-full min-h-screen">
+        <div className="space-y-6 pb-8 bg-gray-900 text-white p-4 w-full min-h-screen w-full">
             <div className='max-w-6xl mx-auto'>
                 <Card className="bg-gray-800 border-gray-700">
                     <CardHeader>
