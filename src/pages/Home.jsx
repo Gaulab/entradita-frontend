@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "../components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
-import { QrCode, Zap, Users, Mail, Phone } from 'lucide-react';
+import { QrCode, Zap, Users, Mail, MessageSquareText } from 'lucide-react';
 import PropTypes from 'prop-types'; // Importar PropTypes
 
 export default function Home() {
@@ -74,7 +74,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="relative flex flex-col min-h-screen w-full overflow-hidden bg-gray-900">
+    <div className=" flex flex-col min-h-screen w-full overflow-hidden bg-gray-900">
       <canvas ref={canvasRef} className="absolute inset-0 z-0" />
       <div className="relative z-10 flex-grow">
         <main className="container mx-auto px-4">
@@ -130,12 +130,8 @@ export default function Home() {
               <p className="text-lg mb-4 text-gray-300">¿Tienes preguntas? Estamos aquí para ayudarte.</p>
               <div className="flex  justify-center space-x-4">
                 <div className="flex items-center text-white">
-                  <Mail className="h-6 w-6 mr-2" />
-                  <span>gaulabcontact@gmail.com</span>
-                </div>
-                <div className="flex items-center text-white">
-                  <Phone className="h-6 w-6 mr-2" />
-                  <span>+543482586525</span>
+                  <MessageSquareText className="h-6 w-6 mr-2" />
+                  <span>+543482586525 whatsapp</span>
                 </div>
               </div>
             </section>
