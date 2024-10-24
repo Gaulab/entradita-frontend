@@ -13,13 +13,14 @@ import TicketPage from './pages/TicketPage';
 import VendorView from './pages/VendedorView';
 import CreateTicketBySeller from './pages/CreateTicektBySeller';
 import ScannerView from './pages/ScannerView';
-
+import Contact from './pages/Contact';
 function App() {
   return (
     <Router>
         <Routes>
           {/* Rutas públicas */}
           <Route path="/" element={<Home />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<AuthProvider><Login /></AuthProvider>} />
           <Route path="/ticket/:ticket_uuid" element={<TicketPage />} />
           <Route path="/vendedor/:uuid" element={<VendedorWrapper />} />

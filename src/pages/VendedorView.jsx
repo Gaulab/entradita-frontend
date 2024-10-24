@@ -251,7 +251,7 @@ export default function VendedorView({ uuid }) {
                         {ticket.owner_name} {ticket.owner_lastname}
                       </TableCell>
                       <TableCell className="text-gray-300 hidden md:table-cell">{ticket.owner_dni}</TableCell>
-                      <TableCell className="text-right space-x-2">
+                      <TableCell className="text-right space-x-1 space-y-1">
                         <Button variant="outline" onClick={() => copyToClipboard(`${window.location.origin}/ticket/${ticket.uuid}`)} size="sm" title="Copiar enlace de ticket">
                           <LinkIcon className="h-4 w-4" />
                           <span className="sr-only">Copiar enlace de ticket</span>
@@ -277,17 +277,17 @@ export default function VendedorView({ uuid }) {
        {/* Mensaje de copiado simple */}
        {copyMessage && <div className="fixed bottom-4 right-4 bg-green-400 text-black px-4 py-2 rounded-md shadow-lg">{copyMessage}</div>}
 
-      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <DialogContent className="bg-gray-800 text-white">
+      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen} className="">
+        <DialogContent className="bg-gray-800 text-white ">
           <DialogHeader>
             <DialogTitle>Confirmar eliminación de ticket</DialogTitle>
             <DialogDescription>¿Estás seguro de que deseas eliminar este ticket? Esta acción no se puede deshacer.</DialogDescription>
           </DialogHeader>
-          <DialogFooter>
-            <Button onClick={() => setDeleteConfirmOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600">
+          <DialogFooter className=" space-y-2">
+            <Button onClick={() => setDeleteConfirmOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600 mt-2">
               Cancelar
             </Button>
-            <Button onClick={confirmDeleteTicket} variant="destructive">
+            <Button onClick={confirmDeleteTicket} variant="destructive"> 
               Eliminar
             </Button>
           </DialogFooter>
