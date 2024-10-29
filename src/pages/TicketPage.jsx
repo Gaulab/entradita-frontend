@@ -108,7 +108,7 @@ export default function TicketPage() {
                     <Alert variant="destructive" className="bg-red-900 border-red-700">
                         <AlertTriangle className="h-4 w-4" />
                         <AlertDescription className="text-sm">
-                            No compartas esta entrada con nadie. Es única y personal. <br /> Podes presentarte en la entrada del evento con esta misma página o podes descargar el codigo QR por si no tenes internet.
+                            No compartas esta entrada con nadie. Es única y personal. <br /> Podes presentarte en la entrada del evento con esta misma página web o podes descargar el codigo QR por si no tenes internet.
                         </AlertDescription>
                     </Alert>
                 </CardContent>
