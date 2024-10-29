@@ -23,19 +23,30 @@ export default function VendedorView({ uuid }) {
   const navigate = useNavigate();
   const [copyMessage, setCopyMessage] = useState("");
 
-  const copyToClipboard = useCallback((text) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
+  const shareTicketLink = useCallback((link) => {
+    if (navigator.share) {
+      navigator.share({
+        title: "Compartir Ticket",
+        text: "Aquí está el enlace de tu ticket:",
+        url: link,
+      }).then(() => {
+        console.log("Compartido exitosamente");
+      }).catch((err) => {
+        console.error("Error al compartir:", err);
+      });
+    } else {
+      // Copia al portapapeles como alternativa
+      navigator.clipboard.writeText(link).then(() => {
         setCopyMessage("Copiado");
-        setTimeout(() => setCopyMessage(""), 2000); // El mensaje desaparece después de 2 segundos
-      })
-      .catch((err) => {
+        setTimeout(() => setCopyMessage(""), 2000);
+      }).catch((err) => {
         console.error("Error al copiar: ", err);
         setCopyMessage("Error al copiar");
         setTimeout(() => setCopyMessage(""), 2000);
       });
+    }
   }, []);
+  
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -252,10 +263,11 @@ export default function VendedorView({ uuid }) {
                       </TableCell>
                       <TableCell className="text-gray-300 hidden md:table-cell">{ticket.owner_dni}</TableCell>
                       <TableCell className="text-right space-x-1 space-y-1">
-                        <Button variant="outline" onClick={() => copyToClipboard(`${window.location.origin}/ticket/${ticket.uuid}`)} size="sm" title="Copiar enlace de ticket">
+                        <Button variant="outline" onClick={() => shareTicketLink(`${window.location.origin}/ticket/${ticket.uuid}`)} size="sm" title="Compartir enlace de ticket">
                           <LinkIcon className="h-4 w-4" />
-                          <span className="sr-only">Copiar enlace de ticket</span>
+                          <span className="sr-only">Compartir enlace de ticket</span>
                         </Button>
+
                         <Button variant="outline" onClick={() => handleViewTicket(ticket.uuid)} size="sm" title="Ver ticket">
                           <EyeIcon className="h-4 w-4" />
                           <span className="sr-only">Ver ticket</span>
@@ -274,8 +286,8 @@ export default function VendedorView({ uuid }) {
           </CardContent>
         </Card>
       </div>
-       {/* Mensaje de copiado simple */}
-       {copyMessage && <div className="fixed bottom-4 right-4 bg-green-400 text-black px-4 py-2 rounded-md shadow-lg">{copyMessage}</div>}
+      {/* Mensaje de copiado simple */}
+      {copyMessage && <div className="fixed bottom-4 right-4 bg-green-400 text-black px-4 py-2 rounded-md shadow-lg">{copyMessage}</div>}
 
       <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen} className="">
         <DialogContent className="bg-gray-800 text-white ">
@@ -287,7 +299,7 @@ export default function VendedorView({ uuid }) {
             <Button onClick={() => setDeleteConfirmOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600 mt-2">
               Cancelar
             </Button>
-            <Button onClick={confirmDeleteTicket} variant="destructive"> 
+            <Button onClick={confirmDeleteTicket} variant="destructive">
               Eliminar
             </Button>
           </DialogFooter>
