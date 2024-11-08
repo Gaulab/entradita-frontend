@@ -22,6 +22,7 @@ export default function VendedorView({ uuid }) {
   const [ticketToDelete, setTicketToDelete] = useState(null);
   const navigate = useNavigate();
   const [copyMessage, setCopyMessage] = useState("");
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   const shareTicketLink = useCallback((link) => {
     if (navigator.share) {
@@ -68,7 +69,7 @@ export default function VendedorView({ uuid }) {
 
     const fetchTickets = async () => {
       try {
-        const response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/employees/seller/${uuid}/info/`, {
+        const response = await fetch(`${apiUrl}/api/v1/employees/seller/${uuid}/info/`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -104,7 +105,7 @@ export default function VendedorView({ uuid }) {
     }
 
     try {
-      const response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/events/${eventId}/check-password/`, {
+      const response = await fetch(`${apiUrl}/api/v1/events/${eventId}/check-password/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -152,7 +153,7 @@ export default function VendedorView({ uuid }) {
     if (!ticketToDelete) return;
 
     try {
-      const response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/employees/seller/${uuid}/delete-ticket/${ticketToDelete.id}/`, {
+      const response = await fetch(`${apiUrl}/api/v1/employees/seller/${uuid}/delete-ticket/${ticketToDelete.id}/`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

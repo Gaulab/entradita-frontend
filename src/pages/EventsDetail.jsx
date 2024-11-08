@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect, useCallback } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
@@ -14,6 +14,7 @@ export default function EventDetails() {
   const { id } = useParams();
   const { authToken, logoutUser } = useContext(AuthContext);
   const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   const [event, setEvent] = useState({});
   const [tickets, setTickets] = useState([]);
@@ -54,11 +55,11 @@ export default function EventDetails() {
   useEffect(() => {
     const getEventData = async () => {
       try {
-        const response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/events/${id}/details`, {
+        const response = await fetch(`${apiUrl}/api/v1/events/${id}/details`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken.access}`,
+            "Authorization": `Bearer ${authToken.access}`,
           },
         });
         const data = await response.json();
@@ -104,11 +105,11 @@ export default function EventDetails() {
 
   const handleConfirmGenerarEmpleado = useCallback(async () => {
     try {
-      const response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/employees/`, {
+      const response = await fetch(`${apiUrl}/api/v1/employees/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken.access}`,
+          "Authorization": `Bearer ${authToken.access}`,
         },
         body: JSON.stringify({
           is_seller: isSellerEmpleado,
@@ -150,11 +151,11 @@ export default function EventDetails() {
 
   const handleConfirmEditEmpleado = useCallback(async () => {
     try {
-      const response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/employees/${editingEmpleado.id}/`, {
+      const response = await fetch(`${apiUrl}/api/v1/employees/${editingEmpleado.id}/`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken.access}`,
+          "Authorization": `Bearer ${authToken.access}`,
         },
         body: JSON.stringify({
           assigned_name: newEmpleadoName,
@@ -199,11 +200,11 @@ export default function EventDetails() {
     try {
       let response;
       if (itemToDelete.type === "ticket") {
-        response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/tickets/${itemToDelete.id}/`, {
+        response = await fetch(`${apiUrl}/api/v1/tickets/${itemToDelete.id}/`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken.access}`,
+            "Authorization": `Bearer ${authToken.access}`,
           },
         });
       } else {
@@ -211,11 +212,11 @@ export default function EventDetails() {
           // Disable the employee
           console.log("Disabling employee");
           console.log(itemToDelete);
-          response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/employees/${itemToDelete.id}/`, {
+          response = await fetch(`${apiUrl}/api/v1/employees/${itemToDelete.id}/`, {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${authToken.access}`,
+              "Authorization": `Bearer ${authToken.access}`,
             },
           });
         } else {
@@ -223,11 +224,11 @@ export default function EventDetails() {
           console.log("Deleting employee");
           console.log(itemToDelete);
 
-          response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/employees/${itemToDelete.id}/`, {
+          response = await fetch(`${apiUrl}/api/v1/employees/${itemToDelete.id}/`, {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${authToken.access}`,
+              "Authorization": `Bearer ${authToken.access}`,
             },
           });
         }

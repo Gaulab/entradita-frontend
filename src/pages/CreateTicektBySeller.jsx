@@ -10,12 +10,13 @@ export default function CreateTicketBySeller() {
   const { uuid } = useParams(); // Cambiado a 'uuid' para el vendedor
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     try {
-      const response = await fetch(`https://entraditaback-production.up.railway.app/api/v1/employees/seller/${uuid}/create-ticket/`, { 
+      const response = await fetch(`${apiUrl}/api/v1/employees/seller/${uuid}/create-ticket/`, { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json', 

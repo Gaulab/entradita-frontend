@@ -9,11 +9,12 @@ import AuthContext from '../context/AuthContext';
 export default function Dashboard() {
   const { logoutUser, authToken } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const getEvents = async () => {
       try {
-        const response = await fetch('https://entraditaback-production.up.railway.app/api/v1/events/', {
+        const response = await fetch(`${apiUrl}/api/v1/events/`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

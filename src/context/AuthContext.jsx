@@ -11,12 +11,13 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(() => localStorage.getItem('authTokens') ? jwtDecode(localStorage.getItem('authTokens')) : null);
     const [authToken, setAuthToken] = useState(() => localStorage.getItem('authTokens') ? JSON.parse(localStorage.getItem('authTokens')) : null);
     const [loading, setLoading] = useState(true);
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     const navigate = useNavigate();
 
     const loginUser = async (e) => {
         e.preventDefault();
-        const response = await fetch(`https://entraditaback-production.up.railway.app/auth/token/`, {
+        const response = await fetch(`${apiUrl}/auth/token/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -43,7 +44,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     const updateToken = async () => {
-        const response = await fetch(`https://entraditaback-production.up.railway.app/auth/token/refresh/`, {
+        const response = await fetch(`${apiUrl}/auth/token/refresh/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
