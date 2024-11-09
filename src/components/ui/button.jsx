@@ -1,9 +1,9 @@
 import * as React from "react"
-import PropTypes from "prop-types" // Importa PropTypes
+import PropTypes from "prop-types"
 import { Slot } from "@radix-ui/react-slot"
 import { cva } from "class-variance-authority"
-
 import { cn } from "@/lib/utils"
+import { Link } from "react-router-dom"
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
@@ -19,6 +19,9 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        entraditaPrimary: "bg-blue-600 text-gray-300 hover:bg-blue-500 hover:text-gray-200",
+        entraditaSecondary: "bg-gray-900 border border-gray-700 text-gray-300 hover:bg-blue-950 hover:text-gray-200",
+        entraditaTertiary: "bg-gray-800 text-gray-300 border border-gray-700 hover:text-gray-200 hover:border-gray-700",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -34,8 +37,19 @@ const buttonVariants = cva(
   }
 )
 
-const Button = React.forwardRef(({ className, variant, size, asChild = false, ...props }, ref) => {
+const Button = React.forwardRef(({ className, variant, size, asChild = false, to, ...props }, ref) => {
   const Comp = asChild ? Slot : "button"
+  
+  if (to) {
+    return (
+      <Link
+        to={to}
+        className={cn(buttonVariants({ variant, size, className }))}
+        {...props}
+      />
+    )
+  }
+
   return (
     <Comp
       className={cn(buttonVariants({ variant, size, className }))}
@@ -44,14 +58,15 @@ const Button = React.forwardRef(({ className, variant, size, asChild = false, ..
     />
   )
 })
+
 Button.displayName = "Button"
 
-// Agrega la validación de PropTypes
 Button.propTypes = {
   className: PropTypes.string,
-  variant: PropTypes.oneOf(['default', 'destructive', 'outline', 'secondary', 'ghost', 'link']),
+  variant: PropTypes.oneOf(['default', 'destructive', 'outline', 'secondary', 'ghost', 'link', 'entraditaPrimary', 'entraditaSecondary', 'entraditaTertiary']),
   size: PropTypes.oneOf(['default', 'sm', 'lg', 'icon']),
   asChild: PropTypes.bool,
+  to: PropTypes.string,
 }
 
 export { Button, buttonVariants }

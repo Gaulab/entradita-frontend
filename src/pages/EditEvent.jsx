@@ -63,7 +63,7 @@ export default function EditEvent() {
         }),
       });
       if (response.ok) {
-        navigate(`/event-details/${id}`);
+        navigate(`/event/${id}/details`);
       } else {
         const data = await response.json();
         setError('Error al actualizar el evento: ' + JSON.stringify(data));

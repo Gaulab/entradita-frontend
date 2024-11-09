@@ -1,47 +1,44 @@
-import { useState, useContext, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+// Dependencies
+import { useState, useContext, useEffect } from "react";
+import { Link } from "react-router-dom";
+// Context
+import AuthContext from "../context/AuthContext";
+// Components
 import { Button } from "../components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
-import { LogOutIcon, PlusIcon } from "lucide-react";
-import AuthContext from '../context/AuthContext';
+// Icons
+import { LogOutIcon, PlusIcon, Eye } from "lucide-react";
+// API
+import { getEvents } from "../api/eventApi";
 
 export default function Dashboard() {
   const { logoutUser, authToken } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
-  const apiUrl = import.meta.env.VITE_API_URL;
 
+  // Get events on component mount
   useEffect(() => {
-    const getEvents = async () => {
+    const fetchEvents = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/v1/events/`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authToken.access}`
-          },
-        });
-        const data = await response.json();
-        // console.log(data);
-        if (response.ok) {
-          setEvents(data);
-        } else {
-          throw new Error('Error al obtener eventos');
-        }
+        const data = await getEvents(authToken.access); // Usar la función importada
+        setEvents(data); // Actualiza el estado con los eventos obtenidos
       } catch (error) {
-        console.error('Error:', error);
-        alert('Error al obtener eventos');
+        console.error("Error al obtener eventos:", error);
+        alert("Error al obtener eventos");
       }
     };
-    getEvents();
-  }, [authToken.access]);
+
+    if (authToken.access) {
+      fetchEvents(); // Llamar a la función para obtener eventos
+    }
+  }, [authToken.access]); // Dependencia del authToken para que se recargue si cambia
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 p-4 md:p-8 w-full">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen w-screen p-4 bg-gray-900 text-gray-100 ">
+      <div className="max-w-4xl mx-auto  w-full">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Dashboard</h1>
-          <Button onClick={logoutUser} variant="outline" className="bg-gray-800 text-white hover:bg-gray-700">
+          <Button onClick={logoutUser} variant="entraditaTertiary" >
             <LogOutIcon className="mr-2 h-4 w-4" /> Cerrar Sesión
           </Button>
         </div>
@@ -49,22 +46,21 @@ export default function Dashboard() {
         <Card className="bg-gray-800 border-gray-700 mb-8">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <div>
-              <CardTitle className="text-xl text-white">Resumen de Eventos</CardTitle>
+              <CardTitle className="text-xl text-white">Resumen de eventos</CardTitle>
               <CardDescription className="text-gray-400">Vista general de tus eventos actuales</CardDescription>
             </div>
-            <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white">
-              <Link to="/create-event">
-                <PlusIcon className="mr-2 h-4 w-4" /> Crear Nuevo Evento
-              </Link>
-            </Button>
           </CardHeader>
+
           <CardContent>
+            <Button to="/create-event" variant="entraditaSecondary">
+              <PlusIcon className="mr-1 h-4 w-4" /> New event
+            </Button>
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="border-gray-700">
-                    <TableHead className="text-gray-300">Nombre del Evento</TableHead>
-                    <TableHead className="text-gray-300 hidden md:table-cell">Fecha</TableHead>
+                  <TableRow className="border-gray-700 text-center">
+                    <TableHead className="text-gray-300 ">Nombre</TableHead>
+                    <TableHead className="text-gray-300 hidden sm:table-cell">Fecha</TableHead>
                     <TableHead className="text-gray-300 hidden md:table-cell">Ubicación</TableHead>
                     <TableHead className="text-gray-300 hidden md:table-cell">Tickets Vendidos</TableHead>
                     <TableHead className="text-gray-300">Acciones</TableHead>
@@ -72,14 +68,14 @@ export default function Dashboard() {
                 </TableHeader>
                 <TableBody>
                   {events.map((event) => (
-                    <TableRow key={event.id} className="border-gray-700">
-                      <TableCell className="font-medium text-white">{event.name}</TableCell>
-                      <TableCell className="text-gray-300 hidden md:table-cell">{event.date}</TableCell>
+                    <TableRow key={event.id} className="border-gray-700 text-center">
+                      <TableCell className="text-white">{event.name}</TableCell>
+                      <TableCell className="text-gray-300 hidden sm:table-cell">{event.date}</TableCell>
                       <TableCell className="text-gray-300 hidden md:table-cell">{event.place}</TableCell>
                       <TableCell className="text-gray-300 hidden md:table-cell">{event.tickets_counter}</TableCell>
                       <TableCell>
-                        <Button asChild variant="link" className="p-0 text-blue-400 hover:text-blue-300">
-                          <Link to={`/event-details/${event.id}`} state={{ event }}>Ver Detalles</Link>
+                        <Button variant="entraditaSecondary" to={`/event/${event.id}/details/`}>
+                            <Eye className="mr-2 h-4 w-4" /> detalles
                         </Button>
                       </TableCell>
                     </TableRow>
