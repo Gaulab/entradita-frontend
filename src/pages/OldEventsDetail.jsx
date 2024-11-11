@@ -9,8 +9,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { PlusIcon, SearchIcon, ArrowLeftIcon, EditIcon, EyeIcon, Trash2Icon, PencilIcon, TicketX, LinkIcon } from "lucide-react";
 import { Label } from "../components/ui/label";
 import AuthContext from "../context/AuthContext";
+// API
+import { getEventDetails } from "../api/eventApi";
 
-export default function EventDetails() {
+export default function OldEventDetails() {
   const { id } = useParams();
   const { authToken, logoutUser } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -55,31 +57,19 @@ export default function EventDetails() {
   useEffect(() => {
     const getEventData = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/v1/events/${id}/details`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${authToken.access}`,
-          },
-        });
-        const data = await response.json();
+        const data = await getEventDetails(id, authToken.access);
         console.log(data);
-        if (response.status === 200) {
-          setEvent(data.event);
-          setTickets(data.tickets);
-          setVendedores(data.vendedores);
-          setEscaners(data.escaners);
-        } else {
-          alert("Error al obtener datos del evento");
-          // logoutUser();
-        }
+        setEvent(data.event);
+        setTickets(data.tickets);
+        setVendedores(data.vendedores);
+        setEscaners(data.escaners);
       } catch (error) {
-        console.error("Error fetching event data:", error);
-        alert("Error al obtener datos del evento");
+        console.error("Error fetching event data:", error.message);
+        alert(error.message);
       }
     };
     getEventData();
-  }, [reload, authToken.access, id, logoutUser]);
+  }, []);
 
   const handleEditEvent = () => {
     navigate(`/edit-event/${id}`);

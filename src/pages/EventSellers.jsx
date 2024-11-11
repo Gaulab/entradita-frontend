@@ -38,9 +38,9 @@ export default function EventSellers() {
           },
         });
         const data = await response.json();
-        console.log(data);
+        
         if (response.status === 200) {
-          setVendedores(data.vendors || []);
+          setVendedores(data.vendedores);
         } else {
           console.error("Error al obtener vendedores:", data);
           alert("Error al obtener vendedores");
@@ -208,15 +208,15 @@ export default function EventSellers() {
           </CardHeader>
           <CardContent>
             <Button onClick={handleGenerarEmpleado} className="mb-4 w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
-              <PlusIcon className="mr-2 h-4 w-4" /> Crear Nuevo Enlace para Vendedor
+              <PlusIcon className="mr-2 h-4 w-4" /> Nuevo Vendedor
             </Button>
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow className="border-gray-700">
-                    <TableHead className="text-gray-300">Nombre</TableHead>
-                    <TableHead className="text-gray-300 hidden sm:table-cell">Capacidad</TableHead>
-                    <TableHead className="text-gray-300 hidden sm:table-cell">Tickets Vendidos</TableHead>
+                    <TableHead className="text-gray-300 text-left">Nombre</TableHead>
+                    <TableHead className="text-gray-300 hidden sm:table-cell text-left">Capacidad</TableHead>
+                    <TableHead className="text-gray-300 hidden sm:table-cell text-left">Tickets Vendidos</TableHead>
                     <TableHead className="text-gray-300 text-right">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>

@@ -7,6 +7,8 @@ import { Alert, AlertDescription } from "../components/ui/alert";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "../components/ui/dialog";
 import { useState, useContext, useEffect } from 'react';
 import AuthContext from '../context/AuthContext';
+// API
+import { getEvent, updateEvent, deleteEvent } from '../api/eventApi';
 
 export default function EditEvent() {
   const { id } = useParams();
@@ -17,27 +19,15 @@ export default function EditEvent() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteConfirmationCode, setDeleteConfirmationCode] = useState('');
   const [userInputCode, setUserInputCode] = useState('');
-  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/v1/events/${id}/`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authToken.access}`
-          },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setEvent(data);
-          setDeleteConfirmationCode(generateConfirmationCode());
-        } else {
-          setError('Error al cargar el evento');
-        }
-      } catch {
-        setError('Error al cargar el evento');
+        const data = await getEvent(id, authToken.access);
+        setEvent(data);
+        setDeleteConfirmationCode(generateConfirmationCode());
+      } catch (error) {
+        setError(error.message);
       }
     };
 
@@ -47,34 +37,11 @@ export default function EditEvent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${apiUrl}/api/v1/events/${id}/`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken.access}`
-        },
-        body: JSON.stringify({
-          name: e.target.name.value,
-          date: e.target.date.value,
-          place: e.target.place.value,
-          capacity: e.target.capacity.value ? parseInt(e.target.capacity.value) : 0,
-          image_address: e.target.image_address.value,
-          password_employee: e.target.password_employee.value
-        }),
-      });
-      if (response.ok) {
-        navigate(`/event/${id}/details`);
-      } else {
-        const data = await response.json();
-        setError('Error al actualizar el evento: ' + JSON.stringify(data));
-      }
-    } catch {
-      setError('Error al actualizar el evento');
+      const data = await updateEvent(e, id, authToken.access);
+      navigate(`/event/${id}/details`);
+    } catch (error) {
+      setError(error.message);
     }
-  };
-
-  const generateConfirmationCode = () => {
-    return Math.random().toString(36).substring(2, 8).toUpperCase();
   };
 
   const handleDeleteEvent = async () => {
@@ -84,22 +51,15 @@ export default function EditEvent() {
     }
 
     try {
-      const response = await fetch(`${apiUrl}/api/v1/events/${id}/`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken.access}`
-        },
-      });
-      if (response.ok) {
-        navigate('/dashboard');
-      } else {
-        const data = await response.json();
-        setError('Error al eliminar el evento: ' + JSON.stringify(data));
-      }
+      const data = await deleteEvent(id, authToken.access);
+      navigate('/dashboard');
     } catch {
       setError('Error al eliminar el evento');
     }
+  };
+
+  const generateConfirmationCode = () => {
+    return Math.random().toString(36).substring(2, 8).toUpperCase();
   };
 
   if (!event) {

@@ -110,7 +110,7 @@ export default function EventTickets() {
 
   return (
     <div className="min-h-screen w-screen p-4 bg-gray-900 text-gray-100 flex justify-center space-y-6 pb-8   ">
-      <div className="max-w-4xl mx-auto w-full">
+      <div className="max-w-6xl mx-auto w-full">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
           <Button onClick={() => navigate(`/event/${id}/details/`)} variant="outline" className="w-full sm:w-auto bg-gray-800 text-white hover:bg-gray-700">
             <ArrowLeftIcon className="mr-2 h-4 w-4" /> Volver al Evento
@@ -125,7 +125,7 @@ export default function EventTickets() {
           <CardContent>
             <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
               <Button onClick={handleGenerarTicket} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
-                <PlusIcon className="mr-2 h-4 w-4" /> New ticket
+                <PlusIcon className="mr-2 h-4 w-4" />Nuevo ticket
               </Button>
               <div className="relative w-full sm:w-auto">
                 <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -141,7 +141,7 @@ export default function EventTickets() {
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="border-gray-700">
+                  <TableRow className="border-gray-700 text-left">
                     <TableHead className="text-gray-300 hidden sm:table-cell">ID</TableHead>
                     <TableHead className="text-gray-300">Nombre</TableHead>
                     <TableHead className="text-gray-300 hidden sm:table-cell">DNI</TableHead>
@@ -151,12 +151,12 @@ export default function EventTickets() {
                 </TableHeader>
                 <TableBody>
                   {paginatedTickets.map((ticket, index) => (
-                    <TableRow key={ticket.id} className="border-gray-700">
+                    <TableRow key={ticket.id} className="border-gray-700 text-left">
                       <TableCell className="font-medium text-white hidden sm:table-cell">{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
                       <TableCell className="text-gray-300">{ticket.owner_name + " " + ticket.owner_lastname}</TableCell>
                       <TableCell className="text-gray-300 hidden sm:table-cell">{ticket.owner_dni}</TableCell>
                       <TableCell className="text-gray-300 hidden sm:table-cell">{ticket.seller_name === "Unknown" ? "Organizer" : ticket.seller_name}</TableCell>
-                      <TableCell className="text-right space-x-1 space-y-1">
+                      <TableCell className="space-x-1 space-y-1 text-right">
                         <Button variant="outline" onClick={() => copyToClipboard(`${window.location.origin}/ticket/${ticket.uuid}`)} size="sm" title="Copiar enlace de ticket">
                           <LinkIcon className="h-4 w-4" />
                         </Button>

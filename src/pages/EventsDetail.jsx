@@ -5,12 +5,13 @@ import { Button } from "../components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { ArrowLeftIcon, EditIcon, Ticket, Users, ScanIcon } from "lucide-react";
 import AuthContext from "../context/AuthContext";
+// API
+import { getEventDetails } from "../api/eventApi";
 
 export default function EventDetails() {
   const { id } = useParams();
   const { authToken } = useContext(AuthContext);
   const navigate = useNavigate();
-  const apiUrl = import.meta.env.VITE_API_URL;
 
   const [event, setEvent] = useState({
     name: '',
@@ -23,26 +24,16 @@ export default function EventDetails() {
   useEffect(() => {
     const getEventData = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/v1/events/${id}/details`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${authToken.access}`,
-          },
-        });
-        const data = await response.json();
-        if (response.status === 200) {
-          setEvent(data.event);
-        } else {
-          alert("Error al obtener datos del evento");
-        }
+        const data = await getEventDetails(id, authToken.access);
+        setEvent(data.event);
       } catch (error) {
-        console.error("Error fetching event data:", error);
-        alert("Error al obtener datos del evento");
+        console.error("Error fetching event data:", error.message);
+        alert(error.message);
       }
     };
+
     getEventData();
-  }, [id, authToken.access, apiUrl]);
+  }, [id, authToken.access]);
 
   const handleEditEvent = () => {
     navigate(`/edit-event/${id}`);
@@ -50,7 +41,7 @@ export default function EventDetails() {
 
   return (
     <div className="flex justify-center space-y-6 pb-8 bg-gray-900 text-white p-4 min-h-screen w-screen">
-      <div className="w-full max-w-4xl mx-auto">
+      <div className="w-full max-w-6xl mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
           <Button onClick={() => navigate("/dashboard")} variant="outline" className="w-full sm:w-auto bg-gray-800 text-white hover:bg-gray-700">
             <ArrowLeftIcon className="mr-2 h-4 w-4" /> Volver al Dashboard
@@ -87,7 +78,7 @@ export default function EventDetails() {
           </Link>
           <Link to={`/event/${id}/sellers`} className="w-full">
             <Button className="w-full h-24 text-lg bg-green-600 hover:bg-green-700 text-gray-900">
-              <Users className="mr-2 h-6 w-6" /> Sellers
+              <Users className="mr-2 h-6 w-6" /> Vendedores
             </Button>
           </Link>
           <Link to={`/event/${id}/scanners`} className="w-full">

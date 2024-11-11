@@ -40,8 +40,9 @@ export default function EventScanners() {
           },
         });
         const data = await response.json();
+        
         if (response.status === 200) {
-          setEscaners(data.scanners || []);
+          setEscaners(data.escaners);
         } else {
           throw new Error(data.message || "Error al obtener escáneres");
         }
@@ -196,18 +197,18 @@ export default function EventScanners() {
 
         <Card className="bg-gray-800 border-gray-700">
           <CardHeader>
-            <CardTitle className="text-white">Enlaces para Escáneres</CardTitle>
+            <CardTitle className="text-white">Enlaces para Scanners</CardTitle>
             <CardDescription className="text-gray-400">Gestiona los enlaces para escáneres</CardDescription>
           </CardHeader>
           <CardContent>
             <Button onClick={handleGenerarEmpleado} className="mb-4 w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
-              <PlusIcon className="mr-2 h-4 w-4" /> Crear Nuevo Enlace para Escáner
+              <PlusIcon className="mr-2 h-4 w-4" /> Nuevo Scanner
             </Button>
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow className="border-gray-700">
-                    <TableHead className="text-gray-300">Nombre</TableHead>
+                    <TableHead className="text-gray-300 text-left">Nombre</TableHead>
                     <TableHead className="text-gray-300 text-right">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>

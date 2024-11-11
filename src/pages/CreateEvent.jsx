@@ -6,42 +6,23 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../co
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { useState, useContext } from 'react';
 import AuthContext from '../context/AuthContext';
+// API
+import { createEvent } from '../api/eventApi';
 
 export default function CreateEvent() {
   const { authToken, user } = useContext(AuthContext);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const apiUrl = import.meta.env.VITE_API_URL;
   
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${apiUrl}/api/v1/events/create/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken.access}`
-        },
-        body: JSON.stringify({
-          name: e.target.name.value,
-          date: e.target.date.value,
-          place: e.target.place.value,
-          capacity: e.target.capacity.value ? parseInt(e.target.capacity.value) : null,
-          image_address: e.target.image_address.value ? e.target.image_address.value : null,
-          password_employee: e.target.password_employee.value
-        }),
-      });
-      const data = await response.json();
-
-      if (response.status === 201) {
+      const data = await createEvent(e, authToken.access);
+      if (data) {
         navigate('/dashboard');
-      } else {
-        console.log(user);
-        console.log(data);
-        setError('Error al crear el evento: ' + JSON.stringify(data));
       }
-    } catch {
-      setError('Error al crear el evento');
+    } catch (error) {
+      setError(error.message);
     }
   };
 

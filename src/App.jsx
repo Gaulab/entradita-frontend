@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import CreateEvent from './pages/CreateEvent';
 import EventDetails from './pages/EventsDetail';
+import OldEventDetails from './pages/OldEventsDetail';
 import EventTickets from './pages/EventTickets';
 import EventSellers from './pages/EventSellers';
 import EventScanners from './pages/EventScanners';
@@ -34,6 +35,7 @@ function App() {
           <Route path="/dashboard" element={<AuthProvider><PrivateRoute><Dashboard /></PrivateRoute></AuthProvider>} />
           <Route path="/create-event" element={<AuthProvider><PrivateRoute><CreateEvent /></PrivateRoute></AuthProvider>} />
           <Route path="/event/:id/details" element={<AuthProvider><PrivateRoute><EventDetails /></PrivateRoute></AuthProvider>} />
+          {/* <Route path="/event/:id/details" element={<AuthProvider><PrivateRoute><OldEventDetails /></PrivateRoute></AuthProvider>} /> */}
           <Route path="/event/:id/tickets" element={<AuthProvider><PrivateRoute><EventTickets /></PrivateRoute></AuthProvider>} />
           <Route path="/event/:id/sellers" element={<AuthProvider><PrivateRoute><EventSellers /></PrivateRoute></AuthProvider>} />
           <Route path="/event/:id/scanners" element={<AuthProvider><PrivateRoute><EventScanners /></PrivateRoute></AuthProvider>} />

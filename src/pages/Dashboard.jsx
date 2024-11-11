@@ -24,7 +24,7 @@ export default function Dashboard() {
         setEvents(data); // Actualiza el estado con los eventos obtenidos
       } catch (error) {
         console.error("Error al obtener eventos:", error);
-        alert("Error al obtener eventos");
+        alert(error.message);
       }
     };
 
@@ -35,7 +35,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen w-screen p-4 bg-gray-900 text-gray-100 ">
-      <div className="max-w-4xl mx-auto  w-full">
+      <div className="max-w-6xl mx-auto  w-full">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <Button onClick={logoutUser} variant="entraditaTertiary" >
@@ -44,38 +44,35 @@ export default function Dashboard() {
         </div>
 
         <Card className="bg-gray-800 border-gray-700 mb-8">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <div>
-              <CardTitle className="text-xl text-white">Resumen de eventos</CardTitle>
-              <CardDescription className="text-gray-400">Vista general de tus eventos actuales</CardDescription>
-            </div>
+          <CardHeader>
+            <CardTitle className="text-white">Tus eventos</CardTitle>
+            <CardDescription className="text-gray-400">Administra tus eventos</CardDescription>
           </CardHeader>
-
           <CardContent>
-            <Button to="/create-event" variant="entraditaSecondary">
-              <PlusIcon className="mr-1 h-4 w-4" /> New event
+            <Button to="/create-event" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
+              <PlusIcon className="mr-1 h-4 w-4" />Nuevo evento
             </Button>
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="border-gray-700 text-center">
+                  <TableRow className="border-gray-700 text-left">
                     <TableHead className="text-gray-300 ">Nombre</TableHead>
                     <TableHead className="text-gray-300 hidden sm:table-cell">Fecha</TableHead>
                     <TableHead className="text-gray-300 hidden md:table-cell">Ubicación</TableHead>
                     <TableHead className="text-gray-300 hidden md:table-cell">Tickets Vendidos</TableHead>
-                    <TableHead className="text-gray-300">Acciones</TableHead>
+                    <TableHead className="text-gray-300 text-right">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {events.map((event) => (
-                    <TableRow key={event.id} className="border-gray-700 text-center">
+                    <TableRow key={event.id} className="border-gray-700 text-left">
                       <TableCell className="text-white">{event.name}</TableCell>
                       <TableCell className="text-gray-300 hidden sm:table-cell">{event.date}</TableCell>
                       <TableCell className="text-gray-300 hidden md:table-cell">{event.place}</TableCell>
                       <TableCell className="text-gray-300 hidden md:table-cell">{event.tickets_counter}</TableCell>
-                      <TableCell>
-                        <Button variant="entraditaSecondary" to={`/event/${event.id}/details/`}>
-                            <Eye className="mr-2 h-4 w-4" /> detalles
+                      <TableCell className="text-right">
+                        <Button variant="entraditaSecondary" to={`/event/${event.id}/details/`} title="Ver detalles">
+                            <Eye className="h-4 w-4" />
                         </Button>
                       </TableCell>
                     </TableRow>
