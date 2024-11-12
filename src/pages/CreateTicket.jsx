@@ -35,7 +35,7 @@ export default function CreateTicket() {
       // const data = await response.json();
       // console.log(data);
       if (response.status === 201) {
-        navigate(`/event/${id}/details/`); // Navigate to event details on success
+        navigate(`/event/${id}/tickets/`); // Navigate to event details on success
       } else {
         setError('Error al crear el ticket');
       }
