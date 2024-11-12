@@ -34,7 +34,7 @@ function App() {
           {/* Rutas protegidas */}
           <Route path="/dashboard" element={<AuthProvider><PrivateRoute><Dashboard /></PrivateRoute></AuthProvider>} />
           <Route path="/create-event" element={<AuthProvider><PrivateRoute><CreateEvent /></PrivateRoute></AuthProvider>} />
-          <Route path="/event/:id/details" element={<AuthProvider><PrivateRoute><EventDetails /></PrivateRoute></AuthProvider>} />
+          {/* <Route path="/event/:id/details" element={<AuthProvider><PrivateRoute><EventDetails /></PrivateRoute></AuthProvider>} /> */}
           {/* <Route path="/event/:id/details" element={<AuthProvider><PrivateRoute><OldEventDetails /></PrivateRoute></AuthProvider>} /> */}
           <Route path="/event/:id/tickets" element={<AuthProvider><PrivateRoute><EventTickets /></PrivateRoute></AuthProvider>} />
           <Route path="/event/:id/sellers" element={<AuthProvider><PrivateRoute><EventSellers /></PrivateRoute></AuthProvider>} />

@@ -38,7 +38,7 @@ export default function EditEvent() {
     e.preventDefault();
     try {
       const data = await updateEvent(e, id, authToken.access);
-      navigate(`/event/${id}/details`);
+      navigate(`/event/${id}/tickets`);
     } catch (error) {
       setError(error.message);
     }

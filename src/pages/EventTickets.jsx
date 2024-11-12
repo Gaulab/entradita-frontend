@@ -8,6 +8,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../co
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "../components/ui/dialog";
 import { PlusIcon, SearchIcon, ArrowLeftIcon, EyeIcon, Trash2Icon, LinkIcon } from "lucide-react";
 import AuthContext from "../context/AuthContext";
+import EventDetails from './EventsDetail';
 
 export default function EventTickets() {
   const { id } = useParams();
@@ -15,6 +16,7 @@ export default function EventTickets() {
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_URL;
 
+  const [event, setEvent] = useState({});
   const [tickets, setTickets] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -35,8 +37,10 @@ export default function EventTickets() {
           },
         });
         const data = await response.json();
+        console.log(data);
         if (response.status === 200) {
           setTickets(data.tickets);
+          setEvent(data.event);
         } else {
           alert("Error al obtener tickets");
         }
@@ -111,12 +115,7 @@ export default function EventTickets() {
   return (
     <div className="min-h-screen w-screen p-4 bg-gray-900 text-gray-100 flex justify-center space-y-6 pb-8   ">
       <div className="max-w-6xl mx-auto w-full">
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-          <Button onClick={() => navigate(`/event/${id}/details/`)} variant="outline" className="w-full sm:w-auto bg-gray-800 text-white hover:bg-gray-700">
-            <ArrowLeftIcon className="mr-2 h-4 w-4" /> Volver al Evento
-          </Button>
-        </div>
-
+        <EventDetails id={id} event={event} />
         <Card className="bg-gray-800 border-gray-700">
           <CardHeader>
             <CardTitle className="text-white">Tickets</CardTitle>

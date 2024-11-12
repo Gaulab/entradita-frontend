@@ -9,6 +9,7 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { PlusIcon, ArrowLeftIcon, PencilIcon, TicketX, Trash2Icon, LinkIcon } from "lucide-react";
 import AuthContext from "../context/AuthContext";
+import EventDetails from './EventsDetail';
 
 export default function EventScanners() {
   const { id } = useParams();
@@ -16,6 +17,7 @@ export default function EventScanners() {
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_URL;
 
+  const [event, setEvent] = useState({});
   const [escaners, setEscaners] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -43,6 +45,7 @@ export default function EventScanners() {
         
         if (response.status === 200) {
           setEscaners(data.escaners);
+          setEvent(data.event);
         } else {
           throw new Error(data.message || "Error al obtener escáneres");
         }
@@ -189,12 +192,7 @@ export default function EventScanners() {
   return (
     <div className="flex justify-center space-y-6 pb-8 bg-gray-900 text-white p-4 min-h-screen w-screen">
       <div className="w-full max-w-6xl mx-auto">
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-          <Button onClick={() => navigate(`/event/${id}/details`)} variant="outline" className="w-full sm:w-auto bg-gray-800 text-white hover:bg-gray-700">
-            <ArrowLeftIcon className="mr-2 h-4 w-4" /> Volver al Evento
-          </Button>
-        </div>
-
+        <EventDetails id={id} event={event}/>
         <Card className="bg-gray-800 border-gray-700">
           <CardHeader>
             <CardTitle className="text-white">Enlaces para Scanners</CardTitle>

@@ -71,7 +71,7 @@ export default function Dashboard() {
                       <TableCell className="text-gray-300 hidden md:table-cell">{event.place}</TableCell>
                       <TableCell className="text-gray-300 hidden md:table-cell">{event.tickets_counter}</TableCell>
                       <TableCell className="text-right">
-                        <Button variant="entraditaSecondary" to={`/event/${event.id}/details/`} title="Ver detalles">
+                        <Button variant="entraditaSecondary" to={`/event/${event.id}/tickets/`} title="Ver detalles">
                             <Eye className="h-4 w-4" />
                         </Button>
                       </TableCell>
