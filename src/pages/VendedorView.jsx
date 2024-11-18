@@ -1,12 +1,18 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon } from "lucide-react";
+import PropTypes from "prop-types";
+// Custom components
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon } from "lucide-react";
-import PropTypes from "prop-types";
+// API
+import { checkPassword } from "../api/empleadoApi";
+import { getVendedor } from "../api/empleadoApi";
+import { deleteTicketBySeller } from "../api/ticketApi";
+
 
 export default function VendedorView({ uuid }) {
   const [tickets, setTickets] = useState([]);
@@ -22,7 +28,6 @@ export default function VendedorView({ uuid }) {
   const [ticketToDelete, setTicketToDelete] = useState(null);
   const navigate = useNavigate();
   const [copyMessage, setCopyMessage] = useState("");
-  const apiUrl = import.meta.env.VITE_API_URL;
 
   const shareTicketLink = useCallback((link) => {
     if (navigator.share) {
@@ -69,29 +74,13 @@ export default function VendedorView({ uuid }) {
 
     const fetchTickets = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/v1/employees/seller/${uuid}/info/`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (response.status === 404) {
-          setVendedorNotFound(true);
-          return;
-        }
-
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-
-        const data = await response.json();
+        const data = await getVendedor(uuid);
         setVendedor(data.vendedor);
         setTickets(data.tickets);
         setFilteredTickets(data.tickets);
         setEventId(data.vendedor.event);
       } catch (error) {
-        console.error("Error fetching tickets:", error);
+        console.error(error.message);
       }
     };
 
@@ -105,23 +94,11 @@ export default function VendedorView({ uuid }) {
     }
 
     try {
-      const response = await fetch(`${apiUrl}/api/v1/events/${eventId}/check-password/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ password }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        setIsPasswordCorrect(true);
-        localStorage.setItem("isPasswordCorrect", true);
-      } else {
-        setPasswordError(data.error || "Error verificando la contraseña.");
-      }
-    } catch {
-      setPasswordError("Error de red al verificar la contraseña.");
+      const data = checkPassword(eventId,password);
+      setIsPasswordCorrect(true);
+      localStorage.setItem("isPasswordCorrect", "true");
+    } catch (error) {
+      setPasswordError(error.message);
     }
   };
 
@@ -153,22 +130,12 @@ export default function VendedorView({ uuid }) {
     if (!ticketToDelete) return;
 
     try {
-      const response = await fetch(`${apiUrl}/api/v1/employees/seller/${uuid}/delete-ticket/${ticketToDelete.id}/`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
+      await deleteTicketBySeller(uuid, ticketToDelete.id);
       const remainingTickets = tickets.filter((t) => t.id !== ticketToDelete.id);
       setTickets(remainingTickets);
       setFilteredTickets(remainingTickets);
     } catch (error) {
-      console.error("Error deleting ticket:", error);
+      console.error(error.message);
     }
 
     setDeleteConfirmOpen(false);
@@ -250,7 +217,7 @@ export default function VendedorView({ uuid }) {
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="border-gray-700">
+                  <TableRow className="border-gray-700 text-left">
                     <TableHead className="text-gray-300">Nombre</TableHead>
                     <TableHead className="text-gray-300 hidden md:table-cell">DNI</TableHead>
                     <TableHead className="text-gray-300 text-right">Acciones</TableHead>

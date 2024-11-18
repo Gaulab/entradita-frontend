@@ -5,11 +5,7 @@ import Login from './pages/Login';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import CreateEvent from './pages/CreateEvent';
-import EventDetails from './pages/EventsDetail';
-import OldEventDetails from './pages/OldEventsDetail';
-import EventTickets from './pages/EventTickets';
-import EventSellers from './pages/EventSellers';
-import EventScanners from './pages/EventScanners';
+import OldEventDetails from './pages/EventDetail/EventsDetail';
 import CreateTicket from './pages/CreateTicket';
 import EditEvent from './pages/EditEvent';
 import TicketPage from './pages/TicketPage';
@@ -29,16 +25,11 @@ function App() {
           <Route path="/ticket/:ticket_uuid" element={<TicketPage />} />
           <Route path="/vendedor/:uuid" element={<VendedorWrapper />} />
           <Route path="/vendedor/:uuid/create-ticket" element={<CreateTicketBySeller />} />
-          {/* <Route path="/scanner/:uuid" element={<ScanTicket />} /> */}
-          <Route path="/scanner/:uuid" element={<EscanerWrapper />} />
+          <Route path="/escaner/:uuid" element={<EscanerWrapper />} />
           {/* Rutas protegidas */}
           <Route path="/dashboard" element={<AuthProvider><PrivateRoute><Dashboard /></PrivateRoute></AuthProvider>} />
           <Route path="/create-event" element={<AuthProvider><PrivateRoute><CreateEvent /></PrivateRoute></AuthProvider>} />
-          {/* <Route path="/event/:id/details" element={<AuthProvider><PrivateRoute><EventDetails /></PrivateRoute></AuthProvider>} /> */}
-          {/* <Route path="/event/:id/details" element={<AuthProvider><PrivateRoute><OldEventDetails /></PrivateRoute></AuthProvider>} /> */}
-          <Route path="/event/:id/tickets" element={<AuthProvider><PrivateRoute><EventTickets /></PrivateRoute></AuthProvider>} />
-          <Route path="/event/:id/sellers" element={<AuthProvider><PrivateRoute><EventSellers /></PrivateRoute></AuthProvider>} />
-          <Route path="/event/:id/scanners" element={<AuthProvider><PrivateRoute><EventScanners /></PrivateRoute></AuthProvider>} />
+          <Route path="/event/:id/details" element={<AuthProvider><PrivateRoute><OldEventDetails /></PrivateRoute></AuthProvider>} />
           <Route path="/event/:id/create-ticket" element={<AuthProvider><PrivateRoute><CreateTicket /></PrivateRoute></AuthProvider>} />
           <Route path="/edit-event/:id" element={<AuthProvider><PrivateRoute><EditEvent /></PrivateRoute></AuthProvider>} />
         </Routes>

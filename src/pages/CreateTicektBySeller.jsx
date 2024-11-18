@@ -1,10 +1,13 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+// Custom components
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { Alert, AlertDescription } from "../components/ui/alert";
-import { useState } from 'react';
+// API
+import { createTicketBySeller } from "../api/ticketApi";
 
 export default function CreateTicketBySeller() {
   const { uuid } = useParams(); // Cambiado a 'uuid' para el vendedor
@@ -14,30 +17,12 @@ export default function CreateTicketBySeller() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     try {
-      const response = await fetch(`${apiUrl}/api/v1/employees/seller/${uuid}/create-ticket/`, { 
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json', 
-        },
-        body: JSON.stringify({
-          owner_name: e.target.name.value,
-          owner_lastname: e.target.surname.value,
-          owner_dni: e.target.dni.value,
-        }),
-      });
-      
-      const data = await response.json();
-      console.log(data);
-      if (response.status === 201) {
-        navigate(`/vendedor/${uuid}`); // Redirige a la vista del vendedor tras crear el ticket
-      } else {
-        setError('Error al crear el ticket');
-      }
+      const response = await createTicketBySeller(e, uuid);
+      navigate(`/vendedor/${uuid}`); // Redirige a la vista del vendedor tras crear el ticket
     } catch (error) {
-      console.error("Error creating ticket:", error);
-      setError('Error al crear el ticket');
+      console.error("Error creating ticket:", error.message);
+      setError(error.message);
     }
   };
 

@@ -2,7 +2,9 @@ import PropTypes from 'prop-types'; // Importa PropTypes
 import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-
+// API
+import { login } from "../api/userApi";
+import { refreshToken } from '../api/userApi';
 
 const AuthContext = createContext();
 export default AuthContext;
@@ -17,22 +19,14 @@ export const AuthProvider = ({ children }) => {
 
     const loginUser = async (e) => {
         e.preventDefault();
-        const response = await fetch(`${apiUrl}/auth/token/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ 'username': e.target.username.value, 'password': e.target.password.value })
-        });
-        const data = await response.json();
-    
-        if (response.status === 200) {
+        try{
+            const data = await login(e);
             setAuthToken(data);
             setUser(jwtDecode(data.access));
             localStorage.setItem('authTokens', JSON.stringify(data));
             return { success: true }; // Devuelve éxito
-        } else {
-            return { success: false }; // Devuelve fallo
+        } catch (error) {
+            return { success: false, error: error.message }; // Devuelve error
         }
     };
 
@@ -44,21 +38,13 @@ export const AuthProvider = ({ children }) => {
     }
 
     const updateToken = async () => {
-        const response = await fetch(`${apiUrl}/auth/token/refresh/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ 'refresh': authToken?.refresh })
-        })
-        const data = await response.json()
-
-        if (response.status === 200) {
+        try {
+            const data = await refreshToken(authToken)
             setAuthToken(data)
             setUser(jwtDecode(data.access))
             localStorage.setItem('authTokens', JSON.stringify(data))
-        }
-        else {
+        } catch (error) {
+            console.error(error)
             logoutUser()
         }
 

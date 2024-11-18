@@ -1,10 +1,16 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
+// Custom components
 import { Button } from "../components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import { Input } from "../components/ui/input";
 import PropTypes from "prop-types";
+// API
+import { getScanner } from "../api/empleadoApi";
+import { checkPassword } from "../api/empleadoApi";
+import { checkTicketByPayload } from "../api/ticketApi";
+import { checkTicketByDni } from "../api/ticketApi";
 
 const ScannerView = ({ uuid }) => {
   const { id } = useParams();
@@ -18,7 +24,6 @@ const ScannerView = ({ uuid }) => {
   const [isPasswordCorrect, setIsPasswordCorrect] = useState(false);
   const [passwordError, setPasswordError] = useState("");
   const [showTicketInfo, setShowTicketInfo] = useState(false);
-  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const storedPasswordStatus = localStorage.getItem("isPasswordCorrect");
@@ -28,26 +33,11 @@ const ScannerView = ({ uuid }) => {
 
     const fetchScanner = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/v1/employees/scanner/${uuid}/info/`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (response.status === 404) {
-          setEscanerNotFound(true);
-          return;
-        }
-
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-
-        const data = await response.json();
+        const data = await getScanner(uuid);
         setEventId(data.event);
       } catch (error) {
-        console.error("Error fetching scanner:", error);
+        console.error("Error fetching scanner:", error.message);
+        setEscanerNotFound(true);
       }
     };
 
@@ -67,18 +57,11 @@ const ScannerView = ({ uuid }) => {
 
   const validarTicketPayload = useCallback(async (result) => {
     try {
-      const response = await fetch(`${apiUrl}/api/v1/tickets/scan/${result[0].rawValue}/`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ event_id: eventId }),
-      });
-      const data = await response.json();
+      const data = await checkTicketByPayload(result[0].rawValue, uuid, eventId)
       handleTicketValidation(data.ticket, data.old_scanned);
-    } catch {
+    } catch (error) {
       setDialogColor("red");
-      setError("Ticket no encontrado.");
+      setError(error.message);
       setTicketData(null);
       setShowTicketInfo(true);
       setTimeout(() => setShowTicketInfo(false), 5000);
@@ -88,20 +71,7 @@ const ScannerView = ({ uuid }) => {
   const validarTicketDni = useCallback(async (dni) => {
     setError("");
     try {
-      const response = await fetch(`${apiUrl}/api/v1/tickets/scan/dni/${dni}/`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ event_id: eventId }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Ticket no encontrado.");
-      }
-
-      const data = await response.json();
-      console.log(data);
+      const data = await checkTicketByDni(dni, uuid, eventId)
       handleTicketValidation(data.ticket, data.old_scanned);
     } catch (error) {
       setTicketData(null);
@@ -119,23 +89,11 @@ const ScannerView = ({ uuid }) => {
     }
 
     try {
-      const response = await fetch(`${apiUrl}/api/v1/events/${eventId}/check-password/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ password }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        setIsPasswordCorrect(true);
-        localStorage.setItem("isPasswordCorrect", "true");
-      } else {
-        setPasswordError(data.error || "Error verificando la contraseña.");
-      }
-    } catch {
-      setPasswordError("Error de red al verificar la contraseña.");
+      const data = checkPassword(eventId,password);
+      setIsPasswordCorrect(true);
+      localStorage.setItem("isPasswordCorrect", "true");
+    } catch (error) {
+      setPasswordError(error.message);
     }
   };
 

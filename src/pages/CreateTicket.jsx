@@ -1,47 +1,30 @@
+import { useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+// Custom components
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { Alert, AlertDescription } from "../components/ui/alert";
-import { useState, useContext } from 'react';
 import AuthContext from '../context/AuthContext';
+// API
+import { createTicket } from '../api/ticketApi';
 
 export default function CreateTicket() {
   const { authToken } = useContext(AuthContext);
   const { id } = useParams();
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const apiUrl = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     try {
-      const response = await fetch(`${apiUrl}/api/v1/tickets/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken.access}` // Corrected authorization token
-        },
-        body: JSON.stringify({
-          event: id, // Event ID from URL params
-          owner_name: e.target.name.value,
-          owner_lastname: e.target.surname.value,
-          owner_dni: e.target.dni.value,
-        }),
-      });
-      
-      // const data = await response.json();
-      // console.log(data);
-      if (response.status === 201) {
-        navigate(`/event/${id}/tickets/`); // Navigate to event details on success
-      } else {
-        setError('Error al crear el ticket');
-      }
+      await createTicket(e, id, authToken.access);
+      navigate(`/event/${id}/details/`); // Navigate to event details on success
     } catch (error) {
-      console.error("Error creating ticket:", error);
-      setError('Error al crear el ticket');
+      console.error("Error creating ticket:", error.message);
+      setError(error.message);
     }
   };
 

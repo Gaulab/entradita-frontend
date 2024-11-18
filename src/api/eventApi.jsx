@@ -22,7 +22,7 @@ export const getEvent = async (id, authToken) => {
   }
 }
 
-// Devuelve los detalles de un evento ----> NO USADA CON LAS PAGES ACTUALES
+// Devuelve los detalles de un evento
 export const getEventDetails = async (id, authToken) => {
   try {
     const response = await fetch(`${apiUrl}/api/v1/events/${id}/details`, {

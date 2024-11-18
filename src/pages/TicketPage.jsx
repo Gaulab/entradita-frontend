@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
+// Custom components
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Download, AlertTriangle, Calendar, MapPin } from "lucide-react";
+// API
+import { getTicket } from '../api/ticketApi';
 
 export default function TicketPage() {
     const { ticket_uuid } = useParams();
@@ -15,26 +18,16 @@ export default function TicketPage() {
 
     useEffect(() => {
         if (ticket_uuid) {
-            const getdata = async () => {
+            const getData = async () => {
                 try {
-                    const response = await fetch(`${apiUrl}/api/v1/tickets/public/${ticket_uuid}/`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    });
-                    const data = await response.json();
-                    if (response.ok) {
-                        setData(data);
-                        setLoading(false);
-                    } else {
-                        setError('QR inexistente');
-                    }
-                } catch {
-                    setError('Error al obtener los datos del ticket');
+                    const data = await getTicket(ticket_uuid);
+                    setData(data);
+                    setLoading(false);  
+                } catch (error) {
+                    setError(error.message);
                 }
             };
-            getdata();
+            getData();
         } else {
             setError('No se proporcionó un UUID válido');
         }
