@@ -26,8 +26,9 @@ export default function VendedorView({ uuid }) {
   const [passwordError, setPasswordError] = useState("");
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [ticketToDelete, setTicketToDelete] = useState(null);
-  const navigate = useNavigate();
   const [copyMessage, setCopyMessage] = useState("");
+  const [ticketsSalesEnabled, setTicketsSalesEnabled] = useState(true);
+  const navigate = useNavigate();
 
   const shareTicketLink = useCallback((link) => {
     if (navigator.share) {
@@ -52,7 +53,7 @@ export default function VendedorView({ uuid }) {
       });
     }
   }, []);
-  
+
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -79,6 +80,7 @@ export default function VendedorView({ uuid }) {
         setTickets(data.tickets);
         setFilteredTickets(data.tickets);
         setEventId(data.vendedor.event);
+        setTicketsSalesEnabled(data.sales_enabled);
       } catch (error) {
         console.error(error.message);
       }
@@ -94,7 +96,7 @@ export default function VendedorView({ uuid }) {
     }
 
     try {
-      const data = checkPassword(eventId,password);
+      await checkPassword(eventId, password);
       setIsPasswordCorrect(true);
       localStorage.setItem("isPasswordCorrect", "true");
     } catch (error) {
@@ -199,21 +201,22 @@ export default function VendedorView({ uuid }) {
                 <p className="text-gray-400">Tickets vendidos: {vendedor.ticket_counter}</p>
               </div>
             )}
-            <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
-              <Button disabled={vendedor && vendedor.status === false} onClick={handleCreateTicket} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
-                <PlusIcon className="mr-2 h-4 w-4" /> Crear Nuevo Ticket
-              </Button>
+            <div className="flex flex-col sm:flex-row justify-between items-center mb-2 gap-4">
+                <Button disabled={(vendedor && vendedor.status === false) || !ticketsSalesEnabled} onClick={handleCreateTicket} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
+                  <PlusIcon className="mr-2 h-4 w-4" /> Nuevo Ticket
+                </Button>
               <div className="relative w-full sm:w-auto">
                 <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <Input
                   type="text"
-                  placeholder="Buscar por nombre o DNI"
+                  placeholder="Buscar"
                   value={searchTerm}
                   onChange={handleSearch}
                   className="pl-8 w-full bg-gray-700 border-gray-600 text-white placeholder-gray-400"
                 />
               </div>
             </div>
+            {!ticketsSalesEnabled && <CardDescription className="text-red-400 mb-3">El organizador deshabilitó la venta de tickets</CardDescription>}
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>

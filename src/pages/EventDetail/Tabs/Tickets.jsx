@@ -1,24 +1,36 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 // Custom components
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/table";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../../../components/ui/card";
+import { Switch } from "../../../components/ui/switch";
 import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon } from "lucide-react";
+// API
+import { updateTicketSales } from "../../../api/eventApi";
 
-export default function Tickets({id, paginatedTickets, setSearchTerm, searchTerm, copyToClipboard, handleEliminarTicket, currentPage, setCurrentPage, itemsPerPage, pageCount}) {
+export default function Tickets({ id, paginatedTickets, setSearchTerm, searchTerm, copyToClipboard, handleEliminarTicket, currentPage, setCurrentPage, itemsPerPage, pageCount, ticketSalesEnabled, handleUpdateTicketSales }) {
     const navigate = useNavigate();
-    
+
     return (
         <Card className="bg-gray-800 border-gray-700">
             <CardHeader>
-                <CardTitle className="text-white">Tickets</CardTitle>
-                <CardDescription className="text-gray-400">Gestiona los tickets para este evento</CardDescription>
+                <div className="flex flex-row justify-between items-center gap-4">
+                    <div className="relative w-full sm:w-auto">
+                        <CardTitle className="text-white">Tickets</CardTitle>
+                        <CardDescription className="text-gray-400">Gestiona los tickets para este evento</CardDescription>
+                    </div>
+                    <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-400 mr-2 hidden sm:table-cell">Habilitar venta de tickets</span>
+                        <Switch checked={ticketSalesEnabled} onChange={() => handleUpdateTicketSales()} />
+                    </div>
+                </div>
             </CardHeader>
             <CardContent>
                 <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
-                    <Button onClick={() => navigate(`/event/${id}/create-ticket`)} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
-                        <PlusIcon className="mr-2 h-4 w-4" /> Nuevo Ticket
+                    <Button onClick={() => navigate(`/event/${id}/create-ticket`)} disabled={!ticketSalesEnabled} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
+                        <PlusIcon className="mr-2 h-4 w-4"/> Nuevo Ticket
                     </Button>
                     <div className="relative w-full sm:w-auto">
                         <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />

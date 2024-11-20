@@ -82,27 +82,13 @@ export const updateEmpleado = async (authToken, editingEmpleado, newEmpleadoName
 // Eliminación de un empleado
 export const deleteEmpleado = async (authToken, itemToDelete) => {
     try {
-        let response;
-        if (itemToDelete.status === true) {
-            // Disable the employee
-            response = await fetch(`${apiUrl}/api/v1/employees/${itemToDelete.id}/`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authToken}`
-                }
-            });
-        }
-        else {
-            // Delete the employee and their tickets
-            response = await fetch(`${apiUrl}/api/v1/employees/${itemToDelete.id}/`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authToken}`
-                }
-            });
-        }
+        await fetch(`${apiUrl}/api/v1/employees/${itemToDelete.id}/`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
     }
     catch (error) {
         throw new Error(error.message || 'Error desconocido al eliminar el empleado');

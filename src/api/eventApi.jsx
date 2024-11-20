@@ -125,6 +125,28 @@ export const updateEvent = async (e, id, authToken) => {
   }
 };
 
+// Deshabilitacion / Habilitacion venta de tickets
+export const updateTicketSales = async (id, authToken) => {
+  try {
+    const response = await fetch(`${apiUrl}/api/v1/events/${id}/`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      },
+    });
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error('Error al editar el evento');
+    }
+
+  } catch (error) {
+    throw new Error(error.message || 'Error desconocido al editar el evento');
+  }
+};
+
 // Eliminación de un evento
 export const deleteEvent = async (id, authToken) => {
   try {

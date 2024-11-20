@@ -1,6 +1,10 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../../components/ui/card";
+import { Progress } from "../../components/ui/progress";
 
 export default function Event({ event }) {
+  const tickets_sold = (event.tickets_counter === 0) ? 1 : event.tickets_counter
+  const percentage = (event.tickets_scanned / tickets_sold) * 100
+
   return (
     <Card className="bg-gray-800 border-gray-700 mb-8">
       <CardHeader>
@@ -35,6 +39,24 @@ export default function Event({ event }) {
           </div>
         </div>
       </CardContent>
+      <CardContent>
+          <div className="space-y-2">
+            <div className="relative">
+              <Progress
+                value={percentage}
+                className="h-2 bg-gray-800"
+              />
+              <div 
+                className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
+                style={{ width: `${percentage}%` }}
+              />
+            </div>
+            <div className="flex justify-between text-xs text-gray-400">
+              <span>{percentage.toFixed(1)}%</span>
+              <span>{event.tickets_scanned} personas ingresaron al evento</span>
+            </div>
+          </div>
+        </CardContent>
     </Card>
   )
 } 

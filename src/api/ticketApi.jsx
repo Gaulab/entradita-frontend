@@ -62,11 +62,12 @@ export const createTicketBySeller = async (e, uuid) => {
         owner_dni: e.target.dni.value,
       }),
     });
+    const data = await response.json();
 
     if (response.ok) {
-      return await response.json();
+      return data;
     } else {
-      throw new Error('Error al crear el ticket');
+      throw new Error(data.error);
     }
   } catch (error) {
     throw new Error(error.message || 'Error desconocido al crear el ticket');

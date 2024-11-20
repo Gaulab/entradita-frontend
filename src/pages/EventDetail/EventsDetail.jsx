@@ -19,6 +19,7 @@ import { createEmpleado } from "../../api/empleadoApi";
 import { updateEmpleado } from "../../api/empleadoApi";
 import { deleteEmpleado } from "../../api/empleadoApi";
 import { deleteTicket } from "../../api/ticketApi";
+import { updateTicketSales } from "../../api/eventApi";
 
 export default function OldEventDetails() {
   const { id } = useParams();
@@ -36,6 +37,7 @@ export default function OldEventDetails() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [ticketSalesEnabled, setTicketSalesEnabled] = useState(false);
 
   const [newEmpleadoName, setNewEmpleadoName] = useState("");
   const [newEmpleadoCapacity, setNewEmpleadoCapacity] = useState("");
@@ -52,8 +54,8 @@ export default function OldEventDetails() {
     const getEventData = async () => {
       try {
         const data = await getEventDetails(id, authToken.access);
-        console.log(data);
         setEvent(data.event);
+        setTicketSalesEnabled(data.event.ticket_sales_enabled);
         setTickets(data.tickets);
         setVendedores(data.vendedores);
         setEscaners(data.escaners);
@@ -154,6 +156,15 @@ export default function OldEventDetails() {
     setItemToDelete(null);
   }, [itemToDelete, tickets, vendedores, escaners, reload]);
 
+  const handleUpdateTicketSales = useCallback(async () => {
+    try {
+        const data = await updateTicketSales(id, authToken.access);
+        setTicketSalesEnabled(data.ticket_sales_enabled);
+    } catch (error) {
+        console.error(error.message);
+    }
+  }, [event]);
+
   const copyToClipboard = useCallback((text) => {
     navigator.clipboard
       .writeText(text)
@@ -222,7 +233,7 @@ export default function OldEventDetails() {
           </TabsList>
 
           <TabsContent value="tickets">
-            <Tickets id={id} paginatedTickets={paginatedTickets} pageCount={pageCount} itemsPerPage={itemsPerPage} currentPage={currentPage} setCurrentPage={setCurrentPage} searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleEliminarTicket={handleEliminarTicket} copyToClipboard={copyToClipboard} />
+            <Tickets id={id} paginatedTickets={paginatedTickets} pageCount={pageCount} itemsPerPage={itemsPerPage} currentPage={currentPage} setCurrentPage={setCurrentPage} searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleEliminarTicket={handleEliminarTicket} copyToClipboard={copyToClipboard} ticketSalesEnabled={ticketSalesEnabled} handleUpdateTicketSales={handleUpdateTicketSales} />
           </TabsContent>
 
           <TabsContent value="vendedores">
