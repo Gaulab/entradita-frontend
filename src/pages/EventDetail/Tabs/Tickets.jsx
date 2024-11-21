@@ -23,7 +23,7 @@ export default function Tickets({ id, paginatedTickets, setSearchTerm, searchTer
                     </div>
                     <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-400 mr-2 hidden sm:table-cell">Habilitar venta de tickets</span>
-                        <Switch checked={ticketSalesEnabled} onChange={() => handleUpdateTicketSales()} />
+                        <Switch  checked={ticketSalesEnabled} onChange={() => handleUpdateTicketSales()} />
                     </div>
                 </div>
             </CardHeader>

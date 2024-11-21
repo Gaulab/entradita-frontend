@@ -5,7 +5,7 @@ const Switch = React.forwardRef(function Switch(
   { checked, onChange, className, disabled = false, ...props },
   ref
 ) {
-  const switchClassName = `relative inline-flex h-6 w-11 items-center rounded-full transition-colors border-white 
+  const switchClassName = `relative inline-flex h-6 w-11 items-center rounded-full transition-colors border-gray-500 
     ${checked ? "bg-blue-600" : "bg-gray-800"} 
     ${disabled ? "opacity-50 cursor-not-allowed" : ""} 
     ${className || ""}`;

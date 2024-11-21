@@ -44,7 +44,7 @@ export default function Event({ event }) {
             <div className="relative">
               <Progress
                 value={percentage}
-                className="h-2 bg-gray-800"
+                className="h-4 bg-gray-800  border border-gray-500"
               />
               <div 
                 className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
