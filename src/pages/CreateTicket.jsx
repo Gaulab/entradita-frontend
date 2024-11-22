@@ -1,11 +1,12 @@
 import { useState, useContext } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 // Custom components
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { Alert, AlertDescription } from "../components/ui/alert";
+import { Dropdown } from '../components/ui/dropdownlist';
 import AuthContext from '../context/AuthContext';
 // API
 import { createTicket } from '../api/ticketApi';
@@ -14,11 +15,13 @@ export default function CreateTicket() {
   const { authToken } = useContext(AuthContext);
   const { id } = useParams();
   const [error, setError] = useState('');
+  const location = useLocation();
+  const { dniRequired } = location.state;
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       await createTicket(e, id, authToken.access);
       navigate(`/event/${id}/details/`); // Navigate to event details on success
@@ -55,11 +58,21 @@ export default function CreateTicket() {
                 className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
               />
             </div>
+            {dniRequired && (
+              <div className="space-y-2">
+                <Label htmlFor="dni" className="text-gray-200">DNI</Label>
+                <Input
+                  id="dni"
+                  required
+                  className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                />
+              </div>
+            )}
             <div className="space-y-2">
-              <Label htmlFor="dni" className="text-gray-200">DNI</Label>
-              <Input
-                id="dni"
-                required
+              <Label htmlFor="dni" className="text-gray-200">Categoría</Label>
+              <Dropdown 
+                options={[{ value: '1', label: 'Opción 1' }, { value: '2', label: 'Opción 2' }]} 
+                placeholder="Seleccionar opción" 
                 className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
               />
             </div>

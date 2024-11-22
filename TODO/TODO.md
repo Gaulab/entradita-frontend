@@ -2,15 +2,14 @@
 
 ## Aesthetic
 - [ ] Aesthetic 1: Cambiar el color blanco del borde del toggle de habilitar y desabhilitar venta de tickets en ~/src/pages/EventDetails
-- [ ] Aesthetic 2: El porcentaje de personas que ingresaron lo haria ligeramente mas llamativo pasa como desapercibido ~/src/pages/EventDetails, ademas si ingreso el 0% de personas
-no se entiende que es una barra de progreso, deberia darse a entender aunque este vacia
+- [ ] Aesthetic 2: El porcentaje de personas que ingresaron lo haria ligeramente mas llamativo pasa como desapercibido ~/src/pages/EventDetails, ademas si ingreso el 0% de personas no se entiende que es una barra de progreso, deberia darse a entender aunque este vacia
 
 ## Refactor
 - [ ] Feature 1: Description of feature 1
 - [ ] Feature 2: Description of feature 2
 
 ## Features - Improvements
-- [ ] Feature 1: Al crear un evento deberia preguntar si desea guardar/utilizar el dni de las personas para los tickets como opcional para mas seguridad etc, deberia ser una       especie de toggle o check
+- [ ] Feature 1: Al crear un evento deberia preguntar si desea guardar/utilizar el dni de las personas para los tickets como opcional para mas seguridad etc, deberia ser una especie de toggle o check
 - [ ] Feature 2: Al crear un ticket debe aparecer una pestaña intermedia indicando el exito y permitiendo compartir desde aqui, sino tenes que irte a buscarlo a la lista medio garron
 - [ ] Feature 3: Estaria bueno tener pagina de venta propias sin terceros
 - [ ] Feature 4: los ultimos tickets creados deberian aparecer primero en ~/src/pages/EventDetails

@@ -233,7 +233,7 @@ export default function OldEventDetails() {
           </TabsList>
 
           <TabsContent value="tickets">
-            <Tickets id={id} paginatedTickets={paginatedTickets} pageCount={pageCount} itemsPerPage={itemsPerPage} currentPage={currentPage} setCurrentPage={setCurrentPage} searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleEliminarTicket={handleEliminarTicket} copyToClipboard={copyToClipboard} ticketSalesEnabled={ticketSalesEnabled} handleUpdateTicketSales={handleUpdateTicketSales} />
+            <Tickets id={id} paginatedTickets={paginatedTickets} pageCount={pageCount} itemsPerPage={itemsPerPage} currentPage={currentPage} setCurrentPage={setCurrentPage} searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleEliminarTicket={handleEliminarTicket} copyToClipboard={copyToClipboard} ticketSalesEnabled={ticketSalesEnabled} handleUpdateTicketSales={handleUpdateTicketSales} dniRequired={event.dniRequired} />
           </TabsContent>
 
           <TabsContent value="vendedores">

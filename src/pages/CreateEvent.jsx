@@ -38,7 +38,7 @@ export default function CreateEvent() {
     }
   };
   const addCategory = () => {
-    if (newCategory && !categories.includes(newCategory)) {
+    if (newCategory && !categories.includes(newCategory) && categories.length < 5) {
       setCategories([...categories, newCategory]);
       setNewCategory('');
     }
@@ -128,11 +128,9 @@ export default function CreateEvent() {
                 {categories.map((category, index) => (
                   <span key={index} className="bg-gray-700 text-white py-2 px-4 rounded-full text-sm flex items-center">
                     {category}
-                    {category !== 'Normal' && (
-                      <button type="button" onClick={() => removeCategory(category)} className="ml-4 text-gray-400 hover:text-gray-200 bg-gray-900 p-0">
+                    <button type="button" onClick={() => removeCategory(category)} className="ml-4 text-gray-400 hover:text-gray-200 bg-gray-900 p-0">
                         <X size={20} />
                       </button>
-                    )}
                   </span>
                 ))}
               </div>
