@@ -2,9 +2,9 @@
 import { Button } from "../../../components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/table";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../../../components/ui/card";
-import { PlusIcon, Trash2Icon, PencilIcon, TicketX, LinkIcon } from "lucide-react";
+import { PlusIcon, Trash2Icon, PencilIcon, TicketX, LinkIcon, TicketCheck } from "lucide-react";
 
-export default function Vendedores({ vendedores, handleGenerarEmpleado, handleEditEmpleado, handleEliminarEmpleado, copyToClipboard }) {
+export default function Vendedores({ vendedores, handleGenerarEmpleado, handleEditEmpleado, handleEliminarEmpleado, handleChangeEmpleadoStatus, copyToClipboard, ticketTags, setNewTicketTags, newTicketTags }) {
 
     return (
         <Card className="bg-gray-800 border-gray-700">
@@ -28,7 +28,7 @@ export default function Vendedores({ vendedores, handleGenerarEmpleado, handleEd
                         </TableHeader>
                         <TableBody>
                             {vendedores.map((vendedor) => (
-                                <TableRow key={vendedor.id} className={`border-gray-700 ${vendedor.status === false ? "opacity-50" : ""}`}>
+                                <TableRow key={vendedor.id} className={`border-gray-700 `}>
                                     <TableCell className="text-gray-300">{vendedor.assigned_name}</TableCell>
                                     <TableCell className="text-gray-300 hidden sm:table-cell">{vendedor.seller_capacity !== null ? vendedor.seller_capacity : "sin límite"}</TableCell>
                                     <TableCell className="text-gray-300 hidden sm:table-cell">{vendedor.ticket_counter}</TableCell>
@@ -41,9 +41,18 @@ export default function Vendedores({ vendedores, handleGenerarEmpleado, handleEd
                                             <PencilIcon className="h-4 w-4" />
                                             <span className="sr-only">Editar vendedor</span>
                                         </Button>
-                                        <Button variant="destructive" onClick={() => handleEliminarEmpleado(vendedor)} size="sm" title={vendedor.status === true ? "Deshabilitar vendedor" : "Eliminar vendedor"}>
-                                            {vendedor.status === true ? <TicketX className="h-4 w-4" /> : <Trash2Icon className="h-4 w-4" />}
-                                            <span className="sr-only">{vendedor.status === true ? "Deshabilitar vendedor" : "Eliminar vendedor"}</span>
+                                        <Button variant="destructive" onClick={() => handleEliminarEmpleado(vendedor)} size="sm" title="Eliminar vendedor">
+                                            <Trash2Icon className="h-4 w-4" />
+                                            <span className="sr-only">Eliminar vendedor</span>
+                                        </Button>
+                                        <Button
+                                            onClick={() => handleChangeEmpleadoStatus(vendedor)}
+                                            size="sm"
+                                            title={vendedor.status === true ? "Deshabilitar vendedor" : "Habilitar vendedor"}
+                                            className={vendedor.status === true ? "bg-red-600 hover:bg-red-700 text-white" : "bg-green-600 hover:bg-green-700 text-white"}
+                                        >
+                                            {vendedor.status === true ? <TicketX className="h-4 w-4" /> : <TicketCheck className="h-4 w-4" />}
+                                            <span className="sr-only">{vendedor.status === true ? "Deshabilitar vendedor" : "Habilitar vendedor"}</span>
                                         </Button>
                                     </TableCell>
                                 </TableRow>

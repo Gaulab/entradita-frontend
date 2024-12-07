@@ -35,10 +35,10 @@ export const createTicket = async (e, id, authToken) => {
         owner_name: e.target.name.value,
         owner_lastname: e.target.surname.value,
         owner_dni: e.target.dni ? e.target.dni.value : "",
+        ticket_tag: e.target.tag,
       }),
     });
     const data = await response.json();
-    console.log(data);
 
     if (response.ok) {
       return await response.json();

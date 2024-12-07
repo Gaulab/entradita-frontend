@@ -1,3 +1,4 @@
+// entradaFront/src/api/empleadoApi.jsx
 const apiUrl = import.meta.env.VITE_API_URL;
 
 // Devuelve los empleados de un evento
@@ -23,10 +24,10 @@ export const getEmpleados = async (id, authToken) => {
     }
 }
 
-// Creacion de un nuevo empleado
-export const createEmpleado = async (authToken, isSellerEmpleado, newEmpleadoName, newEmpleadoCapacity, id) => {
+export const createEmpleado = async (authToken, isSellerEmpleado, newEmpleadoName, newEmpleadoCapacity, newTicketTags, id) => {
+    // console.log("newTicketTags en API: ", newTicketTags);
     try {
-        const response = await fetch(`${apiUrl}/api/v1/employees/`, {
+        const response = await fetch(`${apiUrl}/api/v1/employee/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -35,8 +36,37 @@ export const createEmpleado = async (authToken, isSellerEmpleado, newEmpleadoNam
             body: JSON.stringify({
                 is_seller: isSellerEmpleado,
                 assigned_name: newEmpleadoName,
-                seller_capacity: parseInt(newEmpleadoCapacity),
+                seller_capacity: parseInt(newEmpleadoCapacity) || null,
                 event: id,
+                ticket_tags: newTicketTags // Asegúrate de enviar un array válido
+            })
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            const errorData = await response.json();
+            console.error("Error al crear el empleado (API)", errorData);
+            throw new Error(errorData.message || 'Error desconocido al crear el empleado');
+        }
+    } catch (error) {
+        console.error("Error al crear el empleado:", error);
+        throw new Error(error.message || 'Error desconocido al crear el empleado');
+    }
+};
+
+
+// Cambiar status de un empleado
+export const changeEmpleadoStatus = async (authToken, itemToChange) => {
+    try {
+        const response = await fetch(`${apiUrl}/api/v1/employee/${itemToChange.id}/status/`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`
+            },
+            body: JSON.stringify({
+                status: !itemToChange.status
             })
         });
 
@@ -44,18 +74,20 @@ export const createEmpleado = async (authToken, isSellerEmpleado, newEmpleadoNam
             return await response.json();
         }
         else {
-            throw new Error('Error al crear el empleado');
+            throw new Error('Error al cambiar el estado del empleado');
         }
     }
     catch (error) {
-        throw new Error(error.message || 'Error desconocido al crear el empleado');
+        throw new Error(error.message || 'Error desconocido al cambiar el estado del empleado');
     }
-};
+}
+
+
 
 // Actualización de un empleado
 export const updateEmpleado = async (authToken, editingEmpleado, newEmpleadoName, newEmpleadoCapacity) => {
     try {
-        const response = await fetch(`${apiUrl}/api/v1/employees/${editingEmpleado.id}/`, {
+        const response = await fetch(`${apiUrl}/api/v1/employee${editingEmpleado.id}/`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

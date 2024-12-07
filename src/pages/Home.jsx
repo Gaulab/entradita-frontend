@@ -85,10 +85,10 @@ export default function Home() {
               <h1 className="text-xl sm:text-2xl font-bold text-white">entradita.com</h1>
             </div>
             <nav className="hidden sm:block">
-              <Button asChild variant="ghost" className="text-white hover:bg-gray-700 ml-2">
+              <Button variant="entraditaPrimary" className="ml-2" >
                 <Link to="/contact">Contacto</Link>
               </Button>
-              <Button asChild variant="ghost" className="text-white hover:bg-gray-700 ml-2">
+              <Button  variant="entraditaPrimary" className=" ml-2">
                 <Link to="/login">Iniciar Sesión</Link>
               </Button>
             </nav>

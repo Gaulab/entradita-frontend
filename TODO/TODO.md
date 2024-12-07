@@ -15,6 +15,7 @@
 - [ ] Feature 4: los ultimos tickets creados deberian aparecer primero en ~/src/pages/EventDetails
 - [ ] Feature 5: Siosi hay que incluir el concepto de entrada vip o diferentes tipos de tickets, ver como manejarlo
 - [ ] Feature 6: Ver como manejar el tema del cobro a los organizadores, deberiamos nosotros ponerle al organizador como atributo cantidad de tickets que puede vender y a partir de ese campo pueda generar ventas libremente en cualquier evento
+- [ ] Feature 7: implementar tooltip en detalle tickets vendidos por vendedor y explicar campos del create event (require dni activado)
 
 ## Bugs
 - [ ] Bug 1: El scanner full bugueta nose que le abra pasado

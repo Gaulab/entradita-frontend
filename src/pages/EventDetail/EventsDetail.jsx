@@ -1,3 +1,4 @@
+// entraditaFront/srs/pages/EventDetail/EventDetails.jsx
 import { useState, useContext, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 // Custom components
@@ -18,6 +19,7 @@ import { getEmpleados } from "../../api/empleadoApi";
 import { createEmpleado } from "../../api/empleadoApi";
 import { updateEmpleado } from "../../api/empleadoApi";
 import { deleteEmpleado } from "../../api/empleadoApi";
+import { changeEmpleadoStatus } from "../../api/empleadoApi";
 import { deleteTicket } from "../../api/ticketApi";
 import { updateTicketSales } from "../../api/eventApi";
 
@@ -25,7 +27,7 @@ export default function OldEventDetails() {
   const { id } = useParams();
   const { authToken } = useContext(AuthContext);
   const navigate = useNavigate();
-
+  
   const [event, setEvent] = useState({});
   const [tickets, setTickets] = useState([]);
   const [vendedores, setVendedores] = useState([]);
@@ -41,19 +43,21 @@ export default function OldEventDetails() {
 
   const [newEmpleadoName, setNewEmpleadoName] = useState("");
   const [newEmpleadoCapacity, setNewEmpleadoCapacity] = useState("");
+  const [newTicketTags, setNewTicketTags] = useState([]);
   const [isSellerEmpleado, setIsSellerEmpleado] = useState(true);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [editingEmpleado, setEditingEmpleado] = useState(null);
 
   const itemsPerPage = 10;
-
   const [copyMessage, setCopyMessage] = useState("");
+
 
   useEffect(() => {
     const getEventData = async () => {
       try {
         const data = await getEventDetails(id, authToken.access);
+        // console.log("Event data:", data);
         setEvent(data.event);
         setTicketSalesEnabled(data.event.ticket_sales_enabled);
         setTickets(data.tickets);
@@ -83,7 +87,14 @@ export default function OldEventDetails() {
 
   const handleConfirmGenerarEmpleado = useCallback(async () => {
     try {
-      const data = await createEmpleado(authToken.access, isSellerEmpleado, newEmpleadoName, newEmpleadoCapacity, id);
+      // console.log("newTicketTags en handleConfirmGenerarEmpleado: ", newTicketTags);
+      // console.log("Creating empleado...");
+      // console.log("isSellerEmpleado:", isSellerEmpleado);
+      // console.log("newEmpleadoName:", newEmpleadoName);
+      // console.log("newEmpleadoCapacity:", newEmpleadoCapacity);
+      // console.log("newTicketTags:", newTicketTags);
+      
+      const data = await createEmpleado(authToken.access, isSellerEmpleado, newEmpleadoName, newEmpleadoCapacity, newTicketTags, id);
       if (isSellerEmpleado) {
         setVendedores([...vendedores, data]);
       } else {
@@ -97,7 +108,8 @@ export default function OldEventDetails() {
     setIsDialogOpen(false);
     setNewEmpleadoName("");
     setNewEmpleadoCapacity("");
-  }, [id, isSellerEmpleado, newEmpleadoName, newEmpleadoCapacity, vendedores, escaners, reload]);
+    setNewTicketTags([]);
+  }, [id, isSellerEmpleado, newEmpleadoName, newEmpleadoCapacity, vendedores, escaners, reload, newTicketTags]);
 
   const handleConfirmEditEmpleado = useCallback(async () => {
     try {
@@ -206,6 +218,22 @@ export default function OldEventDetails() {
     setDeleteConfirmOpen(true);
   }, []);
 
+  const handleChangeEmpleadoStatus = useCallback(async (empleado) => {
+    console.log("Changing status of empleado:", empleado.id);
+    try {
+      const updatedEmpleado = await changeEmpleadoStatus(authToken.access, empleado);
+      if (empleado.is_seller) {
+        setVendedores(vendedores.map((v) => (v.id === updatedEmpleado.id ? updatedEmpleado : v)));
+      } else {
+        setEscaners(escaners.map((e) => (e.id === updatedEmpleado.id ? updatedEmpleado : e)));
+      }
+      setReload(!reload);
+    } catch (error) {
+      console.error("Error updating empleado status:", error.message);
+      alert(error.message);
+    }
+  }, [authToken.access, vendedores, escaners, reload]);
+
   const filteredTickets = tickets.filter((ticket) => ticket.owner_name.toLowerCase().includes(searchTerm.toLowerCase()) || ticket.owner_dni.includes(searchTerm));
 
   const pageCount = Math.ceil(filteredTickets.length / itemsPerPage);
@@ -233,11 +261,11 @@ export default function OldEventDetails() {
           </TabsList>
 
           <TabsContent value="tickets">
-            <Tickets id={id} paginatedTickets={paginatedTickets} pageCount={pageCount} itemsPerPage={itemsPerPage} currentPage={currentPage} setCurrentPage={setCurrentPage} searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleEliminarTicket={handleEliminarTicket} copyToClipboard={copyToClipboard} ticketSalesEnabled={ticketSalesEnabled} handleUpdateTicketSales={handleUpdateTicketSales} dniRequired={event.dniRequired} />
+            <Tickets id={id} paginatedTickets={paginatedTickets} pageCount={pageCount} itemsPerPage={itemsPerPage} currentPage={currentPage} setCurrentPage={setCurrentPage} searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleEliminarTicket={handleEliminarTicket} copyToClipboard={copyToClipboard} ticketSalesEnabled={ticketSalesEnabled} handleUpdateTicketSales={handleUpdateTicketSales} dniRequired={event.dni_required} ticketTags={event.ticket_tags} />
           </TabsContent>
 
           <TabsContent value="vendedores">
-            <Vendedores vendedores={vendedores} handleGenerarEmpleado={handleGenerarEmpleado} handleEditEmpleado={handleEditEmpleado} handleEliminarEmpleado={handleEliminarEmpleado} copyToClipboard={copyToClipboard} />
+            <Vendedores vendedores={vendedores} handleGenerarEmpleado={handleGenerarEmpleado} handleEditEmpleado={handleEditEmpleado} handleEliminarEmpleado={handleEliminarEmpleado} handleChangeEmpleadoStatus={handleChangeEmpleadoStatus} copyToClipboard={copyToClipboard} ticketTags={event.ticket_tags}  setNewTicketTags={setNewTicketTags} newTicketTags={newTicketTags}/>
           </TabsContent>
 
           <TabsContent value="escaners">
@@ -247,7 +275,10 @@ export default function OldEventDetails() {
 
         {copyMessage && <div className="fixed bottom-4 right-4 bg-green-400 text-black px-4 py-2 rounded-md shadow-lg">{copyMessage}</div>}
 
-        <DialogCreateEmployee isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen} isSellerEmpleado={isSellerEmpleado} newEmpleadoName={newEmpleadoName} setNewEmpleadoName={setNewEmpleadoName} newEmpleadoCapacity={newEmpleadoCapacity} setNewEmpleadoCapacity={setNewEmpleadoCapacity} handleConfirmGenerarEmpleado={handleConfirmGenerarEmpleado} />
+        <DialogCreateEmployee isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen} isSellerEmpleado={isSellerEmpleado}
+          newEmpleadoName={newEmpleadoName} setNewEmpleadoName={setNewEmpleadoName} newEmpleadoCapacity={newEmpleadoCapacity}
+          setNewEmpleadoCapacity={setNewEmpleadoCapacity} handleConfirmGenerarEmpleado={handleConfirmGenerarEmpleado}
+          setNewTicketTags={setNewTicketTags} newTicketTags={newTicketTags} ticket_tags={event.ticket_tags} />
 
         <DialogEditEmployee isEditDialogOpen={isEditDialogOpen} setIsEditDialogOpen={setIsEditDialogOpen} editingEmpleado={editingEmpleado} newEmpleadoName={newEmpleadoName} setNewEmpleadoName={setNewEmpleadoName} newEmpleadoCapacity={newEmpleadoCapacity} setNewEmpleadoCapacity={setNewEmpleadoCapacity} handleConfirmEditEmpleado={handleConfirmEditEmpleado} />
 

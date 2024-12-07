@@ -1,9 +1,11 @@
+// entraditaFront/src/api/eventApi.jsx
 const apiUrl = import.meta.env.VITE_API_URL;
+
 
 // Devuelve los detalles de un evento
 export const getEvent = async (id, authToken) => {
   try {
-    const response = await fetch(`${apiUrl}/api/v1/events/${id}/`, {
+    const response = await fetch(`${apiUrl}/api/v1/event/${id}/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -25,7 +27,7 @@ export const getEvent = async (id, authToken) => {
 // Devuelve los detalles de un evento
 export const getEventDetails = async (id, authToken) => {
   try {
-    const response = await fetch(`${apiUrl}/api/v1/events/${id}/details`, {
+    const response = await fetch(`${apiUrl}/api/v1/event/${id}/details`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -65,70 +67,61 @@ export const getEvents = async (authToken) => {
   }
 };
 
-// Creacion de un evento
-export const createEvent = async (e, authToken) => {
+
+export const createEvent = async (eventData, authToken) => {
   try {
-    const response = await fetch(`${apiUrl}/api/v1/events/create/`, {
+    const response = await fetch(`${apiUrl}/api/v1/event/create/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}`
+        'Authorization': `Bearer ${authToken}`,
       },
-      body: JSON.stringify({
-        name: e.target.name.value,
-        date: e.target.date.value,
-        place: e.target.place.value,
-        capacity: e.target.capacity.value ? parseInt(e.target.capacity.value) : null,
-        image_address: e.target.image_address.value ? e.target.image_address.value : null,
-        password_employee: e.target.password_employee.value
-      }),
+      body: JSON.stringify(eventData),
     });
 
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error('Error al crear el evento');
+      const errorData = await response.json();
+      console.error("Error al crear el evento:", errorData); // Muestra el error detallado
+      throw new Error(errorData.detail || 'Error al crear el evento');
     }
-
   } catch (error) {
-    throw new Error(error.message || 'Error desconocido al crear el evento');
+    console.error("Error en createEvent:", error.message);
+    throw error;
   }
 };
 
+
+
 // Actualización de un evento
-export const updateEvent = async (e, id, authToken) => {
+export const updateEvent = async (eventData, eventId, token) => {
+  // console.log("asd" + JSON.stringify(eventData))
   try {
-    const response = await fetch(`${apiUrl}/api/v1/events/${id}/`, {
+    const response = await fetch(`${apiUrl}/api/v1/event/${eventId}/`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}`
+        'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        name: e.target.name.value,
-        date: e.target.date.value,
-        place: e.target.place.value,
-        capacity: e.target.capacity.value ? parseInt(e.target.capacity.value) : 0,
-        image_address: e.target.image_address.value,
-        password_employee: e.target.password_employee.value
-      }),
+      body: JSON.stringify(eventData),
     });
 
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error('Error al editar el evento');
+    if (!response.ok) {
+      throw new Error('Error al actualizar el evento');
     }
 
+    return await response.json();
   } catch (error) {
-    throw new Error(error.message || 'Error desconocido al editar el evento');
+    throw error;
   }
 };
+
 
 // Deshabilitacion / Habilitacion venta de tickets
 export const updateTicketSales = async (id, authToken) => {
   try {
-    const response = await fetch(`${apiUrl}/api/v1/events/${id}/`, {
+    const response = await fetch(`${apiUrl}/api/v1/event/${id}/ticket-sales/`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

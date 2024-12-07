@@ -19,7 +19,7 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        entraditaPrimary: "bg-blue-600 text-gray-300 hover:bg-blue-500 hover:text-gray-200",
+        entraditaPrimary: "bg-blue-600 hover:bg-blue-500 text-gray-100 ",
         entraditaSecondary: "bg-gray-900 border border-gray-700 text-gray-300 hover:bg-blue-950 hover:text-gray-200",
         entraditaTertiary: "bg-gray-800 text-gray-300 border border-gray-700 hover:text-gray-200 hover:border-gray-700",
       },
@@ -37,25 +37,36 @@ const buttonVariants = cva(
   }
 )
 
-const Button = React.forwardRef(({ className, variant, size, asChild = false, to, ...props }, ref) => {
+const Button = React.forwardRef(({ className, variant, size, asChild = false, to, new: isNew, ...props }, ref) => {
   const Comp = asChild ? Slot : "button"
   
+  const buttonContent = (
+    <>
+      {isNew && <span className="absolute top-0 right-0 bg-red-300 text-black text-xs px-1 rounded m-1">new</span>}
+      {props.children}
+    </>
+  )
+
   if (to) {
     return (
       <Link
         to={to}
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(buttonVariants({ variant, size, className }), "relative")}
         {...props}
-      />
+      >
+        {buttonContent}
+      </Link>
     )
   }
 
   return (
     <Comp
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(buttonVariants({ variant, size, className }), "relative")}
       ref={ref}
       {...props}
-    />
+    >
+      {buttonContent}
+    </Comp>
   )
 })
 
@@ -67,6 +78,7 @@ Button.propTypes = {
   size: PropTypes.oneOf(['default', 'sm', 'lg', 'icon']),
   asChild: PropTypes.bool,
   to: PropTypes.string,
+  new: PropTypes.bool,
 }
 
 export { Button, buttonVariants }

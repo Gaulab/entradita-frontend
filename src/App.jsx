@@ -13,6 +13,8 @@ import VendorView from './pages/VendedorView';
 import CreateTicketBySeller from './pages/CreateTicektBySeller';
 import ScannerView from './pages/ScannerView';
 import Contact from './pages/Contact';
+import EventPage from './pages/EventPage';
+import Economy from './pages/Economy';
 
 function App() {
   return (
@@ -26,12 +28,14 @@ function App() {
           <Route path="/vendedor/:uuid" element={<VendedorWrapper />} />
           <Route path="/vendedor/:uuid/create-ticket" element={<CreateTicketBySeller />} />
           <Route path="/escaner/:uuid" element={<EscanerWrapper />} />
+          <Route path="/eventPage/:uuid" element={<EventPage />} />
           {/* Rutas protegidas */}
           <Route path="/dashboard" element={<AuthProvider><PrivateRoute><Dashboard /></PrivateRoute></AuthProvider>} />
           <Route path="/create-event" element={<AuthProvider><PrivateRoute><CreateEvent /></PrivateRoute></AuthProvider>} />
           <Route path="/event/:id/details" element={<AuthProvider><PrivateRoute><OldEventDetails /></PrivateRoute></AuthProvider>} />
           <Route path="/event/:id/create-ticket" element={<AuthProvider><PrivateRoute><CreateTicket /></PrivateRoute></AuthProvider>} />
           <Route path="/edit-event/:id" element={<AuthProvider><PrivateRoute><EditEvent /></PrivateRoute></AuthProvider>} />
+          <Route path="event/:id/economy" element={<AuthProvider><PrivateRoute><Economy /></PrivateRoute></AuthProvider>} />
         </Routes>
     </Router>
   );

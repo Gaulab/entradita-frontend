@@ -1,25 +1,52 @@
-import * as React from "react"
-import * as TooltipPrimitive from "@radix-ui/react-tooltip"
+import React, { useState, useRef, useEffect } from 'react';
 
-import { cn } from "@/lib/utils"
+export function Tooltip({ children, content }) {
+  const [isVisible, setIsVisible] = useState(false);
+  const tooltipRef = useRef(null);
+  const triggerRef = useRef(null);
 
-const TooltipProvider = TooltipPrimitive.Provider
+  const showTooltip = () => setIsVisible(true);
+  const hideTooltip = () => setIsVisible(false);
 
-const Tooltip = TooltipPrimitive.Root
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (tooltipRef.current && !tooltipRef.current.contains(event.target) &&
+          triggerRef.current && !triggerRef.current.contains(event.target)) {
+        hideTooltip();
+      }
+    };
 
-const TooltipTrigger = TooltipPrimitive.Trigger
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
 
-const TooltipContent = React.forwardRef(({ className, sideOffset = 4, ...props }, ref) => (
-  <TooltipPrimitive.Content
-    ref={ref}
-    sideOffset={sideOffset}
-    className={cn(
-      "z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-      className
-    )}
-    {...props}
-  />
-))
-TooltipContent.displayName = TooltipPrimitive.Content.displayName
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, []);
 
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }
+  return (
+    <>
+      <div className="relative inline-block" ref={triggerRef}>
+        <div
+          className="text-gray-400 cursor-help"
+          onClick={isVisible ? hideTooltip : showTooltip}
+          onMouseEnter={showTooltip}
+          onMouseLeave={hideTooltip}
+        >
+          {children}
+        </div>
+      </div>
+      {isVisible && (
+        <div 
+          ref={tooltipRef}
+          className="fixed top-0 left-0 right-0 z-50 p-4 bg-gray-900 text-white text-sm md:absolute md:top-auto md:left-1/2 md:right-auto md:transform md:-translate-x-1/2 md:translate-y-full md:bg-gray-900 md:rounded-lg md:shadow-lg md:p-2 md:w-max md:max-w-xs"
+          style={{ whiteSpace: 'pre-wrap' }}
+        >
+          {content}
+          <div className="hidden md:block absolute left-1/2 bottom-full -translate-x-1/2 translate-y-1 border-8 border-transparent border-b-gray-900"></div>
+        </div>
+      )}
+    </>
+  );
+}

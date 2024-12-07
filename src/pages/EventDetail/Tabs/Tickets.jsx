@@ -10,9 +10,8 @@ import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon } from "lucide-reac
 // API
 import { updateTicketSales } from "../../../api/eventApi";
 
-export default function Tickets({ id, paginatedTickets, setSearchTerm, searchTerm, copyToClipboard, handleEliminarTicket, currentPage, setCurrentPage, itemsPerPage, pageCount, ticketSalesEnabled, handleUpdateTicketSales, dniRequired }) {
+export default function Tickets({ id, paginatedTickets, setSearchTerm, searchTerm, copyToClipboard, handleEliminarTicket, currentPage, setCurrentPage, itemsPerPage, pageCount, ticketSalesEnabled, handleUpdateTicketSales, dniRequired, ticketTags }) {
     const navigate = useNavigate();
-
     return (
         <Card className="bg-gray-800 border-gray-700">
             <CardHeader>
@@ -29,7 +28,7 @@ export default function Tickets({ id, paginatedTickets, setSearchTerm, searchTer
             </CardHeader>
             <CardContent>
                 <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
-                    <Button onClick={() => navigate(`/event/${id}/create-ticket`, { state: { dniRequired } })} disabled={!ticketSalesEnabled} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
+                    <Button onClick={() => navigate(`/event/${id}/create-ticket`, { state: { dniRequired, ticketTags } })} disabled={!ticketSalesEnabled} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
                         <PlusIcon className="mr-2 h-4 w-4"/> Nuevo Ticket
                     </Button>
                     <div className="relative w-full sm:w-auto">

@@ -28,44 +28,52 @@ const Dropdown = React.forwardRef(function Dropdown(
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
-  const selectedOption = options.find(option => option.value === value)
+  const selectedOption = options.find(option => option.name === value)
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        disabled={disabled}
-        className={`w-full px-4 py-2.5 text-left rounded-lg 
-          flex items-center justify-between focus-visible:outline-none 
-          focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
+      <div
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+        className={`w-full h-10 px-3 py-2 text-left rounded-lg 
+          flex items-center justify-between
+          bg-gray-700 border border-gray-600
+          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+          hover:bg-gray-600 transition-colors duration-200
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           ${className}`}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            !disabled && setIsOpen(!isOpen)
+          }
+        }}
         ref={ref}
         {...props}
       >
         <span className={`block truncate ${!selectedOption ? 'text-gray-400' : 'text-gray-200'}`}>
-          {selectedOption ? selectedOption.label : placeholder}
+          {selectedOption ? selectedOption.name : placeholder}
         </span>
         <ChevronDown 
           className={`ml-2 h-4 w-4 text-gray-400 transition-transform ${isOpen ? 'transform rotate-180' : ''}`}
         />
-      </button>
+      </div>
 
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-gray-700 rounded-lg shadow-lg">
+        <div className="absolute z-10 w-full mt-1 bg-gray-700 rounded-lg shadow-lg border border-gray-600">
           <ul className="py-1 max-h-60 overflow-auto">
             {options.map((option) => (
               <li
-                key={option.value}
+                key={option.id}
                 onClick={() => {
-                  onChange(option.value)
+                  onChange(option.name)
                   setIsOpen(false)
                 }}
-                className={`px-4 py-2 cursor-pointer text-gray-200 hover:bg-[#323845] transition-colors
-                  ${option.value === value ? 'bg-[#323845]' : ''}`}
+                className={`px-4 py-2 cursor-pointer text-gray-200 hover:bg-gray-600 transition-colors
+                  ${option.name === value ? 'bg-gray-600' : ''}`}
               >
-                {option.label}
+                {option.name}
               </li>
             ))}
           </ul>
@@ -78,8 +86,8 @@ const Dropdown = React.forwardRef(function Dropdown(
 Dropdown.propTypes = {
   options: PropTypes.arrayOf(
     PropTypes.shape({
-      value: PropTypes.any.isRequired,
-      label: PropTypes.string.isRequired,
+      id: PropTypes.any.isRequired,
+      name: PropTypes.string.isRequired,
     })
   ).isRequired,
   value: PropTypes.any,

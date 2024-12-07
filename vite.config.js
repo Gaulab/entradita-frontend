@@ -13,10 +13,15 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src'),
     },
   },
+  server: {
+    host: '0.0.0.0',
+    port: 5173, // Puedes cambiar el puerto si lo deseas
+  },
+  build: {
+    sourcemap: true, // Habilita los mapas de origen
+  },
   define: {
-    // eslint-disable-next-line no-undef
-    'process.env.VITE_API_URL': process.env.VITE_API_URL,
-    // eslint-disable-next-line no-undef
-    'process.env.VITE_APP_NAME': process.env.VITE_APP_NAME,
-  }
+    'process.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL),
+    'process.env.VITE_APP_NAME': JSON.stringify(process.env.VITE_APP_NAME),
+  },
 });
