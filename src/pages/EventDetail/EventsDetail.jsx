@@ -166,6 +166,7 @@ export default function OldEventDetails() {
 
     setDeleteConfirmOpen(false);
     setItemToDelete(null);
+    setIsChecked(false);
   }, [itemToDelete, tickets, vendedores, escaners, reload]);
 
   const handleUpdateTicketSales = useCallback(async () => {
@@ -239,6 +240,12 @@ export default function OldEventDetails() {
   const pageCount = Math.ceil(filteredTickets.length / itemsPerPage);
   const paginatedTickets = filteredTickets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
+  const [isChecked, setIsChecked] = useState(false);
+  const handleCheckboxChange = (e) => {
+    setIsChecked(e.target.checked);
+
+  };
+
   return (
     <div className="flex justify-center space-y-6 pb-8 bg-gray-900 text-white p-4 min-h-screen w-screen ">
       <div className="max-w-6xl mx-auto w-full">
@@ -282,7 +289,8 @@ export default function OldEventDetails() {
 
         <DialogEditEmployee isEditDialogOpen={isEditDialogOpen} setIsEditDialogOpen={setIsEditDialogOpen} editingEmpleado={editingEmpleado} newEmpleadoName={newEmpleadoName} setNewEmpleadoName={setNewEmpleadoName} newEmpleadoCapacity={newEmpleadoCapacity} setNewEmpleadoCapacity={setNewEmpleadoCapacity} handleConfirmEditEmpleado={handleConfirmEditEmpleado} />
 
-        <DialogDeleteItem deleteConfirmOpen={deleteConfirmOpen} setDeleteConfirmOpen={setDeleteConfirmOpen} handleConfirmDelete={handleConfirmDelete} itemToDelete={itemToDelete} />
+        <DialogDeleteItem deleteConfirmOpen={deleteConfirmOpen} setDeleteConfirmOpen={setDeleteConfirmOpen}
+          handleConfirmDelete={handleConfirmDelete} itemToDelete={itemToDelete} isChecked={isChecked} setIsChecked={setIsChecked} handleCheckboxChange={handleCheckboxChange} />
 
       </div>
     </div>

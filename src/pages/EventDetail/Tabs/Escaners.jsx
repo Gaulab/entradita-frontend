@@ -35,9 +35,9 @@ export default function Escaners({ escaners, handleGenerarEmpleado, handleEditEm
                               <PencilIcon className="h-4 w-4" />
                               <span className="sr-only">Editar escáner</span>
                             </Button>
-                            <Button variant="destructive" onClick={() => handleEliminarEmpleado(escaner)} size="sm" title={escaner.status === true ? "Deshabilitar escáner" : "Eliminar escáner"}>
-                              {escaner.status === true ? <TicketX className="h-4 w-4" /> : <Trash2Icon className="h-4 w-4" />}
-                              <span className="sr-only">{escaner.status === true ? "Deshabilitar escáner" : "Eliminar escáner"}</span>
+                            <Button variant="destructive" onClick={() => handleEliminarEmpleado(escaner)} size="sm" title={"Eliminar escáner"}>
+                              <Trash2Icon className="h-4 w-4" />
+                              <span className="sr-only">Eliminar escáner</span>
                             </Button>
                           </TableCell>
                         </TableRow>

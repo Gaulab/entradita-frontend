@@ -22,16 +22,17 @@ export default function CreateTicket() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    console.log('Creating ticket...' + event.target.name.value + ' ' + event.target.surname.value + ' ' + event.target.dni.value + ' ' + valueDropdown);
     try {
-      
-      await createTicket(event, id, authToken.access);
-      navigate(`/event/${id}/details/`); // Navigate to event details on success
+      event.target.tag = valueDropdown;
+      await createTicket(event, id, authToken);
+      navigate(`/event/${id}/tickets`);
     } catch (error) {
-      console.error('Error creating ticket:', error.message);
       setError(error.message);
     }
+    setValueDropdown('');
   };
+
 
   const handleDropdownChange = (e) => {
     setValueDropdown(e);
@@ -74,6 +75,7 @@ export default function CreateTicket() {
               </Label>
               <Dropdown id="categoria" onChange={handleDropdownChange} value={valueDropdown} options={ticketTags} placeholder="Seleccionar categoría" className="" />
             </div>
+            <Input id="ticket_tag" name="ticket_tag" type="hidden" value={id} />
             {error && (
               <Alert variant="destructive">
                 <AlertDescription>{error}</AlertDescription>

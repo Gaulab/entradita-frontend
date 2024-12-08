@@ -3,11 +3,8 @@ import { useState } from 'react';
 import { Button } from '../../../components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../../../components/ui/dialog';
 
-export default function DialogDeleteItem({ deleteConfirmOpen, setDeleteConfirmOpen, itemToDelete, handleConfirmDelete }) {
-  const [isChecked, setIsChecked] = useState(false);
-  const handleCheckboxChange = (e) => {
-    setIsChecked(e.target.checked);
-  };
+export default function DialogDeleteItem({ deleteConfirmOpen, setDeleteConfirmOpen, itemToDelete, handleConfirmDelete, isChecked, setIsChecked , handleCheckboxChange }) {
+
   return (
     <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen} className="">
       <DialogContent className="bg-gray-800 text-white">
@@ -25,16 +22,16 @@ export default function DialogDeleteItem({ deleteConfirmOpen, setDeleteConfirmOp
           <div className="flex justify-start items-center ">
             <input type="checkbox" id="confirm-delete" checked={isChecked} onChange={handleCheckboxChange} className="mr-2"  />
             <label htmlFor="confirm-delete" className="text-gray-200 text-left">
-              Quiero eliminar al vendedor junto con los ticket que creo.
+              Quiero eliminar al {itemToDelete?.type} {itemToDelete?.type === 'vendedor' ? 'junto con los ticket que creo.' : ''}
             </label>
           </div>
         </DialogHeader>
         <DialogFooter className="">
-          <Button onClick={handleConfirmDelete} variant="destructive" disabled={!isChecked} className="m">
-            Eliminar
-          </Button>
           <Button onClick={() => setDeleteConfirmOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600 mb-2">
             Cancelar
+          </Button>
+          <Button onClick={handleConfirmDelete} variant="destructive" disabled={!isChecked} className="m">
+            Eliminar
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -48,8 +48,8 @@ export default function Vendedores({ vendedores, handleGenerarEmpleado, handleEd
                                         <Button
                                             onClick={() => handleChangeEmpleadoStatus(vendedor)}
                                             size="sm"
-                                            title={vendedor.status === true ? "Deshabilitar vendedor" : "Habilitar vendedor"}
-                                            className={vendedor.status === true ? "bg-red-600 hover:bg-red-700 text-white" : "bg-green-600 hover:bg-green-700 text-white"}
+                                            title={vendedor.status === false ? "Deshabilitar vendedor" : "Habilitar vendedor"}
+                                            className={vendedor.status === false ? "bg-red-600 hover:bg-red-700 text-white" : "bg-green-600 hover:bg-green-700 text-white"}
                                         >
                                             {vendedor.status === true ? <TicketX className="h-4 w-4" /> : <TicketCheck className="h-4 w-4" />}
                                             <span className="sr-only">{vendedor.status === true ? "Deshabilitar vendedor" : "Habilitar vendedor"}</span>

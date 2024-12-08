@@ -114,7 +114,7 @@ export const updateEmpleado = async (authToken, editingEmpleado, newEmpleadoName
 // Eliminación de un empleado
 export const deleteEmpleado = async (authToken, itemToDelete) => {
     try {
-        await fetch(`${apiUrl}/api/v1/employees/${itemToDelete.id}/`, {
+        await fetch(`${apiUrl}/api/v1/employee/${itemToDelete.id}/`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
