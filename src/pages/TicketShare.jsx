@@ -12,7 +12,7 @@ export default function TicketShare({ ticketUrl }) {
     if (navigator.share) {
       navigator.share({
         title: 'Tu ticket para el evento',
-        text: '¡Aquí está tu ticket para el evento!',
+        text: `¡Aquí está tu ticket para el evento! ${ticketUrl}`,
         url: ticketUrl,
       }).then(() => {
         console.log('Ticket compartido exitosamente');
