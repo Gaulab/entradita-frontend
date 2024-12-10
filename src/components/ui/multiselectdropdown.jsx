@@ -18,8 +18,8 @@ const MultiSelectDropdown = ({ options, selectedValues, onChange, placeholder = 
   }, []);
 
   const toggleOption = (option) => {
-    if (selectedValues.includes(option)) {
-      onChange(selectedValues.filter((value) => value !== option));
+    if (selectedValues.some((value) => value.id === option.id)) {
+      onChange(selectedValues.filter((value) => value.id !== option.id));
     } else {
       onChange([...selectedValues, option]);
     }
@@ -59,10 +59,10 @@ const MultiSelectDropdown = ({ options, selectedValues, onChange, placeholder = 
                 key={option.id}
                 onClick={() => toggleOption(option)}
                 className={`px-4 py-2 cursor-pointer flex justify-between items-center text-gray-200 
-                  hover:bg-gray-600 transition-colors ${selectedValues.includes(option) ? 'bg-gray-600' : ''}`}
+                  hover:bg-gray-600 transition-colors ${selectedValues.some((value) => value.id === option.id) ? 'bg-gray-600' : ''}`}
               >
                 {option.name}
-                {selectedValues.includes(option) && <Check className="h-4 w-4 text-blue-500" />}
+                {selectedValues.some((value) => value.id === option.id) && <Check className="h-4 w-4 text-blue-500" />}
               </li>
             ))}
           </ul>

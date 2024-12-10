@@ -1,7 +1,22 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/card';
 import { Progress } from '../../components/ui/progress';
 import { Button } from '../../components/ui/button';
-import { BadgeDollarSign, BookMarkedIcon, Calendar, CalendarDaysIcon, DollarSign, LibraryBigIcon, LibraryIcon, LucideShoppingCart, MapPin, MonitorCogIcon, Ticket, TicketSlashIcon, User2Icon, UsersRound } from "lucide-react";
+import {
+  BadgeDollarSign,
+  BookMarkedIcon,
+  Calendar,
+  CalendarDaysIcon,
+  DollarSign,
+  LibraryBigIcon,
+  LibraryIcon,
+  LucideShoppingCart,
+  MapPin,
+  MonitorCogIcon,
+  Ticket,
+  TicketSlashIcon,
+  User2Icon,
+  UsersRound,
+} from 'lucide-react';
 export default function Event({ event }) {
   const tickets_sold = event.tickets_counter === 0 ? 1 : event.tickets_counter;
   const percentage = (event.tickets_scanned / tickets_sold) * 100;
@@ -11,7 +26,19 @@ export default function Event({ event }) {
   };
   const navigateToWebPage = () => {
     window.location.href = `/eventPage/${event.id}`;
+  };
+
+  const navigateToGuide = () => {
+    window.location.href = `/event/${event.id}/guide`;
   }
+
+  const navigateToWhatsapp = () => {
+    window.location.href = `https://wa.me/543482275737?text=Hola!%20Necesito%20ayuda%20con%20el%20evento%20${event.name
+      .split(' ')
+      .join('%20')}`;
+  }
+
+
   return (
     <Card className="bg-gray-800 border-gray-700 mb-8">
       <CardHeader>
@@ -24,55 +51,40 @@ export default function Event({ event }) {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 ">
-
-            <p className="text-gray-200 flex flex-row items-center">
-              <CalendarDaysIcon className='h-5 mr-1'/>Fecha:<span className="text-white ml-3">{event.date}</span>
-            </p>
-            <p className="text-gray-200 flex flex-row items-center">
-            <MapPin className='h-5 mr-1'/>Lugar:<span className="text-white ml-3">{event.place}</span>
-            </p>
-
-            <p className="text-gray-200 flex flex-row items-center">
-            <TicketSlashIcon className='h-5 mr-1'/>Capacidad:<span className="text-white ml-3"> {event.capacity ? event.capacity : 'Ilimitada'}</span>
-            </p>
-            <p className="text-gray-200 flex flex-row items-center">
-            <LucideShoppingCart className='h-5 mr-1'/>Vendidos:<span className="text-white ml-3">{event.tickets_counter}</span>
+          <p className="text-gray-200 flex flex-row items-center">
+            <CalendarDaysIcon className="h-5 mr-1" />
+            Fecha:<span className="text-white ml-3">{event.date}</span>
+          </p>
+          <p className="text-gray-200 flex flex-row items-center">
+            <MapPin className="h-5 mr-1" />
+            Lugar:<span className="text-white ml-3">{event.place}</span>
           </p>
 
-          
+          <p className="text-gray-200 flex flex-row items-center">
+            <TicketSlashIcon className="h-5 mr-1" />
+            Capacidad:<span className="text-white ml-3"> {event.capacity ? event.capacity : 'Ilimitada'}</span>
+          </p>
+          <p className="text-gray-200 flex flex-row items-center">
+            <LucideShoppingCart className="h-5 mr-1" />
+            Vendidos:<span className="text-white ml-3">{event.tickets_counter}</span>
+          </p>
         </div>
       </CardContent>
       <CardContent>
-        <div className='flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:space-x-2 '>
-        <Button
-            onClick={navigateToWebPage}
-            className="bg-blue-900 hover:bg-blue-800 hover:text-white text-white sm:min-w-48 sm:w-min"
-            new
-          >
-            <MonitorCogIcon className="mr-2 h-4 w-4"/> Página WEB
-        </Button>
-          <Button
-            onClick={navigateToEconomy}
-            className="bg-green-900 hover:bg-blue-800  hover:text-white text-white sm:min-w-48 sm:w-min" new
-          >
-            <DollarSign className="mr-2 h-4 w-4"/> Economía
+        <div className="flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:flex-wrap  ">
+          <Button onClick={navigateToWebPage} className="sm:mr-2 sm:mb-2 bg-blue-900 hover:bg-blue-800 hover:text-white text-white sm:min-w-48 sm:w-min" new>
+            <MonitorCogIcon className="mr-2 h-4 w-4" /> Página WEB
           </Button>
-        <Button
-            to = "https://wa.me/+543482275737"
-            className="bg-gray-700 hover:bg-blue-800  hover:text-white text-white sm:min-w-48 sm:w-min"
-          >
-            <BookMarkedIcon className="mr-2 h-4 w-4"/> Guias de uso
+          <Button onClick={navigateToEconomy} className="sm:mr-2 bg-green-900 hover:bg-green-800  hover:text-white text-white sm:min-w-48 sm:w-min" new>
+            <DollarSign className="mr-2 h-4 w-4" /> Economía
           </Button>
-          <Button
-            to = "https://wa.me/+543482275737"
-            className="bg-gray-700 hover:bg-blue-800  hover:text-white text-white sm:min-w-48 sm:w-min"
-          >
-            <User2Icon className="mr-2 h-4 w-4"/> Soporte rápido 
+          <Button onClick={navigateToWhatsapp} className="sm:mr-2 bg-gray-700 hover:bg-gray-600  hover:text-white text-white sm:min-w-48 sm:w-min">
+            <User2Icon className="mr-2 h-4 w-4" /> Soporte rápido
           </Button>
-
+          <Button onClick={navigateToGuide} disabled className="sm:mr-2 bg-gray-700 hover:bg-gray-600  hover:text-white text-white sm:min-w-48 sm:w-min">
+            <BookMarkedIcon className="mr-2 h-4 w-4" /> Guias de uso
+          </Button>
         </div>
-
-
       </CardContent>
       <CardContent>
         <div className="space-y-2">

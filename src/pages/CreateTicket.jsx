@@ -22,21 +22,35 @@ export default function CreateTicket() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log('Creating ticket...' + event.target.name.value + ' ' + event.target.surname.value + ' ' + event.target.dni.value + ' ' + valueDropdown);
+    // console.log('creating ticket...');
+    // console.log('ticketTags: ', ticketTags);
+    // console.log('Creating ticket...', event.target.name.value, event.target.surname.value, valueDropdown);
+    // console.log('DNI: ', event.target.dni ? event.target.dni.value : 'No DNI');
+    // console.log('valueDropdown: ', JSON.stringify(valueDropdown));
+
+    const formData = {
+      owner_name: event.target.name.value,
+      owner_lastname: event.target.surname.value,
+      owner_dni: event.target.dni ? event.target.dni.value : null,
+      ticket_tag: valueDropdown.id,
+    };
+
     try {
-      event.target.tag = valueDropdown;
-      await createTicket(event, id, authToken);
-      navigate(`/event/${id}/tickets`);
+      const token = typeof authToken === 'string' ? authToken.trim() : authToken.access.trim(); // Asegúrate de que authToken sea una cadena
+      const response = await createTicket(formData, id, token);
+      console.log('API Response:', response);
+      navigate(`/event/${id}/details/`);
     } catch (error) {
+      console.error('Error creating ticket:', error);
       setError(error.message);
     }
     setValueDropdown('');
   };
 
-
-  const handleDropdownChange = (e) => {
-    setValueDropdown(e);
+  const handleDropdownChange = (selectedOption) => {
+    setValueDropdown(selectedOption);
   };
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 p-4 w-screen">

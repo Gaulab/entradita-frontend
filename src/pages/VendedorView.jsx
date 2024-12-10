@@ -1,74 +1,80 @@
-import { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon } from "lucide-react";
-import PropTypes from "prop-types";
+import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon } from 'lucide-react';
+import PropTypes from 'prop-types';
 // Custom components
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 // API
-import { checkPassword } from "../api/empleadoApi";
-import { getVendedor } from "../api/empleadoApi";
-import { deleteTicketBySeller } from "../api/ticketApi";
-
+import { checkPassword } from '../api/empleadoApi';
+import { getVendedor } from '../api/empleadoApi';
+import { deleteTicketBySeller } from '../api/ticketApi';
 
 export default function VendedorView({ uuid }) {
   const [tickets, setTickets] = useState([]);
   const [filteredTickets, setFilteredTickets] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [vendedor, setVendedor] = useState(null);
   const [eventId, setEventId] = useState(null);
   const [vendedorNotFound, setVendedorNotFound] = useState(false);
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState('');
   const [isPasswordCorrect, setIsPasswordCorrect] = useState(false);
-  const [passwordError, setPasswordError] = useState("");
+  const [passwordError, setPasswordError] = useState('');
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [ticketToDelete, setTicketToDelete] = useState(null);
-  const [copyMessage, setCopyMessage] = useState("");
+  const [copyMessage, setCopyMessage] = useState('');
   const [ticketsSalesEnabled, setTicketsSalesEnabled] = useState(true);
+  const [dniRequired, setDniRequired] = useState(false);
+  const [ticketTags, setTicketTags] = useState([]);
   const navigate = useNavigate();
 
   const shareTicketLink = useCallback((link) => {
     if (navigator.share) {
-      navigator.share({
-        title: "Compartir Ticket",
-        text: "Aquí está el enlace de tu ticket:",
-        url: link,
-      }).then(() => {
-        console.log("Compartido exitosamente");
-      }).catch((err) => {
-        console.error("Error al compartir:", err);
-      });
+      navigator
+        .share({
+          title: 'Compartir Ticket',
+          text: 'Aquí está el enlace de tu ticket:',
+          url: link,
+        })
+        .then(() => {
+          console.log('Compartido exitosamente');
+        })
+        .catch((err) => {
+          console.error('Error al compartir:', err);
+        });
     } else {
       // Copia al portapapeles como alternativa
-      navigator.clipboard.writeText(link).then(() => {
-        setCopyMessage("Copiado");
-        setTimeout(() => setCopyMessage(""), 2000);
-      }).catch((err) => {
-        console.error("Error al copiar: ", err);
-        setCopyMessage("Error al copiar");
-        setTimeout(() => setCopyMessage(""), 2000);
-      });
+      navigator.clipboard
+        .writeText(link)
+        .then(() => {
+          setCopyMessage('Copiado');
+          setTimeout(() => setCopyMessage(''), 2000);
+        })
+        .catch((err) => {
+          console.error('Error al copiar: ', err);
+          setCopyMessage('Error al copiar');
+          setTimeout(() => setCopyMessage(''), 2000);
+        });
     }
   }, []);
 
-
   useEffect(() => {
     const handleBeforeUnload = () => {
-      localStorage.removeItem("isPasswordCorrect");
+      localStorage.removeItem('isPasswordCorrect');
     };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, []);
 
   useEffect(() => {
-    const storedPasswordStatus = localStorage.getItem("isPasswordCorrect");
+    const storedPasswordStatus = localStorage.getItem('isPasswordCorrect');
     if (storedPasswordStatus) {
       setIsPasswordCorrect(JSON.parse(storedPasswordStatus));
     }
@@ -76,11 +82,14 @@ export default function VendedorView({ uuid }) {
     const fetchTickets = async () => {
       try {
         const data = await getVendedor(uuid);
+        console.log(data);
         setVendedor(data.vendedor);
         setTickets(data.tickets);
         setFilteredTickets(data.tickets);
         setEventId(data.vendedor.event);
         setTicketsSalesEnabled(data.sales_enabled);
+        setDniRequired(data.dni_required);
+        setTicketTags(data.vendedor.ticket_tags);
       } catch (error) {
         console.error(error.message);
       }
@@ -91,14 +100,14 @@ export default function VendedorView({ uuid }) {
 
   const verifyPassword = async () => {
     if (!eventId) {
-      setPasswordError("ID de evento no disponible.");
+      setPasswordError('ID de evento no disponible.');
       return;
     }
 
     try {
       await checkPassword(eventId, password);
       setIsPasswordCorrect(true);
-      localStorage.setItem("isPasswordCorrect", "true");
+      localStorage.setItem('isPasswordCorrect', 'true');
     } catch (error) {
       setPasswordError(error.message);
     }
@@ -115,19 +124,19 @@ export default function VendedorView({ uuid }) {
     }
   };
 
-  const handleCreateTicket = () => {
-    navigate(`/vendedor/${uuid}/create-ticket`);
+  const handleCreateTicket = (dniRequired, ticketTags) => {
+    navigate(`/vendedor/${uuid}/create-ticket`, { state: { dniRequired, ticketTags } });
   };
 
   const handleViewTicket = useCallback((ticketId) => {
-    window.open(`/ticket/${ticketId}`, "_blank");
+    window.open(`/ticket/${ticketId}`, '_blank');
   }, []);
 
   const handleDeleteTicket = (ticket) => {
     setTicketToDelete(ticket);
     setDeleteConfirmOpen(true);
   };
-
+  
   const confirmDeleteTicket = async () => {
     if (!ticketToDelete) return;
 
@@ -136,6 +145,12 @@ export default function VendedorView({ uuid }) {
       const remainingTickets = tickets.filter((t) => t.id !== ticketToDelete.id);
       setTickets(remainingTickets);
       setFilteredTickets(remainingTickets);
+      
+      // Actualizar el contador de tickets del vendedor
+      setVendedor((prevVendedor) => ({
+        ...prevVendedor,
+        ticket_counter: prevVendedor.ticket_counter - 1,
+      }));
     } catch (error) {
       console.error(error.message);
     }
@@ -196,24 +211,22 @@ export default function VendedorView({ uuid }) {
                 {vendedor.status === false ? (
                   <p className="text-gray-400">El organizador te deshabilito</p>
                 ) : (
-                  <p className="text-gray-400">Puedes vender: {vendedor.seller_capacity ? vendedor.seller_capacity - vendedor.ticket_counter : "ilimitados"} tickets</p>
+                  <p className="text-gray-400">Puedes vender: {vendedor.seller_capacity ? vendedor.seller_capacity - vendedor.ticket_counter : 'ilimitados'} tickets</p>
                 )}
                 <p className="text-gray-400">Tickets vendidos: {vendedor.ticket_counter}</p>
               </div>
             )}
             <div className="flex flex-col sm:flex-row justify-between items-center mb-2 gap-4">
-                <Button disabled={(vendedor && vendedor.status === false) || !ticketsSalesEnabled} onClick={handleCreateTicket} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
-                  <PlusIcon className="mr-2 h-4 w-4" /> Nuevo Ticket
-                </Button>
+              <Button
+                disabled={(vendedor && vendedor.status === false) || !ticketsSalesEnabled || (vendedor && vendedor.ticket_counter >= vendedor.seller_capacity)}
+                onClick={() => handleCreateTicket(dniRequired, ticketTags)}
+                className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                <PlusIcon className="mr-2 h-4 w-4" /> Nuevo Ticket
+              </Button>
               <div className="relative w-full sm:w-auto">
                 <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <Input
-                  type="text"
-                  placeholder="Buscar"
-                  value={searchTerm}
-                  onChange={handleSearch}
-                  className="pl-8 w-full bg-gray-700 border-gray-600 text-white placeholder-gray-400"
-                />
+                <Input type="text" placeholder="Buscar" value={searchTerm} onChange={handleSearch} className="pl-8 w-full bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
               </div>
             </div>
             {!ticketsSalesEnabled && <CardDescription className="text-red-400 mb-3">El organizador deshabilitó la venta de tickets</CardDescription>}
@@ -222,18 +235,22 @@ export default function VendedorView({ uuid }) {
                 <TableHeader>
                   <TableRow className="border-gray-700 text-left">
                     <TableHead className="text-gray-300">Nombre</TableHead>
-                    <TableHead className="text-gray-300 hidden md:table-cell">DNI</TableHead>
+                    {dniRequired && <TableHead className="text-gray-300 hidden sm:table-cell">DNI</TableHead>}
+                    <TableHead className="text-gray-300 hidden md:table-cell">Tipo</TableHead>
                     <TableHead className="text-gray-300 text-right">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredTickets.map((ticket) => (
                     <TableRow key={ticket.id} className="border-gray-700">
-                      <TableCell className="text-gray-300">
+                      <TableCell className="text-gray-300 truncate overflow-hidden whitespace-nowrap max-w-28">
                         {ticket.owner_name} {ticket.owner_lastname}
                       </TableCell>
-                      <TableCell className="text-gray-300 hidden md:table-cell">{ticket.owner_dni}</TableCell>
-                      <TableCell className="text-right space-x-1 space-y-1">
+                      {dniRequired && (
+                        <TableCell className="text-gray-300 hidden sm:table-cell truncate overflow-hidden whitespace-nowrap max-w-15">{ticket.owner_dni ? ticket.owner_dni : 'No disponible'}</TableCell>
+                      )}
+                      <TableCell className="text-gray-300 hidden md:table-cell ">{ticket.ticket_tag.name}</TableCell>
+                      <TableCell className="text-right space-x-1 space-y-1 min-w-40">
                         <Button variant="outline" onClick={() => shareTicketLink(`${window.location.origin}/ticket/${ticket.uuid}`)} size="sm" title="Compartir enlace de ticket">
                           <LinkIcon className="h-4 w-4" />
                           <span className="sr-only">Compartir enlace de ticket</span>

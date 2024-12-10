@@ -17,9 +17,11 @@
     "@radix-ui/react-tooltip": "^1.1.4",
     "@yudiel/react-qr-scanner": "^2.0.8",
     "axios": "^1.7.7",
+    "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "framer-motion": "^11.13.1",
+    "date-fns": "^4.1.0",
+    "framer-motion": "^11.13.4",
     "html2canvas": "^1.4.1",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.453.0",
@@ -28,6 +30,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0",
+    "recharts": "^2.14.1",
     "tailwind-merge": "^2.5.4"
   },
   "devDependencies": {

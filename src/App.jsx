@@ -15,6 +15,7 @@ import ScannerView from './pages/ScannerView';
 import Contact from './pages/Contact';
 import EventPage from './pages/EventPage';
 import Economy from './pages/Economy';
+import TicketShare from './pages/TicketShare';
 
 function App() {
   return (
@@ -28,8 +29,9 @@ function App() {
           <Route path="/vendedor/:uuid" element={<VendedorWrapper />} />
           <Route path="/vendedor/:uuid/create-ticket" element={<CreateTicketBySeller />} />
           <Route path="/escaner/:uuid" element={<EscanerWrapper />} />
-          <Route path="/eventPage/:uuid" element={<EventPage />} />
-          {/* Rutas protegidas */}
+          <Route path="/ticketShare/:uuid" element={<TicketShare />} />
+        {/* Rutas protegidas */}
+          <Route path="/eventPage/:id" element={<EventPage />} />
           <Route path="/dashboard" element={<AuthProvider><PrivateRoute><Dashboard /></PrivateRoute></AuthProvider>} />
           <Route path="/create-event" element={<AuthProvider><PrivateRoute><CreateEvent /></PrivateRoute></AuthProvider>} />
           <Route path="/event/:id/details" element={<AuthProvider><PrivateRoute><OldEventDetails /></PrivateRoute></AuthProvider>} />

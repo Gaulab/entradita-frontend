@@ -28,7 +28,7 @@ const Dropdown = React.forwardRef(function Dropdown(
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
-  const selectedOption = options.find(option => option.name === value)
+  const selectedOption = options.find(option => option.id === value?.id)
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -67,11 +67,11 @@ const Dropdown = React.forwardRef(function Dropdown(
               <li
                 key={option.id}
                 onClick={() => {
-                  onChange(option.name)
+                  onChange(option)
                   setIsOpen(false)
                 }}
                 className={`px-4 py-2 cursor-pointer text-gray-200 hover:bg-gray-600 transition-colors
-                  ${option.name === value ? 'bg-gray-600' : ''}`}
+                  ${option.id === value?.id ? 'bg-gray-600' : ''}`}
               >
                 {option.name}
               </li>
@@ -90,7 +90,7 @@ Dropdown.propTypes = {
       name: PropTypes.string.isRequired,
     })
   ).isRequired,
-  value: PropTypes.any,
+  value: PropTypes.object,
   onChange: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
   className: PropTypes.string,

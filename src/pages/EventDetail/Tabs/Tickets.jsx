@@ -46,9 +46,11 @@ export default function Tickets({ id, paginatedTickets, setSearchTerm, searchTer
                     <Table>
                         <TableHeader>
                             <TableRow className="border-gray-700 text-left">
-                                <TableHead className="text-gray-300 hidden sm:table-cell">ID</TableHead>
-                                <TableHead className="text-gray-300">Nombre</TableHead>
-                                <TableHead className="text-gray-300 hidden sm:table-cell">DNI</TableHead>
+                                {/* <TableHead className="text-gray-300 hidden sm:table-cell">ID</TableHead> */}
+                                <TableHead className="text-gray-300 ">Nombre</TableHead>
+                                {dniRequired && <TableHead className="text-gray-300  sm:table-cell ">DNI</TableHead>}
+                                {/* <TableHead className="text-gray-300  sm:table-cell ">DNI</TableHead> */}
+                                <TableHead className="text-gray-300 hidden sm:table-cell">Tipo</TableHead>
                                 <TableHead className="text-gray-300 hidden sm:table-cell">Vendedor</TableHead>
                                 <TableHead className="text-gray-300 text-right">Acciones</TableHead>
                             </TableRow>
@@ -56,9 +58,15 @@ export default function Tickets({ id, paginatedTickets, setSearchTerm, searchTer
                         <TableBody>
                             {paginatedTickets.map((ticket, index) => (
                                 <TableRow key={ticket.id} className="border-gray-700">
-                                    <TableCell className="font-medium text-white hidden sm:table-cell">{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
-                                    <TableCell className="text-gray-300">{ticket.owner_name + " " + ticket.owner_lastname}</TableCell>
-                                    <TableCell className="text-gray-300 hidden sm:table-cell">{ticket.owner_dni}</TableCell>
+                                    {/* <TableCell className="font-medium text-white hidden sm:table-cell">{(currentPage - 1) * itemsPerPage + index + 1}</TableCell> */}
+                                    <TableCell className="text-gray-300 truncate overflow-hidden whitespace-nowrap max-w-28 ">{ticket.owner_name + " " + ticket.owner_lastname}</TableCell>
+                                    {/* <TableCell className="text-gray-300  sm:table-cell truncate overflow-hidden whitespace-nowrap max-w-15">{ticket.owner_dni}</TableCell> */}
+                                    {dniRequired && (
+                                    <TableCell className="text-gray-300 sm:table-cell truncate overflow-hidden whitespace-nowrap max-w-15">
+                                        {ticket.owner_dni ? ticket.owner_dni : "No disponible"}
+                                    </TableCell>
+                                    )}
+                                    <TableCell className="text-gray-300 hidden sm:table-cell">{ticket.ticket_tag.name}</TableCell>
                                     <TableCell className="text-gray-300 hidden sm:table-cell">{ticket.seller_name === "Unknown" ? "Organizer" : ticket.seller_name}</TableCell>
                                     <TableCell className="text-right space-x-1 space-y-1">
                                         <Button variant="outline" onClick={() => copyToClipboard(`${window.location.origin}/ticket/${ticket.uuid}`)} size="sm" title="Copiar enlace de ticket">

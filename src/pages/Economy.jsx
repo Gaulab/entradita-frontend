@@ -1,155 +1,252 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useMemo, useContext } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { DollarSign, Tag, Percent, ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import AuthContext from '../context/AuthContext';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
-// Componente principal de economía
-const Economy = () => {
-    const navigate = useNavigate(); // Usamos el hook para navegar
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
 
-    // Estado para manejar el porcentaje o monto que recibe cada vendedor
-    const [commission, setCommission] = useState(0);
+const EconomicReport = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [data, setData] = useState(null);
+  const [commissionAmount, setCommissionAmount] = useState(100);
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const { authToken } = useContext(AuthContext);
+  const [showAlert, setShowAlert] = useState(true);
 
-    // Datos de ejemplo
-    const ticketData = [
-        { type: 'VIP', price: 150, count: 33, revenue: 5000 },
-        { type: 'General', price: 100, count: 20, revenue: 10000 },
-    ];
+  useEffect(() => {
+    const fetchEconomicReport = async () => {
+      try {
+        const token = typeof authToken === 'string' ? authToken.trim() : authToken.access.trim();
+        const response = await fetch(`${apiUrl}/api/v1/event/${id}/economic-report/`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-    const sellerData = [
-        { seller: 'Juan', ticketsSold: 15, ticketDetails: { VIP: 8, General: 7 }, revenue: 2500 },
-        { seller: 'Ana', ticketsSold: 38, ticketDetails: { VIP: 25, General: 13 }, revenue: 10000 },
-    ];
+        if (!response.ok) {
+          throw new Error('Error al obtener los datos.');
+        }
 
-    // Cálculo de las estadísticas
-    const totalTicketsSold = ticketData.reduce((total, ticket) => total + ticket.count, 0);
-    const totalRevenue = ticketData.reduce((total, ticket) => total + ticket.revenue, 0);
-
-    // Calcular las ganancias y cuánto pagarle a cada vendedor
-    const calculateSellerPayments = (seller) => {
-        const totalSales = seller.ticketsSold * commission; // Ganancia total por las ventas del vendedor
-        return totalSales;
+        const result = await response.json();
+        setData(result);
+      } catch (error) {
+        console.error(error.message);
+      }
     };
 
-    // Calcular cuánto queda a ti después de pagarle al vendedor
-    const calculateNetRevenue = (ticketPrice, ticketsSold, sellerPayment) => {
-        const totalRevenue = ticketPrice * ticketsSold;
-        return totalRevenue - sellerPayment;
-    };
+    fetchEconomicReport();
+  }, [id, apiUrl, authToken]);
 
-    // Calcular totales combinados
-    const totalSellerPayments = sellerData.reduce((total, seller) => total + calculateSellerPayments(seller), 0);
-    const totalNetRevenue = ticketData.reduce((total, ticket) => {
-        const sellerPayments = sellerData.map(seller => calculateSellerPayments(seller));
-        const netRevenue = sellerData.reduce((net, seller, i) => {
-            return net + calculateNetRevenue(ticket.price, seller.ticketDetails[ticket.type], sellerPayments[i]);
-        }, 0);
-        return total + netRevenue;
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowAlert(false);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const totalCommission = useMemo(() => {
+    if (!data) return 0;
+    return data.sellers.reduce((total, seller) => {
+      const ticketsSold = seller.ticket_counter || 0;
+      return total + ticketsSold * commissionAmount;
     }, 0);
+  }, [data, commissionAmount]);
 
+  const netRevenue = useMemo(() => {
+    if (!data || typeof data.total_sales !== 'number') return 0;
+    return data.total_sales - totalCommission;
+  }, [data, totalCommission]);
+
+  const chartData = useMemo(() => {
+    if (!data) return [];
+    return data.ticket_tags.map((tag) => {
+      const quantitySold = data.sellers.reduce((total, seller) => total + (seller.ticket_tag_sales[tag.id] || 0), 0);
+      return {
+        name: tag.name,
+        value: quantitySold * tag.price,
+      };
+    });
+  }, [data]);
+
+  if (!data)
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-900 p-6">
-            <div className="w-full max-w-3xl bg-gray-800 rounded-lg shadow-lg p-6">
-                
-                {/* Botón Volver Atrás */}
-                <button
-                    onClick={() => navigate(-1)} // Vuelve a la página anterior
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 mb-4"
-                >
-                    Volver Atrás
-                </button>
-
-                {/* Advertencia */}
-                <div className="bg-yellow-500 text-black p-4 rounded-lg mb-6">
-                    <p className="text-sm font-semibold">
-                        ¡Advertencia! Para que esta página funcione correctamente, asegúrese de colocar el precio correcto a cada Ticket Tag.
-                    </p>
-                </div>
-
-                {/* Información General y Economía de Tickets */}
-                <h1 className="text-2xl font-semibold text-white mb-4">Información General y Economía de Tickets</h1>
-
-                {/* Información de Ticket Tags y Economía */}
-                <div className="space-y-4 mb-6">
-                    {ticketData.map((ticket, index) => (
-                        <div key={index} className="bg-gray-700 p-4 rounded-lg shadow-md text-white">
-                            <div className="flex justify-between items-center">
-                                <div>
-                                    <h2 className="text-lg font-semibold">{ticket.type}</h2>
-                                    <p className="text-sm text-gray-400">Precio Individual: ${ticket.price}</p>
-                                    <p className="text-sm text-gray-400">Tickets Vendidos: {ticket.count}</p>
-                                </div>
-                                <div>
-                                    <p className="text-lg font-semibold">Recaudado: ${ticket.revenue}</p>
-                                </div>
-                            </div>
-
-                            <div className="mt-4">
-                                <h3 className="text-md font-semibold">Total de Recaudación:</h3>
-                                <p className="text-sm text-gray-400">Total por este tipo de ticket: ${ticket.revenue}</p>
-                                <h3 className="text-md font-semibold">Ganancia Total para Vendedores:</h3>
-                                <p className="text-sm text-gray-400">
-                                    Total de ganancias para los vendedores: ${totalSellerPayments}
-                                </p>
-                                <h3 className="text-md font-semibold">Lo que queda para Ti:</h3>
-                                <p className="text-sm text-gray-400">
-                                    Total neto para ti después de pagar a los vendedores: ${totalNetRevenue}
-                                </p>
-                            </div>
-                        </div>
-                    ))}
-
-                    {/* Totales combinados */}
-                    <div className="bg-gray-700 p-4 rounded-lg shadow-md text-white">
-                        <h3 className="text-lg font-semibold">Total General:</h3>
-                        <p className="text-sm text-gray-400">Tickets vendidos en total: {totalTicketsSold}</p>
-                        <p className="text-sm text-gray-400">Recaudación Total: ${totalRevenue}</p>
-                        <p className="text-sm text-gray-400">
-                            Total de ganancias para los vendedores: ${totalSellerPayments}
-                        </p>
-                        <p className="text-sm text-gray-400">Total neto para ti: ${totalNetRevenue}</p>
-                    </div>
-                </div>
-
-                {/* Input para comisión de vendedor */}
-                <div className="mb-4">
-                    <label className="block text-white font-semibold mb-2">Comisión por Ticket Vendido:</label>
-                    <input
-                        type="number"
-                        value={commission}
-                        onChange={(e) => setCommission(parseFloat(e.target.value))}
-                        className="w-full p-2 bg-gray-700 text-white rounded-lg"
-                        placeholder="Ingrese el monto o porcentaje por ticket"
-                    />
-                </div>
-
-                {/* Desglose por vendedor */}
-                <div>
-                    <h2 className="text-xl font-semibold text-white mb-4">Desglose por Vendedores</h2>
-                    {sellerData.map((seller, index) => (
-                        <div key={index} className="bg-gray-700 p-4 rounded-lg shadow-md mb-4 text-white">
-                            <h3 className="text-lg font-semibold">{seller.seller}</h3>
-                            <p className="text-sm text-gray-400">Tickets vendidos: {seller.ticketsSold}</p>
-                            <p className="text-sm text-gray-400">Recaudado: ${seller.revenue}</p>
-
-                            {/* Mostrar ganancias del vendedor */}
-                            <div className="mt-2">
-                                <h4 className="text-md font-semibold">Ganancias:</h4>
-                                <p className="text-sm text-gray-400">Total: ${calculateSellerPayments(seller)}</p>
-                            </div>
-
-                            <div className="mt-2">
-                                <h4 className="text-md font-semibold">Detalles por tipo de ticket:</h4>
-                                {Object.entries(seller.ticketDetails).map(([ticketType, count]) => (
-                                    <div key={ticketType} className="text-sm text-gray-400">
-                                        {ticketType}: {count} tickets
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </div>
+      <div className="flex items-center justify-center h-screen bg-gray-900">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
     );
+
+  return (
+    <div className="container p-4 space-y-6 bg-gray-900 text-gray-100 min-h-screen min-w-full">
+      {showAlert && (
+        <Alert className="mb-4 bg-yellow-900 border-yellow-700">
+          <AlertDescription>Para que este reporte funcione correctamente, asegúrese de haber configurado los precios adecuados para los ticket tags en el evento.</AlertDescription>
+        </Alert>
+      )}
+      <div className="flex flex-col justify-between items-center mb-6">
+        <Button variant="entraditaTertiary" onClick={() => navigate(-1)} className="mb-4 flex items-center max-md:w-full w-72">
+          <ArrowLeft className="mr-2 h-4 w-4" /> Volver
+        </Button>
+        <h1 className="text-2xl sm:text-3xl font-bold text-center">Reporte Económico</h1>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card className="bg-gray-800 border-gray-700">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Recaudación Total</CardTitle>
+            <DollarSign className="h-4 w-4 text-green-400" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-400">${data.total_sales.toFixed(2)}</div>
+          </CardContent>
+        </Card>
+        <Card className="bg-gray-800 border-gray-700">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total de Tickets</CardTitle>
+            <Tag className="h-4 w-4 text-blue-400" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-blue-400">{data.total_tickets}</div>
+          </CardContent>
+        </Card>
+        <Card className="bg-gray-800 border-gray-700">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Comisión Total</CardTitle>
+            <Percent className="h-4 w-4 text-orange-400" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-orange-400">${isNaN(totalCommission) ? '0.00' : totalCommission.toFixed(2)}</div>
+          </CardContent>
+        </Card>
+        <Card className="bg-gray-800 border-gray-700">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Ingreso Neto</CardTitle>
+            <DollarSign className="h-4 w-4 text-purple-400" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-purple-400">${isNaN(netRevenue) ? '0.00' : netRevenue.toFixed(2)}</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="bg-gray-800 border-gray-700 rounded-lg">
+        <CardHeader>
+          <CardTitle className="text-xl font-bold">Desglose por Tipo de Ticket</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div className="w-full md:w-1/2 h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie data={chartData} cx="50%" cy="50%" labelLine={false} outerRadius={80} fill="#8884d8" dataKey="value">
+                    {chartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip contentStyle={{ backgroundColor: '#374151', border: 'none', borderRadius: '0.375rem' }} />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="w-full md:w-1/2 overflow-x-auto mt-4 md:mt-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-gray-300">Tipo de Ticket</TableHead>
+                    <TableHead className="text-gray-300">Precio</TableHead>
+                    <TableHead className="text-gray-300">Cantidad</TableHead>
+                    <TableHead className="text-gray-300">Total</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {data.ticket_tags.map((tag) => {
+                    const quantitySold = data.sellers.reduce((total, seller) => total + (seller.ticket_tag_sales[tag.id] || 0), 0);
+                    return (
+                      <TableRow key={tag.id}>
+                        <TableCell className="font-medium">{tag.name}</TableCell>
+                        <TableCell>${tag.price.toFixed(2)}</TableCell>
+                        <TableCell>{quantitySold}</TableCell>
+                        <TableCell className="font-bold">${(quantitySold * tag.price).toFixed(2)}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="bg-gray-800 border-gray-700 rounded-lg">
+        <CardHeader>
+          <CardTitle className="text-xl font-bold">Desglose por Vendedor</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+            <Label htmlFor="commissionAmount" className="whitespace-nowrap">
+              Comisión por Ticket ($)
+            </Label>
+            <Input
+              id="commissionAmount"
+              type="number"
+              value={commissionAmount}
+              onChange={(e) => setCommissionAmount(Number(e.target.value))}
+              className="max-w-xs bg-gray-700 border-gray-600 text-white"
+            />
+          </div>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-gray-300">Vendedor</TableHead>
+                  <TableHead className="text-gray-300">Tickets Vendidos</TableHead>
+                  <TableHead className="text-gray-300">Desglose de Ventas</TableHead>
+                  <TableHead className="text-gray-300">Total Vendido</TableHead>
+                  <TableHead className="text-gray-300">Comisión a Pagar</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {data.sellers.map((seller) => {
+                  const sellerTotal = Object.entries(seller.ticket_tag_sales).reduce((total, [tagId, quantity]) => {
+                    const tag = data.ticket_tags.find((t) => t.id === parseInt(tagId));
+                    return total + (tag ? tag.price * quantity : 0);
+                  }, 0);
+                  const sellerCommission = (seller.ticket_counter || 0) * commissionAmount;
+                  return (
+                    <TableRow key={seller.id}>
+                      <TableCell className="font-medium">{seller.assigned_name}</TableCell>
+                      <TableCell>{seller.ticket_counter}</TableCell>
+                      <TableCell>
+                        {Object.entries(seller.ticket_tag_sales)
+                          .map(([tagId, quantity]) => {
+                            const tag = data.ticket_tags.find((t) => t.id === parseInt(tagId));
+                            return tag ? `${tag.name}: ${quantity}` : null;
+                          })
+                          .filter(Boolean)
+                          .join(', ')}
+                      </TableCell>
+                      <TableCell>${sellerTotal.toFixed(2)}</TableCell>
+                      <TableCell className="font-bold">${sellerCommission.toFixed(2)}</TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
 };
 
-export default Economy;
+export default EconomicReport;

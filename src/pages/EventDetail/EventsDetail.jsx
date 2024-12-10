@@ -57,10 +57,10 @@ export default function OldEventDetails() {
     const getEventData = async () => {
       try {
         const data = await getEventDetails(id, authToken.access);
-        // console.log("Event data:", data);
+        console.log("Event data:", data);
         setEvent(data.event);
         setTicketSalesEnabled(data.event.ticket_sales_enabled);
-        setTickets(data.tickets);
+        setTickets(data.tickets.sort((a, b) => b.id - a.id));
         setVendedores(data.vendedores);
         setEscaners(data.escaners);
       } catch (error) {
@@ -71,6 +71,7 @@ export default function OldEventDetails() {
     getEventData();
   }, []);
 
+  // Esto trae los empleados del evento, la diferencia con el useEffect de arriba es que este se ejecuta cada vez que se cambia el valor de reload y solo trae los empleados
   useEffect(() => {
     const getEventEmpleados = async () => {
       try {
@@ -87,16 +88,11 @@ export default function OldEventDetails() {
 
   const handleConfirmGenerarEmpleado = useCallback(async () => {
     try {
-      // console.log("newTicketTags en handleConfirmGenerarEmpleado: ", newTicketTags);
-      // console.log("Creating empleado...");
-      // console.log("isSellerEmpleado:", isSellerEmpleado);
-      // console.log("newEmpleadoName:", newEmpleadoName);
-      // console.log("newEmpleadoCapacity:", newEmpleadoCapacity);
-      // console.log("newTicketTags:", newTicketTags);
       
       const data = await createEmpleado(authToken.access, isSellerEmpleado, newEmpleadoName, newEmpleadoCapacity, newTicketTags, id);
       if (isSellerEmpleado) {
-        setVendedores([...vendedores, data]);
+        const detailedTicketTags = newTicketTags.map(tagId => event.ticket_tags.find(tag => tag.id === tagId));
+        setVendedores([...vendedores, { ...data, ticket_tags: detailedTicketTags }]);
       } else {
         setEscaners([...escaners, data]);
       }
@@ -113,7 +109,8 @@ export default function OldEventDetails() {
 
   const handleConfirmEditEmpleado = useCallback(async () => {
     try {
-      const updatedEmpleado = await updateEmpleado(authToken.access, editingEmpleado, newEmpleadoName, newEmpleadoCapacity);
+      // console.log("Editing empleado 2:", editingEmpleado);
+      const updatedEmpleado = await updateEmpleado(authToken.access, editingEmpleado, newEmpleadoName, newEmpleadoCapacity, newTicketTags);
       if (editingEmpleado.is_seller) {
         setVendedores(vendedores.map((v) => (v.id === updatedEmpleado.id ? updatedEmpleado : v)));
       } else {
@@ -128,11 +125,11 @@ export default function OldEventDetails() {
     setEditingEmpleado(null);
     setNewEmpleadoName("");
     setNewEmpleadoCapacity("");
-  }, [editingEmpleado, newEmpleadoName, newEmpleadoCapacity, vendedores, escaners, reload]);
+    setNewTicketTags([]);
+  }, [editingEmpleado, newEmpleadoName, newEmpleadoCapacity, vendedores, escaners, reload, newTicketTags]);
 
   const handleConfirmDelete = useCallback(async () => {
     if (!itemToDelete) return;
-
     try {
       let response;
       if (itemToDelete.type === "ticket") {
@@ -203,12 +200,15 @@ export default function OldEventDetails() {
   }, []);
 
   const handleEditEmpleado = useCallback((empleado) => {
+    // console.log("Editing empleado:", empleado);
     setEditingEmpleado(empleado);
     setNewEmpleadoName(empleado.assigned_name);
     const capacity = empleado.seller_capacity !== null ? empleado.seller_capacity.toString() : "";
     setNewEmpleadoCapacity(capacity);
+    setNewTicketTags(empleado.ticket_tags);
+    // console.log("Ticket tags del empleado:", empleado.ticket_tags);
     setIsEditDialogOpen(true);
-  }, []);
+  }, [newTicketTags]);
 
   const handleEliminarEmpleado = useCallback((empleado) => {
     setItemToDelete({
@@ -220,7 +220,7 @@ export default function OldEventDetails() {
   }, []);
 
   const handleChangeEmpleadoStatus = useCallback(async (empleado) => {
-    console.log("Changing status of empleado:", empleado.id);
+    // console.log("Changing status of empleado:", empleado.id);
     try {
       const updatedEmpleado = await changeEmpleadoStatus(authToken.access, empleado);
       if (empleado.is_seller) {
@@ -261,14 +261,17 @@ export default function OldEventDetails() {
         <Event event={event} />
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-5">
-            <TabsTrigger value="tickets" className="text-lg bg-blue-600 text-gray-900"><Ticket className="mr-2 h-6 w-6" /> Tickets</TabsTrigger>
-            <TabsTrigger value="vendedores" className="text-lg bg-green-600 text-gray-900"><Users className="mr-2 h-6 w-6" /> Vendedores</TabsTrigger>
-            <TabsTrigger value="escaners" className="text-lg bg-purple-600 text-gray-900"><ScanIcon className="mr-2 h-6 w-6" /> Scanners</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 mb-4 gap-0  p-0">
+            <TabsTrigger value="tickets" className="text-lg max-sm:m-0 max-sm:rounded-none max-sm:rounded-l-md max-sm:mr-0.5 bg-blue-600 text-gray-900"><Ticket className="mr-2 h-4 hidden sm:block sm:h-6 sm:w-6" /> Tickets</TabsTrigger>
+            <TabsTrigger value="vendedores" className="text-lg max-sm:m-0 max-sm:rounded-none max-sm:mx-0.5  bg-green-600 text-gray-900"><Users className="mr-2 hidden sm:block sm:h-6 sm:w-6" /> Vendedores</TabsTrigger>
+            <TabsTrigger value="escaners" className="text-lg max-sm:m-0 max-sm:rounded-none max-sm:rounded-r-md max-sm:ml-0.5  bg-purple-600 text-gray-900"><ScanIcon className="mr-2 hidden sm:block  sm:h-6 sm:w-6" /> Scanners</TabsTrigger>
           </TabsList>
 
           <TabsContent value="tickets">
-            <Tickets id={id} paginatedTickets={paginatedTickets} pageCount={pageCount} itemsPerPage={itemsPerPage} currentPage={currentPage} setCurrentPage={setCurrentPage} searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleEliminarTicket={handleEliminarTicket} copyToClipboard={copyToClipboard} ticketSalesEnabled={ticketSalesEnabled} handleUpdateTicketSales={handleUpdateTicketSales} dniRequired={event.dni_required} ticketTags={event.ticket_tags} />
+            <Tickets id={id} paginatedTickets={paginatedTickets} pageCount={pageCount} itemsPerPage={itemsPerPage} currentPage={currentPage}
+              setCurrentPage={setCurrentPage} searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleEliminarTicket={handleEliminarTicket}
+              copyToClipboard={copyToClipboard} ticketSalesEnabled={ticketSalesEnabled} handleUpdateTicketSales={handleUpdateTicketSales}
+              dniRequired={event.dni_required} ticketTags={event.ticket_tags} />
           </TabsContent>
 
           <TabsContent value="vendedores">
@@ -283,11 +286,18 @@ export default function OldEventDetails() {
         {copyMessage && <div className="fixed bottom-4 right-4 bg-green-400 text-black px-4 py-2 rounded-md shadow-lg">{copyMessage}</div>}
 
         <DialogCreateEmployee isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen} isSellerEmpleado={isSellerEmpleado}
-          newEmpleadoName={newEmpleadoName} setNewEmpleadoName={setNewEmpleadoName} newEmpleadoCapacity={newEmpleadoCapacity}
-          setNewEmpleadoCapacity={setNewEmpleadoCapacity} handleConfirmGenerarEmpleado={handleConfirmGenerarEmpleado}
+          newEmpleadoName={newEmpleadoName} setNewEmpleadoName={setNewEmpleadoName}
+          newEmpleadoCapacity={newEmpleadoCapacity} setNewEmpleadoCapacity={setNewEmpleadoCapacity}
+          handleConfirmGenerarEmpleado={handleConfirmGenerarEmpleado}
           setNewTicketTags={setNewTicketTags} newTicketTags={newTicketTags} ticket_tags={event.ticket_tags} />
 
-        <DialogEditEmployee isEditDialogOpen={isEditDialogOpen} setIsEditDialogOpen={setIsEditDialogOpen} editingEmpleado={editingEmpleado} newEmpleadoName={newEmpleadoName} setNewEmpleadoName={setNewEmpleadoName} newEmpleadoCapacity={newEmpleadoCapacity} setNewEmpleadoCapacity={setNewEmpleadoCapacity} handleConfirmEditEmpleado={handleConfirmEditEmpleado} />
+        <DialogEditEmployee isEditDialogOpen={isEditDialogOpen} setIsEditDialogOpen={setIsEditDialogOpen}
+          editingEmpleado={editingEmpleado}
+          newEmpleadoName={newEmpleadoName} setNewEmpleadoName={setNewEmpleadoName}
+          newEmpleadoCapacity={newEmpleadoCapacity} setNewEmpleadoCapacity={setNewEmpleadoCapacity}
+          handleConfirmEditEmpleado={handleConfirmEditEmpleado}
+          setNewTicketTags={setNewTicketTags} newTicketTags={newTicketTags} ticket_tags={event.ticket_tags}
+        />
 
         <DialogDeleteItem deleteConfirmOpen={deleteConfirmOpen} setDeleteConfirmOpen={setDeleteConfirmOpen}
           handleConfirmDelete={handleConfirmDelete} itemToDelete={itemToDelete} isChecked={isChecked} setIsChecked={setIsChecked} handleCheckboxChange={handleCheckboxChange} />

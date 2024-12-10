@@ -85,9 +85,13 @@ export const changeEmpleadoStatus = async (authToken, itemToChange) => {
 
 
 // Actualización de un empleado
-export const updateEmpleado = async (authToken, editingEmpleado, newEmpleadoName, newEmpleadoCapacity) => {
+export const updateEmpleado = async (authToken, editingEmpleado, newEmpleadoName, newEmpleadoCapacity, newTicketTags) => {
+    // console.log("newTicketTags en API: ", newTicketTags);
+    // console.log("editingEmpleado en API: ", editingEmpleado);
+    // console.log("newEmpleadoName en API: ", newEmpleadoName);
+    // console.log("newEmpleadoCapacity en API: ", newEmpleadoCapacity);
     try {
-        const response = await fetch(`${apiUrl}/api/v1/employee${editingEmpleado.id}/`, {
+        const response = await fetch(`${apiUrl}/api/v1/employee/${editingEmpleado.id}/`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -95,7 +99,8 @@ export const updateEmpleado = async (authToken, editingEmpleado, newEmpleadoName
             },
             body: JSON.stringify({
                 assigned_name: newEmpleadoName,
-                seller_capacity: parseInt(newEmpleadoCapacity)
+                seller_capacity: parseInt(newEmpleadoCapacity),
+                ticket_tags: newTicketTags
             })
         });
 
@@ -152,7 +157,7 @@ export const getScanner = async (uuid) => {
 // Vendedor view
 export const getVendedor = async (uuid) => {
     try {
-        const response = await fetch(`${apiUrl}/api/v1/employees/seller/${uuid}/info/`, {
+        const response = await fetch(`${apiUrl}/api/v1/employee/seller/${uuid}/info/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
