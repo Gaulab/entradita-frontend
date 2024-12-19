@@ -27,6 +27,9 @@ export default defineConfig({
   },
   build: {
     sourcemap: true, // Habilita los mapas de origen
+    rollupOptions: {
+      external: ['@radix-ui/react-select'],
+    },
   },
   define: {
     'process.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL),
