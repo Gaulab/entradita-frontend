@@ -25,7 +25,7 @@ export default function Event({ event }) {
     window.location.href = `/event/${event.id}/economy`;
   };
   const navigateToWebPage = () => {
-    window.location.href = `/eventPage/${event.id}`;
+    window.location.href = `/eventPageConfig/${event.id}`;
   };
 
   const navigateToGuide = () => {

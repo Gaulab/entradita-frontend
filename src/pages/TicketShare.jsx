@@ -9,6 +9,7 @@ export default function TicketShare({ ticketUrl }) {
   const { uuid } = useParams(); // Vendor's UUID
 
   const handleShare = () => {
+    console.log('ticketUrl', ticketUrl);
     if (navigator.share) {
       navigator.share({
         title: 'Tu ticket para el evento',

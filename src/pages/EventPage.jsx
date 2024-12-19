@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { getEventPage } from '../api/eventPageApi';
 
 const CountdownTimer = ({ targetDate }) => {
   const calculateTimeLeft = () => {
@@ -38,52 +39,124 @@ const CountdownTimer = ({ targetDate }) => {
   );
 };
 
+const Title = ({ content, subtitle }) => (
+  <motion.div
+    className="text-center bg-blue-400 bg-opacity-35 w-full p-4 rounded-lg shadow-lg font-poppins glowing mb-2"
+    initial={{ opacity: 0, y: -50 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5 }}
+  >
+    <h1 className="text-5xl sm:text-6xl font-bold mb-2">{content}</h1>
+    {subtitle && <h2 className="text-2xl sm:text-3xl font-medium">{subtitle}</h2>}
+  </motion.div>
+);
+
+const Text = ({ content }) => (
+  <motion.p
+    className="text-xl md:text-2xl mb-4 text-center bg-blue-400 bg-opacity-35 w-full p-4 rounded-lg shadow-lg"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.5, delay: 0.4 }}
+  >
+    {content}
+  </motion.p>
+);
+
+const ImageFront = ({ src, alt }) => (
+  <motion.img
+    src={src}
+    alt={alt}
+    className="rounded-lg shadow-lg mb-2 w-full opacity-85 max-h-80 object-cover"
+    animate={{
+      boxShadow: [
+        "0 0 10px rgba(255, 255, 255, 0.3)",
+        "0 0 20px rgba(255, 255, 255, 0.6)",
+        "0 0 10px rgba(255, 255, 255, 0.3)",
+      ],
+    }}
+    transition={{
+      repeat: Infinity,
+      repeatType: "reverse",
+      duration: 4,
+    }}
+  />
+);
+
+const Button = ({ text, link }) => (
+  <motion.a
+    href={link}
+    className="bg-white text-gray-900 hover:bg-gray-100 font-bold py-3 px-6 rounded-lg text-xl transition duration-300 ease-in-out transform hover:scale-105 mb-4 inline-block text-center"
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+  >
+    {text}
+  </motion.a>
+);
+
+const WhatsAppButton = ({ link }) => (
+  <motion.a
+    href={link}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="bg-white text-gray-900  hover:bg-gray-100 font-bold py-3 px-6 rounded-lg text-xl transition duration-300 ease-in-out transform hover:scale-105 mb-4 inline-block text-center"
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+  >
+    Contactar por WhatsApp
+  </motion.a>
+);
+const Map = ({ address }) => (
+  <motion.a
+    href={address}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="bg-white  font-bold py-3 px-6 rounded-lg text-xl transition duration-300 ease-in-out transform hover:scale-105 mb-8 inline-block text-center"
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+  >
+    Ver ubicación
+  </motion.a>
+);
+
+const CbuAlias = ({ cbu, alias, text }) => (
+  <div className="bg-blue-400 bg-opacity-35 w-full p-4 rounded-lg shadow-lg mb-4">
+    <p>{text}</p>
+    <p className="mb-2"><strong>CBU:</strong> {cbu}</p>
+    <p className="mb-2"><strong>Alias:</strong> {alias}</p>
+  </div>
+);
+
 function EventPage() {
   const { id } = useParams();
-  const [eventInfo, setEventInfo] = useState(null);
-  const [backgroundImage, setBackgroundImage] = useState('');
-  const apiUrl = import.meta.env.VITE_API_URL;
+  const [eventData, setEventData] = useState(null);
 
   useEffect(() => {
-    const backgroundImages = [
-      'https://i.pinimg.com/736x/83/b1/a2/83b1a22c28ba23ece455030a97225e08.jpg',
-      'https://i.pinimg.com/736x/ef/2e/55/ef2e550edadc110e615b0f91607605d8.jpg',
-      'https://i.pinimg.com/736x/b0/e6/97/b0e6971c88bb02d442b32fe8fc6f0e8e.jpg',
-      'https://i.pinimg.com/736x/69/c7/4b/69c74b8f422c418dd5af60dd382410be.jpg',
-      'https://i.pinimg.com/736x/4e/1f/b7/4e1fb7e5764f0f310841b5c9022ee35d.jpg',
-      'https://i.pinimg.com/736x/44/7f/d9/447fd937af28a452944422b33a731c69.jpg',
-      'https://i.pinimg.com/736x/fd/b1/d4/fdb1d45ae70389107c2a492e034270e0.jpg'
-
-
-    ];
-
-    const randomImage = backgroundImages[Math.floor(Math.random() * backgroundImages.length)];
-    setBackgroundImage(randomImage);
-  }, []);
-
-  useEffect(() => {
-    const fetchEventInfo = async () => {
+    const fetchEventPage = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/v1/event/${id}/info-for-web/`);
-        if (!response.ok) throw new Error('Error al obtener información del evento');
-
-        const data = await response.json();
-        setEventInfo(data);
+        const eventPage = await getEventPage(id);
+        setEventData(eventPage);
+        console.log("eventPage", eventPage);
       } catch (error) {
         console.error(error.message);
       }
     };
+    fetchEventPage();
+  }, [id]);
 
-    fetchEventInfo();
-  }, [id, apiUrl]);
+  useEffect(() => {
+    if (eventData) {
+      const link = document.createElement('link');
+      link.href = `https://fonts.googleapis.com/css2?family=Condiment&family=Oi&family=Rubik+Bubbles&family=Zen+Dots&display=swap`;
+      link.rel = 'stylesheet';
+      document.head.appendChild(link);
 
-  const redirectToWhatsApp = () => {
-    const message = encodeURIComponent('¡Hola! Me gustaría comprar un ticket para el evento ' + eventInfo.name);
-    window.open(`https://wa.me/+54${eventInfo.organizer_contact}?text=${message}`, '_blank');
-    console.log('Redirigiendo a WhatsApp... +54' + eventInfo.organizer_contact);
-  };
+      return () => {
+        document.head.removeChild(link);
+      };
+    }
+  }, [eventData]);
 
-  if (!eventInfo) {
+  if (!eventData) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-900">
         <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
@@ -91,64 +164,59 @@ function EventPage() {
     );
   }
 
+  const renderBlock = (blockType) => {
+    switch (blockType) {
+      case 'title':
+        return <Title content={eventData.title} subtitle={eventData.text} />;
+      case 'text':
+        return <Text content={eventData.text} />;
+      case 'image_front':
+        return <ImageFront src={eventData.image_front} alt={eventData.title} />;
+      case 'countdown':
+        return (
+          <motion.div
+            className="mb-4 max-w-2xl bg-blue-400 bg-opacity-35 w-full p-4 rounded-lg shadow-lg"
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <CountdownTimer targetDate={eventData.contdown_date} />
+          </motion.div>
+        );
+      case 'button':
+        return <Button text={eventData.button_text} link={eventData.button_link} />;
+      case 'button_whatsapp':
+        return <WhatsAppButton link={eventData.button_whatsapp} />;
+      case 'map':
+        return <Map address={eventData.map_address} />;
+      case 'cbu_alias':
+        return <CbuAlias cbu={eventData.cbu} alias={eventData.alias} text={eventData.text_buy} />;
+      default:
+        return null;
+    }
+  };
   return (
-    <div className="min-h-screen text-white relative overflow-hidden">
-      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${backgroundImage})` }} />
-      <div className="absolute inset-0 bg-black opacity-15" />
+    
+    <div 
+      className="min-h-screen text-white relative overflow-hidden" 
+      style={{ 
+        fontFamily: "Zen Dots",
+        fontWeight: "200",
+        color: eventData.font_color
+      }}
+    >
+      <div 
+        className="absolute inset-0 bg-cover bg-center" 
+        style={{ backgroundImage: `url(${eventData.image_background})` }} 
+      />
+      <div className="absolute inset-0 bg-black opacity-50" />
 
-      <div className="relative z-10 flex flex-col min-h-screen p-4 max-w-lg mx-auto ">
-        <motion.h1
-          className="text-5xl md:text-7xl font-bold mb-4 text-center bg-slate-500 bg-opacity-35 w-full p-4 rounded-lg shadow-lg font-poppins glowing"
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          {eventInfo.name}
-        </motion.h1>
-        <motion.img
-          src={eventInfo.image_address}
-          alt={eventInfo.name}
-          className="rounded-lg shadow-lg mb-4 w-full opacity-85 max-h-80 object-cover"
-          animate={{
-            boxShadow: [
-              "0 0 10px rgba(255, 255, 255, 0.3)",
-              "0 0 20px rgba(255, 255, 255, 0.6)",
-              "0 0 10px rgba(255, 255, 255, 0.3)",
-            ],
-          }}
-          transition={{
-            repeat: Infinity,  // Repite indefinidamente
-            repeatType: "reverse",  // Hace que el movimiento sea cíclico (vuelve al estado inicial)
-            duration: 4, // Duración de cada ciclo
-          }}
-        />
-
-        <motion.div
-          className="mb-4 max-w-2xl bg-slate-500 bg-opacity-35 w-full p-4 rounded-lg shadow-lg"
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <CountdownTimer targetDate={eventInfo.date} />
-        </motion.div>
-
-        <motion.p
-          className="text-xl md:text-2xl mb-4 text-center bg-slate-500 bg-opacity-35 w-full p-4 rounded-lg shadow-lg"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-        >
-          {eventInfo.place}
-        </motion.p>
-
-        <motion.button
-          className="bg-white text-gray-900 hover:bg-gray-100 font-bold py-3 px-6 rounded-full text-xl transition duration-300 ease-in-out transform hover:scale-105 mb-8"
-          onClick={redirectToWhatsApp}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          Buy Ticket
-        </motion.button>
+      <div className="relative z-10 flex flex-col min-h-screen p-4 max-w-lg mx-auto">
+        {eventData.block_order.map((blockType, index) => (
+          <React.Fragment key={index}>
+            {renderBlock(blockType)}
+          </React.Fragment>
+        ))}
       </div>
 
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-sm text-center opacity-70">
@@ -159,3 +227,4 @@ function EventPage() {
 }
 
 export default EventPage;
+
