@@ -39,21 +39,23 @@ const CountdownTimer = ({ targetDate }) => {
   );
 };
 
-const Title = ({ content, subtitle }) => (
+const Title = ({ title, subtitle, cardColor }) => (
   <motion.div
-    className="text-center bg-blue-400 bg-opacity-35 w-full p-4 rounded-lg shadow-lg font-poppins glowing mb-2"
+    className="mb-2 text-center w-full p-4 rounded-lg shadow-lg font-poppins glowing"
+    style={{ backgroundColor: `${cardColor}30` }}
     initial={{ opacity: 0, y: -50 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5 }}
   >
-    <h1 className="text-5xl sm:text-6xl font-bold mb-2">{content}</h1>
-    {subtitle && <h2 className="text-2xl sm:text-3xl font-medium">{subtitle}</h2>}
+    <h1 className="text-5xl md:text-7xl font-bold">{title}</h1>
+    {subtitle && <h2 className="text-xl md:text-4xl mt-2">{subtitle}</h2>}
   </motion.div>
 );
 
-const Text = ({ content }) => (
+const Text = ({ content, cardColor }) => (
   <motion.p
-    className="text-xl md:text-2xl mb-4 text-center bg-blue-400 bg-opacity-35 w-full p-4 rounded-lg shadow-lg"
+    className="text-xl md:text-2xl mb-2 text-center w-full p-4 rounded-lg shadow-lg"
+    style={{ backgroundColor: `${cardColor}30` }} // 25% opacity in hex is 40
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     transition={{ duration: 0.5, delay: 0.4 }}
@@ -62,16 +64,16 @@ const Text = ({ content }) => (
   </motion.p>
 );
 
-const ImageFront = ({ src, alt }) => (
+const ImageFront = ({ src, alt, cardColor }) => (
   <motion.img
     src={src}
     alt={alt}
     className="rounded-lg shadow-lg mb-2 w-full opacity-85 max-h-80 object-cover"
     animate={{
       boxShadow: [
-        "0 0 10px rgba(255, 255, 255, 0.3)",
-        "0 0 20px rgba(255, 255, 255, 0.6)",
-        "0 0 10px rgba(255, 255, 255, 0.3)",
+        `0 0 10px ${cardColor}90`,
+        `0 0 20px ${cardColor}90`,
+        `0 0 10px ${cardColor}90`,
       ],
     }}
     transition={{
@@ -82,10 +84,11 @@ const ImageFront = ({ src, alt }) => (
   />
 );
 
-const Button = ({ text, link }) => (
+const Button = ({ text, link, color, bgcolor }) => (
   <motion.a
     href={link}
-    className="bg-white text-gray-900 hover:bg-gray-100 font-bold py-3 px-6 rounded-lg text-xl transition duration-300 ease-in-out transform hover:scale-105 mb-4 inline-block text-center"
+    className="font-bold py-3 px-6 rounded-lg text-xl transition duration-300 ease-in-out transform hover:scale-105 mb-2 inline-block text-center"
+    style={{ color: color, backgroundColor: bgcolor }}
     whileHover={{ scale: 1.05 }}
     whileTap={{ scale: 0.95 }}
   >
@@ -93,36 +96,12 @@ const Button = ({ text, link }) => (
   </motion.a>
 );
 
-const WhatsAppButton = ({ link }) => (
-  <motion.a
-    href={link}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="bg-white text-gray-900  hover:bg-gray-100 font-bold py-3 px-6 rounded-lg text-xl transition duration-300 ease-in-out transform hover:scale-105 mb-4 inline-block text-center"
-    whileHover={{ scale: 1.05 }}
-    whileTap={{ scale: 0.95 }}
-  >
-    Contactar por WhatsApp
-  </motion.a>
-);
-const Map = ({ address }) => (
-  <motion.a
-    href={address}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="bg-white  font-bold py-3 px-6 rounded-lg text-xl transition duration-300 ease-in-out transform hover:scale-105 mb-8 inline-block text-center"
-    whileHover={{ scale: 1.05 }}
-    whileTap={{ scale: 0.95 }}
-  >
-    Ver ubicación
-  </motion.a>
-);
-
-const CbuAlias = ({ cbu, alias, text }) => (
-  <div className="bg-blue-400 bg-opacity-35 w-full p-4 rounded-lg shadow-lg mb-4">
-    <p>{text}</p>
+const Pay = ({ text, cbu, alias, cardColor }) => (
+  <div className="w-full p-4 rounded-lg shadow-lg mb-2" style={{ backgroundColor: `${cardColor}30` }}>
+    <h3 className="text-xl font-bold mb-2">Información de pago</h3>
     <p className="mb-2"><strong>CBU:</strong> {cbu}</p>
     <p className="mb-2"><strong>Alias:</strong> {alias}</p>
+    <p>{text}</p>
   </div>
 );
 
@@ -145,14 +124,17 @@ function EventPage() {
 
   useEffect(() => {
     if (eventData) {
-      const link = document.createElement('link');
-      link.href = `https://fonts.googleapis.com/css2?family=Condiment&family=Oi&family=Rubik+Bubbles&family=Zen+Dots&display=swap`;
-      link.rel = 'stylesheet';
-      document.head.appendChild(link);
+      const generalBlock = eventData.blocks.find(block => block.type === 'GENERAL');
+      if (generalBlock && generalBlock.data.font) {
+        const link = document.createElement('link');
+        link.href = `https://fonts.googleapis.com/css2?family=${generalBlock.data.font.replace(' ', '+')}&display=swap`;
+        link.rel = 'stylesheet';
+        document.head.appendChild(link);
 
-      return () => {
-        document.head.removeChild(link);
-      };
+        return () => {
+          document.head.removeChild(link);
+        };
+      }
     }
   }, [eventData]);
 
@@ -164,57 +146,57 @@ function EventPage() {
     );
   }
 
-  const renderBlock = (blockType) => {
-    switch (blockType) {
-      case 'title':
-        return <Title content={eventData.title} subtitle={eventData.text} />;
-      case 'text':
-        return <Text content={eventData.text} />;
-      case 'image_front':
-        return <ImageFront src={eventData.image_front} alt={eventData.title} />;
-      case 'countdown':
+  const generalBlock = eventData.blocks.find(block => block.type === 'GENERAL');
+  const cardColor = generalBlock?.data.card_color || '#000000';
+
+  const renderBlock = (block) => {
+    switch (block.type) {
+      case 'TITLE':
+        return <Title title={block.data.title} subtitle={block.data.subtitle} cardColor={cardColor} />;
+      case 'TEXT':
+        return <Text content={block.data.text} cardColor={cardColor} />;
+      case 'IMAGE':
+        return <ImageFront src={block.data.image_address} alt={block.data.title || 'Event image'} cardColor={cardColor} />;
+      case 'COUNTDOWN':
         return (
           <motion.div
-            className="mb-4 max-w-2xl bg-blue-400 bg-opacity-35 w-full p-4 rounded-lg shadow-lg"
+            className="mb-2 max-w-2xl w-full p-4 rounded-lg shadow-lg"
+            style={{ backgroundColor: `${cardColor}30` }}
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <CountdownTimer targetDate={eventData.contdown_date} />
+            <CountdownTimer targetDate={block.data.contdown_date} />
           </motion.div>
         );
-      case 'button':
-        return <Button text={eventData.button_text} link={eventData.button_link} />;
-      case 'button_whatsapp':
-        return <WhatsAppButton link={eventData.button_whatsapp} />;
-      case 'map':
-        return <Map address={eventData.map_address} />;
-      case 'cbu_alias':
-        return <CbuAlias cbu={eventData.cbu} alias={eventData.alias} text={eventData.text_buy} />;
+      case 'BUTTON':
+        return <Button text={block.data.button_text} link={block.data.button_link} color={block.data.button_color} bgcolor={block.data.button_bgcolor} />;
+      case 'PAY':
+        return <Pay text={block.data.pay_text} cbu={block.data.pay_cbu} alias={block.data.pay_alias} cardColor={cardColor} />;
       default:
         return null;
     }
   };
+
+
   return (
-    
     <div 
       className="min-h-screen text-white relative overflow-hidden" 
       style={{ 
-        fontFamily: "Zen Dots",
-        fontWeight: "200",
-        color: eventData.font_color
+        fontFamily: generalBlock?.data.font || 'Arial', 
+        color: generalBlock?.data.font_color || '#FFFFFF'
       }}
     >
       <div 
         className="absolute inset-0 bg-cover bg-center" 
-        style={{ backgroundImage: `url(${eventData.image_background})` }} 
+        style={{ backgroundImage: `url(${generalBlock?.data.image_background})` }} 
       />
-      <div className="absolute inset-0 bg-black opacity-50" />
+      <div className="absolute inset-0 bg-black opacity-20" />
 
       <div className="relative z-10 flex flex-col min-h-screen p-4 max-w-lg mx-auto">
-        {eventData.block_order.map((blockType, index) => (
-          <React.Fragment key={index}>
-            {renderBlock(blockType)}
+        {eventData.blocks.sort((a, b) => a.order - b.order).map((block) => (
+          <React.Fragment key={block.id}>
+            {renderBlock(block)}
           </React.Fragment>
         ))}
       </div>
