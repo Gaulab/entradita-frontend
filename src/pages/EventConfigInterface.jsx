@@ -35,6 +35,7 @@ export default function EventConfigInterface() {
         const eventPage = await getEventPage(id, authToken.access);
         setEventData(eventPage);
         setBlocks(eventPage.blocks);
+        console.log("eventPage", eventPage);
       } catch (error) {
         console.error(error);
       }
@@ -48,7 +49,6 @@ export default function EventConfigInterface() {
 
   const addBlock = (type) => {
     const newBlock = {
-      id: `block-${Date.now()}`,
       type,
       order: blocks.length + 1,
       data: {},
@@ -128,7 +128,8 @@ export default function EventConfigInterface() {
       case 'IMAGE':
         return <Input value={block.data.image_address || ''} onChange={(e) => updateBlock(block.id, { data: { ...block.data, image_address: e.target.value } })} placeholder="URL de la imagen" />;
       case 'COUNTDOWN':
-        return <Input type="datetime-local" value={block.data.contdown_date || ''} onChange={(e) => updateBlock(block.id, { data: { ...block.data, contdown_date: e.target.value } })} />;
+        const formattedDate = block.data.contdown_date ? new Date(block.data.contdown_date).toISOString().slice(0, 16) : '';
+        return <Input type="datetime-local" value={formattedDate} onChange={(e) => updateBlock(block.id, { data: { ...block.data, contdown_date: e.target.value } })} />;return <Input type="datetime-local" value={block.data.contdown_date || ''} onChange={(e) => updateBlock(block.id, { data: { ...block.data, contdown_date: e.target.value } })} />;
       case 'BUTTON':
         return (
           <div className="space-y-2">
@@ -272,10 +273,10 @@ export default function EventConfigInterface() {
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                       <CardTitle className="text-white text-sm">{blockTypes.find((t) => t.id === block.type)?.name}</CardTitle>
                       <div className="flex space-x-2">
-                        <Button className="px-4 py-2" variant="ghost" onClick={() => moveBlock(index, -1)} disabled={index === 0}>
+                        <Button className="px-4 py-2" variant="ghost" onClick={() => moveBlock(index+1, -1)} disabled={index === 0}>
                           <ArrowUp className="h-4 w-4" />
                         </Button>
-                        <Button className="px-4 py-2" variant="ghost" onClick={() => moveBlock(index, 1)} disabled={index === blocks.filter((b) => b.type !== 'GENERAL').length - 1}>
+                        <Button className="px-4 py-2" variant="ghost" onClick={() => moveBlock(index+1, 1)} disabled={index === blocks.filter((b) => b.type !== 'GENERAL').length - 1}>
                           <ArrowDown className="h-4 w-4" />
                         </Button>
                         <Button className="px-4 py-2" variant="ghost" onClick={() => removeBlock(block.id)}>

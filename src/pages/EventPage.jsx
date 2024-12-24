@@ -98,10 +98,9 @@ const Button = ({ text, link, color, bgcolor }) => (
 
 const Pay = ({ text, cbu, alias, cardColor }) => (
   <div className="w-full p-4 rounded-lg shadow-lg mb-2" style={{ backgroundColor: `${cardColor}30` }}>
-    <h3 className="text-xl font-bold mb-2">Información de pago</h3>
+    <p className="mb-2">{text}</p>
     <p className="mb-2"><strong>CBU:</strong> {cbu}</p>
     <p className="mb-2"><strong>Alias:</strong> {alias}</p>
-    <p>{text}</p>
   </div>
 );
 
