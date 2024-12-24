@@ -114,10 +114,16 @@ export default function TicketPage() {
               </p>
             </div>
 
+            {data.owner_dni && (
             <div className="col-span-1">
               <p className="text-gray-500">DNI</p>
               <p className="font-medium text-gray-800">{data.owner_dni}</p>
             </div>
+            )}
+            {!data.owner_dni && (
+              <div className="col-span-1">
+              </div>
+            )}
 
             <div className="col-span-1">
               <p className="text-gray-500 flex items-center gap-2">

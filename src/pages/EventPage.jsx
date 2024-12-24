@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { getEventPage } from '../api/eventPageApi';
+import { googleFonts, FontStyles } from '../fonts'; 
 
 const CountdownTimer = ({ targetDate }) => {
   const calculateTimeLeft = () => {
@@ -41,7 +42,7 @@ const CountdownTimer = ({ targetDate }) => {
 
 const Title = ({ title, subtitle, cardColor }) => (
   <motion.div
-    className="mb-2 text-center w-full p-4 rounded-lg shadow-lg font-poppins glowing"
+    className="mb-2 text-center w-full p-4 rounded-lg shadow-lg glowing"
     style={{ backgroundColor: `${cardColor}30` }}
     initial={{ opacity: 0, y: -50 }}
     animate={{ opacity: 1, y: 0 }}
@@ -70,15 +71,11 @@ const ImageFront = ({ src, alt, cardColor }) => (
     alt={alt}
     className="rounded-lg shadow-lg mb-2 w-full opacity-85 max-h-80 object-cover"
     animate={{
-      boxShadow: [
-        `0 0 10px ${cardColor}90`,
-        `0 0 20px ${cardColor}90`,
-        `0 0 10px ${cardColor}90`,
-      ],
+      boxShadow: [`0 0 10px ${cardColor}90`, `0 0 20px ${cardColor}90`, `0 0 10px ${cardColor}90`],
     }}
     transition={{
       repeat: Infinity,
-      repeatType: "reverse",
+      repeatType: 'reverse',
       duration: 4,
     }}
   />
@@ -99,8 +96,12 @@ const Button = ({ text, link, color, bgcolor }) => (
 const Pay = ({ text, cbu, alias, cardColor }) => (
   <div className="w-full p-4 rounded-lg shadow-lg mb-2" style={{ backgroundColor: `${cardColor}30` }}>
     <p className="mb-2">{text}</p>
-    <p className="mb-2"><strong>CBU:</strong> {cbu}</p>
-    <p className="mb-2"><strong>Alias:</strong> {alias}</p>
+    <p className="mb-2">
+      <strong>CBU:</strong> {cbu}
+    </p>
+    <p className="mb-2">
+      <strong>Alias:</strong> {alias}
+    </p>
   </div>
 );
 
@@ -113,7 +114,7 @@ function EventPage() {
       try {
         const eventPage = await getEventPage(id);
         setEventData(eventPage);
-        console.log("eventPage", eventPage);
+        console.log('eventPage', eventPage);
       } catch (error) {
         console.error(error.message);
       }
@@ -121,21 +122,6 @@ function EventPage() {
     fetchEventPage();
   }, [id]);
 
-  useEffect(() => {
-    if (eventData) {
-      const generalBlock = eventData.blocks.find(block => block.type === 'GENERAL');
-      if (generalBlock && generalBlock.data.font) {
-        const link = document.createElement('link');
-        link.href = `https://fonts.googleapis.com/css2?family=${generalBlock.data.font.replace(' ', '+')}&display=swap`;
-        link.rel = 'stylesheet';
-        document.head.appendChild(link);
-
-        return () => {
-          document.head.removeChild(link);
-        };
-      }
-    }
-  }, [eventData]);
 
   if (!eventData) {
     return (
@@ -145,7 +131,7 @@ function EventPage() {
     );
   }
 
-  const generalBlock = eventData.blocks.find(block => block.type === 'GENERAL');
+  const generalBlock = eventData.blocks.find((block) => block.type === 'GENERAL');
   const cardColor = generalBlock?.data.card_color || '#000000';
 
   const renderBlock = (block) => {
@@ -177,35 +163,31 @@ function EventPage() {
     }
   };
 
-
   return (
-    <div 
-      className="min-h-screen text-white relative overflow-hidden" 
-      style={{ 
-        fontFamily: generalBlock?.data.font || 'Arial', 
-        color: generalBlock?.data.font_color || '#FFFFFF'
-      }}
-    >
-      <div 
-        className="absolute inset-0 bg-cover bg-center" 
-        style={{ backgroundImage: `url(${generalBlock?.data.image_background})` }} 
-      />
-      <div className="absolute inset-0 bg-black opacity-20" />
+    <>
+      <FontStyles />  
+      <div
+        className="min-h-screen text-white relative overflow-hidden"
+        style={{
+          fontFamily: generalBlock?.data.font || 'Arial',
+          color: generalBlock?.data.font_color || '#FFFFFF',
+        }}
+      >
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${generalBlock?.data.image_background})` }} />
+        <div className="absolute inset-0 bg-black opacity-20" />
 
-      <div className="relative z-10 flex flex-col min-h-screen p-4 max-w-lg mx-auto">
-        {eventData.blocks.sort((a, b) => a.order - b.order).map((block) => (
-          <React.Fragment key={block.id}>
-            {renderBlock(block)}
-          </React.Fragment>
-        ))}
-      </div>
+        <div className="relative z-10 flex flex-col min-h-screen p-4 max-w-lg mx-auto">
+          {eventData.blocks
+            .sort((a, b) => a.order - b.order)
+            .map((block) => (
+              <React.Fragment key={block.id}>{renderBlock(block)}</React.Fragment>
+            ))}
+        </div>
 
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-sm text-center opacity-70">
-        Powered by entradita.com
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-sm text-center opacity-70">Powered by entradita.com</div>
       </div>
-    </div>
+    </>
   );
 }
 
 export default EventPage;
-

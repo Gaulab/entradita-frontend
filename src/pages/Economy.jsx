@@ -87,17 +87,17 @@ const EconomicReport = () => {
     );
 
   return (
-    <div className="container p-4 space-y-6 bg-gray-900 text-gray-100 min-h-screen min-w-full">
+    <div className="container p-4 space-y-4 bg-gray-900 text-gray-100 min-h-screen min-w-full">
       {showAlert && (
         <Alert className="mb-4 bg-yellow-900 border-yellow-700">
           <AlertDescription>Para que este reporte funcione correctamente, asegúrese de haber configurado los precios adecuados para los ticket tags en el evento.</AlertDescription>
         </Alert>
       )}
-      <div className="flex flex-col justify-between items-center mb-6">
-        <Button variant="entraditaTertiary" onClick={() => navigate(-1)} className="mb-4 flex items-center max-md:w-full w-72">
+      <div className="flex flex-col justify-between items-center">
+        <h1 className="text-2xl sm:text-3xl font-bold text-center mb-2">Reporte Económico</h1>
+        <Button variant="entraditaTertiary" onClick={() => navigate(-1)} className="mb-0 flex items-center max-md:w-full w-72">
           <ArrowLeft className="mr-2 h-4 w-4" /> Volver
         </Button>
-        <h1 className="text-2xl sm:text-3xl font-bold text-center">Reporte Económico</h1>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -139,12 +139,73 @@ const EconomicReport = () => {
         </Card>
       </div>
 
+
+
+      <Card className="bg-gray-800 border-gray-700 rounded-lg">
+        <CardHeader>
+          <CardTitle className="text-xl font-bold">Desglose por Vendedor</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+            <Label htmlFor="commissionAmount" className="whitespace-nowrap">
+              Comisión por Ticket ($)
+            </Label>
+            <Input
+              id="commissionAmount"
+              type="number"
+              value={commissionAmount}
+              onChange={(e) => setCommissionAmount(Number(e.target.value))}
+              className="max-w-xs bg-gray-700 border-gray-600 text-white"
+            />
+          </div>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="text-center">
+                  <TableHead className="text-gray-300">Vendedor</TableHead>
+                  <TableHead className="text-gray-300">Tickets Vendidos</TableHead>
+                  <TableHead className="text-gray-300 max-sm:hidden ">Desglose de Ventas</TableHead>
+                  <TableHead className="text-gray-300">Total Vendido</TableHead>
+                  <TableHead className="text-gray-300">Comisión a Pagar</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody className="text-center">
+                {data.sellers.map((seller) => {
+                  const sellerTotal = Object.entries(seller.ticket_tag_sales).reduce((total, [tagId, quantity]) => {
+                    const tag = data.ticket_tags.find((t) => t.id === parseInt(tagId));
+                    return total + (tag ? tag.price * quantity : 0);
+                  }, 0);
+                  const sellerCommission = (seller.ticket_counter || 0) * commissionAmount;
+                  return (
+                    <TableRow key={seller.id}>
+                      <TableCell className="font-medium">{seller.assigned_name}</TableCell>
+                      <TableCell>{seller.ticket_counter}</TableCell>
+                      <TableCell className="max-sm:hidden">
+                        {Object.entries(seller.ticket_tag_sales)
+                          .map(([tagId, quantity]) => {
+                            const tag = data.ticket_tags.find((t) => t.id === parseInt(tagId));
+                            return tag ? `${tag.name}: ${quantity}` : null;
+                          })
+                          .filter(Boolean)
+                          .join(', ')}
+                      </TableCell>
+                      <TableCell>${sellerTotal.toFixed(2)}</TableCell>
+                      <TableCell className="font-bold">${sellerCommission.toFixed(2)}</TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
+
       <Card className="bg-gray-800 border-gray-700 rounded-lg">
         <CardHeader>
           <CardTitle className="text-xl font-bold">Desglose por Tipo de Ticket</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col md:flex-row items-center justify-between">
+          <div className="flex flex-col items-center justify-between">
             <div className="w-full md:w-1/2 h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -158,7 +219,7 @@ const EconomicReport = () => {
                 </PieChart>
               </ResponsiveContainer>
             </div>
-            <div className="w-full md:w-1/2 overflow-x-auto mt-4 md:mt-0">
+            <div className="w-full  overflow-x-auto mt-4 md:mt-0">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -183,65 +244,6 @@ const EconomicReport = () => {
                 </TableBody>
               </Table>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="bg-gray-800 border-gray-700 rounded-lg">
-        <CardHeader>
-          <CardTitle className="text-xl font-bold">Desglose por Vendedor</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
-            <Label htmlFor="commissionAmount" className="whitespace-nowrap">
-              Comisión por Ticket ($)
-            </Label>
-            <Input
-              id="commissionAmount"
-              type="number"
-              value={commissionAmount}
-              onChange={(e) => setCommissionAmount(Number(e.target.value))}
-              className="max-w-xs bg-gray-700 border-gray-600 text-white"
-            />
-          </div>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-gray-300">Vendedor</TableHead>
-                  <TableHead className="text-gray-300">Tickets Vendidos</TableHead>
-                  <TableHead className="text-gray-300">Desglose de Ventas</TableHead>
-                  <TableHead className="text-gray-300">Total Vendido</TableHead>
-                  <TableHead className="text-gray-300">Comisión a Pagar</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {data.sellers.map((seller) => {
-                  const sellerTotal = Object.entries(seller.ticket_tag_sales).reduce((total, [tagId, quantity]) => {
-                    const tag = data.ticket_tags.find((t) => t.id === parseInt(tagId));
-                    return total + (tag ? tag.price * quantity : 0);
-                  }, 0);
-                  const sellerCommission = (seller.ticket_counter || 0) * commissionAmount;
-                  return (
-                    <TableRow key={seller.id}>
-                      <TableCell className="font-medium">{seller.assigned_name}</TableCell>
-                      <TableCell>{seller.ticket_counter}</TableCell>
-                      <TableCell>
-                        {Object.entries(seller.ticket_tag_sales)
-                          .map(([tagId, quantity]) => {
-                            const tag = data.ticket_tags.find((t) => t.id === parseInt(tagId));
-                            return tag ? `${tag.name}: ${quantity}` : null;
-                          })
-                          .filter(Boolean)
-                          .join(', ')}
-                      </TableCell>
-                      <TableCell>${sellerTotal.toFixed(2)}</TableCell>
-                      <TableCell className="font-bold">${sellerCommission.toFixed(2)}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
           </div>
         </CardContent>
       </Card>

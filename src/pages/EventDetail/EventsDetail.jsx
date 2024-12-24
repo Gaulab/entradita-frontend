@@ -249,7 +249,7 @@ export default function OldEventDetails() {
   return (
     <div className="flex justify-center space-y-6 pb-8 bg-gray-900 text-white p-4 min-h-screen w-screen ">
       <div className="max-w-6xl mx-auto w-full">
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
           <Button onClick={() => navigate("/dashboard")} variant="outline" className="w-full sm:w-auto bg-gray-800 text-white hover:bg-gray-700">
             <ArrowLeftIcon className="mr-2 h-4 w-4" /> Volver al Dashboard
           </Button>
@@ -257,7 +257,7 @@ export default function OldEventDetails() {
             <EditIcon className="mr-2 h-4 w-4" /> Editar Evento
           </Button>
         </div>
-
+      
         <Event event={event} />
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">

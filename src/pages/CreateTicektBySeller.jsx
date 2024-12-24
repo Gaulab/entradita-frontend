@@ -71,7 +71,7 @@ export default function CreateTicketBySeller() {
                 <Label htmlFor="dni" className="text-gray-200">
                   DNI
                 </Label>
-                <Input id="dni" required className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+                <Input id="dni" maxLength="8" required className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
               </div>
             )}
             <div className="space-y-2">
