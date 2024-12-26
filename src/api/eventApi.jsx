@@ -143,7 +143,7 @@ export const updateTicketSales = async (id, authToken) => {
 // Eliminación de un evento
 export const deleteEvent = async (id, authToken) => {
   try {
-    const response = await fetch(`${apiUrl}/api/v1/events/${id}/`, {
+    const response = await fetch(`${apiUrl}/api/v1/event/${id}/`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

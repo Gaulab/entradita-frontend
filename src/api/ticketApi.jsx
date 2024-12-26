@@ -61,7 +61,11 @@ export const createTicketBySeller = async (formData, uuid) => {
     body: JSON.stringify(formData),
   });
   if (!response.ok) {
-    throw new Error('Error creating ticket');
+    const responseBody = await response.json();
+    let error_msg = responseBody.error;
+    if (!responseBody.error.includes("El evento alcanzó su capacidad máxima"))
+      error_msg = "Error creating ticket"
+      throw new Error(error_msg);
   }
   return response.json();
 };

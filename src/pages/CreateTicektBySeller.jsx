@@ -32,7 +32,7 @@ export default function CreateTicketBySeller() {
     try {
       const response = await createTicketBySeller(formData, uuid); // Pasa formData en lugar de e
       navigate(`/ticketShare/${uuid}`, { 
-        state: { ticketUrl: `${window.location.origin}/ticket/${response.ticketUuid}` }
+        state: { ticketUrl: `${window.location.origin}/ticket/${response.uuid}` }
       });
     } catch (error) {
       console.error('Error creating ticket:', error.message);
@@ -71,7 +71,7 @@ export default function CreateTicketBySeller() {
                 <Label htmlFor="dni" className="text-gray-200">
                   DNI
                 </Label>
-                <Input id="dni" maxLength="8" required className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+                <Input id="dni" maxLength="8" type="tel" pattern="[0-9]*" required className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
               </div>
             )}
             <div className="space-y-2">
