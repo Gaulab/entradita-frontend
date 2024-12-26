@@ -1,12 +1,12 @@
 // Dependencies
 import { useState, useContext, useEffect } from "react";
-import { Link } from "react-router-dom";
 // Context
 import AuthContext from "../context/AuthContext";
 // Components
 import { Button } from "../components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
+import { Loading }  from "../components/ui/loading";
 // Icons
 import { LogOutIcon, PlusIcon, Eye } from "lucide-react";
 // API
@@ -15,6 +15,7 @@ import { getEvents } from "../api/eventApi";
 export default function Dashboard() {
   const { logoutUser, authToken } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Get events on component mount
   useEffect(() => {
@@ -25,6 +26,8 @@ export default function Dashboard() {
       } catch (error) {
         console.error("Error al obtener eventos:", error);
         alert(error.message);
+      } finally {
+        setIsLoading(false); // Oculta el loading después de cargar
       }
     };
 
@@ -33,16 +36,31 @@ export default function Dashboard() {
     }
   }, [authToken.access]); // Dependencia del authToken para que se recargue si cambia
 
+    // Mostrar loading si isLoading es true
+    if (isLoading) {
+      return <Loading />;
+    }
+  
   return (
     <div className="min-h-screen w-screen p-4 bg-gray-900 text-gray-100 ">
+      
       <div className="max-w-6xl mx-auto  w-full">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-4">
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <Button onClick={logoutUser} variant="entraditaTertiary" >
             <LogOutIcon className="mr-2 h-4 w-4" /> Cerrar Sesión
           </Button>
         </div>
 
+        <Card className="bg-gray-800 border-gray-700 mb-4">
+          <CardHeader className="mb-2 pb-1">
+            <CardTitle className="text-white">Tickets Disponibles</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-gray-300">Tienes 80 tickets disponibles para la venta.</p>
+          </CardContent>
+        </Card>
+        
         <Card className="bg-gray-800 border-gray-700 mb-8">
           <CardHeader>
             <CardTitle className="text-white">Tus eventos</CardTitle>

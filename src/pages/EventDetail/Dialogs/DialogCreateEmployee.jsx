@@ -60,6 +60,7 @@
                 onChange={(e) => setNewEmpleadoName(e.target.value)}
                 placeholder="Nombre del empleado"
                 className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                maxLength="25"
               />
             </div>
             {isSellerEmpleado && (

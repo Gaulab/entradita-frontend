@@ -17,7 +17,7 @@ import EventPage from './pages/EventPage';
 import Economy from './pages/Economy';
 import TicketShare from './pages/TicketShare';
 import EventConfigInterface from './pages/EventConfigInterface';
-
+import TermsAndConditions from './pages/TermsAndConditions';
 function App() {
   return (
     <Router>
@@ -30,8 +30,8 @@ function App() {
           <Route path="/vendedor/:uuid" element={<VendedorWrapper />} />
           <Route path="/vendedor/:uuid/create-ticket" element={<CreateTicketBySeller />} />
           <Route path="/escaner/:uuid" element={<EscanerWrapper />} />
-        <Route path="/ticketShare/:uuid" element={<TicketShare />} />
-        
+          <Route path="/ticketShare/:uuid" element={<TicketShare />} />
+          <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         {/* Rutas protegidas */}
           <Route path="/eventPageConfig/:id" element={<AuthProvider><PrivateRoute><EventConfigInterface /></PrivateRoute></AuthProvider>} />
           <Route path="/eventPage/:id" element={<EventPage />} />

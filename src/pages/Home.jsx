@@ -1,9 +1,21 @@
+/** 
+ * entraditaFrontend/src/pages/Home.jsx
+ * Este archivo contiene el componente principal de la página de inicio.
+ * Incluye la lógica para la animación de partículas y la estructura de la página.
+**/
+
+// React and hooks imports
 import { useState, useEffect, useRef } from 'react';
+// React Router import
 import { Link } from 'react-router-dom';
+// UI component imports
 import { Button } from "../components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
+// Icon imports
 import { QrCode, Zap, Users, MessageSquareText, Menu, X } from 'lucide-react';
+// PropTypes import
 import PropTypes from 'prop-types';
+
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -85,16 +97,16 @@ export default function Home() {
               <h1 className="text-xl sm:text-2xl font-bold text-white">entradita.com</h1>
             </div>
             <nav className="hidden sm:block">
-              <Button variant="entraditaPrimary" className="ml-2" >
-                <Link to="/contact">Contacto</Link>
+              <Button variant="entraditaSecondary" className="ml-2" >
+                <Link className='text-white' to="/contact">Contacto</Link>
               </Button>
-              <Button  variant="entraditaPrimary" className=" ml-2">
-                <Link to="/login">Iniciar Sesión</Link>
+              <Button  variant="entraditaSecondary" className="ml-2">
+                <Link className='text-white' to="/login">Iniciar Sesión</Link>
               </Button>
             </nav>
             <Button
               variant="ghost"
-              className="sm:hidden text-white"
+              className="sm:hidden text-white bg-gray-800"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label="Toggle menu"
             >
@@ -122,8 +134,8 @@ export default function Home() {
               <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto mb-8 animate-fade-in-up">
                 Simplifica la venta y verificación de tickets con nuestra plataforma de códigos QR intuitiva y segura.
               </p>
-              <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white animate-pulse">
-                <Link to="/contact">Contactar</Link>
+              <Button variant="entraditaPrimary" size="lg" className="text-white animate-pulse">
+                <Link className='text-white' to="/contact">Empezar ahora</Link>
               </Button>
             </section>
 
@@ -177,7 +189,7 @@ export default function Home() {
         <div className="container mx-auto px-4 text-center text-gray-400">
           <p className="text-sm sm:text-base">© 2024 entradita.com todos los derechos reservados.</p>
           <div className="mt-4 flex justify-center space-x-4 text-sm sm:text-base">
-            <a href="#" className="hover:text-white transition-colors">Términos de Servicio</a>
+            <a href="terms-and-conditions" className="hover:text-white transition-colors">Términos de Servicio</a>
             <a href="#" className="hover:text-white transition-colors">Política de Privacidad</a>
           </div>
         </div>

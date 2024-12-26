@@ -69,7 +69,7 @@ const ImageFront = ({ src, alt, cardColor }) => (
   <motion.img
     src={src}
     alt={alt}
-    className="rounded-lg shadow-lg mb-2 w-full opacity-85 max-h-80 object-cover"
+    className="rounded-lg shadow-lg mb-2 w-full opacity-85 object-cover"
     animate={{
       boxShadow: [`0 0 10px ${cardColor}90`, `0 0 20px ${cardColor}90`, `0 0 10px ${cardColor}90`],
     }}

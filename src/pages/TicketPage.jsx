@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { AlertTriangle, Download, Calendar, MapPin } from 'lucide-react';
 import { getTicket } from '../api/ticketApi';
-
+import html2canvas from 'html2canvas';
 export default function TicketPage() {
   const { ticket_uuid } = useParams();
   const [data, setData] = useState(null);
@@ -37,30 +37,23 @@ export default function TicketPage() {
     window.scrollTo(0, 0);
   }, []);
 
-  const handleDownload = () => {
-    const svg = document.getElementById('qr-code');
-    const svgData = new XMLSerializer().serializeToString(svg);
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-
-    img.onload = () => {
-      const scale = 4;
-      const borderSize = 20;
-      canvas.width = (img.width + borderSize * 2) * scale;
-      canvas.height = (img.height + borderSize * 2) * scale;
-      ctx.scale(scale, scale);
-      ctx.fillStyle = 'white';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, borderSize, borderSize);
-      const pngFile = canvas.toDataURL('image/png');
-      const downloadLink = document.createElement('a');
-      downloadLink.download = `ticket-qr-${ticket_uuid}.png`;
-      downloadLink.href = pngFile;
-      downloadLink.click();
-    };
-    img.src = `data:image/svg+xml;base64,${btoa(svgData)}`;
+  const handleDownload = async () => {
+    const ticketElement = document.getElementById('ticket-container');
+    
+    try {
+      const canvas = await html2canvas(ticketElement, {
+        scale: 2,
+        backgroundColor: null,
+      });
+      
+      const image = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = image;
+      link.download = `ticket-${ticket_uuid}.png`;
+      link.click();
+    } catch (error) {
+      console.error('Error generating ticket image:', error);
+    }
   };
 
   if (loading)
@@ -79,7 +72,7 @@ export default function TicketPage() {
 
   return (
     <div className="flex justify-center h-screen bg-gray-900 p-4 overflow-hidden">
-      <div className="p-8 py-2 flex flex-col h-min items-center bg-white rounded-3xl">
+      <div id="ticket-container" className="p-8 py-2 flex flex-col h-min items-center bg-white rounded-3xl " >
         <div className="w-full h-15 mb-2">
           <div className="w-full h-full flex items-center justify-center">
             <div className="w-14 h-14 rounded-full overflow-hidden border-4 border-gray-300 shadow-lg">

@@ -235,7 +235,7 @@ export default function OldEventDetails() {
     }
   }, [authToken.access, vendedores, escaners, reload]);
 
-  const filteredTickets = tickets.filter((ticket) => ticket.owner_name.toLowerCase().includes(searchTerm.toLowerCase()) || ticket.owner_dni.includes(searchTerm));
+  const filteredTickets = tickets.filter((ticket) => ticket.owner_name.toLowerCase().includes(searchTerm.toLowerCase()) || ticket.owner_dni?.includes(searchTerm));
 
   const pageCount = Math.ceil(filteredTickets.length / itemsPerPage);
   const paginatedTickets = filteredTickets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -247,7 +247,7 @@ export default function OldEventDetails() {
   };
 
   return (
-    <div className="flex justify-center space-y-6 pb-8 bg-gray-900 text-white p-4 min-h-screen w-screen ">
+    <div className="flex justify-center space-y-6 pb-8 bg-gradient-to-b from-gray-900 to-gray-950 text-white p-4 min-h-screen w-screen ">
       <div className="max-w-6xl mx-auto w-full">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
           <Button onClick={() => navigate("/dashboard")} variant="outline" className="w-full sm:w-auto bg-gray-800 text-white hover:bg-gray-700">
@@ -262,9 +262,9 @@ export default function OldEventDetails() {
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-4 gap-0  p-0">
-            <TabsTrigger value="tickets" className="text-lg max-sm:m-0 max-sm:rounded-none max-sm:rounded-l-md max-sm:mr-0.5 bg-blue-600 text-gray-900"><Ticket className="mr-2 h-4 hidden sm:block sm:h-6 sm:w-6" /> Tickets</TabsTrigger>
-            <TabsTrigger value="vendedores" className="text-lg max-sm:m-0 max-sm:rounded-none max-sm:mx-0.5  bg-green-600 text-gray-900"><Users className="mr-2 hidden sm:block sm:h-6 sm:w-6" /> Vendedores</TabsTrigger>
-            <TabsTrigger value="escaners" className="text-lg max-sm:m-0 max-sm:rounded-none max-sm:rounded-r-md max-sm:ml-0.5  bg-purple-600 text-gray-900"><ScanIcon className="mr-2 hidden sm:block  sm:h-6 sm:w-6" /> Scanners</TabsTrigger>
+            <TabsTrigger value="tickets" className="text-lg max-sm:m-0 max-sm:rounded-none max-sm:rounded-l-md max-sm:mr-0.5 bg-gradient-to-br to-gray-800 from-green-950 text-gray-100 border-gray-600"><Ticket className="mr-2 h-4 hidden sm:block sm:h-6 sm:w-6" /> Tickets</TabsTrigger>
+            <TabsTrigger value="vendedores" className="text-lg max-sm:m-0 max-sm:rounded-none max-sm:mx-0.5  bg-gradient-to-br to-gray-800 from-yellow-950 text-gray-100 border-gray-600"><Users className="mr-2 hidden sm:block sm:h-6 sm:w-6" /> Vendedores</TabsTrigger>
+            <TabsTrigger value="escaners" className="text-lg max-sm:m-0 max-sm:rounded-none max-sm:rounded-r-md max-sm:ml-0.5  bg-gradient-to-br  from-sky-950 to-gray-800 text-gray-100 border-gray-600"><ScanIcon className="mr-2 hidden sm:block  sm:h-6 sm:w-6" /> Scanners</TabsTrigger>
           </TabsList>
 
           <TabsContent value="tickets">
