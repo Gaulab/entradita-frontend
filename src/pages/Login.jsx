@@ -24,6 +24,16 @@ export default function Login() {
     }
   };
 
+  const [formData, setFormData] = useState({ username: '', password: '' });
+
+  const handleUsernameChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value.toLowerCase(),
+    });
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-4 w-screen">
       
@@ -46,6 +56,9 @@ export default function Login() {
                 id="username"
                 type="text"
                 name="username"
+                value={formData.username}
+                onChange={handleUsernameChange}
+                maxLength={25}
                 required
                 className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
               />
