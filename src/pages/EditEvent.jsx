@@ -45,6 +45,10 @@ export default function EditEvent() {
     fetchEvent();
   }, [id, authToken.access]);
 
+  useEffect(() => {
+    setUserInputCode('');
+  }, [isDeleteDialogOpen]);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     // Extrae los datos del formulario y actualiza el objeto del evento
@@ -68,6 +72,7 @@ export default function EditEvent() {
       setError('Código de confirmación incorrecto');
       return;
     }
+    setUserInputCode('');
 
     try {
       const data = await deleteEvent(id, authToken.access);
@@ -256,7 +261,11 @@ export default function EditEvent() {
             className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
           />
           <DialogFooter>
-            <Button onClick={() => setIsDeleteDialogOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600">
+            <Button onClick={
+                () => {
+                  setIsDeleteDialogOpen(false);
+                  setUserInputCode('');
+                }} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600">
               Cancelar
             </Button>
             <Button onClick={handleDeleteEvent} variant="destructive">
