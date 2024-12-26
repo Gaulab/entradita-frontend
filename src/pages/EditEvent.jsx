@@ -11,7 +11,7 @@ import { useState, useContext, useEffect } from 'react';
 import AuthContext from '../context/AuthContext';
 // API
 import { getEvent, updateEvent, deleteEvent } from '../api/eventApi';
-import { Edit, Edit2, HelpCircle, X } from 'lucide-react';
+import { ArrowLeftIcon, Edit, Edit2, HelpCircle, X } from 'lucide-react';
 
 export default function EditEvent() {
   const { id } = useParams();
@@ -57,7 +57,7 @@ export default function EditEvent() {
     eventObject.dni_required = requireDNI; // Actualiza el requerimiento de DNI
     // console.log('TicketTags:', ticketTags);
     eventObject.ticket_tags = ticketTags; // Actualiza las etiquetas de los tickets
-      // console.log('Event object:', eventObject);
+    // console.log('Event object:', eventObject);
 
     try {
       const data = await updateEvent(eventObject, id, authToken.access);
@@ -117,7 +117,7 @@ export default function EditEvent() {
     console.log('Index:', index);
     setTagToEdit(index);
   };
-  
+
   const handleEditTag = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -135,7 +135,10 @@ export default function EditEvent() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900 p-4 w-screen">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-4 w-screen">
+      <Button  onClick={() => navigate(`/event/${id}/details`)} variant="entraditaTertiary" className="w-full max-w-md mb-4">
+        <ArrowLeftIcon className="mr-2 h-4 w-4" /> Volver al evento
+      </Button>
       <Card className="w-full max-w-md bg-gray-800 border-gray-700">
         <CardHeader>
           <CardTitle className="text-white">Editar Evento</CardTitle>
@@ -189,7 +192,7 @@ export default function EditEvent() {
               <Label htmlFor="dni_required" className="text-gray-200 flex items-center">
                 Requerir DNI
               </Label>
-              <Switch id="dni_required" checked={requireDNI} onCheckedChange={setRequireDNI} /> 
+              <Switch id="dni_required" checked={requireDNI} onCheckedChange={setRequireDNI} />
               <Input type="hidden" name="dni_required" value={requireDNI} />
             </div>
 
@@ -215,7 +218,7 @@ export default function EditEvent() {
                     <span>
                       {tag.name} - ${tag.price.toFixed(2)}
                     </span>
-                    <div className='space-x-2 items-center'>
+                    <div className="space-x-2 items-center">
                       <button type="button" onClick={() => openEditTagDialog(index)} className="text-gray-400 hover:text-gray-200 p-1">
                         <Edit2 size={20} />
                       </button>
@@ -261,11 +264,14 @@ export default function EditEvent() {
             className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
           />
           <DialogFooter>
-            <Button onClick={
-                () => {
-                  setIsDeleteDialogOpen(false);
-                  setUserInputCode('');
-                }} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600">
+            <Button
+              onClick={() => {
+                setIsDeleteDialogOpen(false);
+                setUserInputCode('');
+              }}
+              variant="outline"
+              className="bg-gray-700 text-white hover:bg-gray-600"
+            >
               Cancelar
             </Button>
             <Button onClick={handleDeleteEvent} variant="destructive">
@@ -307,13 +313,13 @@ export default function EditEvent() {
               <Label htmlFor="name" className="text-gray-200">
                 Nombre del Ticket Tag
               </Label>
-              <Input id="name" name="name"  required className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+              <Input id="name" name="name" required className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="price" className="text-gray-200">
                 Precio
               </Label>
-              <Input id="price" name="price"  required className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+              <Input id="price" name="price" required className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
             </div>
             <DialogFooter>
               <Button onClick={() => setIsEditTagDialogOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600">

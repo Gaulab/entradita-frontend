@@ -250,10 +250,10 @@ export default function OldEventDetails() {
     <div className="flex justify-center space-y-6 pb-8 bg-gradient-to-b from-gray-900 to-gray-950 text-white p-4 min-h-screen w-screen ">
       <div className="max-w-6xl mx-auto w-full">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
-          <Button onClick={() => navigate("/dashboard")} variant="outline" className="w-full sm:w-auto bg-gray-800 text-white hover:bg-gray-700">
+          <Button onClick={() => navigate("/dashboard")} variant="entraditaTertiary" className="w-full sm:w-auto">
             <ArrowLeftIcon className="mr-2 h-4 w-4" /> Volver al Dashboard
           </Button>
-          <Button onClick={() => navigate(`/edit-event/${id}`)} variant="outline" className="w-full sm:w-auto bg-gray-800 text-white hover:bg-gray-700">
+          <Button onClick={() => navigate(`/edit-event/${id}`)} variant="entraditaTertiary" className="w-full sm:w-auto">
             <EditIcon className="mr-2 h-4 w-4" /> Editar Evento
           </Button>
         </div>
