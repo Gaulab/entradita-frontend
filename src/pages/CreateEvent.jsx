@@ -26,6 +26,7 @@ export default function CreateEvent() {
   const [tagPrice, setTagPrice] = useState('');
   const { authToken, user } = useContext(AuthContext);
   const [error, setError] = useState('');
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
@@ -39,12 +40,19 @@ export default function CreateEvent() {
   
     // Extrae los datos del formulario y construye el objeto del evento
     const formData = new FormData(event.target);
+    const selectedDate = new Date(formData.get('date') + 'T00:00:00');
+    const currentDate = new Date(new Date().toISOString().split('T')[0] + 'T00:00:00');
+    if (selectedDate < currentDate) {
+      setError('La fecha seleccionada no puede ser menor a la fecha actual.');
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
     const eventObject = Object.fromEntries(Array.from(formData.entries()).filter(([key, value]) => value !== ''));
     eventObject.dni_required = requireDNI; // Agrega el requerimiento de DNI al objeto
     eventObject.ticket_tags = ticketTags; // Agrega los TicketTags al objeto
   
     console.log('Evento a crear:', eventObject);
-  
+
     try {
       const data = await createEvent(eventObject, authToken.access);
       // console.log('Evento creado:', data);
@@ -70,6 +78,12 @@ export default function CreateEvent() {
 
   const removeTicketTag = (index) => {
     setTicketTags(ticketTags.filter((_, i) => i !== index));
+  };
+
+  const handleDateChange = (event) => {
+    const inputDate = new Date(event.target.value);
+    const offsetDate = new Date(inputDate.getTime() - (3 * 60 * 60 * 1000)); // Ajuste a zona horaria -3
+    setDate(offsetDate.toISOString().split('T')[0]); // Formato YYYY-MM-DD
   };
 
   return (
@@ -98,7 +112,7 @@ export default function CreateEvent() {
                   <HelpCircle className="w-4 h-4 ml-1" />
                 </Tooltip>
               </Label>
-              <Input type="date" id="date" name="date" required className="bg-gray-700 border-gray-600 text-white" />
+              <Input type="date" id="date" name="date" required className="bg-gray-700 border-gray-600 text-white" onChange={handleDateChange}/>
             </div>
 
             <div className="space-y-2">
