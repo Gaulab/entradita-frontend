@@ -32,7 +32,7 @@ export default function CreateTicketBySeller() {
     try {
       const response = await createTicketBySeller(formData, uuid); // Pasa formData en lugar de e
       navigate(`/ticketShare/${uuid}`, { 
-        state: { ticketUrl: `${window.location.origin}/ticket/${response.ticketUuid}` }
+        state: { ticketUrl: `${window.location.origin}/ticket/${response.uuid}` }
       });
     } catch (error) {
       console.error('Error creating ticket:', error.message);
