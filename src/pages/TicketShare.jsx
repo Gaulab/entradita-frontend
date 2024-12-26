@@ -1,15 +1,17 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/card';
 import { Share2, CheckCircle, ArrowLeft } from 'lucide-react';
 
-export default function TicketShare({ ticketUrl }) {
+export default function TicketShare({ }) {
   const navigate = useNavigate();
   const { uuid } = useParams(); // Vendor's UUID
+  const location = useLocation();
+  const { ticketUrl } = location.state || {}; // Desestructurar ticketUrl del estado
 
   const handleShare = () => {
-    console.log('ticketUrl', ticketUrl);
+    console.log('uuid', uuid);
     if (navigator.share) {
       navigator.share({
         title: 'Tu ticket para el evento',
@@ -23,6 +25,11 @@ export default function TicketShare({ ticketUrl }) {
     } else {
       // Fallback for browsers that don't support the Web Share API
       alert(`Comparte este enlace: ${ticketUrl}`);
+      navigator.clipboard.writeText(ticketUrl).then(() => {
+        console.log('Ticket URL copiado al portapapeles');
+      }).catch((error) => {
+        console.log('Error al copiar el URL', error);
+      });
     }
   };
 
