@@ -107,7 +107,10 @@ export default function Tickets({
               type="text"
               placeholder="Buscar"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
               className="pl-8 w-full bg-gray-700 border-gray-600 text-white placeholder-gray-400"
             />
           </div>
@@ -150,7 +153,11 @@ export default function Tickets({
                       <EyeIcon className="h-4 w-4" />
                       <span className="sr-only">Ver ticket</span>
                     </Button>
-                    <Button variant="destructive" onClick={() => handleEliminarTicket(ticket.id)} size="sm" title="Eliminar ticket">
+                    <Button variant="destructive" onClick={() => {
+                        handleEliminarTicket(ticket.id);
+                        setCurrentPage(1);
+                      }}
+                      size="sm" title="Eliminar ticket">
                       <Trash2Icon className="h-4 w-4" />
                       <span className="sr-only">Eliminar ticket</span>
                     </Button>
@@ -161,7 +168,7 @@ export default function Tickets({
           </Table>
         </div>
         <div className="flex justify-between items-center mt-4">
-          <Button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} disabled={currentPage === 1} className="bg-gray-700 text-white">
+          <Button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))} disabled={currentPage === 1} className="bg-gray-700 text-white">
             Anterior
           </Button>
           <span className="text-gray-400">
