@@ -30,6 +30,7 @@ export default function VendedorView({ uuid }) {
   const [dniRequired, setDniRequired] = useState(false);
   const [ticketTags, setTicketTags] = useState([]);
   const navigate = useNavigate();
+  const [isVerifyButtonDisabled, setIsVerifyButtonDisabled] = useState(true);
 
   const shareTicketLink = useCallback((link) => {
     if (navigator.share) {
@@ -98,7 +99,15 @@ export default function VendedorView({ uuid }) {
     fetchTickets();
   }, [uuid]);
 
+  const enableVerifyButtonAfterAWhile = useCallback(() => {
+    setIsVerifyButtonDisabled(true);
+    setTimeout(() => {
+      setIsVerifyButtonDisabled(false);
+    }, 3000);
+  }, []);
+
   const verifyPassword = async () => {
+    enableVerifyButtonAfterAWhile();
     if (!eventId) {
       setPasswordError('ID de evento no disponible.');
       return;
@@ -171,6 +180,7 @@ export default function VendedorView({ uuid }) {
     if (!eventId) {
       return <div className="flex items-center justify-center h-screen bg-gray-900 text-white w-screen">Cargando...</div>;
     }
+    // enableVerifyButtonAfterAWhile(); Deshabilita verify button al cargar pagina. Error: too many renders
 
     return (
       <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
@@ -187,7 +197,7 @@ export default function VendedorView({ uuid }) {
               className="mb-4 bg-gray-700 border-gray-600 text-white placeholder-gray-400"
             />
             {passwordError && <p className="text-red-500 mb-2">{passwordError}</p>}
-            <Button onClick={verifyPassword} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+            <Button id="verify" disabled={isVerifyButtonDisabled} onClick={verifyPassword} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
               Verificar
             </Button>
           </CardContent>
