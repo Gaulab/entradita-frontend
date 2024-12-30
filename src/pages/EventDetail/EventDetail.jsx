@@ -1,31 +1,37 @@
 // entraditaFront/srs/pages/EventDetail/EventDetails.jsx
+
+// react imports
 import { useState, useContext, useEffect, useCallback } from "react";
+// react-router imports
 import { useNavigate, useParams } from "react-router-dom";
-// Custom components
-import { Button } from "../../components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
-import { ArrowLeftIcon, EditIcon, Ticket, Users, ScanIcon } from "lucide-react";
+// context imports
 import AuthContext from "../../context/AuthContext";
-import Event from "./Event";
+// custom components
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
+import { Button } from "../../components/ui/button";
+// icons
+import { ArrowLeftIcon, EditIcon, Ticket, Users, ScanIcon } from "lucide-react";
+// page components
+import Scanners from "./Tabs/Scanners";
 import Tickets from "./Tabs/Tickets";
-import Vendedores from "./Tabs/Vendedores";
-import Escaners from "./Tabs/Escaners";
+import Sellers from "./Tabs/Sellers";
+import Event from "./Event";
+// dialog components
 import DialogCreateEmployee from "./Dialogs/DialogCreateEmployee";
 import DialogEditEmployee from "./Dialogs/DialogEditEmployee";
 import DialogDeleteItem from "./Dialogs/DialogDeleteItem";
-// API
-import { getEventDetails } from "../../api/eventApi";
+// API functions
+import { getEventDetails, updateTicketSales } from "../../api/eventApi";
 import { getEmpleados } from "../../api/empleadoApi";
 import { createEmpleado } from "../../api/empleadoApi";
 import { updateEmpleado } from "../../api/empleadoApi";
 import { deleteEmpleado } from "../../api/empleadoApi";
 import { changeEmpleadoStatus } from "../../api/empleadoApi";
 import { deleteTicket } from "../../api/ticketApi";
-import { updateTicketSales } from "../../api/eventApi";
 
 export default function OldEventDetails() {
   const { id } = useParams();
-  const { authToken } = useContext(AuthContext);
+  const { authToken } = useContext(AuthContext);a
   const navigate = useNavigate();
   
   const [event, setEvent] = useState({});
@@ -275,11 +281,11 @@ export default function OldEventDetails() {
           </TabsContent>
 
           <TabsContent value="vendedores">
-            <Vendedores vendedores={vendedores} handleGenerarEmpleado={handleGenerarEmpleado} handleEditEmpleado={handleEditEmpleado} handleEliminarEmpleado={handleEliminarEmpleado} handleChangeEmpleadoStatus={handleChangeEmpleadoStatus} copyToClipboard={copyToClipboard} ticketTags={event.ticket_tags}  setNewTicketTags={setNewTicketTags} newTicketTags={newTicketTags}/>
+            <Sellers vendedores={vendedores} handleGenerarEmpleado={handleGenerarEmpleado} handleEditEmpleado={handleEditEmpleado} handleEliminarEmpleado={handleEliminarEmpleado} handleChangeEmpleadoStatus={handleChangeEmpleadoStatus} copyToClipboard={copyToClipboard} ticketTags={event.ticket_tags}  setNewTicketTags={setNewTicketTags} newTicketTags={newTicketTags}/>
           </TabsContent>
 
           <TabsContent value="escaners">
-            <Escaners escaners={escaners} handleGenerarEmpleado={handleGenerarEmpleado} handleEditEmpleado={handleEditEmpleado} handleEliminarEmpleado={handleEliminarEmpleado} copyToClipboard={copyToClipboard} />
+            <Scanners escaners={escaners} handleGenerarEmpleado={handleGenerarEmpleado} handleEditEmpleado={handleEditEmpleado} handleEliminarEmpleado={handleEliminarEmpleado} copyToClipboard={copyToClipboard} />
           </TabsContent> 
         </Tabs>
 

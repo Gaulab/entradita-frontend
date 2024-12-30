@@ -1,3 +1,4 @@
+// entradaFront/src/pages/EventDetail/Event.jsx
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/card';
 import { Progress } from '../../components/ui/progress';
 import { Button } from '../../components/ui/button';
@@ -53,20 +54,20 @@ export default function Event({ event }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 ">
           <p className="text-gray-200 flex flex-row items-center">
             <CalendarDaysIcon className="h-5 mr-1" />
-            Fecha:<span className="text-white ml-3">{event.date}</span>
+            Fecha:<span className="text-white ml-2">{event.date}</span>
           </p>
           <p className="text-gray-200 flex flex-row items-center">
             <MapPin className="h-5 mr-1" />
-            Lugar:<span className="text-white ml-3">{event.place}</span>
+            Lugar:<span className="text-white ml-2">{event.place}</span>
           </p>
 
           <p className="text-gray-200 flex flex-row items-center">
             <TicketSlashIcon className="h-5 mr-1" />
-            Capacidad:<span className="text-white ml-3"> {event.capacity ? event.capacity : 'Ilimitada'}</span>
+            Capacidad:<span className="text-white ml-2"> {event.capacity ? event.capacity : 'Ilimitada'}</span>
           </p>
           <p className="text-gray-200 flex flex-row items-center">
             <LucideShoppingCart className="h-5 mr-1" />
-            Vendidos:<span className="text-white ml-3">{event.tickets_counter}</span>
+            Vendidos:<span className="text-white ml-2">{event.tickets_counter}</span>
           </p>
         </div>
       </CardContent>

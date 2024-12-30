@@ -45,16 +45,16 @@ export default function Dashboard() {
     <div className="min-h-screen w-screen p-4 bg-gray-900 text-gray-100 ">
       
       <div className="max-w-6xl mx-auto  w-full">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <Button onClick={logoutUser} variant="entraditaTertiary" >
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+          <Button onClick={logoutUser} variant="entraditaTertiary" className="w-full sm:w-auto">
             <LogOutIcon className="mr-2 h-4 w-4" /> Cerrar Sesión
           </Button>
         </div>
 
+
         <Card className="bg-gray-800 border-gray-700 mb-4">
           <CardHeader className="mb-2 pb-1">
-            <CardTitle className="text-white">Tickets Disponibles</CardTitle>
+            <CardTitle className="text-white">Dashboard</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-gray-300">Tienes 80 tickets disponibles para la venta.</p>

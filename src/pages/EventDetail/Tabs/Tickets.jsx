@@ -1,3 +1,4 @@
+// entradaFront/src/pages/EventDetail/Tabs/Tickets.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // Custom components
@@ -34,13 +35,19 @@ export default function Tickets({
   const MobileActionDialog = ({ ticket, onClose }) => (
     <Dialog className="" open={!!ticket} onOpenChange={() => onClose()}>
       <DialogContent className="sm:max-w-[425px] bg-gray-800 ">
-        <DialogHeader>
-          <DialogTitle>Acciones para el ticket</DialogTitle>
+        <DialogHeader >
+          <DialogTitle >Acciones para el ticket</DialogTitle>
         </DialogHeader>
-        <DialogDescription>
-          Selecciona una accion para realizar sobre el ticket de:  {ticket?.owner_name} {ticket?.owner_lastname}
+        <DialogDescription className='mb-0 m-0'>
+          Selecciona una accion para realizar sobre el ticket de:
         </DialogDescription>
-        <div className="flex flex-col space-y-2">
+          <div className="text-gray-300">
+            <p><strong>Nombre:</strong> {ticket?.owner_name} {ticket?.owner_lastname}</p>
+            {dniRequired && <p><strong>DNI:</strong> {ticket?.owner_dni ? ticket.owner_dni : 'No disponible'}</p>}
+            <p><strong>Tipo:</strong> {ticket?.ticket_tag.name}</p>
+            <p><strong>Vendedor:</strong> {ticket?.seller_name === 'Unknown' ? 'Organizer' : ticket?.seller_name}</p>
+          </div>
+        <div className="flex flex-col space-y-2 m-0">
           <Button
             className="justify-start"
             variant="entraditaSecondary"
@@ -61,7 +68,7 @@ export default function Tickets({
             }}
           >
             <EyeIcon className="mr-2 h-4 w-4" />
-            Ver ticket
+            Ver página de ticket
           </Button>
           <Button
             className="justify-start"
@@ -84,13 +91,13 @@ export default function Tickets({
         <div className="flex flex-row justify-between items-center gap-4">
           <div className="relative w-full sm:w-auto">
             <CardTitle className="text-white">Tickets</CardTitle>
-            <CardDescription className="text-gray-400">Gestiona los tickets para este evento</CardDescription>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-400 mr-2 hidden sm:table-cell">Habilitar venta de tickets</span>
-            <Switch checked={ticketSalesEnabled} onChange={() => handleUpdateTicketSales()} />
+            <CardDescription className="text-gray-400">Gestiona los tickets para este evento <br/> {window.innerWidth < 640 && "Haz click en una fila para ver más acciones"}</CardDescription>
           </div>
         </div>
+          <div className="flex flex-row items-center ">
+            <Switch checked={ticketSalesEnabled} onChange={() => handleUpdateTicketSales()} />
+            <span className="text-sm text-gray-400 ml-2">Habilitar venta de tickets</span>
+          </div>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">

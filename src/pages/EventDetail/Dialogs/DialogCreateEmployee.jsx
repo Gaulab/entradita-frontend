@@ -1,5 +1,5 @@
   // entraaditaFront/src/pages/EventDetail/Dialogs/DialogCreateEmployee.jsx
-  import { useState, useEffect } from 'react';
+  import { useEffect } from 'react';
   import { Button } from '../../../components/ui/button';
   import { Input } from '../../../components/ui/input';
   import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../../../components/ui/dialog';
@@ -82,7 +82,7 @@
                   </Label>
                   <MultiSelectDropdown
                     id="categoria"
-                    options={ticket_tags} // Opciones de categorías
+                    options={ticket_tags || []} // Opciones de categorías
                     selectedValues={newTicketTags} // Categorías seleccionadas
                     onChange={setNewTicketTags}
                     placeholder="Seleccionar categorías"

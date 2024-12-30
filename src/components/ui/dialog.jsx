@@ -43,7 +43,7 @@ const DialogContent = React.forwardRef(({ className, children, ...props }, ref) 
   </DialogPortal>
 ));
 
-const DialogHeader = ({ className, ...props }) => <div className={cn('flex flex-col space-y-1.5 text-left', className)} {...props} />;
+const DialogHeader = ({ className, ...props }) => <div className={cn('flex flex-col space-y-1.5 text-left ', className)} {...props} />;
 DialogHeader.displayName = 'DialogHeader';
 
 const DialogFooter = ({ className, ...props }) => <div className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)} {...props} />;
