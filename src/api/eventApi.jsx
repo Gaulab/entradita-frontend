@@ -56,6 +56,7 @@ export const getEvents = async (authToken) => {
         'Authorization': `Bearer ${authToken}`,
       },
     });
+    
 
     if (response.ok) {
       return await response.json(); // Devuelve los datos de los eventos

@@ -2,8 +2,9 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 // Devuelve un ticket por uuid
 export const getTicket = async (ticket_uuid) => {
+  console.log('Getting ticket API...', ticket_uuid);
   try {
-    const response = await fetch(`${apiUrl}/api/v1/tickets/public/${ticket_uuid}/`, {
+    const response = await fetch(`${apiUrl}/api/v1/tickets/public/${ticket_uuid}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

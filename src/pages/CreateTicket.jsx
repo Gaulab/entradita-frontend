@@ -22,11 +22,11 @@ export default function CreateTicket() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // console.log('creating ticket...');
-    // console.log('ticketTags: ', ticketTags);
-    // console.log('Creating ticket...', event.target.name.value, event.target.surname.value, valueDropdown);
-    // console.log('DNI: ', event.target.dni ? event.target.dni.value : 'No DNI');
-    // console.log('valueDropdown: ', JSON.stringify(valueDropdown));
+    console.log('creating ticket...');
+    console.log('ticketTags: ', ticketTags);
+    console.log('Creating ticket...', event.target.name.value, event.target.surname.value, valueDropdown);
+    console.log('DNI: ', event.target.dni ? event.target.dni.value : 'No DNI');
+    console.log('valueDropdown: ', JSON.stringify(valueDropdown));
 
     const formData = {
       owner_name: event.target.name.value,

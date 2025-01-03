@@ -1,52 +1,87 @@
 // entradaFront/src/pages/EventDetail/Tabs/Tickets.jsx
-import { useState } from 'react';
+// react imports
+import { useState, useContext, useCallback } from 'react';
+// react-router imports
 import { useNavigate } from 'react-router-dom';
+// context imports
+import AuthContext from '../../../context/AuthContext';
+import EventDetailsContext from '../../../context/EventDetailsContext';
 // Custom components
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../components/ui/table';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../../../components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '../../../components/ui/dialog';
 import { Switch } from '../../../components/ui/switch';
 import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon } from 'lucide-react';
 // API
 import { updateTicketSales } from '../../../api/eventApi';
-import { DialogDescription } from '@radix-ui/react-dialog';
 
-export default function Tickets({
-  id,
-  paginatedTickets,
-  setSearchTerm,
-  searchTerm,
-  copyToClipboard,
-  handleEliminarTicket,
-  currentPage,
-  setCurrentPage,
-  itemsPerPage,
-  pageCount,
-  ticketSalesEnabled,
-  handleUpdateTicketSales,
-  dniRequired,
-  ticketTags,
-}) {
+export default function Tickets({}) {
   const navigate = useNavigate();
+  const { authToken } = useContext(AuthContext);
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const {
+    event,
+    paginatedTickets,
+    setSearchTerm,
+    searchTerm,
+    currentPage,
+    setCurrentPage,
+    itemsPerPage,
+    pageCount,
+    ticketSalesEnabled,
+    setTicketSalesEnabled,
+    copyToClipboard,
+    copyMessage,
+    setCopyMessage,
+    setItemToDelete,
+    setIsDeleteConfirmDialogOpen,
+    isCreateTicketDialogOpen,
+    setIsCreateTicketDialogOpen,
+  } = useContext(EventDetailsContext);
+
+  const handleGenerarTicket = useCallback(() => {
+    setIsCreateTicketDialogOpen(true);
+  }, []);
+
+  const handleUpdateTicketSales = useCallback(async () => {
+    try {
+      const data = await updateTicketSales(event.id, authToken.access);
+      setTicketSalesEnabled(data.ticket_sales_enabled);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }, [event]);
+
+  const handleDeleteTicket = useCallback((id_ticket) => {
+    setItemToDelete({ type: 'ticket', id: id_ticket });
+    setIsDeleteConfirmDialogOpen(true);
+  }, []);
 
   const MobileActionDialog = ({ ticket, onClose }) => (
     <Dialog className="" open={!!ticket} onOpenChange={() => onClose()}>
       <DialogContent className="sm:max-w-[425px] bg-gray-800 ">
-        <DialogHeader >
-          <DialogTitle >Acciones para el ticket</DialogTitle>
+        <DialogHeader>
+          <DialogTitle>Acciones para el ticket</DialogTitle>
         </DialogHeader>
-        <DialogDescription className='mb-0 m-0'>
-          Selecciona una accion para realizar sobre el ticket de:
-        </DialogDescription>
-          <div className="text-gray-300">
-            <p><strong>Nombre:</strong> {ticket?.owner_name} {ticket?.owner_lastname}</p>
-            {dniRequired && <p><strong>DNI:</strong> {ticket?.owner_dni ? ticket.owner_dni : 'No disponible'}</p>}
-            <p><strong>Tipo:</strong> {ticket?.ticket_tag.name}</p>
-            <p><strong>Vendedor:</strong> {ticket?.seller_name === 'Unknown' ? 'Organizer' : ticket?.seller_name}</p>
-          </div>
+        <DialogDescription className="mb-0 m-0">Selecciona una accion para realizar sobre el ticket de:</DialogDescription>
+        <div className="text-gray-300">
+          <p>
+            <strong>Nombre:</strong> {ticket?.owner_name} {ticket?.owner_lastname}
+          </p>
+          {event.dniRequired && (
+            <p>
+              <strong>DNI:</strong> {ticket?.owner_dni ? ticket.owner_dni : 'No disponible'}
+            </p>
+          )}
+          <p>
+            <strong>Tipo:</strong> {ticket?.ticket_tag.name}
+          </p>
+          <p>
+            <strong>Vendedor:</strong> {ticket?.seller_name === 'Unknown' ? 'Organizer' : ticket?.seller_name}
+          </p>
+        </div>
         <div className="flex flex-col space-y-2 m-0">
           <Button
             className="justify-start"
@@ -74,7 +109,7 @@ export default function Tickets({
             className="justify-start"
             variant="entraditaSecondary"
             onClick={() => {
-              handleEliminarTicket(ticket?.id);
+              handleDeleteTicket(ticket?.id);
               onClose();
             }}
           >
@@ -88,24 +123,18 @@ export default function Tickets({
   return (
     <Card className="bg-gray-800 border-gray-700">
       <CardHeader>
-        <div className="flex flex-row justify-between items-center gap-4">
-          <div className="relative w-full sm:w-auto">
-            <CardTitle className="text-white">Tickets</CardTitle>
-            <CardDescription className="text-gray-400">Gestiona los tickets para este evento <br/> {window.innerWidth < 640 && "Haz click en una fila para ver más acciones"}</CardDescription>
-          </div>
+        <CardTitle className="text-white">Tickets</CardTitle>
+        <CardDescription className="text-gray-400">
+          Gestiona los tickets para este evento <br /> {window.innerWidth < 640 && 'Haz click en una fila para ver más acciones'}
+        </CardDescription>
+        <div className="flex flex-row items-center ">
+          <Switch checked={ticketSalesEnabled} onChange={() => handleUpdateTicketSales()} />
+          <span className="text-sm text-gray-400 ml-2">Habilitar venta de tickets</span>
         </div>
-          <div className="flex flex-row items-center ">
-            <Switch checked={ticketSalesEnabled} onChange={() => handleUpdateTicketSales()} />
-            <span className="text-sm text-gray-400 ml-2">Habilitar venta de tickets</span>
-          </div>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
-          <Button
-            onClick={() => navigate(`/event/${id}/create-ticket`, { state: { dniRequired, ticketTags } })}
-            disabled={!ticketSalesEnabled}
-            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
-          >
+          <Button onClick={() => handleGenerarTicket(true)} disabled={!ticketSalesEnabled} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
             <PlusIcon className="mr-2 h-4 w-4" /> Nuevo Ticket
           </Button>
           <div className="relative w-full sm:w-auto">
@@ -127,7 +156,7 @@ export default function Tickets({
             <TableHeader>
               <TableRow className="border-gray-700 text-left">
                 <TableHead className="text-gray-300 ">Nombre</TableHead>
-                {dniRequired && <TableHead className="text-gray-300  sm:table-cell ">DNI</TableHead>}
+                {event.dni_required && <TableHead className="text-gray-300 sm:table-cell ">DNI</TableHead>}
                 <TableHead className="text-gray-300 hidden sm:table-cell">Tipo</TableHead>
                 <TableHead className="text-gray-300 ">Vendedor</TableHead>
                 <TableHead className="text-gray-300 hidden sm:table-cell text-right">Acciones</TableHead>
@@ -146,7 +175,7 @@ export default function Tickets({
                   }}
                 >
                   <TableCell className="text-gray-300 truncate overflow-hidden whitespace-nowrap max-w-28 ">{ticket.owner_name + ' ' + ticket.owner_lastname}</TableCell>
-                  {dniRequired && (
+                  {event.dni_required && (
                     <TableCell className="text-gray-300 sm:table-cell truncate overflow-hidden whitespace-nowrap max-w-15">{ticket.owner_dni ? ticket.owner_dni : 'No disponible'}</TableCell>
                   )}
                   <TableCell className="text-gray-300 hidden sm:table-cell">{ticket.ticket_tag.name}</TableCell>
@@ -160,11 +189,15 @@ export default function Tickets({
                       <EyeIcon className="h-4 w-4" />
                       <span className="sr-only">Ver ticket</span>
                     </Button>
-                    <Button variant="destructive" onClick={() => {
-                        handleEliminarTicket(ticket.id);
+                    <Button
+                      variant="destructive"
+                      onClick={() => {
+                        handleDeleteTicket(ticket.id);
                         setCurrentPage(1);
                       }}
-                      size="sm" title="Eliminar ticket">
+                      size="sm"
+                      title="Eliminar ticket"
+                    >
                       <Trash2Icon className="h-4 w-4" />
                       <span className="sr-only">Eliminar ticket</span>
                     </Button>

@@ -1,30 +1,32 @@
-// Dependencies
-import { useState, useContext, useEffect } from "react";
+// entraditaFront/src/pages/Dashboard.jsx
+// react imports
+import { useState, useContext, useEffect } from 'react';
 // Context
-import AuthContext from "../context/AuthContext";
+import AuthContext from '../context/AuthContext';
 // Components
-import { Button } from "../components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
-import { Loading }  from "../components/ui/loading";
+import { Button } from '../components/ui/button';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
+import { Loading } from '../components/ui/loading';
 // Icons
-import { LogOutIcon, PlusIcon, Eye } from "lucide-react";
+import { LogOutIcon, PlusIcon, Eye } from 'lucide-react';
 // API
-import { getEvents } from "../api/eventApi";
+import { getEvents } from '../api/eventApi';
 
 export default function Dashboard() {
   const { logoutUser, authToken } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
+  const [ticket_limit, setTicketLimit] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Get events on component mount
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const data = await getEvents(authToken.access); // Usar la función importada
-        setEvents(data); // Actualiza el estado con los eventos obtenidos
+        setEvents(data.events); // Actualiza el estado con los eventos obtenidos
+        setTicketLimit(data.ticket_limit);
       } catch (error) {
-        console.error("Error al obtener eventos:", error);
+        console.error('Error al obtener eventos:', error);
         alert(error.message);
       } finally {
         setIsLoading(false); // Oculta el loading después de cargar
@@ -36,31 +38,28 @@ export default function Dashboard() {
     }
   }, [authToken.access]); // Dependencia del authToken para que se recargue si cambia
 
-    // Mostrar loading si isLoading es true
-    if (isLoading) {
-      return <Loading />;
-    }
-  
+  // Mostrar loading si isLoading es true
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <div className="min-h-screen w-screen p-4 bg-gray-900 text-gray-100 ">
-      
       <div className="max-w-6xl mx-auto  w-full">
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
           <Button onClick={logoutUser} variant="entraditaTertiary" className="w-full sm:w-auto">
             <LogOutIcon className="mr-2 h-4 w-4" /> Cerrar Sesión
           </Button>
         </div>
 
-
-        <Card className="bg-gray-800 border-gray-700 mb-4">
-          <CardHeader className="mb-2 pb-1">
-            <CardTitle className="text-white">Dashboard</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-gray-300">Tienes 80 tickets disponibles para la venta.</p>
+        <Card className="bg-gray-800 border-gray-700 mb-4 flex flex-row items-center p-4">
+          <img src="isotipoWhite.png" alt="Ticket" className="w-10 sm:w-16 mr-2 p-0" />
+          <CardTitle className="text-white text-xl sm:text-2xl text-left mr-2">Tickets disponibles </CardTitle>
+          <CardContent className="items-center p-0">
+            <p className="text-2xl sm:text-3xl text-blue-200 font-bold">{ticket_limit}</p>
           </CardContent>
         </Card>
-        
+
         <Card className="bg-gray-800 border-gray-700 mb-8">
           <CardHeader>
             <CardTitle className="text-white">Tus eventos</CardTitle>
@@ -68,7 +67,8 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <Button to="/create-event" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
-              <PlusIcon className="mr-1 h-4 w-4" />Nuevo evento
+              <PlusIcon className="mr-1 h-4 w-4" />
+              Nuevo evento
             </Button>
             <div className="overflow-x-auto">
               <Table>
@@ -90,7 +90,7 @@ export default function Dashboard() {
                       <TableCell className="text-gray-300 hidden md:table-cell">{event.tickets_counter}</TableCell>
                       <TableCell className="text-right">
                         <Button variant="entraditaSecondary" to={`/event/${event.id}/details/`} title="Ver detalles">
-                            <Eye className="h-4 w-4" />
+                          <Eye className="mr-2 h-4 w-4" /> Ver
                         </Button>
                       </TableCell>
                     </TableRow>

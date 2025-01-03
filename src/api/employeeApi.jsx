@@ -1,14 +1,14 @@
-// entradaFront/src/api/empleadoApi.jsx
+// entradaFront/src/api/employeeApi.jsx
 const apiUrl = import.meta.env.VITE_API_URL;
 
 // Devuelve los empleados de un evento
-export const getEmpleados = async (id, authToken) => {
+export const getEmployees = async (id, authToken) => {
     try{
-        const response = await fetch(`${apiUrl}/api/v1/events/${id}/employees/`, {
+        const response = await fetch(`${apiUrl}/api/v1/event/${id}/employees/`, {
             method: 'GET',
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${authToken}`
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`
             },
         });
 
@@ -24,8 +24,8 @@ export const getEmpleados = async (id, authToken) => {
     }
 }
 
-export const createEmpleado = async (authToken, isSellerEmpleado, newEmpleadoName, newEmpleadoCapacity, newTicketTags, id) => {
-    // console.log("newTicketTags en API: ", newTicketTags);
+export const createEmployee = async (formData, authToken, eventId) => {
+    console.log("id en API: ", formData);
     try {
         const response = await fetch(`${apiUrl}/api/v1/employee/`, {
             method: 'POST',
@@ -34,11 +34,11 @@ export const createEmpleado = async (authToken, isSellerEmpleado, newEmpleadoNam
                 'Authorization': `Bearer ${authToken}`
             },
             body: JSON.stringify({
-                is_seller: isSellerEmpleado,
-                assigned_name: newEmpleadoName,
-                seller_capacity: parseInt(newEmpleadoCapacity) || null,
-                event: id,
-                ticket_tags: newTicketTags // Asegúrate de enviar un array válido
+                event: eventId,
+                is_seller: formData.is_seller,
+                assigned_name: formData.assigned_name,
+                seller_capacity: parseInt(formData.seller_capacity),
+                ticket_tags: formData.ticket_tags
             })
         });
 
@@ -57,7 +57,7 @@ export const createEmpleado = async (authToken, isSellerEmpleado, newEmpleadoNam
 
 
 // Cambiar status de un empleado
-export const changeEmpleadoStatus = async (authToken, itemToChange) => {
+export const changeEmployeeStatus = async (authToken, itemToChange) => {
     try {
         const response = await fetch(`${apiUrl}/api/v1/employee/${itemToChange.id}/status/`, {
             method: 'PATCH',
@@ -85,22 +85,22 @@ export const changeEmpleadoStatus = async (authToken, itemToChange) => {
 
 
 // Actualización de un empleado
-export const updateEmpleado = async (authToken, editingEmpleado, newEmpleadoName, newEmpleadoCapacity, newTicketTags) => {
+export const updateEmployee = async (submitData, authToken, employeeId) => {
     // console.log("newTicketTags en API: ", newTicketTags);
     // console.log("editingEmpleado en API: ", editingEmpleado);
     // console.log("newEmpleadoName en API: ", newEmpleadoName);
     // console.log("newEmpleadoCapacity en API: ", newEmpleadoCapacity);
     try {
-        const response = await fetch(`${apiUrl}/api/v1/employee/${editingEmpleado.id}/`, {
+        const response = await fetch(`${apiUrl}/api/v1/employee/${employeeId}/`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${authToken}`
             },
             body: JSON.stringify({
-                assigned_name: newEmpleadoName,
-                seller_capacity: parseInt(newEmpleadoCapacity),
-                ticket_tags: newTicketTags
+                assigned_name: submitData.assigned_name,
+                seller_capacity: parseInt(submitData.seller_capacity),
+                ticket_tags: submitData.ticket_tags
             })
         });
 
@@ -117,7 +117,7 @@ export const updateEmpleado = async (authToken, editingEmpleado, newEmpleadoName
 };
 
 // Eliminación de un empleado
-export const deleteEmpleado = async (authToken, itemToDelete) => {
+export const deleteEmployee = async (authToken, itemToDelete) => {
     try {
         await fetch(`${apiUrl}/api/v1/employee/${itemToDelete.id}/`, {
             method: 'DELETE',
@@ -155,7 +155,7 @@ export const getScanner = async (uuid) => {
 }
 
 // Vendedor view
-export const getVendedor = async (uuid) => {
+export const getSeller = async (uuid) => {
     try {
         const response = await fetch(`${apiUrl}/api/v1/employee/seller/${uuid}/info/`, {
             method: 'GET',

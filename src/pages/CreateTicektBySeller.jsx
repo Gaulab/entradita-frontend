@@ -31,7 +31,7 @@ export default function CreateTicketBySeller() {
     console.log('formData:', formData);
     try {
       const response = await createTicketBySeller(formData, uuid); // Pasa formData en lugar de e
-      navigate(`/ticketShare/${uuid}`, { 
+      navigate(`/ticket-share/${uuid}`, { 
         state: { ticketUrl: `${window.location.origin}/ticket/${response.uuid}` }
       });
     } catch (error) {
@@ -54,6 +54,13 @@ export default function CreateTicketBySeller() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+              <Label htmlFor="categoria" className="text-gray-200">
+                Categoría
+              </Label>
+              <Dropdown id="categoria" onChange={handleDropdownChange} value={valueDropdown} options={ticketTags} placeholder="Seleccionar categoría" className="" />
+            </div>
+            <Input id="ticket_tag" name="ticket_tag" type="hidden" />
             <div className="space-y-2">
               <Label htmlFor="name" className="text-gray-200">
                 Nombre
@@ -74,13 +81,7 @@ export default function CreateTicketBySeller() {
                 <Input id="dni" maxLength="8" type="tel" pattern="[0-9]*" required className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
               </div>
             )}
-            <div className="space-y-2">
-              <Label htmlFor="categoria" className="text-gray-200">
-                Categoría
-              </Label>
-              <Dropdown id="categoria" onChange={handleDropdownChange} value={valueDropdown} options={ticketTags} placeholder="Seleccionar categoría" className="" />
-            </div>
-            <Input id="ticket_tag" name="ticket_tag" type="hidden" />
+
             {error && (
               <Alert variant="destructive">
                 <AlertDescription>{error}</AlertDescription>

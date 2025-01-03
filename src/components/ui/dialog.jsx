@@ -29,7 +29,7 @@ const DialogContent = React.forwardRef(({ className, children, ...props }, ref) 
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed left-[50%] top-[50%] z-50 grid w-[calc(100%-2rem)] max-w-[90%] max-sm:max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 rounded-lg overflow-hidden',
+        'fixed left-[50%] top-[50%] z-50 grid w-[calc(100%-2rem)] max-w-lg  translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 rounded-lg overflow-auto',
         className
       )}
       {...props}
@@ -43,10 +43,10 @@ const DialogContent = React.forwardRef(({ className, children, ...props }, ref) 
   </DialogPortal>
 ));
 
-const DialogHeader = ({ className, ...props }) => <div className={cn('flex flex-col space-y-1.5 text-left ', className)} {...props} />;
+const DialogHeader = ({ className, ...props }) => <div className={cn('flex flex-col space-y-1 text-left ', className)} {...props} />;
 DialogHeader.displayName = 'DialogHeader';
 
-const DialogFooter = ({ className, ...props }) => <div className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)} {...props} />;
+const DialogFooter = ({ className, ...props }) => <div className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 max-sm:space-y-reverse max-sm:space-y-4 pt-2', className)} {...props} />;
 DialogFooter.displayName = 'DialogFooter';
 
 const DialogTitle = React.forwardRef(({ className, ...props }, ref) => <DialogPrimitive.Title ref={ref} className={cn('text-lg font-semibold leading-none tracking-tight', className)} {...props} />);

@@ -1,25 +1,78 @@
 // entradaFront/src/pages/EventDetail/Tabs/Sellers.jsx
+// react imports
+import { useState, useContext, useCallback } from 'react';
+// react-router imports
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+// context imports
+import EventDetailsContext from '@/context/EventDetailsContext';
+import AuthContext from '@/context/AuthContext';
+// Custom components
 import { Button } from '../../../components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../components/ui/table';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/ui/card';
-import { PlusIcon, Trash2Icon, PencilIcon, TicketX, LinkIcon, TicketCheck } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../../../components/ui/dialog';
-import { EyeIcon } from 'lucide-react';
-export default function Sellers({
-  vendedores,
-  handleGenerarEmpleado,
-  handleEditEmpleado,
-  handleEliminarEmpleado,
-  handleChangeEmpleadoStatus,
-  copyToClipboard,
-  ticketTags,
-  setNewTicketTags,
-  newTicketTags,
-}) {
+// Icons
+import { EyeIcon, PlusIcon, Trash2Icon, PencilIcon, TicketX, LinkIcon, TicketCheck } from 'lucide-react';
+// api
+import { changeEmployeeStatus } from '@/api/employeeApi';
+
+export default function Sellers({}) {
   const navigate = useNavigate();
+  const { authToken } = useContext(AuthContext);
   const [selectedSeller, setSelectedSeller] = useState(null);
+
+
+
+  const { event, sellers, setSellers, scanners, setScanners, 
+    reloadEmployees, setReloadEmployees, setIsSellerEmployee,
+    setItemToDelete,
+    isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen,
+    editingEmployee, setEditingEmployee, 
+    newEmployeeName, setNewEmployeeName,
+    newEmployeeCapacity, setNewEmployeeCapacity,
+    newEmployeeTicketTags, setNewEmployeeTicketTags,
+    setIsCreateEmployeeDialogOpen, copyToClipboard,
+    setIsEditEmployeeDialogOpen
+  } =
+    useContext(EventDetailsContext);
+
+  const handleChangeEmpleadoStatus = useCallback(
+    async (empleado) => {
+      try {
+        const updatedEmpleado = await changeEmployeeStatus(authToken.access, empleado);
+
+        setReloadEmployees(!reloadEmployees);
+      } catch (error) {
+        console.error('Error updating empleado status:', error.message);
+        alert(error.message);
+      }
+    },
+    [authToken.access, sellers, scanners, reloadEmployees]
+  );
+
+  const handleEditEmpleado = useCallback((empleado) => {
+    // console.log("Editing empleado:", empleado);
+    setEditingEmployee(empleado);
+    setNewEmployeeName(empleado.assigned_name);
+    const capacity = empleado.seller_capacity !== null ? empleado.seller_capacity.toString() : '';
+    setNewEmployeeCapacity(capacity);
+    setNewEmployeeTicketTags(empleado.ticket_tags);
+    setIsEditEmployeeDialogOpen(true);
+  }, []);
+
+  const handleDeleteEmployee = useCallback((empleado) => {
+    setItemToDelete({
+      type: empleado.is_seller ? 'vendedor' : 'escaner',
+      id: empleado.id,
+      status: empleado.status,
+    });
+    setIsDeleteConfirmDialogOpen(true);
+  }, []);
+
+  const handleCreateEmployee = useCallback((isSeller) => {
+    setIsSellerEmployee(isSeller);
+    setIsCreateEmployeeDialogOpen(true);
+  }, []);
 
   const MobileActionDialog = ({ seller, onClose }) => (
     <Dialog className="" open={!!seller} onOpenChange={() => onClose()}>
@@ -75,8 +128,7 @@ export default function Sellers({
             onClick={() => {
               handleEditEmpleado(seller);
               onClose();
-            }
-            }
+            }}
           >
             <PencilIcon className="mr-2 h-4 w-4" />
             Editar vendedor
@@ -97,7 +149,7 @@ export default function Sellers({
             className="justify-start"
             variant="entraditaSecondary"
             onClick={() => {
-              handleEliminarEmpleado(seller);
+              handleDeleteEmployee(seller);
               onClose();
             }}
           >
@@ -113,10 +165,12 @@ export default function Sellers({
     <Card className="bg-gray-800 border-gray-700">
       <CardHeader>
         <CardTitle className="text-white">Vendedores</CardTitle>
-        <CardDescription className="text-gray-400">Gestiona los enlaces para vendedores <br/> {window.innerWidth < 640 && "Haz click en una fila para ver más acciones"}</CardDescription>
+        <CardDescription className="text-gray-400">
+          Gestiona los enlaces para vendedores <br /> {window.innerWidth < 640 && 'Haz click en una fila para ver más acciones'}
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <Button onClick={() => handleGenerarEmpleado(true)} className="mb-4 w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={() => handleCreateEmployee(true)} className="mb-4 w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
           <PlusIcon className="mr-2 h-4 w-4" /> Nuevo Vendedor
         </Button>
         <div className="overflow-x-auto">
@@ -130,7 +184,7 @@ export default function Sellers({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {vendedores.map((vendedor) => (
+              {sellers?.map((vendedor) => (
                 <TableRow
                   key={vendedor.id}
                   className="border-gray-700 cursor-pointer sm:cursor-default h-16"
@@ -153,7 +207,7 @@ export default function Sellers({
                       <PencilIcon className="h-4 w-4" />
                       <span className="sr-only">Editar vendedor</span>
                     </Button>
-                    <Button variant="destructive" onClick={() => handleEliminarEmpleado(vendedor)} size="sm" title="Eliminar vendedor">
+                    <Button variant="destructive" onClick={() => handleDeleteEmployee(vendedor)} size="sm" title="Eliminar vendedor">
                       <Trash2Icon className="h-4 w-4" />
                       <span className="sr-only">Eliminar vendedor</span>
                     </Button>
@@ -163,7 +217,7 @@ export default function Sellers({
                       title={vendedor.status === false ? 'Deshabilitar vendedor' : 'Habilitar vendedor'}
                       className={vendedor.status === false ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-green-600 hover:bg-green-700 text-white'}
                     >
-                      {vendedor.status === true ? <TicketX className="h-4 w-4" /> : <TicketCheck className="h-4 w-4" />}
+                      {vendedor.status === true ? <TicketCheck className="h-4 w-4" /> : < TicketX className="h-4 w-4" />}
                       <span className="sr-only">{vendedor.status === true ? 'Deshabilitar vendedor' : 'Habilitar vendedor'}</span>
                     </Button>
                   </TableCell>

@@ -1,73 +1,82 @@
+// entraditaFront/src/pages/SellerView.jsx
+// react imports
 import { useState, useEffect, useCallback } from 'react';
+// react-router imports
 import { useNavigate } from 'react-router-dom';
+// lucide-react icons imports
 import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon } from 'lucide-react';
+// prop-types imports
 import PropTypes from 'prop-types';
-// Custom components
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
+// custom components
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-// API
-import { checkPassword } from '../api/empleadoApi';
-import { getVendedor } from '../api/empleadoApi';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+// apis imports
 import { deleteTicketBySeller } from '../api/ticketApi';
+import { checkPassword } from '../api/employeeApi';
+import { getSeller } from '../api/employeeApi';
 
 export default function VendedorView({ uuid }) {
+  // main states
   const [tickets, setTickets] = useState([]);
-  const [filteredTickets, setFilteredTickets] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
   const [vendedor, setVendedor] = useState(null);
   const [eventId, setEventId] = useState(null);
+  // search states
+  const [filteredTickets, setFilteredTickets] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [vendedorNotFound, setVendedorNotFound] = useState(false);
   const [password, setPassword] = useState('');
   const [isPasswordCorrect, setIsPasswordCorrect] = useState(false);
   const [passwordError, setPasswordError] = useState('');
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [ticketToDelete, setTicketToDelete] = useState(null);
   const [copyMessage, setCopyMessage] = useState('');
   const [ticketsSalesEnabled, setTicketsSalesEnabled] = useState(true);
   const [dniRequired, setDniRequired] = useState(false);
   const [ticketTags, setTicketTags] = useState([]);
+  const [selectedTicket, setSelectedTicket] = useState(null);
   const navigate = useNavigate();
-
+  console.log('¿Soporta Web Share?', navigator.share ? 'Sí' : 'No');
+  console.log('¿Soporta Clipboard API?', navigator.clipboard ? 'Sí' : 'No');
+  
   const shareTicketLink = useCallback((link) => {
     if (navigator.share) {
       navigator
         .share({
           title: 'Compartir Ticket',
-          text: 'Aquí está el enlace de tu ticket:',
+          text: 'Aquí está el enlace de tu ticket QR:',
           url: link,
         })
         .then(() => {
           console.log('Compartido exitosamente');
         })
         .catch((err) => {
-          console.error('Error al compartir:', err);
+          console.error('Error al intentar compartir:', err);
         });
-    } else {
-      // Copia al portapapeles como alternativa
+    } else if (navigator.clipboard) {
+      // Alternativa: copiar al portapapeles
       navigator.clipboard
         .writeText(link)
         .then(() => {
-          setCopyMessage('Copiado');
-          setTimeout(() => setCopyMessage(''), 2000);
+          console.log('Copiado al portapapeles');
         })
         .catch((err) => {
-          console.error('Error al copiar: ', err);
-          setCopyMessage('Error al copiar');
-          setTimeout(() => setCopyMessage(''), 2000);
+          console.error('Error al copiar al portapapeles:', err);
         });
+    } else {
+      // Si ninguna opción está disponible
+      alert('La función para compartir no es compatible en este dispositivo.');
     }
   }, []);
+  
 
   useEffect(() => {
     const handleBeforeUnload = () => {
       localStorage.removeItem('isPasswordCorrect');
     };
-
     window.addEventListener('beforeunload', handleBeforeUnload);
-
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
@@ -78,10 +87,9 @@ export default function VendedorView({ uuid }) {
     if (storedPasswordStatus) {
       setIsPasswordCorrect(JSON.parse(storedPasswordStatus));
     }
-
     const fetchTickets = async () => {
       try {
-        const data = await getVendedor(uuid);
+        const data = await getSeller(uuid);
         console.log(data);
         setVendedor(data.vendedor);
         setTickets(data.tickets);
@@ -94,7 +102,6 @@ export default function VendedorView({ uuid }) {
         console.error(error.message);
       }
     };
-
     fetchTickets();
   }, [uuid]);
 
@@ -125,7 +132,7 @@ export default function VendedorView({ uuid }) {
   };
 
   const handleCreateTicket = (dniRequired, ticketTags) => {
-    navigate(`/vendedor/${uuid}/create-ticket`, { state: { dniRequired, ticketTags } });
+    navigate(`/seller/${uuid}/create-ticket`, { state: { dniRequired, ticketTags } });
   };
 
   const handleViewTicket = useCallback((ticketId) => {
@@ -134,9 +141,9 @@ export default function VendedorView({ uuid }) {
 
   const handleDeleteTicket = (ticket) => {
     setTicketToDelete(ticket);
-    setDeleteConfirmOpen(true);
+    setIsDeleteConfirmOpen(true);
   };
-  
+
   const confirmDeleteTicket = async () => {
     if (!ticketToDelete) return;
 
@@ -145,7 +152,7 @@ export default function VendedorView({ uuid }) {
       const remainingTickets = tickets.filter((t) => t.id !== ticketToDelete.id);
       setTickets(remainingTickets);
       setFilteredTickets(remainingTickets);
-      
+
       // Actualizar el contador de tickets del vendedor
       setVendedor((prevVendedor) => ({
         ...prevVendedor,
@@ -155,9 +162,24 @@ export default function VendedorView({ uuid }) {
       console.error(error.message);
     }
 
-    setDeleteConfirmOpen(false);
+    setIsDeleteConfirmOpen(false);
     setTicketToDelete(null);
   };
+
+    const copyToClipboard = useCallback((text) => {
+      navigator.clipboard
+        .writeText(text)
+        .then(() => {
+          setCopyMessage("Copiado");
+          setTimeout(() => setCopyMessage(""), 2000); // El mensaje desaparece después de 2 segundos
+        })
+        .catch((err) => {
+          console.error("Error al copiar: ", err);
+          setCopyMessage("Error al copiar");
+          setTimeout(() => setCopyMessage(""), 2000);
+        });
+    }, []);
+  
 
   if (vendedorNotFound) {
     return (
@@ -196,6 +218,66 @@ export default function VendedorView({ uuid }) {
     );
   }
 
+  const MobileActionDialog = ({ ticket, onClose }) => (
+    <Dialog className="" open={!!ticket} onOpenChange={() => onClose()}>
+      <DialogContent className="sm:max-w-[425px] bg-gray-800 ">
+        <DialogHeader>
+          <DialogTitle>Acciones para el ticket</DialogTitle>
+        </DialogHeader>
+        <DialogDescription className="mb-0 m-0">Selecciona una accion para realizar sobre el ticket de:</DialogDescription>
+        <div className="text-gray-300">
+          <p>
+            <strong>Nombre:</strong> {ticket?.owner_name} {ticket?.owner_lastname}
+          </p>
+          {dniRequired && (
+            <p>
+              <strong>DNI:</strong> {ticket?.owner_dni ? ticket.owner_dni : 'No disponible'}
+            </p>
+          )}
+          <p>
+            <strong>Tipo:</strong> {ticket?.ticket_tag.name}
+          </p>
+
+        </div>
+        <div className="flex flex-col space-y-2 m-0">
+          <Button
+            className="justify-start"
+            variant="entraditaSecondary"
+            onClick={() => {
+              onClose();
+              copyToClipboard(`${window.location.origin}/ticket/${ticket?.uuid}`);
+            }}
+          >
+            <LinkIcon className="mr-2 h-4 w-4" />
+            Copiar enlace del ticket
+          </Button>
+          <Button
+            className="justify-start"
+            variant="entraditaSecondary"
+            onClick={() => {
+              window.open(`/ticket/${ticket?.uuid}`, '_blank');
+              onClose();
+            }}
+          >
+            <EyeIcon className="mr-2 h-4 w-4" />
+            Ver página de ticket
+          </Button>
+          <Button
+            className="justify-start"
+            variant="entraditaSecondary"
+            onClick={() => {
+              handleDeleteTicket(ticket?.id);
+              onClose();
+            }}
+          >
+            <Trash2Icon className="mr-2 h-4 w-4" />
+            Eliminar ticket
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+
   return (
     <div className="flex justify-center pb-8 bg-gray-900 text-white pt-4 min-h-screen w-screen">
       <div className="max-w-6xl w-full mx-2">
@@ -211,14 +293,14 @@ export default function VendedorView({ uuid }) {
                 {vendedor.status === false ? (
                   <p className="text-gray-400">El organizador te deshabilito</p>
                 ) : (
-                  <p className="text-gray-400">Puedes vender: {vendedor.seller_capacity ? vendedor.seller_capacity - vendedor.ticket_counter : 'ilimitados'} tickets</p>
+                  <p className="text-gray-400">Puedes vender: {vendedor.seller_capacity !== null ? vendedor.seller_capacity - vendedor.ticket_counter : 'ilimitados'} tickets</p>
                 )}
                 <p className="text-gray-400">Tickets vendidos: {vendedor.ticket_counter}</p>
               </div>
             )}
             <div className="flex flex-col sm:flex-row justify-between items-center mb-2 gap-4">
               <Button
-                disabled={(vendedor && vendedor.status === false) || !ticketsSalesEnabled || (vendedor && vendedor.ticket_counter >= vendedor.seller_capacity)}
+                disabled={(vendedor && vendedor.status === false) || !ticketsSalesEnabled || (vendedor && vendedor.seller_capacity !== null && vendedor.ticket_counter >= vendedor.seller_capacity)}
                 onClick={() => handleCreateTicket(dniRequired, ticketTags)}
                 className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
               >
@@ -226,7 +308,7 @@ export default function VendedorView({ uuid }) {
               </Button>
               <div className="relative w-full sm:w-auto">
                 <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <Input type="text" placeholder="Buscar" value={searchTerm} onChange={handleSearch} className="pl-8 w-full bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+                <Input type="text" placeholder="Buscar por nombre o dni" value={searchTerm} onChange={handleSearch} className="pl-8 w-full bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
               </div>
             </div>
             {!ticketsSalesEnabled && <CardDescription className="text-red-400 mb-3">El organizador deshabilitó la venta de tickets</CardDescription>}
@@ -235,22 +317,33 @@ export default function VendedorView({ uuid }) {
                 <TableHeader>
                   <TableRow className="border-gray-700 text-left">
                     <TableHead className="text-gray-300">Nombre</TableHead>
-                    {dniRequired && <TableHead className="text-gray-300 hidden sm:table-cell">DNI</TableHead>}
-                    <TableHead className="text-gray-300 hidden md:table-cell">Tipo</TableHead>
-                    <TableHead className="text-gray-300 text-right">Acciones</TableHead>
+                    {dniRequired && <TableHead className="text-gray-300">DNI</TableHead>}
+                    <TableHead className="text-gray-300 ">Tipo</TableHead>
+                    <TableHead className="text-gray-300 text-right hidden sm:table-cell">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredTickets.map((ticket) => (
-                    <TableRow key={ticket.id} className="border-gray-700">
+                    <TableRow
+                      key={ticket.id}
+                      className="border-gray-700 cursor-pointer sm:cursor-default h-16" // Added h-16 for row height
+                      onClick={() => {
+                        if (window.innerWidth < 640) {
+                          console.log('MobileActionDialog' + ticket);
+                          setSelectedTicket(ticket);
+                        }
+                      }}
+                    >
                       <TableCell className="text-gray-300 truncate overflow-hidden whitespace-nowrap max-w-28">
                         {ticket.owner_name} {ticket.owner_lastname}
                       </TableCell>
                       {dniRequired && (
-                        <TableCell className="text-gray-300 hidden sm:table-cell truncate overflow-hidden whitespace-nowrap max-w-15">{ticket.owner_dni ? ticket.owner_dni : 'No disponible'}</TableCell>
+                        <TableCell className="text-gray-300 truncate overflow-hidden whitespace-nowrap max-w-15">
+                          {ticket.owner_dni ? ticket.owner_dni : 'No disponible'}
+                        </TableCell>
                       )}
-                      <TableCell className="text-gray-300 hidden md:table-cell ">{ticket.ticket_tag.name}</TableCell>
-                      <TableCell className="text-right space-x-1 space-y-1 min-w-40">
+                      <TableCell className="text-gray-300 ">{ticket.ticket_tag.name}</TableCell>
+                      <TableCell className="text-right space-x-1 space-y-1 min-w-40 hidden sm:table-cell">
                         <Button variant="outline" onClick={() => shareTicketLink(`${window.location.origin}/ticket/${ticket.uuid}`)} size="sm" title="Compartir enlace de ticket">
                           <LinkIcon className="h-4 w-4" />
                           <span className="sr-only">Compartir enlace de ticket</span>
@@ -272,19 +365,20 @@ export default function VendedorView({ uuid }) {
               </Table>
             </div>
           </CardContent>
+          <MobileActionDialog ticket={selectedTicket} onClose={() => setSelectedTicket(null)} />
         </Card>
       </div>
       {/* Mensaje de copiado simple */}
       {copyMessage && <div className="fixed bottom-4 right-4 bg-green-400 text-black px-4 py-2 rounded-md shadow-lg">{copyMessage}</div>}
 
-      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen} className="">
+      <Dialog open={isDeleteConfirmOpen} onOpenChange={setIsDeleteConfirmOpen} className="">
         <DialogContent className="bg-gray-800 text-white ">
           <DialogHeader>
             <DialogTitle>Confirmar eliminación de ticket</DialogTitle>
             <DialogDescription>¿Estás seguro de que deseas eliminar este ticket? Esta acción no se puede deshacer.</DialogDescription>
           </DialogHeader>
           <DialogFooter className=" space-y-2">
-            <Button onClick={() => setDeleteConfirmOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600 mt-2">
+            <Button onClick={() => setIsDeleteConfirmOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600 mt-2">
               Cancelar
             </Button>
             <Button onClick={confirmDeleteTicket} variant="destructive">

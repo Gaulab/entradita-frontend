@@ -26,7 +26,7 @@ export default function Event({ event }) {
     window.location.href = `/event/${event.id}/economy`;
   };
   const navigateToWebPage = () => {
-    window.location.href = `/eventPageConfig/${event.id}`;
+    window.location.href = `/event-page-config/${event.id}`;
   };
 
   const navigateToGuide = () => {
@@ -41,7 +41,7 @@ export default function Event({ event }) {
 
 
   return (
-    <Card className="bg-gray-800 border-gray-700 mb-8">
+    <Card className="bg-gray-800 border-gray-700 mb-4">
       <CardHeader>
         <div className="flex flex-row items-center mb-0">
           <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-700 mr-4">
@@ -79,9 +79,9 @@ export default function Event({ event }) {
           <Button onClick={navigateToEconomy} className="sm:mr-2 bg-green-900 hover:bg-green-800  hover:text-white text-white sm:min-w-48 sm:w-min" new>
             <DollarSign className="mr-2 h-4 w-4" /> Economía
           </Button>
-          <Button onClick={navigateToWhatsapp} className="sm:mr-2 bg-gray-700 hover:bg-gray-600  hover:text-white text-white sm:min-w-48 sm:w-min">
+          {/* <Button onClick={navigateToWhatsapp} className="sm:mr-2 bg-gray-700 hover:bg-gray-600  hover:text-white text-white sm:min-w-48 sm:w-min">
             <User2Icon className="mr-2 h-4 w-4" /> Soporte rápido
-          </Button>
+          </Button> */}
           <Button onClick={navigateToGuide} disabled className="sm:mr-2 bg-gray-700 hover:bg-gray-600  hover:text-white text-white sm:min-w-48 sm:w-min">
             <BookMarkedIcon className="mr-2 h-4 w-4" /> Guias de uso
           </Button>

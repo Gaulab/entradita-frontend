@@ -7,8 +7,8 @@ import { Scanner } from "@yudiel/react-qr-scanner";
 import { Input } from "../components/ui/input";
 import PropTypes from "prop-types";
 // API
-import { getScanner } from "../api/empleadoApi";
-import { checkPassword } from "../api/empleadoApi";
+import { getScanner } from "../api/employeeApi";
+import { checkPassword } from "../api/employeeApi";
 import { checkTicketByPayload } from "../api/ticketApi";
 import { checkTicketByDni } from "../api/ticketApi";
 

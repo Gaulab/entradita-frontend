@@ -54,7 +54,7 @@ export default function TicketShare({ }) {
             Compartir Ticket
           </Button>
           <Button 
-            onClick={() => navigate(`/vendedor/${uuid}`)} 
+            onClick={() => navigate(`/seller/${uuid}`)} 
             className="w-full bg-gray-700 hover:bg-gray-600 text-white flex items-center justify-center"
           >
             <ArrowLeft className="mr-2" />

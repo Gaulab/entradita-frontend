@@ -4,6 +4,7 @@
 import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom';
 // Context imports
 import { AuthProvider } from './context/AuthContext';
+import { EventDetailsProvider } from './context/EventDetailsContext';  // Importa el contexto de EventDetails
 // Utils imports
 import PrivateRoute from './utils/PrivateRoute';
 // Public pages
@@ -20,7 +21,6 @@ import CreateTicketBySeller from './pages/CreateTicektBySeller';
 import Dashboard from './pages/Dashboard';
 import EventDetail from './pages/EventDetail/EventDetail';
 import CreateEvent from './pages/CreateEvent';
-import CreateTicket from './pages/CreateTicket';
 import EditEvent from './pages/EditEvent';
 import EventConfigInterface from './pages/EventConfigInterface';
 import EventPage from './pages/EventPage';
@@ -44,16 +44,15 @@ function App() {
           <Route path="/login" element={<AuthProvider><Login /></AuthProvider>} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
-          <Route path="/ticket/:ticket-uuid" element={<TicketPage />} />
+          <Route path="/ticket/:ticket_uuid" element={<TicketPage />} />
           <Route path="/ticket-share/:uuid" element={<TicketShare />} />
           <Route path="/seller/:uuid" element={<SellerWrapper />} />
           <Route path="/scanner/:uuid" element={<ScannerWrapper />} />
           <Route path="/seller/:uuid/create-ticket" element={<CreateTicketBySeller />} />
         {/* Rutas protegidas */}
           <Route path="/dashboard" element={<AuthProvider><PrivateRoute><Dashboard /></PrivateRoute></AuthProvider>} />
-          <Route path="/event/:id/details" element={<AuthProvider><PrivateRoute><EventDetail /></PrivateRoute></AuthProvider>} />
+          <Route path="/event/:id/details" element={<AuthProvider><EventDetailsProvider><PrivateRoute><EventDetail /></PrivateRoute></EventDetailsProvider></AuthProvider>} />
           <Route path="/create-event" element={<AuthProvider><PrivateRoute><CreateEvent /></PrivateRoute></AuthProvider>} />
-          <Route path="/event/:id/create-ticket" element={<AuthProvider><PrivateRoute><CreateTicket /></PrivateRoute></AuthProvider>} />
           <Route path="/edit-event/:id" element={<AuthProvider><PrivateRoute><EditEvent /></PrivateRoute></AuthProvider>} />
           <Route path="/event-page-config/:id" element={<AuthProvider><PrivateRoute><EventConfigInterface /></PrivateRoute></AuthProvider>} />
           <Route path="/event-page/:id" element={<EventPage />} />
