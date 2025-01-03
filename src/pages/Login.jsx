@@ -6,19 +6,16 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../components/ui/card";
-import LoadingSpinner from '../components/ui/loadingspinner';
 
 export default function Login() {
   const { loginUser } = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(false); // Estado de carga
   const [errorMessage, setErrorMessage] = useState(null); // Estado para almacenar el mensaje de error
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setIsLoading(true); // Activa el spinner
     const response = await loginUser(e);
-    setIsLoading(false); // Desactiva el spinner
+    
     if (!response.success) {
       setErrorMessage("Credenciales incorrectas, intente nuevamente.");
     } else {
@@ -36,9 +33,6 @@ export default function Login() {
       [name]: value.toLowerCase(),
     });
   };
-  if (isLoading) {
-    return <LoadingSpinner />; // Muestra el spinner mientras se procesa la acción
-  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-4 w-screen">
