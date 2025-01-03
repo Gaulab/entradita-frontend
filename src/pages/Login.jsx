@@ -30,10 +30,9 @@ export default function Login() {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value, // No es necesario convertirlo a minúsculas
+      [name]: value.toLowerCase(),
     });
   };
-  
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-4 w-screen">
@@ -65,7 +64,7 @@ export default function Login() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-gray-200">Password</Label>
+              <Label htmlFor="password" className="text-gray-200">Contraseña</Label>
               <Input
                 id="password"
                 type="password"
