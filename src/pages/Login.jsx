@@ -6,16 +6,19 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../components/ui/card";
+import LoadingSpinner from '../components/ui/loadingspinner';
 
 export default function Login() {
   const { loginUser } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false); // Estado de carga
   const [errorMessage, setErrorMessage] = useState(null); // Estado para almacenar el mensaje de error
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setIsLoading(true); // Activa el spinner
     const response = await loginUser(e);
-    
+    setIsLoading(false); // Desactiva el spinner
     if (!response.success) {
       setErrorMessage("Credenciales incorrectas, intente nuevamente.");
     } else {
@@ -33,6 +36,9 @@ export default function Login() {
       [name]: value.toLowerCase(),
     });
   };
+  if (isLoading) {
+    return <LoadingSpinner />; // Muestra el spinner mientras se procesa la acción
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-4 w-screen">
@@ -64,7 +70,7 @@ export default function Login() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-gray-200">Contraseña</Label>
+              <Label htmlFor="password" className="text-gray-200">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -87,7 +93,10 @@ export default function Login() {
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-gray-400">
-            ¿Olvidó su contraseña? Contacte al administrador
+            ¿Olvidó su contraseña?
+            <a href="https://wa.me/543482586525?text=Olvidé%20mi%20contraseña" className="ml-1 text-blue-400 hover:text-blue-300 transition-colors"> 
+            Contacte al administrador
+            </a>
           </p>
         </CardFooter>
       </Card>

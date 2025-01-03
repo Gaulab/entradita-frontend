@@ -1,21 +1,9 @@
-/** 
- * entraditaFrontend/src/pages/Home.jsx
- * Este archivo contiene el componente principal de la página de inicio.
- * Incluye la lógica para la animación de partículas y la estructura de la página.
-**/
-
-// React and hooks imports
 import { useState, useEffect, useRef } from 'react';
-// React Router import
 import { Link } from 'react-router-dom';
-// UI component imports
-import { Button } from "../components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
-// Icon imports
-import { QrCode, Zap, Users, MessageSquareText, Menu, X } from 'lucide-react';
-// PropTypes import
+import { Button } from '../components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
+import { QrCode, Zap, Users, MessageSquareText, Menu, X, Star, Shield, DollarSign } from 'lucide-react';
 import PropTypes from 'prop-types';
-
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -40,18 +28,18 @@ export default function Home() {
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
           radius: Math.random() * 2 + 1,
-          color: `rgba(17, 24, 100, ${Math.random() * 0.5 + 0.5})`,
-          velocity: { 
-            x: (Math.random() - 0.5) * 2, 
-            y: (Math.random() - 0.5) * 2 
-          }
+          color: `rgba(59, 130, 246, ${Math.random() * 0.5 + 0.5})`, // Changed to blue color
+          velocity: {
+            x: (Math.random() - 0.5) * 2,
+            y: (Math.random() - 0.5) * 2,
+          },
         });
       }
     };
 
     const drawParticles = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(particle => {
+      particles.forEach((particle) => {
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
         ctx.fillStyle = particle.color;
@@ -87,29 +75,28 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-900 overflow-x-hidden">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 overflow-x-hidden">
       <canvas ref={canvasRef} className="fixed inset-0 z-0" />
       <div className="relative z-10 flex-grow">
         <header className="bg-gray-800 shadow-md">
           <div className="container mx-auto px-4 py-4 flex justify-between items-center">
             <div className="flex items-center">
-              <img src="isotipoWhite.png" alt="entradita.com logo" className="h-10 w-auto mr-2 sm:h-12 sm:mr-4" />
+              <img src="isotipoWhite.png" alt="Logo de Entradita, plataforma para eventos y tickets QR" className="h-10 w-auto mr-2 sm:h-12 sm:mr-4" />
               <h1 className="text-xl sm:text-2xl font-bold text-white">entradita.com</h1>
             </div>
             <nav className="hidden sm:block">
-              <Button variant="entraditaSecondary" className="ml-2" >
-                <Link className='text-white' to="/contact">Contacto</Link>
+              <Button variant="entraditaSecondary" className="ml-2">
+                <Link className="text-white hover:text-white" to="/contact">
+                  Contacto
+                </Link>
               </Button>
-              <Button  variant="entraditaSecondary" className="ml-2">
-                <Link className='text-white' to="/login">Iniciar Sesión</Link>
+              <Button variant="entraditaSecondary" className="ml-2">
+                <Link className="text-white hover:text-white" to="/login">
+                  Iniciar Sesión
+                </Link>
               </Button>
             </nav>
-            <Button
-              variant="ghost"
-              className="sm:hidden text-white bg-gray-800"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              aria-label="Toggle menu"
-            >
+            <Button variant="ghost" className="sm:hidden text-white bg-gray-800" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
           </div>
@@ -128,57 +115,103 @@ export default function Home() {
           <div className="space-y-16 py-16">
             {/* Hero Section */}
             <section className="text-center">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 text-white animate-fade-in-down">
-                Gestiona tus eventos con entradita.com
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-4 text-white animate-fade-in-down">
+                Revoluciona tus <span className="text-blue-500">Eventos</span>
               </h1>
-              <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto mb-8 animate-fade-in-up">
-                Simplifica la venta y verificación de tickets con nuestra plataforma de códigos QR intuitiva y segura.
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-4 text-gray-300 animate-fade-in-down">
+                Tickets QR seguros y gestión simplificada
+              </h2>
+              <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-8 animate-fade-in-up">
+                Simplifica la venta y verificación de tickets con nuestra plataforma intuitiva y segura. Potencia tus eventos con tecnología de vanguardia.
               </p>
-              <Button variant="entraditaPrimary" size="lg" className="text-white animate-pulse">
-                <Link className='text-white' to="/contact">Empezar ahora</Link>
-              </Button>
+              <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <Button variant="entraditaPrimary" size="lg" className="text-white animate-pulse w-full sm:w-auto">
+                  <Link className="text-white hover:text-white" to="/contact">
+                    Empezar ahora
+                  </Link>
+                </Button>
+                <Button variant="entraditaTertiary" size="lg" className="text-white w-full sm:w-auto">
+                  <Link className="text-white hover:text-white" to="/pricing">
+                    Ver precios
+                  </Link>
+                </Button>
+              </div>
             </section>
 
             {/* Features Section */}
             <section id="features" className="py-16">
-              <h2 className="text-2xl sm:text-3xl font-bold text-center mb-12 text-white">Características Principales</h2>
+              <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12 text-white">Características Principales</h2>
               <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
                 <FeatureCard
-                  icon={<QrCode className="h-10 w-10 sm:h-12 sm:w-12 text-blue-400" />}
-                  title="Generación de QR"
-                  description="Crea tickets QR únicos para cada asistente con información personalizada."
+                  icon={<QrCode className="h-12 w-12 text-blue-400" />}
+                  title="Generación de QR Avanzada"
+                  description="Crea tickets QR únicos y seguros para cada asistente con información personalizada y encriptada."
                 />
                 <FeatureCard
-                  icon={<Zap className="h-10 w-10 sm:h-12 sm:w-12 text-yellow-400" />}
-                  title="Verificación Rápida"
-                  description="Escanea y verifica tickets en segundos con nuestra aplicación móvil."
+                  icon={<Zap className="h-12 w-12 text-yellow-400" />}
+                  title="Verificación Instantánea"
+                  description="Escanea y verifica tickets en milisegundos con nuestra aplicación móvil de alto rendimiento."
                 />
                 <FeatureCard
-                  icon={<Users className="h-10 w-10 sm:h-12 sm:w-12 text-green-400" />}
-                  title="Gestión de Vendedores"
-                  description="Asigna y controla múltiples vendedores para cada evento."
+                  icon={<Users className="h-12 w-12 text-green-400" />}
+                  title="Gestión de Vendedores Inteligente"
+                  description="Asigna, controla y analiza el rendimiento de múltiples vendedores en tiempo real para cada evento."
                 />
+                <FeatureCard
+                  icon={<Star className="h-12 w-12 text-purple-400" />}
+                  title="Experiencia de Usuario Premium"
+                  description="Interfaz intuitiva y amigable que facilita la compra y gestión de tickets tanto para organizadores como para asistentes."
+                />
+                <FeatureCard
+                  icon={<Shield className="h-12 w-12 text-red-400" />}
+                  title="Seguridad de Datos Avanzada"
+                  description="Protección de datos de última generación para garantizar la privacidad y seguridad de todos los usuarios."
+                />
+                <FeatureCard
+                  icon={<DollarSign className="h-12 w-12 text-emerald-400" />}
+                  title="Análisis Financiero Detallado"
+                  description="Obtén insights valiosos sobre las ventas y el rendimiento financiero de tus eventos con nuestros reportes avanzados."
+                />
+              </div>
+            </section>
+
+            {/* Beneficial Cause Section */}
+            <section id="beneficial-cause" className="bg-gray-800 py-16 rounded-lg shadow-xl">
+              <div className="container mx-auto px-4">
+                <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 text-white">¿Tienes una causa benéfica?</h2>
+                <p className="text-lg sm:text-xl text-center text-gray-300 max-w-3xl mx-auto mb-8">
+                  En entradita.com, creemos en el poder de la comunidad y en apoyar causas que marcan la diferencia. Si organizas un evento benéfico, queremos ser parte de tu misión auspiciando las entradas.
+                  Juntos, podemos maximizar el impacto de tu evento y crear un cambio positivo en la sociedad.
+                </p>
+                <div className="flex justify-center">
+                  <Button variant="entraditaPrimary" size="lg" className="text-white">
+                    <Link className="text-white hover:text-white" to="/contact">
+                      Solicita tu auspicio
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </section>
 
             {/* About Section */}
             <section id="about" className="bg-gray-800 py-16 rounded-lg shadow-xl">
               <div className="container mx-auto px-4">
-                <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 text-white">Sobre Nosotros</h2>
-                <p className="text-base sm:text-lg text-center text-gray-300 max-w-3xl mx-auto">
-                  entradita.com nació de la necesidad de simplificar la gestión de eventos. Nuestra misión es proporcionar una plataforma fácil de usar que ayude a organizadores, vendedores y asistentes a tener una experiencia sin complicaciones.
+                <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 text-white">Sobre Nosotros</h2>
+                <p className="text-lg sm:text-xl text-center text-gray-300 max-w-3xl mx-auto">
+                  entradita.com nació de la pasión por simplificar la gestión de eventos y elevar la experiencia de los asistentes. Nuestra misión es proporcionar una plataforma innovadora y fácil de usar que empodere a organizadores, vendedores y asistentes, 
+                  permitiéndoles enfocarse en lo que realmente importa: crear momentos inolvidables. Con un equipo dedicado de expertos en tecnología y eventos, estamos comprometidos a revolucionar la industria, un ticket a la vez.
                 </p>
               </div>
             </section>
 
             {/* Contact Section */}
             <section id="contact" className="py-16 text-center">
-              <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-white">Contáctanos</h2>
-              <p className="text-base sm:text-lg mb-4 text-gray-300">¿Tienes preguntas? Estamos aquí para ayudarte.</p>
-              <div className="flex justify-center">
+              <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-white">Contáctanos</h2>
+              <p className="text-lg sm:text-xl mb-6 text-gray-300">¿Listo para llevar tus eventos al siguiente nivel? <br/> Estamos aquí para ayudarte.</p>
+              <div className="flex justify-center items-center space-x-4">
                 <a href="https://wa.me/543482586525" target="_blank" rel="noopener noreferrer" className="flex items-center text-white hover:text-blue-400 transition-colors">
-                  <MessageSquareText className="h-5 w-5 sm:h-6 sm:w-6 mr-2" />
-                  <span className="text-sm sm:text-base">+543482586525 WhatsApp</span>
+                  <MessageSquareText className="h-6 w-6 sm:h-8 sm:w-8 mr-2" />
+                  <span className="text-lg sm:text-xl">+543482586525 WhatsApp</span>
                 </a>
               </div>
             </section>
@@ -187,10 +220,14 @@ export default function Home() {
       </div>
       <footer className="relative z-10 bg-gray-800 border-t border-gray-700 py-8">
         <div className="container mx-auto px-4 text-center text-gray-400">
-          <p className="text-sm sm:text-base">© 2024 entradita.com todos los derechos reservados.</p>
+          <p className="text-sm sm:text-base">© 2025 entradita.com - Transformando la gestión de eventos. Todos los derechos reservados.</p>
           <div className="mt-4 flex justify-center space-x-4 text-sm sm:text-base">
-            <a href="terms-and-conditions" className="hover:text-white transition-colors">Términos de Servicio</a>
-            <a href="#" className="hover:text-white transition-colors">Política de Privacidad</a>
+            <Link to="/terms-and-conditions" className="hover:text-white transition-colors">
+              Términos de Servicio
+            </Link>
+            <Link to="/privacy-policy" className="hover:text-white transition-colors">
+              Política de Privacidad
+            </Link>
           </div>
         </div>
       </footer>
@@ -203,10 +240,10 @@ function FeatureCard({ icon, title, description }) {
     <Card className="bg-gray-800 border-gray-700 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 hover:-translate-y-1">
       <CardHeader>
         <div className="flex justify-center mb-4">{icon}</div>
-        <CardTitle className="text-white text-center text-lg sm:text-xl">{title}</CardTitle>
+        <CardTitle className="text-white text-center text-xl sm:text-2xl">{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-gray-300 text-center text-sm sm:text-base">{description}</p>
+        <p className="text-gray-300 text-center text-base sm:text-lg">{description}</p>
       </CardContent>
     </Card>
   );
@@ -217,3 +254,4 @@ FeatureCard.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
 };
+

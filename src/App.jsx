@@ -25,6 +25,8 @@ import EditEvent from './pages/EditEvent';
 import EventConfigInterface from './pages/EventConfigInterface';
 import EventPage from './pages/EventPage';
 import Economy from './pages/Economy';
+import Pricing from './pages/Pricing';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 // SellerWrapper is a functional component that extracts the UUID from the URL using the useParams hook and passes it as a prop to the VendorView component.
 const SellerWrapper = () => {
   const { uuid } = useParams(); // Obtén el UUID de la URL
@@ -44,11 +46,13 @@ function App() {
           <Route path="/login" element={<AuthProvider><Login /></AuthProvider>} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/ticket/:ticket_uuid" element={<TicketPage />} />
           <Route path="/ticket-share/:uuid" element={<TicketShare />} />
           <Route path="/seller/:uuid" element={<SellerWrapper />} />
           <Route path="/scanner/:uuid" element={<ScannerWrapper />} />
           <Route path="/seller/:uuid/create-ticket" element={<CreateTicketBySeller />} />
+          <Route path="/pricing" element={<Pricing />} />
         {/* Rutas protegidas */}
           <Route path="/dashboard" element={<AuthProvider><PrivateRoute><Dashboard /></PrivateRoute></AuthProvider>} />
           <Route path="/event/:id/details" element={<AuthProvider><EventDetailsProvider><PrivateRoute><EventDetail /></PrivateRoute></EventDetailsProvider></AuthProvider>} />
