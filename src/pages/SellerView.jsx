@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 // react-router imports
 import { useNavigate } from 'react-router-dom';
 // lucide-react icons imports
-import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon } from 'lucide-react';
+import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon, ShoppingCart } from 'lucide-react';
 // prop-types imports
 import PropTypes from 'prop-types';
 // custom components
@@ -22,7 +22,6 @@ export default function VendedorView({ uuid }) {
   // main states
   const [tickets, setTickets] = useState([]);
   const [vendedor, setVendedor] = useState(null);
-  const [eventId, setEventId] = useState(null);
   // search states
   const [filteredTickets, setFilteredTickets] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -37,40 +36,51 @@ export default function VendedorView({ uuid }) {
   const [dniRequired, setDniRequired] = useState(false);
   const [ticketTags, setTicketTags] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  const pageCount = Math.ceil(filteredTickets.length / itemsPerPage);
+  const paginatedTickets = filteredTickets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   const navigate = useNavigate();
   console.log('¿Soporta Web Share?', navigator.share ? 'Sí' : 'No');
   console.log('¿Soporta Clipboard API?', navigator.clipboard ? 'Sí' : 'No');
-  
-  const shareTicketLink = useCallback((link) => {
-    if (navigator.share) {
-      navigator
-        .share({
-          title: 'Compartir Ticket',
-          text: 'Aquí está el enlace de tu ticket QR:',
-          url: link,
-        })
-        .then(() => {
-          console.log('Compartido exitosamente');
-        })
-        .catch((err) => {
-          console.error('Error al intentar compartir:', err);
-        });
-    } else if (navigator.clipboard) {
-      // Alternativa: copiar al portapapeles
-      navigator.clipboard
-        .writeText(link)
-        .then(() => {
-          console.log('Copiado al portapapeles');
-        })
-        .catch((err) => {
-          console.error('Error al copiar al portapapeles:', err);
-        });
-    } else {
-      // Si ninguna opción está disponible
-      alert('La función para compartir no es compatible en este dispositivo.');
-    }
+
+  const copyToClipboard = useCallback((text) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        setCopyMessage('Copiado');
+        setTimeout(() => setCopyMessage(''), 2000); // El mensaje desaparece después de 2 segundos
+      })
+      .catch((err) => {
+        console.error('Error al copiar: ', err);
+        setCopyMessage('Error al copiar');
+        setTimeout(() => setCopyMessage(''), 2000);
+      });
   }, []);
-  
+
+  const shareTicketLink = useCallback(
+    (link) => {
+      if (navigator.share) {
+        navigator
+          .share({
+            title: 'Compartir Ticket',
+            text: 'Aquí está el enlace de tu ticket QR:',
+            url: link,
+          })
+          .then(() => {
+            console.log('Compartido exitosamente');
+          })
+          .catch((err) => {
+            console.error('Error al intentar compartir:', err);
+          });
+      } else {
+        // Alternativa: copiar al portapapeles usando copyToClipboard
+        copyToClipboard(link);
+      }
+    },
+    [copyToClipboard]
+  );
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -92,9 +102,8 @@ export default function VendedorView({ uuid }) {
         const data = await getSeller(uuid);
         console.log(data);
         setVendedor(data.vendedor);
-        setTickets(data.tickets);
+        setTickets(data.tickets.sort((a, b) => b.id - a.id));
         setFilteredTickets(data.tickets);
-        setEventId(data.vendedor.event);
         setTicketsSalesEnabled(data.sales_enabled);
         setDniRequired(data.dni_required);
         setTicketTags(data.vendedor.ticket_tags);
@@ -106,13 +115,12 @@ export default function VendedorView({ uuid }) {
   }, [uuid]);
 
   const verifyPassword = async () => {
-    if (!eventId) {
+    if (!vendedor?.event) {
       setPasswordError('ID de evento no disponible.');
       return;
     }
-
     try {
-      await checkPassword(eventId, password);
+      await checkPassword(vendedor.event, password);
       setIsPasswordCorrect(true);
       localStorage.setItem('isPasswordCorrect', 'true');
     } catch (error) {
@@ -146,7 +154,6 @@ export default function VendedorView({ uuid }) {
 
   const confirmDeleteTicket = async () => {
     if (!ticketToDelete) return;
-
     try {
       await deleteTicketBySeller(uuid, ticketToDelete.id);
       const remainingTickets = tickets.filter((t) => t.id !== ticketToDelete.id);
@@ -161,25 +168,9 @@ export default function VendedorView({ uuid }) {
     } catch (error) {
       console.error(error.message);
     }
-
     setIsDeleteConfirmOpen(false);
     setTicketToDelete(null);
   };
-
-    const copyToClipboard = useCallback((text) => {
-      navigator.clipboard
-        .writeText(text)
-        .then(() => {
-          setCopyMessage("Copiado");
-          setTimeout(() => setCopyMessage(""), 2000); // El mensaje desaparece después de 2 segundos
-        })
-        .catch((err) => {
-          console.error("Error al copiar: ", err);
-          setCopyMessage("Error al copiar");
-          setTimeout(() => setCopyMessage(""), 2000);
-        });
-    }, []);
-  
 
   if (vendedorNotFound) {
     return (
@@ -190,7 +181,7 @@ export default function VendedorView({ uuid }) {
   }
 
   if (!isPasswordCorrect) {
-    if (!eventId) {
+    if (!vendedor?.event) {
       return <div className="flex items-center justify-center h-screen bg-gray-900 text-white w-screen">Cargando...</div>;
     }
 
@@ -237,7 +228,6 @@ export default function VendedorView({ uuid }) {
           <p>
             <strong>Tipo:</strong> {ticket?.ticket_tag.name}
           </p>
-
         </div>
         <div className="flex flex-col space-y-2 m-0">
           <Button
@@ -279,25 +269,45 @@ export default function VendedorView({ uuid }) {
   );
 
   return (
-    <div className="flex justify-center pb-8 bg-gray-900 text-white pt-4 min-h-screen w-screen">
+    <div className="flex justify-center pb-8 bg-gradient-to-b from-gray-900 to-gray-950 text-white pt-4 min-h-screen w-screen">
       <div className="max-w-6xl w-full mx-2">
-        <Card className="bg-gray-800 border-gray-700 ">
-          <CardHeader>
-            <CardTitle className="text-white text-2xl">Vista de Vendedor</CardTitle>
-            <CardDescription className="text-gray-400">Gestiona los tickets para el evento</CardDescription>
+        <Card className="bg-gray-800 border-gray-700 mb-2">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-white flex flex-row ">
+              <ShoppingCart className="mr-2" />
+              Vendedor page
+            </CardTitle>
+            <CardDescription className="text-gray-400">Estas vendiendo para el evento {vendedor?.event_name}</CardDescription>
           </CardHeader>
           <CardContent>
             {vendedor && (
-              <div className="mb-4">
-                <h3 className="text-gray-300">Vendedor: {vendedor.assigned_name}</h3>
+              <div className="mb-2 p-0">
+                <h3 className="text-gray-200">
+                  Nombre: <a className="text-blue-400 ">{vendedor.assigned_name}</a>
+                </h3>
                 {vendedor.status === false ? (
-                  <p className="text-gray-400">El organizador te deshabilito</p>
+                  <p className="text-gray-200">
+                    El organizador te <a className="text-red-400 ">deshabilito</a>
+                  </p>
                 ) : (
-                  <p className="text-gray-400">Puedes vender: {vendedor.seller_capacity !== null ? vendedor.seller_capacity - vendedor.ticket_counter : 'ilimitados'} tickets</p>
+                  <p className="text-gray-200">
+                    Tickets disponibles: <a className="text-blue-400 ">{vendedor.seller_capacity !== null ? vendedor.seller_capacity - vendedor.ticket_counter : 'ilimitados'} tickets</a>
+                  </p>
                 )}
-                <p className="text-gray-400">Tickets vendidos: {vendedor.ticket_counter}</p>
+                <p className="text-gray-200">
+                  Tickets vendidos: <a className="text-blue-400 ">{vendedor.ticket_counter} </a>
+                </p>
               </div>
             )}
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gray-800 border-gray-700 ">
+          <CardHeader>
+            <CardTitle className="text-white ">Tickets</CardTitle>
+            <CardDescription className="text-gray-400">Gestiona los tickets para el evento <br /> {window.innerWidth < 640 && 'Haz click en una fila para ver más acciones'}</CardDescription>
+          </CardHeader>
+          <CardContent>
             <div className="flex flex-col sm:flex-row justify-between items-center mb-2 gap-4">
               <Button
                 disabled={(vendedor && vendedor.status === false) || !ticketsSalesEnabled || (vendedor && vendedor.seller_capacity !== null && vendedor.ticket_counter >= vendedor.seller_capacity)}
@@ -308,7 +318,13 @@ export default function VendedorView({ uuid }) {
               </Button>
               <div className="relative w-full sm:w-auto">
                 <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <Input type="text" placeholder="Buscar por nombre o dni" value={searchTerm} onChange={handleSearch} className="pl-8 w-full bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+                <Input
+                  type="text"
+                  placeholder="Buscar por Nombre o DNI"
+                  value={searchTerm}
+                  onChange={handleSearch}
+                  className="pl-8 w-full bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                />
               </div>
             </div>
             {!ticketsSalesEnabled && <CardDescription className="text-red-400 mb-3">El organizador deshabilitó la venta de tickets</CardDescription>}
@@ -323,7 +339,7 @@ export default function VendedorView({ uuid }) {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredTickets.map((ticket) => (
+                  {paginatedTickets.map((ticket) => (
                     <TableRow
                       key={ticket.id}
                       className="border-gray-700 cursor-pointer sm:cursor-default h-16" // Added h-16 for row height
@@ -337,11 +353,7 @@ export default function VendedorView({ uuid }) {
                       <TableCell className="text-gray-300 truncate overflow-hidden whitespace-nowrap max-w-28">
                         {ticket.owner_name} {ticket.owner_lastname}
                       </TableCell>
-                      {dniRequired && (
-                        <TableCell className="text-gray-300 truncate overflow-hidden whitespace-nowrap max-w-15">
-                          {ticket.owner_dni ? ticket.owner_dni : 'No disponible'}
-                        </TableCell>
-                      )}
+                      {dniRequired && <TableCell className="text-gray-300 truncate overflow-hidden whitespace-nowrap max-w-15">{ticket.owner_dni ? ticket.owner_dni : 'No disponible'}</TableCell>}
                       <TableCell className="text-gray-300 ">{ticket.ticket_tag.name}</TableCell>
                       <TableCell className="text-right space-x-1 space-y-1 min-w-40 hidden sm:table-cell">
                         <Button variant="outline" onClick={() => shareTicketLink(`${window.location.origin}/ticket/${ticket.uuid}`)} size="sm" title="Compartir enlace de ticket">
@@ -363,6 +375,17 @@ export default function VendedorView({ uuid }) {
                   ))}
                 </TableBody>
               </Table>
+            </div>
+            <div className="flex justify-between items-center mt-4">
+              <Button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))} disabled={currentPage === 1} className="bg-gray-700 text-white">
+                Anterior
+              </Button>
+              <span className="text-gray-400">
+                Página {currentPage} de {pageCount}
+              </span>
+              <Button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, pageCount))} disabled={currentPage === pageCount} className="bg-gray-700 text-white">
+                Siguiente
+              </Button>
             </div>
           </CardContent>
           <MobileActionDialog ticket={selectedTicket} onClose={() => setSelectedTicket(null)} />

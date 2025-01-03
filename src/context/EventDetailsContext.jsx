@@ -42,14 +42,14 @@ export const EventDetailsProvider = ({ children }) => {
 
   const [activeTab, setActiveTab] = useState("tickets");
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState("");
   const itemsPerPage = 10;
+  const pageCount = Math.ceil(filteredTickets.length / itemsPerPage);
+  const filteredTickets = tickets.filter((ticket) => ticket.owner_name.toLowerCase().includes(searchTerm.toLowerCase()) || ticket.owner_dni?.includes(searchTerm));
+  const paginatedTickets = filteredTickets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const [searchTerm, setSearchTerm] = useState("");
   
   
   const [itemToDelete, setItemToDelete] = useState(null);
-  const filteredTickets = tickets.filter((ticket) => ticket.owner_name.toLowerCase().includes(searchTerm.toLowerCase()) || ticket.owner_dni?.includes(searchTerm));
-  const pageCount = Math.ceil(filteredTickets.length / itemsPerPage);
-  const paginatedTickets = filteredTickets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const [isChecked, setIsChecked] = useState(false);
 
