@@ -19,16 +19,17 @@ export const AuthProvider = ({ children }) => {
 
     const loginUser = async (e) => {
         e.preventDefault();
-        try{
-            const data = await login(e);
-            setAuthToken(data);
-            setUser(jwtDecode(data.access));
-            localStorage.setItem('authTokens', JSON.stringify(data));
-            return { success: true }; // Devuelve éxito
+        try {
+          const data = await login(formData); // Usar formData directamente
+          setAuthToken(data);
+          setUser(jwtDecode(data.access));
+          localStorage.setItem('authTokens', JSON.stringify(data));
+          return { success: true };
         } catch (error) {
-            return { success: false, error: error.message }; // Devuelve error
+          return { success: false, error: error.message };
         }
-    };
+      };
+      
 
     const logoutUser = () => {
         setUser(null)

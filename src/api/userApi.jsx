@@ -1,26 +1,26 @@
 const apiUrl = import.meta.env.VITE_API_URL;
 
 // Create token
-export const login = async (e) => {
+export const login = async ({ username, password }) => {
     try {
-        const response = await fetch(`${apiUrl}/auth/token/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ 'username': e.target.username.value, 'password': e.target.password.value })
-        });
-
-        if (response.ok) {
-            return await response.json();
-        }
-        else {
-            throw new Error('Error al obtener el token');
-        }
+      const response = await fetch(`${apiUrl}/auth/token/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }), // Usa los valores de username y password
+      });
+  
+      if (response.ok) {
+        return await response.json();
+      } else {
+        throw new Error('Error al obtener el token');
+      }
     } catch (error) {
-        throw new Error(error.message || 'Error desconocido al obtener el token');
+      throw new Error(error.message || 'Error desconocido al obtener el token');
     }
-}
+  };
+  
 
 // Update token
 export const refreshToken = async (authToken) => {
