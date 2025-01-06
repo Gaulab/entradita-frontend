@@ -133,7 +133,7 @@ export default function Scanners({}) {
       </CardHeader>
       <CardContent>
         <Button onClick={() => handleCreateEmployee(false)} className="mb-4 w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
-          <PlusIcon className="mr-2 h-4 w-4" /> Nuevo Escáner
+          <PlusIcon className="mr-2 h-4 w-4" /> Nuevo Scanner
         </Button>
         <div className="overflow-x-auto">
           <Table>

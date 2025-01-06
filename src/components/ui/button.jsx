@@ -19,9 +19,9 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        entraditaPrimary: "bg-blue-600 hover:bg-blue-500 text-gray-100 ",
-        entraditaSecondary: "bg-gray-900 border border-gray-700 text-gray-300 hover:bg-blue-950 hover:text-gray-200",
-        entraditaTertiary: "bg-gray-800 text-gray-300 border border-gray-700 hover:text-gray-200 hover:border-gray-700",
+        entraditaPrimary: "bg-blue-600 hover:bg-blue-500 text-gray-100 hover:text-white ",
+        entraditaSecondary: "bg-gray-900 hover:bg-gray-900 text-gray-300 hover:text-gray-200 border border-gray-800 hover:border-gray-600",
+        entraditaTertiary: "bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white border border-gray-700 hover:border-gray-700",
       },
       size: {
         default: "h-10 px-4 py-2",

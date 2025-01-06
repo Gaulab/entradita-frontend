@@ -1,8 +1,14 @@
+// entraditaFrontend/src/pages/Main/Home.jsx
+// react imports
 import { useState, useEffect, useRef } from 'react';
+// react-router imports
 import { Link } from 'react-router-dom';
-import { Button } from '../components/ui/button';
-import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
+// custom components
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+// lucide-react icons
 import { QrCode, Zap, Users, MessageSquareText, Menu, X, Star, Shield, DollarSign } from 'lucide-react';
+// prop-types
 import PropTypes from 'prop-types';
 
 export default function Home() {
@@ -13,14 +19,11 @@ export default function Home() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     let animationFrameId;
-
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
+    const resizeCanvas = () => {canvas.width = window.innerWidth; canvas.height = window.innerHeight;};
     const particles = [];
     const particleCount = 100;
+
+
 
     const initParticles = () => {
       for (let i = 0; i < particleCount; i++) {
@@ -118,22 +121,16 @@ export default function Home() {
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-4 text-white animate-fade-in-down">
                 Revoluciona tus <span className="text-blue-500">Eventos</span>
               </h1>
-              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-4 text-gray-300 animate-fade-in-down">
-                Tickets QR seguros y gestión simplificada
-              </h2>
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-4 text-gray-300 animate-fade-in-down">Tickets QR seguros y gestión simplificada</h2>
               <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-8 animate-fade-in-up">
                 Simplifica la venta y verificación de tickets con nuestra plataforma intuitiva y segura. Potencia tus eventos con tecnología de vanguardia.
               </p>
               <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <Button variant="entraditaPrimary" size="lg" className="text-white animate-pulse w-full sm:w-auto">
-                  <Link className="text-white hover:text-white" to="/contact">
-                    Empezar ahora
-                  </Link>
+                <Button variant="entraditaPrimary" to="/contact" size="lg" className="text-white w-full sm:w-auto">
+                  Empezar ahora
                 </Button>
-                <Button variant="entraditaTertiary" size="lg" className="text-white w-full sm:w-auto">
-                  <Link className="text-white hover:text-white" to="/pricing">
-                    Ver precios
-                  </Link>
+                <Button variant="entraditaTertiary" to="/pricing" size="lg" className="text-white w-full sm:w-auto">
+                  Ver precios
                 </Button>
               </div>
             </section>
@@ -180,8 +177,8 @@ export default function Home() {
               <div className="container mx-auto px-4">
                 <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 text-white">¿Tienes una causa benéfica?</h2>
                 <p className="text-lg sm:text-xl text-center text-gray-300 max-w-3xl mx-auto mb-8">
-                  En entradita.com, creemos en el poder de la comunidad y en apoyar causas que marcan la diferencia. Si organizas un evento benéfico, queremos ser parte de tu misión auspiciando las entradas.
-                  Juntos, podemos maximizar el impacto de tu evento y crear un cambio positivo en la sociedad.
+                  En entradita.com, creemos en el poder de la comunidad y en apoyar causas que marcan la diferencia. Si organizas un evento benéfico, queremos ser parte de tu misión auspiciando las
+                  entradas. Juntos, podemos maximizar el impacto de tu evento y crear un cambio positivo en la sociedad.
                 </p>
                 <div className="flex justify-center">
                   <Button variant="entraditaPrimary" size="lg" className="text-white">
@@ -198,8 +195,9 @@ export default function Home() {
               <div className="container mx-auto px-4">
                 <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 text-white">Sobre Nosotros</h2>
                 <p className="text-lg sm:text-xl text-center text-gray-300 max-w-3xl mx-auto">
-                  entradita.com nació de la pasión por simplificar la gestión de eventos y elevar la experiencia de los asistentes. Nuestra misión es proporcionar una plataforma innovadora y fácil de usar que empodere a organizadores, vendedores y asistentes, 
-                  permitiéndoles enfocarse en lo que realmente importa: crear momentos inolvidables. Con un equipo dedicado de expertos en tecnología y eventos, estamos comprometidos a revolucionar la industria, un ticket a la vez.
+                  entradita.com nació de la pasión por simplificar la gestión de eventos y elevar la experiencia de los asistentes. Nuestra misión es proporcionar una plataforma innovadora y fácil de
+                  usar que empodere a organizadores, vendedores y asistentes, permitiéndoles enfocarse en lo que realmente importa: crear momentos inolvidables. Con un equipo dedicado de expertos en
+                  tecnología y eventos, estamos comprometidos a revolucionar la industria, un ticket a la vez.
                 </p>
               </div>
             </section>
@@ -207,7 +205,9 @@ export default function Home() {
             {/* Contact Section */}
             <section id="contact" className="py-16 text-center">
               <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-white">Contáctanos</h2>
-              <p className="text-lg sm:text-xl mb-6 text-gray-300">¿Listo para llevar tus eventos al siguiente nivel? <br/> Estamos aquí para ayudarte.</p>
+              <p className="text-lg sm:text-xl mb-6 text-gray-300">
+                ¿Listo para llevar tus eventos al siguiente nivel? <br /> Estamos aquí para ayudarte.
+              </p>
               <div className="flex justify-center items-center space-x-4">
                 <a href="https://wa.me/543482586525" target="_blank" rel="noopener noreferrer" className="flex items-center text-white hover:text-blue-400 transition-colors">
                   <MessageSquareText className="h-6 w-6 sm:h-8 sm:w-8 mr-2" />
@@ -254,4 +254,3 @@ FeatureCard.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
 };
-

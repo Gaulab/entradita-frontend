@@ -4,7 +4,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 export const getTicket = async (ticket_uuid) => {
   console.log('Getting ticket API...', ticket_uuid);
   try {
-    const response = await fetch(`${apiUrl}/api/v1/tickets/public/${ticket_uuid}`, {
+    const response = await fetch(`${apiUrl}/api/v1/main/ticket/${ticket_uuid}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ export const getTicket = async (ticket_uuid) => {
 export const createTicket = async (formData, eventId, authToken) => {
   // console.log('Creating ticket API...', formData.owner_name, formData.owner_lastname, formData.ticket_tag);
   try {
-    const response = await fetch(`${apiUrl}/api/v1/tickets/`, {
+    const response = await fetch(`${apiUrl}/api/v1/main/ticket/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -53,28 +53,29 @@ export const createTicket = async (formData, eventId, authToken) => {
 // Creacion ticket por vendedor
 
 export const createTicketBySeller = async (formData, uuid) => {
-  console.log('Creating ticket API...', JSON.stringify(formData));
-  const response = await fetch(`${apiUrl}/api/v1/employees/seller/${uuid}/create-ticket/`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(formData),
-  });
-  if (!response.ok) {
-    const responseBody = await response.json();
-    let error_msg = responseBody.error;
-    if (!responseBody.error.includes("El evento alcanzó su capacidad máxima"))
-      error_msg = "Error creating ticket"
-      throw new Error(error_msg);
+  try {
+    const response = await fetch(`${apiUrl}/api/v1/main/employees/seller/${uuid}/create-ticket/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+    const data = await response.json();
+    if (response.ok) {
+      return data;
+    } else {
+      throw new Error(data.error || 'Error al crear el ticket');
+    }
+  } catch (error) {
+    throw new Error(error.message || 'Error desconocido al crear el ticket');
   }
-  return response.json();
 };
 
 // Eliminación de un ticket por organizador
 export const deleteTicket = async (authToken, itemToDelete) => {
   try {
-    const response = await fetch(`${apiUrl}/api/v1/tickets/${itemToDelete.id}/`, {
+    const response = await fetch(`${apiUrl}/api/v1/main/ticket/${itemToDelete.id}/`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -89,7 +90,7 @@ export const deleteTicket = async (authToken, itemToDelete) => {
 // Eliminacion de un ticket por vendedor
 export const deleteTicketBySeller = async (uuid, ticketId) => {
   try {
-    const response = await fetch(`${apiUrl}/api/v1/employees/seller/${uuid}/delete-ticket/${ticketId}/`, {
+    const response = await fetch(`${apiUrl}/api/v1/main/employees/seller/${uuid}/delete-ticket/${ticketId}/`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -103,7 +104,7 @@ export const deleteTicketBySeller = async (uuid, ticketId) => {
 // Validar ticket por payload
 export const checkTicketByPayload = async (payload, scanner, eventId) => {
   try {
-    const response = await fetch(`${apiUrl}/api/v1/tickets/scan/${payload}/`, {
+    const response = await fetch(`${apiUrl}/api/v1/main/ticket/scan-qr/${payload}/`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -123,7 +124,7 @@ export const checkTicketByPayload = async (payload, scanner, eventId) => {
 // Validar ticket por DNI
 export const checkTicketByDni = async (dni, scanner, eventId) => {
   try {
-    const response = await fetch(`${apiUrl}/api/v1/tickets/scan/dni/${dni}/`, {
+    const response = await fetch(`${apiUrl}/api/v1/main/ticket/scan-dni/${dni}/`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

@@ -2,7 +2,7 @@
 const apiUrl = import.meta.env.VITE_API_URL;
 export const getEventPage = async (eventId) => {
     try {
-        const response = await fetch(`${apiUrl}/api/v1/event/${eventId}/page`, {
+        const response = await fetch(`${apiUrl}/api/v1/eventpage/event/${eventId}/page`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -24,7 +24,7 @@ export const getEventPage = async (eventId) => {
 export const updateEventPage = async (eventId, pageData, authToken ) => {
     console.log('pageData', pageData);
     try {
-        const response = await fetch(`${apiUrl}/api/v1/event/${eventId}/page/`, {
+        const response = await fetch(`${apiUrl}/api/v1/eventpage/event/${eventId}/page/`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

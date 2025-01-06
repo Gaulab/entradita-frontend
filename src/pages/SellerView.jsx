@@ -22,18 +22,21 @@ export default function VendedorView({ uuid }) {
   // main states
   const [tickets, setTickets] = useState([]);
   const [vendedor, setVendedor] = useState(null);
+  const [dniRequired, setDniRequired] = useState(false);
+  const [ticketsSalesEnabled, setTicketsSalesEnabled] = useState(true);
+  const [organizerHasCapacity, setOrganizerHasCapacity] = useState(true);
+  // password states
+  const [password, setPassword] = useState('');
+  const [isPasswordCorrect, setIsPasswordCorrect] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+
   // search states
   const [filteredTickets, setFilteredTickets] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [vendedorNotFound, setVendedorNotFound] = useState(false);
-  const [password, setPassword] = useState('');
-  const [isPasswordCorrect, setIsPasswordCorrect] = useState(false);
-  const [passwordError, setPasswordError] = useState('');
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [ticketToDelete, setTicketToDelete] = useState(null);
   const [copyMessage, setCopyMessage] = useState('');
-  const [ticketsSalesEnabled, setTicketsSalesEnabled] = useState(true);
-  const [dniRequired, setDniRequired] = useState(false);
   const [ticketTags, setTicketTags] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,8 +45,6 @@ export default function VendedorView({ uuid }) {
   const paginatedTickets = filteredTickets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const navigate = useNavigate();
-  console.log('¿Soporta Web Share?', navigator.share ? 'Sí' : 'No');
-  console.log('¿Soporta Clipboard API?', navigator.clipboard ? 'Sí' : 'No');
 
   const copyToClipboard = useCallback((text) => {
     navigator.clipboard
@@ -75,7 +76,6 @@ export default function VendedorView({ uuid }) {
             console.error('Error al intentar compartir:', err);
           });
       } else {
-        // Alternativa: copiar al portapapeles usando copyToClipboard
         copyToClipboard(link);
       }
     },
@@ -100,27 +100,26 @@ export default function VendedorView({ uuid }) {
     const fetchTickets = async () => {
       try {
         const data = await getSeller(uuid);
-        console.log(data);
-        setVendedor(data.vendedor);
+        setVendedor(data.seller);
         setTickets(data.tickets.sort((a, b) => b.id - a.id));
         setFilteredTickets(data.tickets);
         setTicketsSalesEnabled(data.sales_enabled);
         setDniRequired(data.dni_required);
-        setTicketTags(data.vendedor.ticket_tags);
+        setOrganizerHasCapacity(data.organizer_has_capacity);
+        setTicketTags(data.seller.ticket_tags);
       } catch (error) {
         console.error(error.message);
       }
     };
-    fetchTickets();
-  }, [uuid]);
+    if (isPasswordCorrect) {
+      fetchTickets();
+    }
+  }, [uuid, isPasswordCorrect]);
 
   const verifyPassword = async () => {
-    if (!vendedor?.event) {
-      setPasswordError('ID de evento no disponible.');
-      return;
-    }
+
     try {
-      await checkPassword(vendedor.event, password);
+      await checkPassword(uuid, password);
       setIsPasswordCorrect(true);
       localStorage.setItem('isPasswordCorrect', 'true');
     } catch (error) {
@@ -181,9 +180,6 @@ export default function VendedorView({ uuid }) {
   }
 
   if (!isPasswordCorrect) {
-    if (!vendedor?.event) {
-      return <div className="flex items-center justify-center h-screen bg-gray-900 text-white w-screen">Cargando...</div>;
-    }
 
     return (
       <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
@@ -310,7 +306,10 @@ export default function VendedorView({ uuid }) {
           <CardContent>
             <div className="flex flex-col sm:flex-row justify-between items-center mb-2 gap-4">
               <Button
-                disabled={(vendedor && vendedor.status === false) || !ticketsSalesEnabled || (vendedor && vendedor.seller_capacity !== null && vendedor.ticket_counter >= vendedor.seller_capacity)}
+                disabled={(vendedor && vendedor.status === false) || !ticketsSalesEnabled ||
+                  (vendedor && vendedor.seller_capacity !== null && vendedor.ticket_counter >= vendedor.seller_capacity
+                  || vendedor && organizerHasCapacity === false
+                )}
                 onClick={() => handleCreateTicket(dniRequired, ticketTags)}
                 className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
               >
@@ -327,7 +326,7 @@ export default function VendedorView({ uuid }) {
                 />
               </div>
             </div>
-            {!ticketsSalesEnabled && <CardDescription className="text-red-400 mb-3">El organizador deshabilitó la venta de tickets</CardDescription>}
+            {(!ticketsSalesEnabled || !organizerHasCapacity) && <CardDescription className="text-red-400 mb-3">El organizador deshabilitó la venta de tickets</CardDescription>}
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>

@@ -8,15 +8,17 @@ import { EventDetailsProvider } from './context/EventDetailsContext';  // Import
 // Utils imports
 import PrivateRoute from './utils/PrivateRoute';
 // Public pages
-import Home from './pages/Home';
+import Home from './pages/Main/Home';
 import Login from './pages/Login';
-import Contact from './pages/Contact';
-import TermsAndConditions from './pages/TermsAndConditions';
+import Contact from './pages/Main/Contact';
+import TermsAndConditions from './pages/Main/TermsAndConditions';
 import TicketPage from './pages/TicketPage';
 import TicketShare from './pages/TicketShare';
 import SellerView from './pages/SellerView';
 import ScannerView from './pages/ScannerView';
 import CreateTicketBySeller from './pages/CreateTicektBySeller';
+import Pricing from './pages/Main/Pricing';
+import PrivacyPolicy from './pages/Main/PrivacyPolicy';
 // Private pages
 import Dashboard from './pages/Dashboard';
 import EventDetail from './pages/EventDetail/EventDetail';
@@ -25,8 +27,10 @@ import EditEvent from './pages/EditEvent';
 import EventConfigInterface from './pages/EventConfigInterface';
 import EventPage from './pages/EventPage';
 import Economy from './pages/Economy';
-import Pricing from './pages/Pricing';
-import PrivacyPolicy from './pages/PrivacyPolicy';
+// Trial pages
+import DashboardTrial from './pages/Trial/DashboardTrial';
+import TicketPage1Trial from './pages/Trial/TicketPage1Trial';
+
 // SellerWrapper is a functional component that extracts the UUID from the URL using the useParams hook and passes it as a prop to the VendorView component.
 const SellerWrapper = () => {
   const { uuid } = useParams(); // Obtén el UUID de la URL
@@ -40,8 +44,10 @@ const ScannerWrapper = () => {
 function App() {
   return (
     <Router>
-        <Routes>
-          {/* Rutas públicas */}
+      <Routes>
+        
+        {/* Rutas públicas */}
+
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<AuthProvider><Login /></AuthProvider>} />
           <Route path="/contact" element={<Contact />} />
@@ -52,7 +58,9 @@ function App() {
           <Route path="/seller/:uuid" element={<SellerWrapper />} />
           <Route path="/scanner/:uuid" element={<ScannerWrapper />} />
           <Route path="/seller/:uuid/create-ticket" element={<CreateTicketBySeller />} />
-          <Route path="/pricing" element={<Pricing />} />
+        <Route path="/pricing" element={<Pricing />} />
+        <Route path="/dashboard-trial" element={<DashboardTrial />} />
+        <Route path="/ticket-page-trial/:ticket_uuid" element={<TicketPage1Trial />} />
         {/* Rutas protegidas */}
           <Route path="/dashboard" element={<AuthProvider><PrivateRoute><Dashboard /></PrivateRoute></AuthProvider>} />
           <Route path="/event/:id/details" element={<AuthProvider><EventDetailsProvider><PrivateRoute><EventDetail /></PrivateRoute></EventDetailsProvider></AuthProvider>} />

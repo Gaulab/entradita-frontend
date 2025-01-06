@@ -1,47 +1,36 @@
 // entraditaFront/src/pages/Dashboard.jsx
 // react imports
-import { useState, useContext, useEffect } from 'react';
-// Context
-import AuthContext from '../context/AuthContext';
+import { useState, useEffect } from 'react';
 // Components
-import { Button } from '../components/ui/button';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
-import LoadingSpinner from '../components/ui/loadingspinner';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 // Icons
 import { LogOutIcon, PlusIcon, Eye } from 'lucide-react';
-// API
-import { getEvents } from '../api/eventApi';
 
 export default function Dashboard() {
-  const { logoutUser, authToken } = useContext(AuthContext);
-  const [events, setEvents] = useState([]);
-  const [ticket_limit, setTicketLimit] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const [events, setEvents] = useState([
+    { id: 1, name: 'Concierto de Rock', date: '2025-02-15', place: 'Estadio Principal', tickets_counter: 150 },
+    { id: 2, name: 'Festival de Jazz', date: '2025-03-10', place: 'Teatro Municipal', tickets_counter: 200 },
+    { id: 3, name: 'Exposición de Arte', date: '2025-04-05', place: 'Galería Nacional', tickets_counter: 50 }
+  ]);
+  const [ticket_limit, setTicketLimit] = useState(500);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      const data = await getEvents(authToken.access);
-      setEvents(data.events); // Actualiza el estado con los eventos obtenidos
-      setTicketLimit(data.ticket_limit);
-      setIsLoading(false); // Oculta el loading después de cargar
-    };
+    // Simulación de carga
+    setIsLoading(false); // Aquí podrías agregar un timeout si quieres simular la carga
+  }, []);
 
-    if (authToken.access) {
-      fetchEvents(); // Llamar a la función para obtener eventos
-    }
-  }, [authToken.access]); // Dependencia del authToken para que se recargue si cambia
-
-  // Mostrar loading si isLoading es true
   if (isLoading) {
-    return <LoadingSpinner />;
+    return <div>Cargando...</div>;
   }
 
   return (
     <div className="min-h-screen w-screen p-4 bg-gray-900 text-gray-100 ">
-      <div className="max-w-6xl mx-auto  w-full">
+      <div className="max-w-6xl mx-auto w-full">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
-          <Button onClick={logoutUser} variant="entraditaTertiary" className="w-full sm:w-auto">
+          <Button onClick={() => alert('Cerrar sesión')} variant="entraditaTertiary" className="w-full sm:w-auto">
             <LogOutIcon className="mr-2 h-4 w-4" /> Cerrar Sesión
           </Button>
         </div>
@@ -60,7 +49,7 @@ export default function Dashboard() {
             <CardDescription className="text-gray-400">Administra tus eventos</CardDescription>
           </CardHeader>
           <CardContent>
-            <Button variant="entraditaPrimary" to="/create-event" className="w-full sm:w-auto">
+            <Button to="/create-event" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
               <PlusIcon className="mr-1 h-4 w-4" />
               Nuevo evento
             </Button>
@@ -68,7 +57,7 @@ export default function Dashboard() {
               <Table>
                 <TableHeader>
                   <TableRow className="border-gray-700 text-left">
-                    <TableHead className="text-gray-300 ">Nombre</TableHead>
+                    <TableHead className="text-gray-300">Nombre</TableHead>
                     <TableHead className="text-gray-300 hidden sm:table-cell">Fecha</TableHead>
                     <TableHead className="text-gray-300 hidden md:table-cell">Ubicación</TableHead>
                     <TableHead className="text-gray-300 hidden md:table-cell">Tickets Vendidos</TableHead>

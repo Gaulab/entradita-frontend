@@ -80,7 +80,7 @@ export default function Login() {
               </p>
             )}
 
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+            <Button variant="entraditaPrimary" type="submit" className="w-full">
               Iniciar Sesión
             </Button>
           </form>

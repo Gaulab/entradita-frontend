@@ -5,7 +5,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 // Devuelve los detalles de un evento
 export const getEvent = async (id, authToken) => {
   try {
-    const response = await fetch(`${apiUrl}/api/v1/event/${id}/`, {
+    const response = await fetch(`${apiUrl}/api/v1/main/event/${id}/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ export const getEvent = async (id, authToken) => {
 // Devuelve los detalles de un evento
 export const getEventDetails = async (id, authToken) => {
   try {
-    const response = await fetch(`${apiUrl}/api/v1/event/${id}/details`, {
+    const response = await fetch(`${apiUrl}/api/v1/main/event/${id}/details`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ export const getEventDetails = async (id, authToken) => {
 // Devuelve todos los eventos de un usuario
 export const getEvents = async (authToken) => {
   try {
-    const response = await fetch(`${apiUrl}/api/v1/events/`, {
+    const response = await fetch(`${apiUrl}/api/v1/main/events/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ export const getEvents = async (authToken) => {
 
 export const createEvent = async (eventData, authToken) => {
   try {
-    const response = await fetch(`${apiUrl}/api/v1/event/create/`, {
+    const response = await fetch(`${apiUrl}/api/v1/main/event/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ export const createEvent = async (eventData, authToken) => {
 export const updateEvent = async (eventData, eventId, token) => {
   // console.log("asd" + JSON.stringify(eventData))
   try {
-    const response = await fetch(`${apiUrl}/api/v1/event/${eventId}/`, {
+    const response = await fetch(`${apiUrl}/api/v1/main/event/${eventId}/`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -122,7 +122,7 @@ export const updateEvent = async (eventData, eventId, token) => {
 // Deshabilitacion / Habilitacion venta de tickets
 export const updateTicketSales = async (id, authToken) => {
   try {
-    const response = await fetch(`${apiUrl}/api/v1/event/${id}/ticket-sales/`, {
+    const response = await fetch(`${apiUrl}/api/v1/main/event/${id}/ticket-sales/`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -144,7 +144,7 @@ export const updateTicketSales = async (id, authToken) => {
 // Eliminación de un evento
 export const deleteEvent = async (id, authToken) => {
   try {
-    const response = await fetch(`${apiUrl}/api/v1/event/${id}/`, {
+    const response = await fetch(`${apiUrl}/api/v1/main/event/${id}/`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

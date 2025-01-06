@@ -4,7 +4,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 // Devuelve los empleados de un evento
 export const getEmployees = async (id, authToken) => {
     try{
-        const response = await fetch(`${apiUrl}/api/v1/event/${id}/employees/`, {
+        const response = await fetch(`${apiUrl}/api/v1/main/event/${id}/employees/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ export const getEmployees = async (id, authToken) => {
 export const createEmployee = async (formData, authToken, eventId) => {
     console.log("id en API: ", formData);
     try {
-        const response = await fetch(`${apiUrl}/api/v1/employee/`, {
+        const response = await fetch(`${apiUrl}/api/v1/main/employee/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -59,7 +59,7 @@ export const createEmployee = async (formData, authToken, eventId) => {
 // Cambiar status de un empleado
 export const changeEmployeeStatus = async (authToken, itemToChange) => {
     try {
-        const response = await fetch(`${apiUrl}/api/v1/employee/${itemToChange.id}/status/`, {
+        const response = await fetch(`${apiUrl}/api/v1/main/employee/${itemToChange.id}/status/`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ export const updateEmployee = async (submitData, authToken, employeeId) => {
     // console.log("newEmpleadoName en API: ", newEmpleadoName);
     // console.log("newEmpleadoCapacity en API: ", newEmpleadoCapacity);
     try {
-        const response = await fetch(`${apiUrl}/api/v1/employee/${employeeId}/`, {
+        const response = await fetch(`${apiUrl}/api/v1/main/employee/${employeeId}/`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -119,7 +119,7 @@ export const updateEmployee = async (submitData, authToken, employeeId) => {
 // Eliminación de un empleado
 export const deleteEmployee = async (authToken, itemToDelete) => {
     try {
-        await fetch(`${apiUrl}/api/v1/employee/${itemToDelete.id}/`, {
+        await fetch(`${apiUrl}/api/v1/main/employee/${itemToDelete.id}/`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ export const deleteEmployee = async (authToken, itemToDelete) => {
 // Scanner view
 export const getScanner = async (uuid) => {
     try {
-        const response = await fetch(`${apiUrl}/api/v1/employees/scanner/${uuid}/info/`, {
+        const response = await fetch(`${apiUrl}/api/v1/main/employees/scanner/${uuid}/info/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -157,7 +157,7 @@ export const getScanner = async (uuid) => {
 // Vendedor view
 export const getSeller = async (uuid) => {
     try {
-        const response = await fetch(`${apiUrl}/api/v1/employee/seller/${uuid}/info/`, {
+        const response = await fetch(`${apiUrl}/api/v1/main/employee/seller/${uuid}/info/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -177,20 +177,20 @@ export const getSeller = async (uuid) => {
 }
 
 // Check password
-export const checkPassword = async (eventId, password) => {
+export const checkPassword = async (uuid, password) => {
     try {
-      const response = await fetch(`${apiUrl}/api/v1/events/${eventId}/check-password/`, {
+      const response = await fetch(`${apiUrl}/api/v1/main/event/${uuid}/check-password/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ password }),
       });
-
+      const data = await response.json();
       if (response.ok) {
-        return await response.json();
+        return data;
       } else {
-        throw new Error('Contraseña incorrecta')
+        throw new Error(data.error || "Error al verificar la contraseña");
       }
     } catch (error) {
         throw new Error(error.message || 'Error al verificar la contraseña');
