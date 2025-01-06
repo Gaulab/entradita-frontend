@@ -9,6 +9,7 @@ import AuthContext from "./AuthContext";
 // API functions
 import { getEventDetails, updateTicketSales } from "../api/eventApi";
 import { getEmployees, createEmployee, updateEmployee, deleteEmployee, changeEmployeeStatus} from "../api/employeeApi";
+import { use } from "react";
 
 const EventDetailsContext = createContext();
 
@@ -16,6 +17,8 @@ export const EventDetailsProvider = ({ children }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { authToken } = useContext(AuthContext);
+  // Loading status
+  const [isLoading, setIsLoading] = useState(true);
   // Main status
   const [event, setEvent] = useState({});
   const [tickets, setTickets] = useState([]);
@@ -50,26 +53,33 @@ export const EventDetailsProvider = ({ children }) => {
   const filteredTickets = tickets.filter((ticket) => ticket.owner_name.toLowerCase().includes(searchTerm.toLowerCase()) || ticket.owner_dni?.includes(searchTerm));
   const pageCount = Math.ceil(filteredTickets.length / itemsPerPage);
   const paginatedTickets = filteredTickets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
   const [isChecked, setIsChecked] = useState(false);
+
 
   // Fetch inicial de datos
   useEffect(() => {
     const fetchEventData = async () => {
-      const data = await getEventDetails(id, authToken.access);
-      console.log("Event data:", data);
-      setEvent(data.event);
-      setTicketSalesEnabled(data.event.ticket_sales_enabled);
-      setTickets(data.tickets.sort((a, b) => b.id - a.id));
-      setSellers(data.sellers);
-      setScanners(data.scanners);
-      setTicketTags(data.event.ticket_tags);
+      try {
+        const data = await getEventDetails(id, authToken.access);
+        // console.log("Event data:", data);
+        setEvent(data.event);
+        setTicketSalesEnabled(data.event.ticket_sales_enabled);
+        setTickets(data.tickets.sort((a, b) => b.id - a.id));
+        setSellers(data.sellers);
+        setScanners(data.scanners);
+        setTicketTags(data.event.ticket_tags);
+      } catch (error) {
+        console.error("Error fetching event data:", error.message);
+      } finally {
+        setIsLoading(false);
+      }
     };
-    fetchEventData().catch(error => {
-      console.error("Error fetching event data:", error.message);
-    });
+    fetchEventData();
   }, [id]);
 
+  useEffect(() => {
+    console.log("Loading status:", isLoading);
+  }, [isLoading]);
 
   useEffect(() => {
     const getEventEmployees = async () => {
@@ -112,6 +122,8 @@ export const EventDetailsProvider = ({ children }) => {
   return (
     <EventDetailsContext.Provider
       value={{
+        // Loading status
+        isLoading,
         // main states
         event, setEvent,
         tickets, setTickets,

@@ -9,6 +9,7 @@ import EventDetailsContext from '../../context/EventDetailsContext';
 // custom components
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
 import { Button } from '../../components/ui/button';
+import LoadingSpinner from '@/components/ui/loadingspinner';
 // icons
 import { ArrowLeftIcon, EditIcon, Ticket, Users, ScanIcon } from 'lucide-react';
 // page components
@@ -25,8 +26,14 @@ import DialogCreateTicket from './Dialogs/DialogCreateTicket';
 export default function EventDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { event, copyMessage, activeTab, setActiveTab } = useContext(EventDetailsContext);
+  const { event, copyMessage, activeTab, setActiveTab, isLoading } = useContext(EventDetailsContext);
 
+
+    // Mostrar loading si isLoading es true
+    if (isLoading) {
+      return <LoadingSpinner />;
+    }
+  
   return (
     <div className="flex justify-center space-y-6 pb-8 bg-gradient-to-b from-gray-900 to-gray-950 text-white p-4 min-h-screen w-screen ">
       <div className="max-w-6xl mx-auto w-full">

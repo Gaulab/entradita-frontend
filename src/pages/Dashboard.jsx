@@ -32,6 +32,7 @@ export default function Dashboard() {
     }
   }, [authToken.access]); // Dependencia del authToken para que se recargue si cambia
 
+  
   // Mostrar loading si isLoading es true
   if (isLoading) {
     return <LoadingSpinner />;
