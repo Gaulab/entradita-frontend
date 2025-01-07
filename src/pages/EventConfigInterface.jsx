@@ -1,6 +1,25 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { LogOutIcon, PlusIcon, Eye, HelpCircle, Text, BoxIcon, ShoppingBasket, Map, ArrowUp, ArrowDown, Trash2, Save, ExternalLink, Copy, ArrowBigLeft, Image, HourglassIcon } from 'lucide-react';
+import {
+  LogOutIcon,
+  PlusIcon,
+  Eye,
+  HelpCircle,
+  Text,
+  BoxIcon,
+  ShoppingBasket,
+  Map,
+  ArrowUp,
+  ArrowDown,
+  Trash2,
+  Save,
+  ExternalLink,
+  Copy,
+  ArrowBigLeft,
+  Image,
+  HourglassIcon,
+  CreditCard,
+} from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
@@ -11,6 +30,9 @@ import { Label } from '@/components/ui/label';
 import { getEventPage, updateEventPage } from '../api/eventPageApi';
 import AuthContext from '../context/AuthContext';
 import { googleFonts, FontStyles } from '../fonts';
+import LoadingSpinner from '../components/ui/loadingspinner';
+import { motion, AnimatePresence } from 'framer-motion';
+
 const blockTypes = [
   { id: 'GENERAL', name: 'General', icon: BoxIcon },
   { id: 'TITLE', name: 'Block title', icon: Text },
@@ -19,6 +41,7 @@ const blockTypes = [
   { id: 'COUNTDOWN', name: 'Block countdown', icon: HourglassIcon },
   { id: 'BUTTON', name: 'Block button', icon: ShoppingBasket },
   { id: 'PAY', name: 'Block pay', icon: ShoppingBasket },
+  { id: 'MERCADOPAGO', name: 'Mercado Pago', icon: CreditCard },
 ];
 
 export default function EventConfigInterface() {
@@ -71,7 +94,7 @@ export default function EventConfigInterface() {
     newBlocks.forEach((block, index) => {
       block.order = index + 1;
     });
-    setBlocks(newBlocks);
+    setBlocks([...newBlocks]); // Force re-render by creating a new array
   };
 
   const renderBlockConfig = (block) => {
@@ -133,7 +156,6 @@ export default function EventConfigInterface() {
       case 'COUNTDOWN':
         const formattedDate = block.data.contdown_date ? new Date(block.data.contdown_date).toISOString().slice(0, 16) : '';
         return <Input type="datetime-local" value={formattedDate} onChange={(e) => updateBlock(block.id, { data: { ...block.data, contdown_date: e.target.value } })} />;
-        return <Input type="datetime-local" value={block.data.contdown_date || ''} onChange={(e) => updateBlock(block.id, { data: { ...block.data, contdown_date: e.target.value } })} />;
       case 'BUTTON':
         return (
           <div className="space-y-2">
@@ -168,6 +190,38 @@ export default function EventConfigInterface() {
             <Input value={block.data.pay_alias || ''} onChange={(e) => updateBlock(block.id, { data: { ...block.data, pay_alias: e.target.value } })} placeholder="Alias" />
           </div>
         );
+      case 'MERCADOPAGO':
+        return (
+          <div className="space-y-2">
+            <div>
+              <h3 className="text-sm font-bold mb-1">Texto</h3>
+              <Input
+                value={block.data.button_text || ''}
+                onChange={(e) => updateBlock(block.id, { data: { ...block.data, button_text: e.target.value } })}
+                placeholder="Texto del botón de Mercado Pago"
+              />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold mb-1">Color de fondo</h3>
+              <Input
+                className="p-1.5"
+                type="color"
+                value={block.data.button_bgcolor || '#FFFFFF'}
+                onChange={(e) => updateBlock(block.id, { data: { ...block.data, button_bgcolor: e.target.value } })}
+              />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold mb-1">Color de la letra</h3>
+              <Input className="p-1.5" type="color" value={block.data.button_color || '#000000'} onChange={(e) => updateBlock(block.id, { data: { ...block.data, button_color: e.target.value } })} />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold mb-1">Configuración</h3>
+              <Button variant="entraditaTertiary" onClick={() => navigate(`/mercadopago-config/${id}`)}>
+                Configurar Mercado Pago
+              </Button>
+            </div>
+          </div>
+        );
       default:
         return null;
     }
@@ -194,7 +248,7 @@ export default function EventConfigInterface() {
         handleSaveChanges();
       }
     }
-    window.open(`https://entradita.com/eventPage/${id}`, '_blank');
+    window.open(`https://entradita.com/event-page/${id}`, '_blank');
   };
 
   const handleGoBack = () => {
@@ -207,7 +261,7 @@ export default function EventConfigInterface() {
   };
 
   if (!eventData) {
-    return <div>Cargando...</div>;
+    return <LoadingSpinner />;
   }
 
   return (
@@ -220,10 +274,10 @@ export default function EventConfigInterface() {
 
         <div className="flex max-sm:flex-col mb-2 justify-between items-center">
           <div className="flex flex-row max-sm:mb-2 sm:mr-2 space-x-2 w-full">
-            <Button className="w-full" variant="entraditaTertiary" onClick={handleGoBack}>
+            <Button className="w-full" variant="entraditaError" onClick={handleGoBack}>
               <ArrowBigLeft className="mr-2 h-4 w-4" /> Volver
             </Button>
-            <Button onClick={handleSaveChanges} variant="entraditaTertiary" className="w-full">
+            <Button onClick={handleSaveChanges} variant="entraditaSuccess" className="w-full">
               <Save className="mr-2 h-4 w-4" /> Guardar cambios
             </Button>
           </div>
@@ -278,29 +332,31 @@ export default function EventConfigInterface() {
                 </div>
               </DialogContent>
             </Dialog>
-            <div className="space-y-4">
+            <AnimatePresence>
               {blocks
                 .filter((block) => block.type !== 'GENERAL')
                 .map((block, index) => (
-                  <Card key={block.id} className="bg-gray-700 border-gray-600">
-                    <CardHeader className="flex flex-col items-start justify-start pb-2">
-                      <CardTitle className="text-white text-sm">{blockTypes.find((t) => t.id === block.type)?.name}</CardTitle>
-                      <div className="flex space-x-2">
-                        <Button className="px-4 py-2" variant="ghost" onClick={() => moveBlock(index + 1, -1)} disabled={index === 0}>
-                          <ArrowUp className="h-4 w-4" />
-                        </Button>
-                        <Button className="px-4 py-2" variant="ghost" onClick={() => moveBlock(index + 1, 1)} disabled={index === blocks.filter((b) => b.type !== 'GENERAL').length - 1}>
-                          <ArrowDown className="h-4 w-4" />
-                        </Button>
-                        <Button className="px-4 py-2" variant="ghost" onClick={() => removeBlock(block.id)}>
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </CardHeader>
-                    <CardContent>{renderBlockConfig(block)}</CardContent>
-                  </Card>
+                  <motion.div key={block.id} layout initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -50 }} transition={{ duration: 0.3 }}>
+                    <Card className="bg-gray-700 border-gray-600 mb-4">
+                      <CardHeader className="flex flex-col items-start justify-start pb-2">
+                        <CardTitle className="text-white text-sm">{blockTypes.find((t) => t.id === block.type)?.name}</CardTitle>
+                        <div className="flex space-x-2">
+                          <Button className="px-4 py-2" variant="ghost" onClick={() => moveBlock(index + 1, -1)} disabled={index === 0}>
+                            <ArrowUp className="h-5 w-5" />
+                          </Button>
+                          <Button className="px-4 py-2" variant="ghost" onClick={() => moveBlock(index + 1, 1)} disabled={index === blocks.filter((b) => b.type !== 'GENERAL').length - 1}>
+                            <ArrowDown className="h-5 w-5" />
+                          </Button>
+                          <Button className="px-4 py-2" variant="entraditaError" onClick={() => removeBlock(block.id)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </CardHeader>
+                      <CardContent>{renderBlockConfig(block)}</CardContent>
+                    </Card>
+                  </motion.div>
                 ))}
-            </div>
+            </AnimatePresence>
           </CardContent>
         </Card>
       </div>

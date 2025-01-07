@@ -23,6 +23,8 @@ export default function DialogCreateTicket() {
   const navigate = useNavigate();
   const id = event.id;
   const dni_required = event.dni_required;
+  const [valueDropdown, setValueDropdown] = useState(null);
+
 
   const [formData, setFormData] = useState({
     name: '',
@@ -53,11 +55,15 @@ export default function DialogCreateTicket() {
   };
 
   const handleDropdownChange = (selectedOption) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      ticketTag: selectedOption,
-    }));
+    setValueDropdown(selectedOption);
   };
+
+  // const handleDropdownChange = (selectedOption) => {
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     ticketTag: selectedOption,
+  //   }));
+  // };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -66,7 +72,7 @@ export default function DialogCreateTicket() {
       owner_name: formData.name,
       owner_lastname: formData.surname,
       owner_dni: dni_required ? formData.dni : null,
-      ticket_tag: formData.ticketTag.id,
+      ticket_tag: valueDropdown.id,
     };
 
     try {
@@ -98,7 +104,7 @@ export default function DialogCreateTicket() {
               name="ticketTag"
               placeholder="Seleccionar categoría"
               onChange={handleDropdownChange}
-              value={formData.ticketTag}
+              value={valueDropdown}
               options={ticketTags}
               className="bg-gray-700 border-gray-600 text-white"
             />

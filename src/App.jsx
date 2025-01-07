@@ -31,6 +31,8 @@ import Economy from './pages/Economy';
 import DashboardTrial from './pages/Trial/DashboardTrial';
 import TicketPage1Trial from './pages/Trial/TicketPage1Trial';
 
+import TicketPurchasePage from './pages/TicketPurchasePage';
+
 // SellerWrapper is a functional component that extracts the UUID from the URL using the useParams hook and passes it as a prop to the VendorView component.
 const SellerWrapper = () => {
   const { uuid } = useParams(); // Obtén el UUID de la URL
@@ -44,10 +46,8 @@ const ScannerWrapper = () => {
 function App() {
   return (
     <Router>
-      <Routes>
-        
+      <Routes> 
         {/* Rutas públicas */}
-
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<AuthProvider><Login /></AuthProvider>} />
           <Route path="/contact" element={<Contact />} />
@@ -58,9 +58,10 @@ function App() {
           <Route path="/seller/:uuid" element={<SellerWrapper />} />
           <Route path="/scanner/:uuid" element={<ScannerWrapper />} />
           <Route path="/seller/:uuid/create-ticket" element={<CreateTicketBySeller />} />
-        <Route path="/pricing" element={<Pricing />} />
-        <Route path="/dashboard-trial" element={<DashboardTrial />} />
-        <Route path="/ticket-page-trial/:ticket_uuid" element={<TicketPage1Trial />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/dashboard-trial" element={<DashboardTrial />} />
+          <Route path="/ticket-page-trial/:ticket_uuid" element={<TicketPage1Trial />} />
+          <Route path="/ticket-purchase/:event_id" element={<TicketPurchasePage />} />
         {/* Rutas protegidas */}
           <Route path="/dashboard" element={<AuthProvider><PrivateRoute><Dashboard /></PrivateRoute></AuthProvider>} />
           <Route path="/event/:id/details" element={<AuthProvider><EventDetailsProvider><PrivateRoute><EventDetail /></PrivateRoute></EventDetailsProvider></AuthProvider>} />

@@ -16,7 +16,7 @@ import AuthContext from '../context/AuthContext';
 // API
 import { createEvent } from '../api/eventApi';
 // ICONS
-import { HelpCircle, X } from 'lucide-react';
+import { ArrowLeftIcon, HelpCircle, X } from 'lucide-react';
 import { number } from 'prop-types';
 
 export default function CreateEvent() {
@@ -31,13 +31,13 @@ export default function CreateEvent() {
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Evita el comportamiento predeterminado del formulario
-  
+
     if (ticketTags.length === 0) {
       setError('Debes agregar al menos un Ticket Tag.');
       setTimeout(() => setError(''), 3000);
       return;
     }
-  
+
     // Extrae los datos del formulario y construye el objeto del evento
     const formData = new FormData(event.target);
     const selectedDate = new Date(formData.get('date') + 'T00:00:00');
@@ -50,7 +50,7 @@ export default function CreateEvent() {
     const eventObject = Object.fromEntries(Array.from(formData.entries()).filter(([key, value]) => value !== ''));
     eventObject.dni_required = requireDNI; // Agrega el requerimiento de DNI al objeto
     eventObject.ticket_tags = ticketTags; // Agrega los TicketTags al objeto
-  
+
     console.log('Evento a crear:', eventObject);
 
     try {
@@ -62,7 +62,7 @@ export default function CreateEvent() {
       setError(error.message);
     }
   };
-  
+
   const addTicketTag = () => {
     if (ticketTags.length < 5) {
       if (tagName && tagPrice && !isNaN(tagPrice)) {
@@ -82,18 +82,22 @@ export default function CreateEvent() {
 
   const handleDateChange = (event) => {
     const inputDate = new Date(event.target.value);
-    const offsetDate = new Date(inputDate.getTime() - (3 * 60 * 60 * 1000)); // Ajuste a zona horaria -3
+    const offsetDate = new Date(inputDate.getTime() - 3 * 60 * 60 * 1000); // Ajuste a zona horaria -3
     setDate(offsetDate.toISOString().split('T')[0]); // Formato YYYY-MM-DD
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900 p-4 w-screen">
+    <div className="min-h-screen w-screen p-4 bg-gray-900 text-gray-100 ">
+      <div className="max-w-6xl mx-auto w-full flex flex-col items-center">
+      <Button onClick={() => navigate(`/dashboard`)} variant="entraditaTertiary" className="w-full max-w-md mb-4">
+        <ArrowLeftIcon className="mr-2 h-4 w-4" /> Volver al dashboard
+      </Button>
       <Card className="w-full max-w-md bg-gray-800 border-gray-700">
         <CardHeader>
           <CardTitle className="text-white">Crear Nuevo Evento</CardTitle>
           <CardDescription className="text-gray-400">Ingresa los detalles de tu nuevo evento</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name" className="text-gray-200 flex items-center">
@@ -112,7 +116,7 @@ export default function CreateEvent() {
                   <HelpCircle className="w-4 h-4 ml-1" />
                 </Tooltip>
               </Label>
-              <Input type="date" id="date" name="date" required className="bg-gray-700 border-gray-600 text-white" onChange={handleDateChange}/>
+              <Input type="date" id="date" name="date" required className="bg-gray-700 border-gray-600 text-white" onChange={handleDateChange} />
             </div>
 
             <div className="space-y-2">
@@ -132,9 +136,9 @@ export default function CreateEvent() {
                   <HelpCircle className="w-4 h-4 ml-1" />
                 </Tooltip>
               </Label>
-              <Input id="capacity" name="capacity"  type="number" min="0" inputMode="numeric--" pattern="[0-9]*" className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+              <Input id="capacity" name="capacity" type="number" min="0" inputMode="numeric--" pattern="[0-9]*" className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="contact" className="text-gray-200 flex items-center">
                 Contacto
@@ -142,7 +146,7 @@ export default function CreateEvent() {
                   <HelpCircle className="w-4 h-4 ml-1" />
                 </Tooltip>
               </Label>
-              <Input id="contact" name="contact"  type="number" maxLength="11" className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+              <Input id="contact" name="contact" type="number" maxLength="11" className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
             </div>
 
             <div className="space-y-2">
@@ -224,6 +228,8 @@ export default function CreateEvent() {
           </form>
         </CardContent>
       </Card>
+      </div>
     </div>
+      
   );
 }

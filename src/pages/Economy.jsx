@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import AuthContext from '../context/AuthContext';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import LoadingSpinner from '@/components/ui/loadingspinner';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
 
@@ -79,12 +80,9 @@ const EconomicReport = () => {
     });
   }, [data]);
 
-  if (!data)
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-900">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
+  if (!data) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="p-4 bg-gray-900 text-gray-100 min-h-screen justify-center w-screen">

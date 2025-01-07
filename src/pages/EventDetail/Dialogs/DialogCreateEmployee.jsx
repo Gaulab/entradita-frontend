@@ -86,11 +86,12 @@ export default function DialogCreateEmployee() {
     <Dialog open={isCreateEmployeeDialogOpen} onOpenChange={setIsCreateEmployeeDialogOpen}>
       <DialogContent className="bg-gray-800 text-white">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-center">Nuevo {isSellerEmployee ? 'Vendedor' : 'Escáner'}</DialogTitle>
-          <DialogDescription className="text-center text-gray-400">Ingrese los detalles para el nuevo {isSellerEmployee ? 'vendedor' : 'escáner'}.</DialogDescription>
+          <DialogTitle className="text-2xl font-bold text-center">Nuevo {isSellerEmployee ? 'Vendedor' : 'Scanner'}</DialogTitle>
+          <DialogDescription className="text-center text-gray-400">Ingrese los detalles para el nuevo {isSellerEmployee ? 'vendedor' : 'scanner'}.</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+        {isSellerEmployee && (
           <div className="space-y-2">
             <Label htmlFor="categoria" className="text-gray-200">
               Categorías
@@ -104,6 +105,7 @@ export default function DialogCreateEmployee() {
               className="bg-gray-700 border-gray-600 text-white"
             />
           </div>
+          )}
           <div className="space-y-2">
             <Label htmlFor="name" className="text-gray-200">
               Nombre

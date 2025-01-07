@@ -2,6 +2,26 @@
 const apiUrl = import.meta.env.VITE_API_URL;
 
 
+export const getPurchaseInfo = async (eventId) => {
+  try {
+    const response = await fetch(`${apiUrl}/api/v1/main/event/${eventId}/purchase-info/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error('Error al cargar los detalles del evento');
+    }
+  } catch (error) {
+    throw new Error(error.message || 'Error al cargar los detalles del evento');
+  }
+};
+
+
 // Devuelve los detalles de un evento
 export const getEvent = async (id, authToken) => {
   try {

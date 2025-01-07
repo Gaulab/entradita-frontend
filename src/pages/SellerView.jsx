@@ -117,7 +117,7 @@ export default function VendedorView({ uuid }) {
   }, [uuid, isPasswordCorrect]);
 
   const verifyPassword = async () => {
-
+ 
     try {
       await checkPassword(uuid, password);
       setIsPasswordCorrect(true);
@@ -180,7 +180,6 @@ export default function VendedorView({ uuid }) {
   }
 
   if (!isPasswordCorrect) {
-
     return (
       <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
         <Card className="bg-gray-800 border-gray-700 p-6 max-w-md w-full mx-4">
@@ -301,15 +300,19 @@ export default function VendedorView({ uuid }) {
         <Card className="bg-gray-800 border-gray-700 ">
           <CardHeader>
             <CardTitle className="text-white ">Tickets</CardTitle>
-            <CardDescription className="text-gray-400">Gestiona los tickets para el evento <br /> {window.innerWidth < 640 && 'Haz click en una fila para ver más acciones'}</CardDescription>
+            <CardDescription className="text-gray-400">
+              Gestiona los tickets para el evento <br /> {window.innerWidth < 640 && 'Haz click en una fila para ver más acciones'}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col sm:flex-row justify-between items-center mb-2 gap-4">
               <Button
-                disabled={(vendedor && vendedor.status === false) || !ticketsSalesEnabled ||
-                  (vendedor && vendedor.seller_capacity !== null && vendedor.ticket_counter >= vendedor.seller_capacity
-                  || vendedor && organizerHasCapacity === false
-                )}
+                disabled={
+                  (vendedor && vendedor.status === false) ||
+                  !ticketsSalesEnabled ||
+                  (vendedor && vendedor.seller_capacity !== null && vendedor.ticket_counter >= vendedor.seller_capacity) ||
+                  (vendedor && organizerHasCapacity === false)
+                }
                 onClick={() => handleCreateTicket(dniRequired, ticketTags)}
                 className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
               >

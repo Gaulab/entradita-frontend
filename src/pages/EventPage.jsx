@@ -105,6 +105,7 @@ const Pay = ({ text, cbu, alias, cardColor }) => (
   </div>
 );
 
+
 function EventPage() {
   const { id } = useParams();
   const [eventData, setEventData] = useState(null);
@@ -158,6 +159,9 @@ function EventPage() {
         return <Button text={block.data.button_text} link={block.data.button_link} color={block.data.button_color} bgcolor={block.data.button_bgcolor} />;
       case 'PAY':
         return <Pay text={block.data.pay_text} cbu={block.data.pay_cbu} alias={block.data.pay_alias} cardColor={cardColor} />;
+      case 'MERCADOPAGO':
+        return <Button text={block.data.button_text} link={`/ticket-purchase/${id}`} color={block.data.button_color} bgcolor={block.data.button_bgcolor} />;
+        
       default:
         return null;
     }

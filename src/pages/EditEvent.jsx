@@ -55,9 +55,12 @@ export default function EditEvent() {
     const formData = new FormData(event.target);
     const eventObject = Object.fromEntries(Array.from(formData.entries()).filter(([key, value]) => value !== ''));
     eventObject.dni_required = requireDNI; // Actualiza el requerimiento de DNI
-    // console.log('TicketTags:', ticketTags);
     eventObject.ticket_tags = ticketTags; // Actualiza las etiquetas de los tickets
-    // console.log('Event object:', eventObject);
+
+    // Elimina el campo password_employee si está vacío
+    if (!eventObject.password_employee) {
+      delete eventObject.password_employee;
+    }
 
     try {
       const data = await updateEvent(eventObject, id, authToken.access);
@@ -186,7 +189,7 @@ export default function EditEvent() {
               <Label htmlFor="password_employee" className="text-gray-200">
                 Contraseña para Empleados
               </Label>
-              <Input id="password_employee" name="password_employee" defaultValue={event.password_employee} className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+              <Input id="password_employee" name="password_employee"  className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
             </div>
             <div className="flex flex-col space-y-2">
               <Label htmlFor="dni_required" className="text-gray-200 flex items-center">

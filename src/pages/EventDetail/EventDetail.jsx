@@ -28,7 +28,6 @@ export default function EventDetails() {
   const navigate = useNavigate();
   const { event, copyMessage, activeTab, setActiveTab, isLoading } = useContext(EventDetailsContext);
 
-
     // Mostrar loading si isLoading es true
     if (isLoading) {
       return <LoadingSpinner />;
@@ -52,16 +51,18 @@ export default function EventDetails() {
           <TabsList className="grid w-full grid-cols-3 mb-4 gap-0  p-0">
             <TabsTrigger
               value="tickets"
-              className="text-lg max-sm:m-0 max-sm:rounded-none max-sm:rounded-l-md max-sm:mr-0.5 bg-gradient-to-br to-gray-800 from-green-950 text-gray-100 border-gray-600"
+              className="text-base sm:text-lg max-sm:m-0 max-sm:rounded-none max-sm:rounded-l-md max-sm:mr-0.5 bg-gradient-to-br to-gray-800 from-green-950 text-gray-100 border-gray-600"
             >
               <Ticket className="mr-2 h-4 hidden sm:block sm:h-6 sm:w-6" /> Tickets
             </TabsTrigger>
-            <TabsTrigger value="sellers" className="text-lg max-sm:m-0 max-sm:rounded-none max-sm:mx-0.5  bg-gradient-to-br to-gray-800 from-purple-950 text-gray-100 border-gray-600">
+            <TabsTrigger
+              value="sellers"
+              className="text-base sm:text-lg max-sm:m-0 max-sm:rounded-none max-sm:mx-0.5  bg-gradient-to-br to-gray-800 from-purple-950 text-gray-100 border-gray-600">
               <Users className="mr-2 hidden sm:block sm:h-6 sm:w-6" /> Vendedores
             </TabsTrigger>
             <TabsTrigger
               value="scanners"
-              className="text-lg max-sm:m-0 max-sm:rounded-none max-sm:rounded-r-md max-sm:ml-0.5  bg-gradient-to-br  from-sky-950 to-gray-800 text-gray-100 border-gray-600"
+              className="text-base sm:text-lg max-sm:m-0 max-sm:rounded-none max-sm:rounded-r-md max-sm:ml-0.5  bg-gradient-to-br  from-sky-950 to-gray-800 text-gray-100 border-gray-600"
             >
               <ScanIcon className="mr-2 hidden sm:block  sm:h-6 sm:w-6" /> Scanners
             </TabsTrigger>
