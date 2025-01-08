@@ -86,14 +86,14 @@ export default function TicketPurchasePage() {
   if (error) return <div className="flex justify-center items-center min-h-screen bg-gray-900"><div className="text-red-500 text-2xl">{error}</div></div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 py-8 px-4 sm:px-6 lg:px-8">
-      <Card className="max-w-4xl mx-auto bg-gray-800 text-white border border-gray-700 shadow-xl">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 sm:py-8 sm:px-4 lg:px-8">
+      <Card className="max-w-4xl mx-auto bg-gray-800 text-white border border-gray-700 shadow-xl max-sm:rounded-none">
         <CardHeader className="bg-gradient-to-t from-gray-700 to-gray-800/35 text-white p-6 rounded-t-lg">
           <h1 className='text-4xl text-center font-bold mb-2'>{eventDetails.event_name}</h1>
           <CardTitle className="text-2xl font-bold text-center">Comprar Tickets</CardTitle>
         </CardHeader>
         <CardContent className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1  gap-6 mb-6">
             <div className="bg-gray-700 p-4 rounded-lg shadow-inner">
               <h3 className="text-xl font-semibold mb-4">Precio de las entradas</h3>
               <ul className="space-y-2">
@@ -101,20 +101,19 @@ export default function TicketPurchasePage() {
                   <li key={tag.id} className="flex justify-between items-center">
                     <span>{tag.name}</span> 
                     <span className="flex-grow border-t-2 border-dashed border-gray-50/40 mx-2"></span>
-                    <span className="font-bold">${tag.price}</span>
+                    <span className="font-bold">${tag.price.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="bg-gray-700 p-4 rounded-lg shadow-inner">
-              <h3 className="text-xl font-semibold mb-4">Resumen de Compra</h3>
-              <div className="space-y-4">
-                <p>Tickets seleccionados: {tickets.length}</p>
-                <p className="text-2xl font-bold">Total: ${totalCost.toFixed(2)}</p>
-              </div>
-            </div>
+
           </div>
+          
           <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="flex items-center justify-center space-x-2 text-yellow-300 bg-gray-700 p-4 rounded-md">
+              <AlertCircle className="h-5 w-5 flex-shrink-0" />
+              <p className="text-sm">Completar con datos reales, ya que serán utilizados para la generación de los tickets</p>
+            </div>
             <div className="space-y-4 p-4 bg-gray-700 rounded-lg shadow-md">
               <div className="space-y-2">
                 <Label htmlFor="ticketType" className="text-gray-200">
@@ -175,10 +174,13 @@ export default function TicketPurchasePage() {
                   >
                     <div className="flex items-center space-x-2">
                       <Ticket className="h-5 w-5 text-blue-400" />
-                      <span>{`${ticket.name} ${ticket.lastName} - ${ticket.ticketType.name}`}</span>
+                      <span>
+                        {ticket.name} - {ticket.lastName} - {eventDetails.dni_required && `${ticket.dni} - `}{ticket.ticketType.name}
+                      </span>
+                      
                     </div>
                     <div className="flex items-center space-x-4">
-                      <span className="font-semibold">${ticket.ticketType.price}</span>
+                      <span className="font-semibold">${ticket.ticketType.price.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                       <Button type="button" variant="destructive" size="sm" onClick={() => removeTicket(index)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -186,6 +188,13 @@ export default function TicketPurchasePage() {
                   </motion.div>
                 ))}
               </AnimatePresence>
+            </div>
+            <div className="bg-gray-700 p-4 rounded-lg shadow-inner">
+              <h3 className="text-xl font-semibold mb-4">Resumen de Compra</h3>
+              <div className="space-y-4">
+                <p>Tickets seleccionados: {tickets.length}</p>
+                <p className="text-2xl font-bold">Total: ${totalCost.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+              </div>
             </div>
                 
             <div className="flex items-center justify-center space-x-2 text-blue-300 bg-gray-700 p-4 rounded-md">
