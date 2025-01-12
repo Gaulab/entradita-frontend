@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { PlusIcon, HelpCircle, Text, BoxIcon, ShoppingBasket, ArrowUp, ArrowDown, Trash2, Save, ExternalLink, ArrowBigLeft, Image, HourglassIcon, CreditCard} from 'lucide-react';
+import { PlusIcon, HelpCircle, Text, BoxIcon, ShoppingBasket, ArrowUp, ArrowDown, Trash2, Save, ExternalLink, ArrowBigLeft, Image, HourglassIcon, CreditCard, Music} from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
@@ -24,6 +24,7 @@ const blockTypes = [
   { id: 'BUTTON', name: 'Block button', icon: ShoppingBasket },
   { id: 'PAY', name: 'Block pay', icon: ShoppingBasket },
   { id: 'MERCADOPAGO', name: 'Mercado Pago', icon: CreditCard },
+  { id: 'SPOTIFY', name: 'Spotify Playlist', icon: Music },
 ];
 
 export default function EventConfigInterface() {
@@ -49,7 +50,9 @@ export default function EventConfigInterface() {
   }, [id, authToken]);
 
   useEffect(() => {
-    setHasUnsavedChanges(true);
+    if (eventData && JSON.stringify(blocks) !== JSON.stringify(eventData.blocks)) {
+      setHasUnsavedChanges(true);
+    }
     console.log('blocks', blocks);
   }, [blocks]);
 
@@ -200,12 +203,33 @@ export default function EventConfigInterface() {
             </div>
             <div>
               <h3 className="text-sm font-bold mb-1">Configuración</h3>
-              <Button variant="entraditaTertiary" onClick={() => navigate(`/mercadopago-config/${id}`)}>
+              <Button variant="entraditaTertiary" onClick={() => navigate(`/event/${id}/purchase-config`)}>
                 Configurar Mercado Pago
               </Button>
             </div>
           </div>
         );
+        case 'SPOTIFY':
+          return (
+            <div className="space-y-2">
+              <div>
+                <h3 className="text-sm font-bold mb-1">Enlace de Spotify</h3>
+                <Input 
+                  value={block.data.spotify_link || ''} 
+                  onChange={(e) => updateBlock(block.id, { data: { ...block.data, spotify_link: e.target.value } })} 
+                  placeholder="Enlace de la playlist o track de Spotify" 
+                />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold mb-1">Texto (opcional)</h3>
+                <Input 
+                  value={block.data.text || ''} 
+                  onChange={(e) => updateBlock(block.id, { data: { ...block.data, text: e.target.value } })} 
+                  placeholder="Texto adicional (ej: '¿Hacemos la previa juntos?')" 
+                />
+              </div>
+            </div>
+          );
       default:
         return null;
     }

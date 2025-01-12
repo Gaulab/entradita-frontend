@@ -33,7 +33,7 @@ export default function PurchaseSummaryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 sm:py-8 sm:px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 sm:py-8 sm:px-4 lg:px-8">
       <Card className="max-w-2xl mx-auto bg-gray-800 text-white border border-gray-700 shadow-xl">
         <CardHeader className="bg-gradient-to-t from-gray-700 to-gray-800/35 text-white p-6 rounded-t-lg">
           <CardTitle className="text-3xl font-bold text-center">Resumen de Compra</CardTitle>

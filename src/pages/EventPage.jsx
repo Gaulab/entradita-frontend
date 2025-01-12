@@ -53,9 +53,44 @@ const Title = ({ title, subtitle, cardColor }) => (
   </motion.div>
 );
 
+const SpotifyEmbed = ({ link, text, cardColor }) => {
+  
+  const getSpotifyEmbedUrl = (link) => {
+    const url = new URL(link);
+    const pathSegments = url.pathname.split('/');
+    const type = pathSegments[1]; // 'track', 'playlist', 'album', etc.
+    const id = pathSegments[2];
+    return `https://open.spotify.com/embed/${type}/${id}`;
+  };
+
+  return (
+    <motion.div
+      className="mb-2 w-full p-4 rounded-none shadow-lg"
+      style={{ backgroundColor: `${cardColor}30` }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      {text && <p className="text-center mb-4 text-lg">{text}</p>}
+      <div className="aspect-w-16 aspect-h-9">
+        <iframe
+          className=' bg-red-200 p-0 rounded-2xl'
+          src={getSpotifyEmbedUrl(link)}
+          width="100%"
+          height="360"
+          allowFullScreen=""
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="eager"
+        >
+        </iframe>
+      </div>
+    </motion.div>
+  );
+};
+
 const Text = ({ content, cardColor }) => (
   <motion.p
-    className="text-xl md:text-2xl mb-2 text-center w-full p-4 rounded-lg shadow-lg"
+    className="text-xl md:text-2xl mb-2 text-start w-full p-4 rounded-lg shadow-lg"
     style={{ backgroundColor: `${cardColor}30` }} // 25% opacity in hex is 40
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
@@ -86,7 +121,7 @@ const Button = ({ text, link, color, bgcolor }) => (
     href={link}
     className="font-bold py-3 px-6 rounded-lg text-xl transition duration-300 ease-in-out transform hover:scale-105 mb-2 inline-block text-center"
     style={{ color: color, backgroundColor: bgcolor }}
-    whileHover={{ scale: 1.05 }}
+    whileHover={{ scale: 1.01 }}
     whileTap={{ scale: 0.95 }}
   >
     {text}
@@ -161,7 +196,8 @@ function EventPage() {
         return <Pay text={block.data.pay_text} cbu={block.data.pay_cbu} alias={block.data.pay_alias} cardColor={cardColor} />;
       case 'MERCADOPAGO':
         return <Button text={block.data.button_text} link={`/ticket-purchase/${id}`} color={block.data.button_color} bgcolor={block.data.button_bgcolor} />;
-        
+      case 'SPOTIFY':
+        return <SpotifyEmbed link={block.data.spotify_link} text={block.data.text} cardColor={cardColor} />;
       default:
         return null;
     }
