@@ -1,25 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-  LogOutIcon,
-  PlusIcon,
-  Eye,
-  HelpCircle,
-  Text,
-  BoxIcon,
-  ShoppingBasket,
-  Map,
-  ArrowUp,
-  ArrowDown,
-  Trash2,
-  Save,
-  ExternalLink,
-  Copy,
-  ArrowBigLeft,
-  Image,
-  HourglassIcon,
-  CreditCard,
-} from 'lucide-react';
+import { PlusIcon, HelpCircle, Text, BoxIcon, ShoppingBasket, ArrowUp, ArrowDown, Trash2, Save, ExternalLink, ArrowBigLeft, Image, HourglassIcon, CreditCard} from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
@@ -32,6 +13,7 @@ import AuthContext from '../context/AuthContext';
 import { googleFonts, FontStyles } from '../fonts';
 import LoadingSpinner from '../components/ui/loadingspinner';
 import { motion, AnimatePresence } from 'framer-motion';
+import { v4 as uuidv4 } from 'uuid';
 
 const blockTypes = [
   { id: 'GENERAL', name: 'General', icon: BoxIcon },
@@ -68,11 +50,13 @@ export default function EventConfigInterface() {
 
   useEffect(() => {
     setHasUnsavedChanges(true);
+    console.log('blocks', blocks);
   }, [blocks]);
 
   const addBlock = (type) => {
     const newBlock = {
       type,
+      id: uuidv4(),
       order: blocks.length + 1,
       data: {},
     };
@@ -229,9 +213,17 @@ export default function EventConfigInterface() {
 
   const handleSaveChanges = async () => {
     try {
+      const updatedBlocks = blocks.map(block => {
+        if (block.id.length === 36) { // UUID length is 36 characters
+          const { id, ...rest } = block;
+          return rest;
+        }
+        return block;
+      });
+
       const updatedEventData = {
         ...eventData,
-        blocks: blocks,
+        blocks: updatedBlocks,
       };
       await updateEventPage(id, updatedEventData, authToken.access);
       setHasUnsavedChanges(false);
@@ -248,7 +240,7 @@ export default function EventConfigInterface() {
         handleSaveChanges();
       }
     }
-    window.open(`https://entradita.com/event-page/${id}`, '_blank');
+    navigate(`/event-page/${id}`);
   };
 
   const handleGoBack = () => {

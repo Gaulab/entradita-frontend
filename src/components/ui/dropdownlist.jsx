@@ -61,7 +61,7 @@ const Dropdown = React.forwardRef(function Dropdown(
       </div>
 
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-gray-700 rounded-lg shadow-lg border border-gray-600">
+        <div className="absolute z-10 w-full mt-1 bg-gray-800 rounded-lg shadow-lg border border-gray-700">
           <ul className="py-1 max-h-44 overflow-auto">
             {options.map((option, index) => (
               <li
@@ -70,9 +70,8 @@ const Dropdown = React.forwardRef(function Dropdown(
                   onChange(option)
                   setIsOpen(false)
                 }}
-                className={`px-4 py-2 cursor-pointer text-gray-200 hover:bg-gray-600 transition-colors
-                  ${option.id === value?.id ? 'bg-gray-600' : ''}
-                  ${index % 2 === 0 ? 'bg-gray-700' : 'bg-gray-600'}`}
+                className={`px-4 py-2 cursor-pointer text-gray-200 hover:bg-gray-700 transition-colors
+                  ${option.id === value?.id ? 'bg-gray-700' : ''}`}
               >
                 {option.name}
               </li>

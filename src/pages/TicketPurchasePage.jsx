@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dropdown } from '@/components/ui/dropdownlist';
-import { AlertCircle, CreditCard, Plus, Trash2, Ticket } from 'lucide-react';
+import { AlertCircle, CreditCard, Plus, Trash2, Ticket, XCircle } from 'lucide-react';
 import { getPurchaseInfo } from '../api/eventApi';
 import { motion, AnimatePresence } from 'framer-motion';
+import { usePurchase } from '@/context/PurchaseContext';
 
 export default function TicketPurchasePage() {
   const { event_id } = useParams();
@@ -15,6 +16,8 @@ export default function TicketPurchasePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [valueDropdown, setValueDropdown] = useState(null);
+  const navigate = useNavigate();
+  const { setPurchaseData } = usePurchase();
   const [currentTicket, setCurrentTicket] = useState({
     ticketType: null,
     name: '',
@@ -28,6 +31,7 @@ export default function TicketPurchasePage() {
     const fetchEventDetails = async () => {
       try {
         const details = await getPurchaseInfo(event_id);
+        console.log('details', details);
         setEventDetails(details);
         setLoading(false);
       } catch (error) {
@@ -77,9 +81,12 @@ export default function TicketPurchasePage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Datos de los tickets:', tickets);
-    console.log('Costo total:', totalCost);
-    // Aquí iría la lógica para iniciar el proceso de pago con Mercado Pago
+    setPurchaseData({
+      eventName: eventDetails.event_name,
+      tickets: tickets,
+      totalCost: totalCost,
+    });
+    navigate('/purchase-summary');
   };
 
   if (loading) return <div className="flex justify-center items-center min-h-screen bg-gray-900"><div className="text-white text-2xl">Cargando...</div></div>;
@@ -99,18 +106,24 @@ export default function TicketPurchasePage() {
               <ul className="space-y-2">
                 {eventDetails.ticket_tags.map((tag) => (
                   <li key={tag.id} className="flex justify-between items-center">
-                    <span>{tag.name}</span> 
+                    <span className={tag.web_sale ? '' : 'line-through text-gray-400'}>{tag.name}</span> 
                     <span className="flex-grow border-t-2 border-dashed border-gray-50/40 mx-2"></span>
-                    <span className="font-bold">${tag.price.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                    {tag.web_sale ? (
+                      <span className="font-bold">${tag.price.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                    ) : (
+                      <span className="text-red-500 font-bold flex items-center">
+                        <XCircle className="w-4 h-4 mr-1" />
+                        Agotado
+                      </span>
+                    )}
                   </li>
                 ))}
               </ul>
             </div>
-
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="flex items-center justify-center space-x-2 text-yellow-300 bg-gray-700 p-4 rounded-md">
+            <div className="flex items-center justify-center space-x-2 text-yellow-300 bg-gray-700 p-4 rounded-md">
               <AlertCircle className="h-5 w-5 flex-shrink-0" />
               <p className="text-sm">Completar con datos reales, ya que serán utilizados para la generación de los tickets</p>
             </div>
@@ -125,7 +138,7 @@ export default function TicketPurchasePage() {
                   placeholder="Seleccionar tipo de ticket"
                   onChange={handleDropdownChange}
                   value={valueDropdown}
-                  options={eventDetails.ticket_tags}
+                  options={eventDetails.ticket_tags.filter(tag => tag.web_sale)}
                   className="bg-gray-600 border-gray-500 text-white"
                 />
               </div>
@@ -177,7 +190,6 @@ export default function TicketPurchasePage() {
                       <span>
                         {ticket.name} - {ticket.lastName} - {eventDetails.dni_required && `${ticket.dni} - `}{ticket.ticketType.name}
                       </span>
-                      
                     </div>
                     <div className="flex items-center space-x-4">
                       <span className="font-semibold">${ticket.ticketType.price.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>

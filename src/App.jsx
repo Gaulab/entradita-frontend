@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-
 // Context imports
 import { AuthProvider } from './context/AuthContext';
 import { EventDetailsProvider } from './context/EventDetailsContext';  // Importa el contexto de EventDetails
+import { PurchaseProvider } from './context/PurchaseContext'; // Importa el contexto de Purchase
 // Utils imports
 import PrivateRoute from './utils/PrivateRoute';
 // Public pages
@@ -27,6 +28,8 @@ import EditEvent from './pages/EditEvent';
 import EventConfigInterface from './pages/EventConfigInterface';
 import EventPage from './pages/EventPage';
 import Economy from './pages/Economy';
+import TicketPurchaseConfig from './pages/TicketPurchaseConfig';
+import PurchaseSummaryPage from './pages/PurchaseSummaryPage';
 // Trial pages
 import DashboardTrial from './pages/Trial/DashboardTrial';
 import TicketPage1Trial from './pages/Trial/TicketPage1Trial';
@@ -61,8 +64,10 @@ function App() {
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/dashboard-trial" element={<DashboardTrial />} />
           <Route path="/ticket-page-trial/:ticket_uuid" element={<TicketPage1Trial />} />
-          <Route path="/ticket-purchase/:event_id" element={<TicketPurchasePage />} />
+          <Route path="/ticket-purchase/:event_id" element={<PurchaseProvider><TicketPurchasePage /></PurchaseProvider>} />
+          <Route path="/purchase-summary" element={<PurchaseProvider><PurchaseSummaryPage /></PurchaseProvider>} />
         {/* Rutas protegidas */}
+          <Route path="/event/:event_id/purchase-config" element={<AuthProvider><PrivateRoute><TicketPurchaseConfig /></PrivateRoute></AuthProvider>} />
           <Route path="/dashboard" element={<AuthProvider><PrivateRoute><Dashboard /></PrivateRoute></AuthProvider>} />
           <Route path="/event/:id/details" element={<AuthProvider><EventDetailsProvider><PrivateRoute><EventDetail /></PrivateRoute></EventDetailsProvider></AuthProvider>} />
           <Route path="/create-event" element={<AuthProvider><PrivateRoute><CreateEvent /></PrivateRoute></AuthProvider>} />

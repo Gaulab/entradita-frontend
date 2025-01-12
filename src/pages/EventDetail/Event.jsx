@@ -13,6 +13,7 @@ import {
   LucideShoppingCart,
   MapPin,
   MonitorCogIcon,
+  ShoppingCartIcon,
   Ticket,
   TicketSlashIcon,
   User2Icon,
@@ -25,12 +26,16 @@ export default function Event({ event }) {
   const navigateToEconomy = () => {
     window.location.href = `/event/${event.id}/economy`;
   };
+  
   const navigateToWebPage = () => {
     window.location.href = `/event-page-config/${event.id}`;
   };
 
   const navigateToGuide = () => {
     window.location.href = `/event/${event.id}/guide`;
+  }
+  const navigateToOnlineSell = () => {
+    window.location.href = `/event/${event.id}/purchase-config`;
   }
 
   const navigateToWhatsapp = () => {
@@ -73,16 +78,19 @@ export default function Event({ event }) {
       </CardContent>
       <CardContent>
         <div className="flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:flex-wrap  ">
-          <Button onClick={navigateToWebPage} className="sm:mr-2 sm:mb-2 bg-blue-900 hover:bg-blue-800 hover:text-white text-white sm:min-w-48 sm:w-min" new>
+          <Button onClick={navigateToWebPage} className="sm:mr-2 sm:mb-2 bg-blue-900 hover:bg-blue-800 hover:text-white text-white sm:min-w-48 sm:w-min border hover:border-blue-700" new>
             <MonitorCogIcon className="mr-2 h-4 w-4" /> Página WEB
           </Button>
-          <Button onClick={navigateToEconomy} className="sm:mr-2 bg-green-900 hover:bg-green-800  hover:text-white text-white sm:min-w-48 sm:w-min" new>
+          <Button onClick={navigateToEconomy} className="sm:mr-2 bg-green-900 hover:bg-green-800 hover:text-white text-white sm:min-w-48 sm:w-min border hover:border-green-700" new>
             <DollarSign className="mr-2 h-4 w-4" /> Economía
           </Button>
           {/* <Button onClick={navigateToWhatsapp} className="sm:mr-2 bg-gray-700 hover:bg-gray-600  hover:text-white text-white sm:min-w-48 sm:w-min">
             <User2Icon className="mr-2 h-4 w-4" /> Soporte rápido
           </Button> */}
-          <Button onClick={navigateToGuide} disabled className="sm:mr-2 bg-gray-700 hover:bg-gray-600  hover:text-white text-white sm:min-w-48 sm:w-min">
+          <Button onClick={navigateToOnlineSell} className="sm:mr-2 bg-yellow-700 hover:bg-yellow-600 hover:text-white text-white sm:min-w-48 sm:w-min border hover:border-yellow-500">
+            <ShoppingCartIcon className="mr-2 h-4 w-4" /> Venta online
+          </Button>
+          <Button onClick={navigateToGuide} disabled className="sm:mr-2 bg-gray-700 hover:bg-gray-600 hover:text-white text-white sm:min-w-48 sm:w-min">
             <BookMarkedIcon className="mr-2 h-4 w-4" /> Guias de uso
           </Button>
         </div>

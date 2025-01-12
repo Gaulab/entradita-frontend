@@ -2,6 +2,22 @@
 const apiUrl = import.meta.env.VITE_API_URL;
 
 
+export const putPurchaseInfo = async (eventId, purchaseInfo, authToken) => {
+  try {
+    const response = await fetch(`${apiUrl}/api/v1/main/event/${eventId}/purchase-info/`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      },
+      body: JSON.stringify(purchaseInfo),
+        });
+      } catch (error) {
+        throw new Error(error.message || 'Error al actualizar la información de compra');
+      }
+    };
+
+
 export const getPurchaseInfo = async (eventId) => {
   try {
     const response = await fetch(`${apiUrl}/api/v1/main/event/${eventId}/purchase-info/`, {
