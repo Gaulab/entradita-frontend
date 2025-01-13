@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-
 import { AuthProvider } from './context/AuthContext';
 import { EventDetailsProvider } from './context/EventDetailsContext';  // Importa el contexto de EventDetails
 import { PurchaseProvider } from './context/PurchaseContext'; // Importa el contexto de Purchase
+import { HelmetProvider } from "react-helmet-async";
 // Utils imports
 import PrivateRoute from './utils/PrivateRoute';
 // Public pages
@@ -48,6 +49,7 @@ const ScannerWrapper = () => {
 };
 function App() {
   return (
+    <HelmetProvider>
     <Router>
       <Routes> 
         {/* Rutas públicas */}
@@ -77,7 +79,8 @@ function App() {
           <Route path="/event-page/:id" element={<EventPage />} />
           <Route path="event/:id/economy" element={<AuthProvider><PrivateRoute><Economy /></PrivateRoute></AuthProvider>} />
         </Routes>
-    </Router>
+      </Router>
+    </HelmetProvider>
   );
 }
 export default App;
