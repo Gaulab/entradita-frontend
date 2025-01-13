@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { getEventPage } from '../api/eventPageApi';
-import { googleFonts, FontStyles } from '../fonts'; 
-
+import { getEventPage } from '@/api/eventPageApi';
+import { googleFonts, FontStyles } from '@/fonts'; 
+import { FaWhatsapp } from "react-icons/fa";
 const CountdownTimer = ({ targetDate }) => {
   const calculateTimeLeft = () => {
     const difference = +new Date(targetDate) - +new Date();
@@ -74,7 +74,7 @@ const SpotifyEmbed = ({ link, text, cardColor }) => {
       {text && <p className="text-center mb-4 text-lg">{text}</p>}
       <div className="aspect-w-16 aspect-h-9">
         <iframe
-          className=' bg-red-200 p-0 rounded-2xl'
+          className=' p-0 rounded-2xl'
           src={getSpotifyEmbedUrl(link)}
           width="100%"
           height="360"
@@ -140,6 +140,32 @@ const Pay = ({ text, cbu, alias, cardColor }) => (
   </div>
 );
 
+const Tarjeteros = ({ sellers, text, cardColor }) => (
+  <motion.div
+    className="mb-2 w-full p-4 rounded-lg shadow-lg"
+    style={{ backgroundColor: `${cardColor}30` }}
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5 }}
+  >
+    {text && <p className="text-xl mb-4">{text}</p>}
+    <div className="space-y-2">
+      {sellers.map((seller, index) => (
+        <div key={index}  className="p-3 bg-gray-900/70 rounded-lg flex justify-between items-center">
+          <span className="text-lg overflow-hidden overflow-ellipsis ">{seller.name}</span>
+          <a
+            href={`https://wa.me/${seller.phone}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-green-600/80 text-white p-2 rounded-lg hover:bg-green-500/40 hover:text-white transition-colors flex text-center justify-center min-w-20"
+          >
+            <FaWhatsapp size={20} />
+          </a>
+        </div>
+      ))}
+    </div>
+  </motion.div>
+);
 
 function EventPage() {
   const { id } = useParams();
@@ -198,6 +224,8 @@ function EventPage() {
         return <Button text={block.data.button_text} link={`/ticket-purchase/${id}`} color={block.data.button_color} bgcolor={block.data.button_bgcolor} />;
       case 'SPOTIFY':
         return <SpotifyEmbed link={block.data.spotify_link} text={block.data.text} cardColor={cardColor} />;
+  case 'TARJETEROS':
+        return <Tarjeteros sellers={block.data.sellers} text={block.data.text} cardColor={cardColor} />;
       default:
         return null;
     }
@@ -216,7 +244,7 @@ function EventPage() {
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${generalBlock?.data.image_background})` }} />
         <div className="absolute inset-0 bg-black opacity-20" />
 
-        <div className="relative z-10 flex flex-col min-h-screen p-4 max-w-lg mx-auto">
+        <div className="relative z-10 flex flex-col min-h-screen p-4 max-w-lg mx-auto mb-8">
           {eventData.blocks
             .sort((a, b) => a.order - b.order)
             .map((block) => (
@@ -224,7 +252,7 @@ function EventPage() {
             ))}
         </div>
 
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-sm text-center opacity-70">Powered by entradita.com</div>
+        <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-sm text-center opacity-70">Powered by entradita.com</div>
       </div>
     </>
   );

@@ -64,14 +64,14 @@ export default function CreateEvent() {
   };
 
   const addTicketTag = () => {
-    if (ticketTags.length < 5) {
+    if (ticketTags.length < 6) {
       if (tagName && tagPrice && !isNaN(tagPrice)) {
         setTicketTags([...ticketTags, { name: tagName, price: parseFloat(tagPrice) }]);
         setTagName('');
         setTagPrice('');
       }
     } else {
-      setError('Solo puedes agregar hasta 5 Ticket Tags.');
+      setError('Solo puedes agregar hasta 6 Ticket Tags.');
       setTimeout(() => setError(''), 3000); // Limpia el error después de 3 segundos
     }
   };

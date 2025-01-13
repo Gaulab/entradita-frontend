@@ -12,7 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../../../components/ui/dialog';
 // Icons
-import { EyeIcon, PlusIcon, Trash2Icon, PencilIcon, TicketX, LinkIcon, TicketCheck } from 'lucide-react';
+import { EyeIcon, PlusIcon, Trash2Icon, PencilIcon, TicketX, LinkIcon, TicketCheck, Share2 } from 'lucide-react';
 // api
 import { changeEmployeeStatus } from '@/api/employeeApi';
 
@@ -21,20 +21,30 @@ export default function Sellers({}) {
   const { authToken } = useContext(AuthContext);
   const [selectedSeller, setSelectedSeller] = useState(null);
 
-
-
-  const { event, sellers, setSellers, scanners, setScanners, 
-    reloadEmployees, setReloadEmployees, setIsSellerEmployee,
+  const {
+    event,
+    sellers,
+    setSellers,
+    scanners,
+    setScanners,
+    reloadEmployees,
+    setReloadEmployees,
+    setIsSellerEmployee,
     setItemToDelete,
-    isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen,
-    editingEmployee, setEditingEmployee, 
-    newEmployeeName, setNewEmployeeName,
-    newEmployeeCapacity, setNewEmployeeCapacity,
-    newEmployeeTicketTags, setNewEmployeeTicketTags,
-    setIsCreateEmployeeDialogOpen, copyToClipboard,
-    setIsEditEmployeeDialogOpen
-  } =
-    useContext(EventDetailsContext);
+    isDeleteConfirmDialogOpen,
+    setIsDeleteConfirmDialogOpen,
+    editingEmployee,
+    setEditingEmployee,
+    newEmployeeName,
+    setNewEmployeeName,
+    newEmployeeCapacity,
+    setNewEmployeeCapacity,
+    newEmployeeTicketTags,
+    setNewEmployeeTicketTags,
+    setIsCreateEmployeeDialogOpen,
+    copyToClipboard,
+    setIsEditEmployeeDialogOpen,
+  } = useContext(EventDetailsContext);
 
   const handleChangeEmpleadoStatus = useCallback(
     async (empleado) => {
@@ -73,6 +83,36 @@ export default function Sellers({}) {
     setIsSellerEmployee(isSeller);
     setIsCreateEmployeeDialogOpen(true);
   }, []);
+
+  const handleShare = (seller) => {
+    const shareText = `Quiero que vendas para mi evento: ${event.name}, puedes unirte en el siguiente enlace: ${window.location.origin}/ticket/${seller.uuid}\nTe dejo también un link para que aprendas rápido y fácil como vender: ${window.location.origin}/seller-guide`;
+
+    if (navigator.share) {
+      navigator
+        .share({
+          title: 'Te invito a mi evento!',
+          text: shareText,
+          url: `${window.location.origin}/ticket/${seller.uuid}`,
+        })
+        .then(() => {
+          console.log('Ticket compartido exitosamente');
+        })
+        .catch((error) => {
+          console.log('Error sharing', error);
+        });
+    } else {
+      // Fallback for browsers that don't support the Web Share API
+      alert(`Comparte este enlace: ${window.location.origin}/ticket/${seller.uuid}`);
+      navigator.clipboard
+        .writeText(shareText)
+        .then(() => {
+          console.log('Texto de invitación copiado al portapapeles');
+        })
+        .catch((error) => {
+          console.log('Error al copiar el texto', error);
+        });
+    }
+  };
 
   const MobileActionDialog = ({ seller, onClose }) => (
     <Dialog className="" open={!!seller} onOpenChange={() => onClose()}>
@@ -121,6 +161,10 @@ export default function Sellers({}) {
           >
             <EyeIcon className="mr-2 h-4 w-4" />
             Ver página de vendedor
+          </Button>
+          <Button className="justify-start" variant="entraditaSecondary" onClick={() => handleShare(seller)}>
+            <Share2 className="mr-2 h-4 w-4" />
+            Invitar al vendedor
           </Button>
           <Button
             className="justify-start"
@@ -217,7 +261,7 @@ export default function Sellers({}) {
                       title={vendedor.status === false ? 'Deshabilitar vendedor' : 'Habilitar vendedor'}
                       className={vendedor.status === false ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-green-600 hover:bg-green-700 text-white'}
                     >
-                      {vendedor.status === true ? <TicketCheck className="h-4 w-4" /> : < TicketX className="h-4 w-4" />}
+                      {vendedor.status === true ? <TicketCheck className="h-4 w-4" /> : <TicketX className="h-4 w-4" />}
                       <span className="sr-only">{vendedor.status === true ? 'Deshabilitar vendedor' : 'Habilitar vendedor'}</span>
                     </Button>
                   </TableCell>

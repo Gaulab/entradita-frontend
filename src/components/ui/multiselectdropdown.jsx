@@ -29,7 +29,7 @@ const MultiSelectDropdown = ({ options, selectedValues, onChange, placeholder = 
     <div className="relative" ref={dropdownRef}>
       <div
         onClick={() => !disabled && setIsOpen(!isOpen)}
-        className={`w-full h-10 px-3 py-2 text-left rounded-lg flex items-center justify-between
+        className={`w-full h-15 px-3 py-2 text-left rounded-lg flex items-center justify-between
           bg-gray-700 border border-gray-600
           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
           hover:bg-gray-600 transition-colors duration-200
@@ -45,7 +45,7 @@ const MultiSelectDropdown = ({ options, selectedValues, onChange, placeholder = 
         }}
         {...props}
       >
-        <span className={`block truncate ${selectedValues.length === 0 ? 'text-gray-400' : 'text-gray-200'}`}>
+        <span className={`block truncate ${selectedValues.length === 0 ? 'text-gray-400' : 'text-gray-200'}`} style={{ whiteSpace: 'wrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {selectedValues.length === 0 ? placeholder : selectedValues.map((v) => v.name).join(', ')}
         </span>
         <ChevronDown className={`ml-2 h-4 w-4 text-gray-400 transition-transform ${isOpen ? 'transform rotate-180' : ''}`} />
@@ -60,7 +60,7 @@ const MultiSelectDropdown = ({ options, selectedValues, onChange, placeholder = 
                 onClick={() => toggleOption(option)}
                 className={`px-4 py-2 cursor-pointer flex justify-between items-center text-gray-200 
                   hover:bg-gray-600 transition-colors ${selectedValues.some((value) => value.id === option.id) ? 'bg-gray-600' : ''}
-                  ${index % 2 === 0 ? 'bg-gray-700' : 'bg-gray-600'}`}
+                  `}
               >
                 {option.name}
                 {selectedValues.some((value) => value.id === option.id) && <Check className="h-4 w-4 text-blue-500" />}

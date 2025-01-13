@@ -11,7 +11,7 @@ import AuthContext from '../context/AuthContext';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import LoadingSpinner from '@/components/ui/loadingspinner';
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D', '#FFC658', '#FF9F40', '#FF6633', '#FF5500'];
 
 const EconomicReport = () => {
   const { id } = useParams();
@@ -40,6 +40,7 @@ const EconomicReport = () => {
 
         const result = await response.json();
         setData(result);
+        console.log(result);
       } catch (error) {
         console.error(error.message);
       }
@@ -203,10 +204,10 @@ const EconomicReport = () => {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col items-center justify-between">
-              <div className="w-full md:w-1/2 h-64">
+              <div className="w-full md:w-1/2 h-96">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie data={chartData} cx="50%" cy="50%" labelLine={false} outerRadius={80} fill="#8884d8" dataKey="value">
+                    <Pie  data={chartData} cx="50%" cy="50%" labelLine={false} outerRadius={80} fill="#8884d8" dataKey="value">
                       {chartData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}

@@ -53,7 +53,7 @@ const ScannerView = ({ uuid }) => {
     const fetchScanner = async () => {
       try {
         const data = await getScanner(uuid);
-        console.log(data);
+        // console.log(data);
         setEventId(data.scanner.event);
         setDniRequired(data.dni_required);
       } catch (error) {
@@ -77,6 +77,7 @@ const ScannerView = ({ uuid }) => {
     async (result) => {
       try {
         const data = await checkTicketByPayload(result[0].rawValue, uuid, eventId);
+        console.log("data", data);
         handleTicketValidation(data.ticket, data.old_scanned);
       } catch (error) {
         setDialogColor('red');
@@ -194,7 +195,8 @@ const ScannerView = ({ uuid }) => {
                   {dialogColor === 'yellow' && <p>Este ticket ya fue escaneado</p>}
                   <p className="text-black">Nombre: {ticketData.owner_name}</p>
                   <p className="text-black">Apellido: {ticketData.owner_lastname}</p>
-                  <p className="text-black">DNI: {ticketData.owner_dni}</p>
+                  {ticketData.owner_dni && <p className="text-black">DNI: {ticketData.owner_dni}</p>}
+                  <p className="text-black">Tipo: {ticketData.ticket_tag_name}</p>
                 </>
               ) : (
                 <p className="text-black font-bold">{error}</p>

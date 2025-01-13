@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dropdown } from '@/components/ui/dropdownlist';
 import { AlertCircle, CreditCard, Plus, Trash2, Ticket, XCircle } from 'lucide-react';
-import { getPurchaseInfo } from '../api/eventApi';
+import { getPurchaseInfo } from '@/api/eventApi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePurchase } from '@/context/PurchaseContext';
 

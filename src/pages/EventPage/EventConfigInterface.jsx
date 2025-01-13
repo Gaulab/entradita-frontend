@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { PlusIcon, HelpCircle, Text, BoxIcon, ShoppingBasket, ArrowUp, ArrowDown, Trash2, Save, ExternalLink, ArrowBigLeft, Image, HourglassIcon, CreditCard, Music} from 'lucide-react';
+import { PlusIcon, HelpCircle, Text, BoxIcon, ShoppingBasket, ArrowUp, ArrowDown, Trash2, Save, ExternalLink, ArrowBigLeft, Image, HourglassIcon, CreditCard, Music, Users } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
@@ -8,23 +8,27 @@ import { Button } from '@/components/ui/button';
 import Textarea from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { getEventPage, updateEventPage } from '../api/eventPageApi';
-import AuthContext from '../context/AuthContext';
-import { googleFonts, FontStyles } from '../fonts';
-import LoadingSpinner from '../components/ui/loadingspinner';
+import { getEventPage, updateEventPage } from '@/api/eventPageApi';
+import AuthContext from '@/context/AuthContext';
+import { googleFonts, FontStyles } from '../../fonts';
+import LoadingSpinner from '@/components/ui/loadingspinner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { v4 as uuidv4 } from 'uuid';
-
+import { FaSpotify, FaPiggyBank } from 'react-icons/fa';
+import { SiMercadopago } from 'react-icons/si';
+import { IoMdRadioButtonOn } from 'react-icons/io';
+import { MdOutlineTitle } from 'react-icons/md';
 const blockTypes = [
   { id: 'GENERAL', name: 'General', icon: BoxIcon },
-  { id: 'TITLE', name: 'Block title', icon: Text },
-  { id: 'TEXT', name: 'Block text', icon: Text },
-  { id: 'IMAGE', name: 'Block Image', icon: Image },
-  { id: 'COUNTDOWN', name: 'Block countdown', icon: HourglassIcon },
-  { id: 'BUTTON', name: 'Block button', icon: ShoppingBasket },
-  { id: 'PAY', name: 'Block pay', icon: ShoppingBasket },
-  { id: 'MERCADOPAGO', name: 'Mercado Pago', icon: CreditCard },
-  { id: 'SPOTIFY', name: 'Spotify Playlist', icon: Music },
+  { id: 'TITLE', name: 'TÍTULO', icon: MdOutlineTitle },
+  { id: 'TEXT', name: 'TEXTO', icon: Text },
+  { id: 'IMAGE', name: 'IMAGEN', icon: Image },
+  { id: 'COUNTDOWN', name: 'CUENTA REGRESIVA', icon: HourglassIcon },
+  { id: 'BUTTON', name: 'BOTÓN', icon: IoMdRadioButtonOn },
+  { id: 'PAY', name: 'INFO BANCARIA', icon: FaPiggyBank },
+  // { id: 'MERCADOPAGO', name: 'MERCADO PAGO', icon: SiMercadopago },
+  { id: 'SPOTIFY', name: 'SPOTIFY', icon: FaSpotify },
+  { id: 'TARJETEROS', name: 'TARJETEROS', icon: Users },
 ];
 
 export default function EventConfigInterface() {
@@ -34,7 +38,8 @@ export default function EventConfigInterface() {
   const [blocks, setBlocks] = useState([]);
   const [eventData, setEventData] = useState(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-
+  const [newSeller, setNewSeller] = useState({ name: '', lastName: '', phone: '' });
+  
   useEffect(() => {
     const fetchEventPage = async () => {
       try {
@@ -99,8 +104,13 @@ export default function EventConfigInterface() {
             </div>
 
             <div>
-              <h3 className="text-md font-bold mb-1">Card color</h3>
-              <Input className="p-1" type="color" value={block.data.card_color || '#000000'} onChange={(e) => updateBlock(block.id, { data: { ...block.data, card_color: e.target.value } })} />
+              <h3 className="text-md font-bold mb-1">Color de tarjetas</h3>
+              <Input
+                className="p-0 rounded-none"
+                type="color"
+                value={block.data.card_color || '#000000'}
+                onChange={(e) => updateBlock(block.id, { data: { ...block.data, card_color: e.target.value } })}
+              />
             </div>
             <div>
               <h3 className="text-md font-bold mb-1">Fuente</h3>
@@ -118,8 +128,13 @@ export default function EventConfigInterface() {
               </Select>
             </div>
             <div>
-              <h3 className="text-md font-bold mb-1">Color de la fuente</h3>
-              <Input className="p-1" type="color" value={block.data.font_color || '#FFFFFF'} onChange={(e) => updateBlock(block.id, { data: { ...block.data, font_color: e.target.value } })} />
+              <h3 className="text-md font-bold mb-1">Color de la letra</h3>
+              <Input
+                className="p-0 rounded-none"
+                type="color"
+                value={block.data.font_color || '#FFFFFF'}
+                onChange={(e) => updateBlock(block.id, { data: { ...block.data, font_color: e.target.value } })}
+              />
             </div>
           </div>
         );
@@ -157,7 +172,7 @@ export default function EventConfigInterface() {
             <div>
               <h3 className="text-sm font-bold mb-1">Color de fondo</h3>
               <Input
-                className="p-1.5"
+                className="p-0 rounded-none"
                 type="color"
                 value={block.data.button_bgcolor || '#FFFFFF'}
                 onChange={(e) => updateBlock(block.id, { data: { ...block.data, button_bgcolor: e.target.value } })}
@@ -165,7 +180,12 @@ export default function EventConfigInterface() {
             </div>
             <div>
               <h3 className="text-sm font-bold mb-1">Color de la letra</h3>
-              <Input className="p-1.5" type="color" value={block.data.button_color || '#000000'} onChange={(e) => updateBlock(block.id, { data: { ...block.data, button_color: e.target.value } })} />
+              <Input
+                className="p-0 rounded-none"
+                type="color"
+                value={block.data.button_color || '#000000'}
+                onChange={(e) => updateBlock(block.id, { data: { ...block.data, button_color: e.target.value } })}
+              />
             </div>
           </div>
         );
@@ -191,7 +211,7 @@ export default function EventConfigInterface() {
             <div>
               <h3 className="text-sm font-bold mb-1">Color de fondo</h3>
               <Input
-                className="p-1.5"
+                className="p-0 rounded-none"
                 type="color"
                 value={block.data.button_bgcolor || '#FFFFFF'}
                 onChange={(e) => updateBlock(block.id, { data: { ...block.data, button_bgcolor: e.target.value } })}
@@ -199,7 +219,12 @@ export default function EventConfigInterface() {
             </div>
             <div>
               <h3 className="text-sm font-bold mb-1">Color de la letra</h3>
-              <Input className="p-1.5" type="color" value={block.data.button_color || '#000000'} onChange={(e) => updateBlock(block.id, { data: { ...block.data, button_color: e.target.value } })} />
+              <Input
+                className="p-0 rounded-none"
+                type="color"
+                value={block.data.button_color || '#000000'}
+                onChange={(e) => updateBlock(block.id, { data: { ...block.data, button_color: e.target.value } })}
+              />
             </div>
             <div>
               <h3 className="text-sm font-bold mb-1">Configuración</h3>
@@ -209,27 +234,90 @@ export default function EventConfigInterface() {
             </div>
           </div>
         );
-        case 'SPOTIFY':
-          return (
-            <div className="space-y-2">
-              <div>
-                <h3 className="text-sm font-bold mb-1">Enlace de Spotify</h3>
-                <Input 
-                  value={block.data.spotify_link || ''} 
-                  onChange={(e) => updateBlock(block.id, { data: { ...block.data, spotify_link: e.target.value } })} 
-                  placeholder="Enlace de la playlist o track de Spotify" 
-                />
-              </div>
-              <div>
-                <h3 className="text-sm font-bold mb-1">Texto (opcional)</h3>
-                <Input 
-                  value={block.data.text || ''} 
-                  onChange={(e) => updateBlock(block.id, { data: { ...block.data, text: e.target.value } })} 
-                  placeholder="Texto adicional (ej: '¿Hacemos la previa juntos?')" 
-                />
-              </div>
+      case 'SPOTIFY':
+        return (
+          <div className="space-y-2">
+            <div>
+              <h3 className="text-sm font-bold mb-1">Enlace de Spotify</h3>
+              <Input
+                value={block.data.spotify_link || ''}
+                onChange={(e) => updateBlock(block.id, { data: { ...block.data, spotify_link: e.target.value } })}
+                placeholder="Enlace de la playlist o track de Spotify"
+              />
             </div>
-          );
+            <div>
+              <h3 className="text-sm font-bold mb-1">Texto (opcional)</h3>
+              <Input
+                value={block.data.text || ''}
+                onChange={(e) => updateBlock(block.id, { data: { ...block.data, text: e.target.value } })}
+                placeholder="Texto adicional (ej: '¿Hacemos la previa juntos?')"
+              />
+            </div>
+          </div>
+        );
+      case 'TARJETEROS':
+        return (
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Lista de Vendedores</h3>
+            <div>
+              <Label htmlFor="tarjeteros-text">Texto opcional</Label>
+              <Input
+                id="tarjeteros-text"
+                value={block.data.text || ''}
+                onChange={(e) => updateBlock(block.id, { data: { ...block.data, text: e.target.value } })}
+                placeholder="Ej: Conseguí tus entradas con nuestros tarjeteros"
+              />
+            </div>
+            <div className="space-y-2">
+              <h4 className="text-md font-semibold">Agregar nuevo vendedor:</h4>
+              <Input
+                value={newSeller.name}
+                onChange={(e) => setNewSeller({ ...newSeller, name: e.target.value })}
+                placeholder="Nombre o apodo"
+                maxLength="26"
+              />
+              <Input
+                value={newSeller.phone}
+                onChange={(e) => setNewSeller({ ...newSeller, phone: e.target.value })}
+                placeholder="Número de teléfono"
+                type="tel"
+                maxLength="10"
+              />
+              <Button
+                onClick={() => {
+                  if (newSeller.name && newSeller.phone) {
+                    const updatedSellers = block.data.sellers ? [...block.data.sellers, newSeller] : [newSeller];
+                    updateBlock(block.id, { data: { ...block.data, sellers: updatedSellers } });
+                    setNewSeller({ name: '', phone: '' });
+                  }
+                }}
+              >
+                Agregar Vendedor
+              </Button>
+            </div>
+            {block.data.sellers && block.data.sellers.length > 0 && (
+              <div className="space-y-2">
+                <h4 className="text-md font-semibold">Vendedores agregados:</h4>
+                {block.data.sellers.map((seller, index) => (
+                  <div key={index} className="flex justify-between items-center bg-gray-600 px-2 py-2 rounded-md">
+                    <span>{`${seller.name} - ${seller.phone}`}</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        const updatedSellers = block.data.sellers.filter((_, i) => i !== index);
+                        updateBlock(block.id, { data: { ...block.data, sellers: updatedSellers } });
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+          </div>
+        );
       default:
         return null;
     }
@@ -237,8 +325,9 @@ export default function EventConfigInterface() {
 
   const handleSaveChanges = async () => {
     try {
-      const updatedBlocks = blocks.map(block => {
-        if (block.id.length === 36) { // UUID length is 36 characters
+      const updatedBlocks = blocks.map((block) => {
+        if (block.id.length === 36) {
+          // UUID length is 36 characters
           const { id, ...rest } = block;
           return rest;
         }
@@ -299,7 +388,7 @@ export default function EventConfigInterface() {
           </div>
 
           <div className="flex flex-row space-x-2 w-full">
-            <Button className="w-full" variant="entraditaTertiary">
+            <Button to="/event-page-guide" className="w-full" variant="entraditaTertiary">
               <HelpCircle className="mr-2 h-4 w-4" /> Como funciona?
             </Button>
             <Button onClick={handleGoToEventPage} variant="entraditaTertiary" className="w-full">

@@ -77,7 +77,7 @@ export default function DialogCreateTicket() {
 
     try {
       const response = await createTicket(submitData, id, authToken.access);
-      console.log('API Response:', response);
+      // console.log('API Response:', response);
       setIsCreateTicketDialogOpen(false);
       setReloadTickets(!reloadTickets);
     } catch (error) {

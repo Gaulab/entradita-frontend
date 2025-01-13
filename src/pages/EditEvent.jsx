@@ -1,16 +1,22 @@
 // entradaFront/src/pages/EditEvent.jsx
+// react-router-dom imports
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Switch } from '../components/ui/switch';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../components/ui/card';
-import { Alert, AlertDescription } from '../components/ui/alert';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
+// react imports
 import { useState, useContext, useEffect } from 'react';
-import AuthContext from '../context/AuthContext';
+// Custom components imports
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import LoadingSpinner from '@/components/ui/loadingspinner';
+
+// context imports
+import AuthContext from '@/context/AuthContext';
 // API
-import { getEvent, updateEvent, deleteEvent } from '../api/eventApi';
+import { getEvent, updateEvent, deleteEvent } from '@/api/eventApi';
 import { ArrowLeftIcon, Edit, Edit2, HelpCircle, X } from 'lucide-react';
 
 export default function EditEvent() {
@@ -134,7 +140,7 @@ export default function EditEvent() {
   };
 
   if (!event) {
-    return <div className="text-white w-screen">Cargando...</div>;
+    return <LoadingSpinner />;
   }
 
   return (
@@ -316,13 +322,15 @@ export default function EditEvent() {
               <Label htmlFor="name" className="text-gray-200">
                 Nombre del Ticket Tag
               </Label>
-              <Input id="name" name="name" required className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+              <Input id="name" name="name" defaultValue={ticketTags[tagToEdit].name} required maxLength="25"
+                className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="price" className="text-gray-200">
                 Precio
               </Label>
-              <Input id="price" name="price" required className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+              <Input id="price" name="price" defaultValue={ticketTags[tagToEdit].price} type="number" step="10" maxLength="15"
+                required className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
             </div>
             <DialogFooter>
               <Button onClick={() => setIsEditTagDialogOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600">

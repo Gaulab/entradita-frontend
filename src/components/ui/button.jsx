@@ -21,9 +21,9 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         entraditaPrimary: "bg-blue-600 hover:bg-blue-500 text-gray-100 hover:text-white ",
         entraditaSecondary: "bg-gray-900 hover:bg-gray-900 text-gray-300 hover:text-gray-200 border border-gray-800 hover:border-gray-600",
-        entraditaTertiary: "bg-gray-800 hover:bg-gray-600 text-gray-300 hover:text-white border border-gray-700 hover:border-gray-700",
-        entraditaSuccess: "bg-green-700 hover:bg-green-800 text-white hover:text-gray-100 border border-green-800 hover:border-gray-900",
-        entraditaError: "bg-red-800/50 hover:bg-red-900 text-white hover:text-gray-100 border border-red-800 hover:border-gray-900",
+        entraditaTertiary: "bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 hover:border-gray-700",
+        entraditaSuccess: "bg-green-700/80 hover:bg-green-800 text-white hover:text-gray-100 border border-green-800 hover:border-gray-900",
+        entraditaError: "bg-red-800/80 hover:bg-red-900 text-white hover:text-gray-100 border border-red-800 hover:border-gray-900",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -39,12 +39,13 @@ const buttonVariants = cva(
   }
 )
 
-const Button = React.forwardRef(({ className, variant, size, asChild = false, to, new: isNew, ...props }, ref) => {
+const Button = React.forwardRef(({ className, variant, size, asChild = false, to, new: isNew, soon, ...props }, ref) => {
   const Comp = asChild ? Slot : "button"
   
   const buttonContent = (
     <>
-      {isNew && <span className="absolute top-0 right-0 bg-red-300 text-black text-xs px-1 rounded m-1">new</span>}
+      {isNew && <span className="absolute top-0 right-0 bg-cyan-300 text-black text-xs px-1 rounded m-1">new</span>}
+      {soon && <span className="absolute top-0 right-0 bg-yellow-300 text-black text-xs px-1 rounded m-1">soon</span>}
       {props.children}
     </>
   )
@@ -81,6 +82,7 @@ Button.propTypes = {
   asChild: PropTypes.bool,
   to: PropTypes.string,
   new: PropTypes.bool,
+  soon: PropTypes.bool,
 }
 
 export { Button, buttonVariants }

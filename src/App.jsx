@@ -20,21 +20,21 @@ import ScannerView from './pages/ScannerView';
 import CreateTicketBySeller from './pages/CreateTicektBySeller';
 import Pricing from './pages/Main/Pricing';
 import PrivacyPolicy from './pages/Main/PrivacyPolicy';
+import TicketPurchasePage from './pages/EventPage/TicketPurchasePage';
+import EventPageGuide from './pages/EventPage/EventPageGuide';
 // Private pages
 import Dashboard from './pages/Dashboard';
 import EventDetail from './pages/EventDetail/EventDetail';
 import CreateEvent from './pages/CreateEvent';
 import EditEvent from './pages/EditEvent';
-import EventConfigInterface from './pages/EventConfigInterface';
-import EventPage from './pages/EventPage';
+import EventConfigInterface from './pages/EventPage/EventConfigInterface';
+import EventPage from './pages/EventPage/EventPage';
 import Economy from './pages/Economy';
-import TicketPurchaseConfig from './pages/TicketPurchaseConfig';
-import PurchaseSummaryPage from './pages/PurchaseSummaryPage';
+import TicketPurchaseConfig from './pages/EventPage/TicketPurchaseConfig';
+import PurchaseSummaryPage from './pages/EventPage/PurchaseSummaryPage';
 // Trial pages
 import DashboardTrial from './pages/Trial/DashboardTrial';
 import TicketPage1Trial from './pages/Trial/TicketPage1Trial';
-
-import TicketPurchasePage from './pages/TicketPurchasePage';
 
 // SellerWrapper is a functional component that extracts the UUID from the URL using the useParams hook and passes it as a prop to the VendorView component.
 const SellerWrapper = () => {
@@ -64,8 +64,9 @@ function App() {
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/dashboard-trial" element={<DashboardTrial />} />
           <Route path="/ticket-page-trial/:ticket_uuid" element={<TicketPage1Trial />} />
-          <Route path="/ticket-purchase/:event_id" element={<PurchaseProvider><TicketPurchasePage /></PurchaseProvider>} />
-          <Route path="/purchase-summary" element={<PurchaseProvider><PurchaseSummaryPage /></PurchaseProvider>} />
+          {/* <Route path="/ticket-purchase/:event_id" element={<PurchaseProvider><TicketPurchasePage /></PurchaseProvider>} /> */}
+          {/* <Route path="/purchase-summary" element={<PurchaseProvider><PurchaseSummaryPage /></PurchaseProvider>} /> */}
+          <Route path="/event-page-guide" element={<EventPageGuide />} />
         {/* Rutas protegidas */}
           <Route path="/event/:event_id/purchase-config" element={<AuthProvider><PrivateRoute><TicketPurchaseConfig /></PrivateRoute></AuthProvider>} />
           <Route path="/dashboard" element={<AuthProvider><PrivateRoute><Dashboard /></PrivateRoute></AuthProvider>} />

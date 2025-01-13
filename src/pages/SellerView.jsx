@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 // react-router imports
 import { useNavigate } from 'react-router-dom';
 // lucide-react icons imports
-import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon, ShoppingCart } from 'lucide-react';
+import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon, ShoppingCart, Share2 } from 'lucide-react';
 // prop-types imports
 import PropTypes from 'prop-types';
 // custom components
@@ -117,7 +117,6 @@ export default function VendedorView({ uuid }) {
   }, [uuid, isPasswordCorrect]);
 
   const verifyPassword = async () => {
- 
     try {
       await checkPassword(uuid, password);
       setIsPasswordCorrect(true);
@@ -135,6 +134,35 @@ export default function VendedorView({ uuid }) {
       setFilteredTickets(filtered);
     } else {
       setFilteredTickets(tickets);
+    }
+  };
+
+  const handleShare = (ticket) => {
+    console.log('uuid', uuid);
+    if (navigator.share) {
+      navigator
+        .share({
+          title: 'Tu ticket para el evento',
+          text: `¡Aquí está tu ticket para el evento! ${ticket.owner_name} ${ticket.owner_lastname}`,
+          url: `${window.location.origin}/ticket/${ticket.uuid}`,
+        })
+        .then(() => {
+          console.log('Ticket compartido exitosamente');
+        })
+        .catch((error) => {
+          console.log('Error sharing', error);
+        });
+    } else {
+      // Fallback for browsers that don't support the Web Share API
+      alert(`Comparte este enlace: ${ticket.uuid}`);
+      navigator.clipboard
+        .writeText(ticket.uuid)
+        .then(() => {
+          console.log('Ticket URL copiado al portapapeles');
+        })
+        .catch((error) => {
+          console.log('Error al copiar el URL', error);
+        });
     }
   };
 
@@ -236,6 +264,11 @@ export default function VendedorView({ uuid }) {
             <LinkIcon className="mr-2 h-4 w-4" />
             Copiar enlace del ticket
           </Button>
+          <Button className="justify-start" variant="entraditaSecondary" onClick={() => handleShare(ticket)}>
+            <Share2 className="mr-2 h-4 w-4" />
+            Compartir ticket
+          </Button>
+
           <Button
             className="justify-start"
             variant="entraditaSecondary"
