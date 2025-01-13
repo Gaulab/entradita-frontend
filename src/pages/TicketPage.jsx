@@ -95,22 +95,24 @@ export default function TicketPage() {
 
   return (
     <div className="flex justify-center min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 p-4 overflow-auto">
-      <Helmet>
-        <title>{data.event_name} - Ticket</title>
-        <meta name="description" content={`Entrada para el evento ${data.event_name} - ${data.event_date}`} />
-        <meta property="og:title" content={`${data.event_name} - Ticket`} />
-        <meta property="og:description" content={`Entrada para el evento ${data.event_name} - ${data.event_date}`} />
-        <meta property="og:image" content={data.event_image_address} />
-        <meta property="og:url" content={window.location.href} />
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="entradita.com" />
-        <meta property="og:locale" content="es_ES" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${data.event_name} - Ticket`} />
-        <meta name="twitter:description" content={`Entrada para el evento ${data.event_name} - ${data.event_date}`} />
-        <meta name="twitter:image" content={data.event_image_address} />
-        <meta name="twitter:url" content={window.location.href} />
-      </Helmet>
+<Helmet>
+  <title>{data.event_name} - Ticket</title>
+
+  <meta property="og:title" content={`${data.event_name} - Ticket`} />
+  <meta property="og:description" content={`Únete a nosotros en ${data.event_name} el ${data.event_date} en ${data.event_place}.`} />
+  <meta property="og:image" content={data.event_image_address || 'https://i.imgur.com/k4iUzTR.jpeg'} />
+  <meta property="og:image:alt" content="Imagen representativa del evento" />
+  <meta property="og:url" content={window.location.href} />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Entradita" />
+
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:title" content={`${data.event_name} - Ticket`} />
+  <meta property="twitter:description" content={`Únete a nosotros en ${data.event_name} el ${data.event_date} en ${data.event_place}.`} />
+  <meta property="twitter:image" content={data.event_image_address || 'https://i.imgur.com/k4iUzTR.jpeg'} />
+</Helmet>
+
+
       <div className="w-full max-w-md">
         <div ref={ticketRef} className="p-8 py-2 flex flex-col h-min items-center bg-white rounded-3xl">
           <div className="w-full h-15 mb-2">
