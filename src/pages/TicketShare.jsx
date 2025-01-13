@@ -13,23 +13,29 @@ export default function TicketShare({ }) {
   const handleShare = () => {
     console.log('uuid', uuid);
     if (navigator.share) {
-      navigator.share({
-        title: 'Tu ticket para el evento',
-        text: `¡Aquí está tu ticket para el evento!`,
-        url: ticketUrl,
-      }).then(() => {
-        console.log('Ticket compartido exitosamente');
-      }).catch((error) => {
-        console.log('Error sharing', error);
-      });
+      navigator
+        .share({
+          title: `🎟️ Tu ticket para el evento`,
+          text: `¡Aquí está tu ticket para el evento! 🎉`,
+          url: ticketUrl,
+        })
+        .then(() => {
+          console.log('Ticket compartido exitosamente');
+        })
+        .catch((error) => {
+          console.log('Error sharing', error);
+        });
     } else {
       // Fallback for browsers that don't support the Web Share API
       alert(`Comparte este enlace: ${ticketUrl}`);
-      navigator.clipboard.writeText(ticketUrl).then(() => {
-        console.log('Ticket URL copiado al portapapeles');
-      }).catch((error) => {
-        console.log('Error al copiar el URL', error);
-      });
+      navigator.clipboard
+        .writeText(ticketUrl)
+        .then(() => {
+          console.log('Ticket URL copiado al portapapeles');
+        })
+        .catch((error) => {
+          console.log('Error al copiar el URL', error);
+        });
     }
   };
 

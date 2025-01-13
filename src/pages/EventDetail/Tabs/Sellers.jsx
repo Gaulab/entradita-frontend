@@ -134,7 +134,12 @@ export default function Sellers({}) {
             <strong>Estado:</strong> {seller?.status === true ? 'Habilitado' : 'Deshabilitado'}
           </p>
           <p>
-            <strong>Ticket tags:</strong> {seller?.ticket_tags.map((tag) => tag.name).join(', ')}
+            <strong>Ticket tags:</strong>  
+            {seller?.ticket_tags.map((tag) => (
+              <span key={tag.id} className="inline-block font-bold bg-gray-700 text-white m-1 px-1 rounded-full">
+                {tag.name}
+              </span>
+            ))}
           </p>
         </div>
         <div className="flex flex-col space-y-2 m-0">

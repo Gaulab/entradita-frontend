@@ -13,7 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '../../../components/ui/dialog';
 import { Switch } from '../../../components/ui/switch';
-import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon } from 'lucide-react';
+import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon, Share2 } from 'lucide-react';
 // API
 import { updateTicketSales } from '../../../api/eventApi';
 
@@ -59,6 +59,35 @@ export default function Tickets({}) {
     setIsDeleteConfirmDialogOpen(true);
   }, []);
 
+  const handleShare = (ticket) => {
+    console.log('uuid', uuid);
+    if (navigator.share) {
+      navigator
+        .share({
+          title: `🎟️ Tu ticket para el evento ${vendedor?.event_name}`,
+          text: `¡Aquí está tu ticket para el evento ${vendedor?.event_name}! 🎉 ${ticket.owner_name} ${ticket.owner_lastname}\n`,
+          url: `${window.location.origin}/ticket/${ticket.uuid}`,
+        })
+        .then(() => {
+          console.log('Ticket compartido exitosamente');
+        })
+        .catch((error) => {
+          console.log('Error sharing', error);
+        });
+    } else {
+      // Fallback for browsers that don't support the Web Share API
+      alert(`Comparte este enlace: ${ticket.uuid}`);
+      navigator.clipboard
+        .writeText(ticket.uuid)
+        .then(() => {
+          console.log('Ticket URL copiado al portapapeles');
+        })
+        .catch((error) => {
+          console.log('Error al copiar el URL', error);
+        });
+    }
+  };
+
   const MobileActionDialog = ({ ticket, onClose }) => (
     <Dialog className="" open={!!ticket} onOpenChange={() => onClose()}>
       <DialogContent className="sm:max-w-[425px] bg-gray-800 ">
@@ -94,6 +123,7 @@ export default function Tickets({}) {
             <LinkIcon className="mr-2 h-4 w-4" />
             Copiar enlace de ticket
           </Button>
+
           <Button
             className="justify-start"
             variant="entraditaSecondary"
@@ -104,6 +134,16 @@ export default function Tickets({}) {
           >
             <EyeIcon className="mr-2 h-4 w-4" />
             Ver página de ticket
+          </Button>
+          <Button
+            className="justify-start"
+            variant="entraditaSecondary"
+            onClick={() => {
+              handleShare(ticket);
+              onClose();
+            }}
+          >
+            <Share2 className="mr-2 h-4 w-4" /> Compartir ticket
           </Button>
           <Button
             className="justify-start"
