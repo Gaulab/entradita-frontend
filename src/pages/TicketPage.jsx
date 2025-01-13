@@ -97,28 +97,27 @@ export default function TicketPage() {
     <div className="flex justify-center min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 p-4 overflow-auto">
       <Helmet>
         <title>{data.event_name} - Ticket</title>
+
+        {/* Open Graph */}
         <meta property="og:title" content={`${data.event_name} - Ticket`} />
         <meta property="og:description" content={`Únete a nosotros en ${data.event_name} el ${data.event_date} en ${data.event_place}.`} />
-        <meta property="og:image" content="https://i.imgur.com/k4iUzTR.jpeg"/>
+        <meta property="og:image" content={data.event_image_address || 'https://i.imgur.com/k4iUzTR.jpeg'} />
         <meta property="og:url" content={window.location.href} />
         <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Entradita" />
+
+        {/* Twitter Cards */}
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:title" content={`${data.event_name} - Ticket`} />
+        <meta property="twitter:description" content={`Únete a nosotros en ${data.event_name} el ${data.event_date} en ${data.event_place}.`} />
+        <meta property="twitter:image" content={data.event_image_address || 'https://i.imgur.com/k4iUzTR.jpeg'} />
       </Helmet>
       <div className="w-full max-w-md">
-        <div
-          ref={ticketRef}
-          className="p-8 py-2 flex flex-col h-min items-center bg-white rounded-3xl"
-        >
+        <div ref={ticketRef} className="p-8 py-2 flex flex-col h-min items-center bg-white rounded-3xl">
           <div className="w-full h-15 mb-2">
             <div className="w-full h-full flex items-center justify-center">
-              <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-gray-300"   style={{width: 'auto', aspectRatio: 1 }}>
-                <img
-                  src={data.event_image_address}
-                  alt="Event Logo"
-                  className="w-full h-full object-cover"
-                  style={{ objectFit: 'cover', width: '100%', height: '100%' }}
-                  crossOrigin="anonymous"
-
-                />
+              <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-gray-300" style={{ width: 'auto', aspectRatio: 1 }}>
+                <img src={data.event_image_address} alt="Event Logo" className="w-full h-full object-cover" style={{ objectFit: 'cover', width: '100%', height: '100%' }} crossOrigin="anonymous" />
               </div>
             </div>
           </div>
@@ -127,13 +126,7 @@ export default function TicketPage() {
           </div>
 
           <div className="bg-white p-0 rounded-xl mb-4">
-            <QRCodeSVG
-              id="qr-code"
-              value={data.qr_payload}
-              size={260}
-              level="M"
-              className="w-full max-w-[260px]"
-            />
+            <QRCodeSVG id="qr-code" value={data.qr_payload} size={260} level="M" className="w-full max-w-[260px]" />
           </div>
 
           <div className="relative w-full">
@@ -164,16 +157,12 @@ export default function TicketPage() {
               {!data.owner_dni && <div className="col-span-1"></div>}
 
               <div className="col-span-1">
-                <p className="text-gray-500 flex items-center gap-2">
-                  Date & Time
-                </p>
+                <p className="text-gray-500 flex items-center gap-2">Date & Time</p>
                 <p className="font-medium text-gray-800">{data.event_date}</p>
               </div>
 
               <div className="col-span-1">
-                <p className="text-gray-500 flex items-center gap-2">
-                  Location
-                </p>
+                <p className="text-gray-500 flex items-center gap-2">Location</p>
                 <p className="font-medium text-gray-800">{data.event_place}</p>
               </div>
             </div>
@@ -185,16 +174,8 @@ export default function TicketPage() {
             </div>
 
             <div className="">
-              {!isDownloading && (
-                <p className="text-sm text-gray-600 mb-2 text-start">
-                  Descarga tu entrada por si luego no tenés internet o batería en tu celular
-                </p>
-              )}
-              <Button
-                onClick={handleDownload}
-                disabled={isDownloading}
-                className="w-full bg-gray-700 hover:bg-gray-600 text-white transition-colors"
-              >
+              {!isDownloading && <p className="text-sm text-gray-600 mb-2 text-start">Descarga tu entrada por si luego no tenés internet o batería en tu celular</p>}
+              <Button onClick={handleDownload} disabled={isDownloading} className="w-full bg-gray-700 hover:bg-gray-600 text-white transition-colors">
                 <Download className="mr-2 h-4 w-4" />
                 {isDownloading ? 'Generando...' : 'Descargar QR'}
               </Button>
@@ -207,4 +188,3 @@ export default function TicketPage() {
     </div>
   );
 }
-
