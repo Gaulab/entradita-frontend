@@ -9,6 +9,7 @@ import AuthContext from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Switch } from '@/components/ui/switch';
 import { SiMercadopago } from "react-icons/si";
+import MercadoPagoConnector from '../components/ui/MercadoPagoConnector';
 
 export default function TicketPurchaseConfig() {
   const { event_id } = useParams();
@@ -136,10 +137,11 @@ export default function TicketPurchaseConfig() {
             <div className="space-y-4">
               <h3 className="text-xl font-semibold">Configuración de Mercado Pago</h3>
               <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
-                <Button onClick={handleMercadoPagoAuth} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
+                {/* <Button onClick={handleMercadoPagoAuth} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
                   <SiMercadopago className="mr-2 h-7 w-7 " />
                   {mercadoPagoAuthStatus === 'connected' ? 'Reconectar Mercado Pago' : 'Conectar con Mercado Pago'}
-                </Button>
+                </Button> */}
+                <MercadoPagoConnector />
                 {mercadoPagoAuthStatus === 'connected' ? (
                   <div className="text-gray-900 font-bold bg-green-500 px-2 py-1 flex items-center rounded-full">
                     <CheckCircle className="mr-2 h-5 w-5" />
