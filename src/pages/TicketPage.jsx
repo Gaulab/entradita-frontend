@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Download, Calendar, MapPin } from 'lucide-react';
 import { getTicket } from '../api/ticketApi';
 import html2canvas from 'html2canvas';
+import { Helmet } from 'react-helmet';
 
 export default function TicketPage() {
   const { ticket_uuid } = useParams();
@@ -61,7 +62,7 @@ export default function TicketPage() {
       const image = canvas.toDataURL('image/jpeg');
       const link = document.createElement('a');
       link.href = image;
-      link.download = `ticket-${data.event_name}.jpg`;
+      link.download = `ticket-${data.event_name}-${data.owner_name}.jpeg`;
       link.click();
     } catch (error) {
       console.error('Error generating ticket image:', error);
@@ -94,6 +95,14 @@ export default function TicketPage() {
 
   return (
     <div className="flex justify-center min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 p-4 overflow-auto">
+      <Helmet>
+        <title>{data.event_name} - Ticket</title>
+        <meta property="og:title" content={`${data.event_name} - Ticket`} />
+        <meta property="og:description" content={`Únete a nosotros en ${data.event_name} el ${data.event_date} en ${data.event_place}.`} />
+        <meta property="og:image" content={data.event_image_address} />
+        <meta property="og:url" content={window.location.href} />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <div className="w-full max-w-md">
         <div
           ref={ticketRef}
