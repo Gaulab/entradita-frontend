@@ -60,27 +60,26 @@ export default function Tickets({}) {
   }, []);
 
   const handleShare = (ticket) => {
-    console.log('uuid', uuid);
     if (navigator.share) {
       navigator
         .share({
-          title: `🎟️ Tu ticket para el evento ${vendedor?.event_name}`,
-          text: `¡Aquí está tu ticket para el evento ${vendedor?.event_name}! 🎉 ${ticket.owner_name} ${ticket.owner_lastname}\n`,
+          title: `🎟️ Tu ticket para el evento ${event.name}`,
+          text: `¡Aquí está tu ticket para el evento!🎉\n${ticket.owner_name} ${ticket.owner_lastname}:\n`,
           url: `${window.location.origin}/ticket/${ticket.uuid}`,
         })
         .then(() => {
           console.log('Ticket compartido exitosamente');
         })
         .catch((error) => {
-          console.log('Error sharing', error);
+          console.log('Error al compartir el ticket', error);
         });
     } else {
       // Fallback for browsers that don't support the Web Share API
-      alert(`Comparte este enlace: ${ticket.uuid}`);
+      alert(`Comparte este enlace: ${window.location.origin}/ticket/${ticket.uuid}`);
       navigator.clipboard
-        .writeText(ticket.uuid)
+        .writeText(`${window.location.origin}/ticket/${ticket.uuid}`)
         .then(() => {
-          console.log('Ticket URL copiado al portapapeles');
+          console.log('URL del ticket copiada al portapapeles');
         })
         .catch((error) => {
           console.log('Error al copiar el URL', error);
