@@ -49,11 +49,7 @@ const ScannerWrapper = () => {
 };
 function App() {
   return (
-    <HelmetProvider>
-      <Helmet>
-        <title>Entradita</title>
-        <meta name="description" content="Entradita" />
-      </Helmet>
+
     <Router>
       <Routes> 
         {/* Rutas públicas */}
@@ -84,8 +80,8 @@ function App() {
           <Route path="event/:id/economy" element={<AuthProvider><PrivateRoute><Economy /></PrivateRoute></AuthProvider>} />
         </Routes>
       </Router>
-    </HelmetProvider>
   );
+  
 }
 export default App;
 
