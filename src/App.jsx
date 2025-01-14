@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-
 import { AuthProvider } from './context/AuthContext';
 import { EventDetailsProvider } from './context/EventDetailsContext';  // Importa el contexto de EventDetails
 import { PurchaseProvider } from './context/PurchaseContext'; // Importa el contexto de Purchase
-import { HelmetProvider } from "react-helmet-async";
+import { HelmetProvider, Helmet } from "react-helmet-async";
 // Utils imports
 import PrivateRoute from './utils/PrivateRoute';
 // Public pages
