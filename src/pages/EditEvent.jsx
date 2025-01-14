@@ -119,7 +119,7 @@ export default function EditEvent() {
   };
   const [isEditTagDialogOpen, setIsEditTagDialogOpen] = useState(false);
 
-  const [tagToEdit, setTagToEdit] = useState(1);
+  const [tagToEdit, setTagToEdit] = useState(0);
 
   const openEditTagDialog = (index) => {
     setIsEditTagDialogOpen(true);
