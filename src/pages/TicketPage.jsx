@@ -102,7 +102,6 @@ export default function TicketPage() {
         <title>{data.event_name} - Ticket</title>
         <meta property="og:title" content="entradita.com" />
         <meta property="og:description" content="Descripción de tu sitio web" />
-        <meta property="og:image" content="https://i.imgur.com/cgvTqFq.jpeg" />
         <meta property="og:url" content="https://www.entradita.com" />
         <meta property="og:type" content="website" />
       </Helmet>
