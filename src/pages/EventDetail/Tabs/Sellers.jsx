@@ -85,7 +85,7 @@ export default function Sellers({}) {
   }, []);
 
   const handleShare = (seller) => {
-    const shareText = `🎉 ¡Quiero que vendas para mi evento: ${event.name}! 📅🎟️\n\nPuedes unirte en el siguiente enlace, es único para ti (no lo compartas 🕵️):\n${window.location.origin}/ticket/${seller.uuid}\n\n🔑 Te pedirá una contraseña para acceder, cuando estés listo pídemela!\n\n📚 Te dejo también un link para que aprendas rápido y fácil cómo vender:\n${window.location.origin}/seller-guide`;
+    const shareText = `¡Quiero que vendas para mi evento: ${event.name}! 📅🎟️\n\n🕵️ Puedes unirte en el siguiente enlace, es único para ti (no lo compartas):\n${window.location.origin}/ticket/${seller.uuid}\n\n🔑 Te pedirá una contraseña para acceder, cuando estés listo pídemela!\n\n📚 Te dejo también un link para que aprendas rápido y fácil cómo vender:\n${window.location.origin}/seller-guide`;
 
     if (navigator.share) {
       navigator

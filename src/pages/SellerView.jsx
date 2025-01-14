@@ -143,7 +143,7 @@ export default function VendedorView({ uuid }) {
       navigator
         .share({
           title: `🎟️ Tu ticket para el evento ${vendedor?.event_name}`,
-          text: `¡Acá está tu ticket 🎟️ para el evento ${vendedor?.event_name}!\nA nombre de ${ticket.owner_name} ${ticket.owner_lastname}:\n`,
+          text: `¡Acá está tu ticket para el evento ${vendedor?.event_name} 🎟️!\n${ticket.owner_name} ${ticket.owner_lastname}:\n`,
           url: `${window.location.origin}/ticket/${ticket.uuid}`,
         })
         .then(() => {

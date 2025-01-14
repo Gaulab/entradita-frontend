@@ -64,7 +64,7 @@ export default function Tickets({}) {
       navigator
         .share({
           title: `🎟️ Tu ticket para el evento ${event.name}`,
-          text: `¡Aquí está tu ticket para el evento!🎉\n${ticket.owner_name} ${ticket.owner_lastname}:\n`,
+          text: `¡Acá está tu ticket para el evento ${event.name} 🎟️!🎉\n${ticket.owner_name} ${ticket.owner_lastname}:\n`,
           url: `${window.location.origin}/ticket/${ticket.uuid}`,
         })
         .then(() => {
