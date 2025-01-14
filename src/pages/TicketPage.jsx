@@ -77,10 +77,38 @@ export default function TicketPage() {
       }
     }
   };
+  const pageTitle = `${data.event_name} - Ticket | entradita.com`;
+  const pageDescription = `Ticket para ${data.event_name} el ${data.event_date} en ${data.event_place}. Presentado por entradita.com`;
+  const pageImage = data.event_image_address || 'https://i.imgur.com/AeQYvyy.jpeg';
+  const canonicalUrl = `https://entradita.com/ticket/${ticket_uuid}`;
 
   if (loading) {
     return (
+
       <div className="flex justify-center items-center min-h-screen bg-gray-50">
+            <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <link rel="canonical" href={canonicalUrl} />
+        
+        {/* OpenGraph tags */}
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:image" content="https://i.imgur.com/AeQYvyy.jpeg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="entradita.com" />
+
+        {/* Twitter Card tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@entradita" />
+        <meta name="twitter:creator" content="@entradita" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content={pageImage} />
+      </Helmet>
         <div className="text-gray-600 text-lg">Cargando...</div>
       </div>
     );
@@ -93,10 +121,6 @@ export default function TicketPage() {
       </div>
     );
   }
-  const pageTitle = `${data.event_name} - Ticket | entradita.com`;
-  const pageDescription = `Ticket para ${data.event_name} el ${data.event_date} en ${data.event_place}. Presentado por entradita.com`;
-  const pageImage = data.event_image_address || 'https://i.imgur.com/AeQYvyy.jpeg';
-  const canonicalUrl = `https://entradita.com/ticket/${ticket_uuid}`;
 
   return (
     <div className="flex justify-center min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 p-4 overflow-auto">
