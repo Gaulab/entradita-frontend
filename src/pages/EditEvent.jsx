@@ -39,7 +39,7 @@ export default function EditEvent() {
     const fetchEvent = async () => {
       try {
         const data = await getEvent(id, authToken.access);
-        console.log('Data:', data);
+        // console.log('Data:', data);
         setTicketTags(data.ticket_tags);
         setEvent(data);
         setRequireDNI(data.dni_required);
@@ -113,7 +113,7 @@ export default function EditEvent() {
     setIsDeleteTagDialogOpen(false);
   };
   const openDeleteTagDialog = (index) => {
-    console.log('Index:', index);
+    // console.log('Index:', index);
     setIsDeleteTagDialogOpen(true);
     setTagToDelete(index); // Guardamos el índice de la etiqueta a eliminar
   };
@@ -123,7 +123,7 @@ export default function EditEvent() {
 
   const openEditTagDialog = (index) => {
     setIsEditTagDialogOpen(true);
-    console.log('Index:', index);
+    // console.log('Index:', index);
     setTagToEdit(index);
   };
 
