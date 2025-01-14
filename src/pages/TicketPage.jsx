@@ -94,25 +94,33 @@ export default function TicketPage() {
     );
   }
 
+  const pageTitle = `${data.event_name} - Ticket | entradita.com`;
+  const pageDescription = `Ticket para ${data.event_name} el ${data.event_date} en ${data.event_place}. Presentado por entradita.com`;
+  const pageImage = data.event_image_address || 'https://i.imgur.com/AeQYvyy.jpeg'; // Usa la imagen del evento o una imagen por defecto
 
   return (
     <div className="flex justify-center min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 p-4 overflow-auto">
       <Helmet>
-        <title>{data.event_name} - Ticket</title>
-        <meta property="og:title" content="entradita.com" />
-        <meta property="og:description" content="Descripción de tu sitio web" />
-        <meta property="og:image" content="https://i.imgur.com/AeQYvyy.jpeg" />
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        
+        {/* OpenGraph tags */}
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:image" content={pageImage} />
         <meta property="og:url" content={window.location.href} />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="entradita.com" />
+
+        {/* Twitter Card tags */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@usuario" />
-        <meta name="twitter:creator" content="@usuario" />
-        <meta name="twitter:title" content="entradita.com" />
-        <meta name="twitter:description" content="Descripción de tu sitio web" />
-        <meta name="twitter:image" content="https://i.imgur.com/AeQYvyy.jpeg" />
-        
+        <meta name="twitter:site" content="@entradita" />
+        <meta name="twitter:creator" content="@entradita" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content={pageImage} />
       </Helmet>
+
 
       <div className="w-full max-w-md">
         <div ref={ticketRef} className="p-8 py-2 flex flex-col h-min items-center bg-white rounded-3xl">
