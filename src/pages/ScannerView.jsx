@@ -17,7 +17,7 @@ import { checkTicketByPayload } from '../api/ticketApi';
 import { checkTicketByDni } from '../api/ticketApi';
 // PropTypes
 import PropTypes from 'prop-types';
-
+import { Helmet } from 'react-helmet-async';
 const ScannerView = ({ uuid }) => {
   // main states
   const { id } = useParams();
