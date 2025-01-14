@@ -34,7 +34,7 @@ export default function CreateEvent() {
 
     if (ticketTags.length === 0) {
       setError('Debes agregar al menos un Ticket Tag.');
-      setTimeout(() => setError(''), 3000);
+      setTimeout(() => setError(''), 5000);
       return;
     }
 
@@ -156,7 +156,7 @@ export default function CreateEvent() {
                   <HelpCircle className="w-4 h-4 ml-1" />
                 </Tooltip>
               </Label>
-              <Input id="image_address" name="image_address" className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+              <Input id="image_address" name="image_address" maxLength="500" className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
             </div>
 
             <div className="space-y-2">
@@ -166,7 +166,7 @@ export default function CreateEvent() {
                   <HelpCircle className="w-4 h-4 ml-1" />
                 </Tooltip>
               </Label>
-              <Input id="password_employee" name="password_employee" required className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+              <Input id="password_employee" name="password_employee" required maxLength="25" className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
             </div>
 
             <div className="flex flex-col space-y-2">
@@ -196,7 +196,8 @@ export default function CreateEvent() {
                   onChange={(e) => setTagPrice(e.target.value)}
                   placeholder="Precio"
                   type="number"
-                  step="0.01"
+                    step="100" 
+                    max="99999999"
                   className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
                 />
                 <Button type="button" onClick={addTicketTag} className="bg-blue-600 hover:bg-blue-700 text-white">
