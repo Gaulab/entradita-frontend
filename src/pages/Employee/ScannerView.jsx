@@ -70,7 +70,7 @@ const ScannerView = ({ uuid }) => {
     setTicketData(data);
     setDialogColor(isOldScanned ? 'yellow' : 'green');
     setShowTicketInfo(true);
-    setTimeout(() => setShowTicketInfo(false), 5000); // Hide info after 5 seconds
+    setTimeout(() => setShowTicketInfo(false), 6000); // Hide info after 5 seconds
   }, []);
 
   const validarTicketPayload = useCallback(
@@ -172,7 +172,7 @@ const ScannerView = ({ uuid }) => {
               }}
               onScan={validarTicketPayload}
               allowMultiple={true}
-              scanDelay={1000}
+              scanDelay={4000}
               onError={(error) => console.error(error)}
             />
           </div>
