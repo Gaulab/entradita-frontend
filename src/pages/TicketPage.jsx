@@ -20,7 +20,7 @@ export default function TicketPage() {
       const getData = async () => {
         try {
           const data = await getTicket(ticket_uuid);
-          console.log("imagen del evento", data.event_image_address);
+          console.log('imagen del evento', data.event_image_address);
           setData(data);
           setLoading(false);
         } catch (error) {
@@ -100,29 +100,19 @@ export default function TicketPage() {
     <div className="flex justify-center min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 p-4 overflow-auto">
       <Helmet>
         <title>{data.event_name} - Ticket</title>
-        <meta property="og:title" content={`${data.event_name} - Ticket`} />
-        <meta property="og:description" content={`Únete a nosotros en ${data.event_name} el ${data.event_date} en ${data.event_place}.`} />
-        <meta property="og:image" content={ogImageUrl} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta property="og:image:alt" content={`Imagen del evento ${data.event_name}`} />
-        <meta property="og:url" content={window.location.href} />
+        <meta property="og:title" content="entradita.com" />
+        <meta property="og:description" content="Descripción de tu sitio web" />
+        <meta property="og:image" content="https://i.imgur.com/cgvTqFq.jpeg" />
+        <meta property="og:url" content="https://www.entradita.com" />
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Entradita" />
-
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${data.event_name} - Ticket`} />
-        <meta name="twitter:description" content={`Únete a nosotros en ${data.event_name} el ${data.event_date} en ${data.event_place}.`} />
-        <meta name="twitter:image" content={ogImageUrl} />
       </Helmet>
-
 
       <div className="w-full max-w-md">
         <div ref={ticketRef} className="p-8 py-2 flex flex-col h-min items-center bg-white rounded-3xl">
           <div className="w-full h-15 mb-2">
             <div className="w-full h-full flex items-center justify-center">
               <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-gray-300" style={{ width: 'auto', aspectRatio: 1 }}>
-                <img src={data.event_image_address} alt="Event Logo" className="w-full h-full object-cover" style={{ objectFit: 'cover', width: '100%', height: '100%' }}/>
+                <img src={data.event_image_address} alt="Event Logo" className="w-full h-full object-cover" style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
               </div>
             </div>
           </div>
