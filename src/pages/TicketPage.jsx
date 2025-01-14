@@ -20,6 +20,7 @@ export default function TicketPage() {
       const getData = async () => {
         try {
           const data = await getTicket(ticket_uuid);
+          console.log("imagen del evento", data.event_image_address);
           setData(data);
           setLoading(false);
         } catch (error) {
@@ -100,7 +101,7 @@ export default function TicketPage() {
 
   <meta property="og:title" content={`${data.event_name} - Ticket`} />
   <meta property="og:description" content={`Únete a nosotros en ${data.event_name} el ${data.event_date} en ${data.event_place}.`} />
-  <meta property="og:image" content={data.event_image_address || 'https://i.imgur.com/k4iUzTR.jpeg'} />
+  <meta property="og:image" content="https://opengraph.dev/banner.png"/>
   <meta property="og:image:alt" content="Imagen representativa del evento" />
   <meta property="og:url" content={window.location.href} />
   <meta property="og:type" content="website" />
