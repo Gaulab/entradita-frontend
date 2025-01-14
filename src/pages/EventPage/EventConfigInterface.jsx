@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { PlusIcon, HelpCircle, Text, BoxIcon, ShoppingBasket, ArrowUp, ArrowDown, Trash2, Save, ExternalLink, ArrowBigLeft, Image, HourglassIcon, CreditCard, Music, Users } from 'lucide-react';
+import { PlusIcon, HelpCircle, Text, BoxIcon, ArrowUp, ArrowDown, Trash2, Save, ExternalLink, ArrowBigLeft, Image, HourglassIcon, Users } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
@@ -15,7 +15,7 @@ import LoadingSpinner from '@/components/ui/loadingspinner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { v4 as uuidv4 } from 'uuid';
 import { FaSpotify, FaPiggyBank } from 'react-icons/fa';
-import { SiMercadopago } from 'react-icons/si';
+// import { SiMercadopago } from 'react-icons/si';
 import { IoMdRadioButtonOn } from 'react-icons/io';
 import { MdOutlineTitle } from 'react-icons/md';
 const blockTypes = [
@@ -402,7 +402,7 @@ export default function EventConfigInterface() {
             <CardTitle className="text-white">Configuración General</CardTitle>
             <CardDescription className="text-gray-400">Ajustes generales de la página del evento</CardDescription>
           </CardHeader>
-          <CardContent>{renderBlockConfig(blocks.find((block) => block.type === 'GENERAL'))}</CardContent>
+          <CardContent>{blocks.find((block) => block.type === 'GENERAL') && renderBlockConfig(blocks.find((block) => block.type === 'GENERAL'))}</CardContent>
         </Card>
 
         <Card className="bg-gray-800 border-gray-700 mb-8">
