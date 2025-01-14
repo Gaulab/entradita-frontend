@@ -16,9 +16,9 @@ import Contact from './pages/Main/Contact';
 import TermsAndConditions from './pages/Main/TermsAndConditions';
 import TicketPage from './pages/TicketPage';
 import TicketShare from './pages/TicketShare';
-import SellerView from './pages/SellerView';
-import ScannerView from './pages/ScannerView';
-import CreateTicketBySeller from './pages/CreateTicektBySeller';
+import SellerView from './pages/Employee/SellerView';
+import ScannerView from './pages/Employee/ScannerView';
+import CreateTicketBySeller from './pages/Employee/CreateTicektBySeller';
 import Pricing from './pages/Main/Pricing';
 import PrivacyPolicy from './pages/Main/PrivacyPolicy';
 import TicketPurchasePage from './pages/EventPage/TicketPurchasePage';
@@ -37,7 +37,7 @@ import PurchaseSummaryPage from './pages/EventPage/PurchaseSummaryPage';
 import DashboardTrial from './pages/Trial/DashboardTrial';
 import TicketPage1Trial from './pages/Trial/TicketPage1Trial';
 // Guides pages
-import SellerGuide from './pages/SellerGuide';
+import SellerGuide from './pages/Employee/SellerGuide';
 
 // SellerWrapper is a functional component that extracts the UUID from the URL using the useParams hook and passes it as a prop to the VendorView component.
 const SellerWrapper = () => {

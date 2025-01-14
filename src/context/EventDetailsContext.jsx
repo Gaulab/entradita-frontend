@@ -77,9 +77,9 @@ export const EventDetailsProvider = ({ children }) => {
     fetchEventData();
   }, [id]);
 
-  useEffect(() => {
-    console.log("Loading status:", isLoading);
-  }, [isLoading]);
+  // useEffect(() => {
+    //  console.log("Loading status:", isLoading);
+  // }, [isLoading]);
 
   useEffect(() => {
     const getEventEmployees = async () => {
@@ -148,22 +148,16 @@ export const EventDetailsProvider = ({ children }) => {
         newEmployeeName, setNewEmployeeName,
         newEmployeeCapacity, setNewEmployeeCapacity,
         newEmployeeTicketTags, setNewEmployeeTicketTags,
-        
+        // interfaces
         filteredTickets,
         paginatedTickets,
         pageCount,
-        isChecked,
-        setIsChecked,
-        
-
-        activeTab,
-        setActiveTab,
-        currentPage,
-        setCurrentPage,
-        searchTerm,
-        setSearchTerm,
-        itemToDelete, setItemToDelete,
         itemsPerPage,
+        isChecked, setIsChecked,
+        activeTab, setActiveTab,
+        currentPage, setCurrentPage,
+        searchTerm, setSearchTerm,
+        itemToDelete, setItemToDelete,
       }}
     >
       {children}

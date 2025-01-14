@@ -1,23 +1,23 @@
 import { useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 // Custom components
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/card';
-import { Alert, AlertDescription } from '../components/ui/alert';
-import { Dropdown } from '../components/ui/dropdownlist';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/card';
+import { Alert, AlertDescription } from '../../components/ui/alert';
+import { Dropdown } from '../../components/ui/dropdownlist';
 // API
-import { createTicketBySeller } from '../api/ticketApi';
+import { createTicketBySeller } from '../../api/ticketApi';
 
 export default function CreateTicketBySeller() {
   const { uuid } = useParams(); // Cambiado a 'uuid' para el vendedor
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const apiUrl = import.meta.env.VITE_API_URL;
+  // const apiUrl = import.meta.env.VITE_API_URL;
   const location = useLocation();
   const { dniRequired, ticketTags = [] } = location.state;
-  const [valueDropdown, setValueDropdown] = useState('');
+  const [valueDropdown, setValueDropdown] = useState(null);
   
 
   const handleSubmit = async (e) => {
@@ -28,7 +28,7 @@ export default function CreateTicketBySeller() {
       owner_dni: e.target.dni ? e.target.dni.value : null,
       ticket_tag: valueDropdown ? valueDropdown.id : null,
     };
-    console.log('formData:', formData);
+    // console.log('formData:', formData);
     try {
       const response = await createTicketBySeller(formData, uuid); // Pasa formData en lugar de e
       navigate(`/ticket-share/${uuid}`, { 

@@ -9,14 +9,14 @@ import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon, ShoppingCart, Shar
 import PropTypes from 'prop-types';
 // custom components
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
 // apis imports
-import { deleteTicketBySeller } from '../api/ticketApi';
-import { checkPassword } from '../api/employeeApi';
-import { getSeller } from '../api/employeeApi';
+import { deleteTicketBySeller } from '../../api/ticketApi';
+import { checkPassword } from '../../api/employeeApi';
+import { getSeller } from '../../api/employeeApi';
 
 export default function VendedorView({ uuid }) {
   // main states
@@ -138,7 +138,6 @@ export default function VendedorView({ uuid }) {
   };
 
   const handleShare = (ticket) => {
-    console.log('uuid', uuid);
     if (navigator.share) {
       navigator
         .share({
@@ -284,7 +283,7 @@ export default function VendedorView({ uuid }) {
             className="justify-start"
             variant="entraditaSecondary"
             onClick={() => {
-              handleDeleteTicket(ticket?.id);
+              handleDeleteTicket(ticket);
               onClose();
             }}
           >
@@ -380,7 +379,7 @@ export default function VendedorView({ uuid }) {
                       className="border-gray-700 cursor-pointer sm:cursor-default h-16" // Added h-16 for row height
                       onClick={() => {
                         if (window.innerWidth < 640) {
-                          console.log('MobileActionDialog' + ticket);
+                          // console.log('MobileActionDialog' + ticket);
                           setSelectedTicket(ticket);
                         }
                       }}

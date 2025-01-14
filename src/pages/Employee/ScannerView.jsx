@@ -5,16 +5,16 @@ import { useState, useEffect, useCallback } from 'react';
 // react-router imports
 import { useParams } from 'react-router-dom';
 // Custom components
-import { Button } from '../components/ui/button';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/card';
+import { Button } from '../../components/ui/button';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/card';
 import { Scanner } from '@yudiel/react-qr-scanner';
-import { Input } from '../components/ui/input';
-import LoadingSpinner from '../components/ui/loadingspinner';
+import { Input } from '../../components/ui/input';
+import LoadingSpinner from '../../components/ui/loadingspinner';
 // API
-import { getScanner } from '../api/employeeApi';
-import { checkPassword } from '../api/employeeApi';
-import { checkTicketByPayload } from '../api/ticketApi';
-import { checkTicketByDni } from '../api/ticketApi';
+import { getScanner } from '../../api/employeeApi';
+import { checkPassword } from '../../api/employeeApi';
+import { checkTicketByPayload } from '../../api/ticketApi';
+import { checkTicketByDni } from '../../api/ticketApi';
 // PropTypes
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet-async';
