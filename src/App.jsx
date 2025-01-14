@@ -50,6 +50,10 @@ const ScannerWrapper = () => {
 function App() {
   return (
     <HelmetProvider>
+      <Helmet>
+        <title>Entradita</title>
+        <meta name="description" content="Entradita" />
+      </Helmet>
     <Router>
       <Routes> 
         {/* Rutas públicas */}
