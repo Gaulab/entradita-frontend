@@ -94,7 +94,6 @@ export default function TicketPage() {
     );
   }
 
-  const ogImageUrl = data?.event_image_address || 'https://i.imgur.com/k4iUzTR.jpeg';
 
   return (
     <div className="flex justify-center min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 p-4 overflow-auto">
@@ -102,9 +101,17 @@ export default function TicketPage() {
         <title>{data.event_name} - Ticket</title>
         <meta property="og:title" content="entradita.com" />
         <meta property="og:description" content="Descripción de tu sitio web" />
-        <meta property="og:image" content="https://cms.qrplanet.com/img/7yj0ev1gvroc4kw0gs.svg" />
-        <meta property="og:url" content="https://www.entradita.com" />
+        <meta property="og:image" content="https://i.imgur.com/AeQYvyy.jpeg" />
+        <meta property="og:url" content={window.location.href} />
         <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="entradita.com" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@usuario" />
+        <meta name="twitter:creator" content="@usuario" />
+        <meta name="twitter:title" content="entradita.com" />
+        <meta name="twitter:description" content="Descripción de tu sitio web" />
+        <meta name="twitter:image" content="https://i.imgur.com/AeQYvyy.jpeg" />
+        
       </Helmet>
 
       <div className="w-full max-w-md">
