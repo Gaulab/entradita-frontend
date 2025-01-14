@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Download, Calendar, MapPin } from 'lucide-react';
 import { getTicket } from '../api/ticketApi';
 import html2canvas from 'html2canvas';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 export default function TicketPage() {
   const { ticket_uuid } = useParams();
