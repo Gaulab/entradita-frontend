@@ -118,7 +118,7 @@ export default function TicketPage() {
           <div className="w-full h-15 mb-2">
             <div className="w-full h-full flex items-center justify-center">
               <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-gray-300" style={{ width: 'auto', aspectRatio: 1 }}>
-                <img src={data.event_image_address} alt="Event Logo" className="w-full h-full object-cover" style={{ objectFit: 'cover', width: '100%', height: '100%' }} crossOrigin="anonymous" />
+                <img src={data.event_image_address} alt="Event Logo" className="w-full h-full object-cover" style={{ objectFit: 'cover', width: '100%', height: '100%' }}/>
               </div>
             </div>
           </div>
