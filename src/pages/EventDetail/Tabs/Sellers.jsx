@@ -250,7 +250,7 @@ export default function Sellers({}) {
                     
                     <Button variant="outline" onClick={() => copyToClipboard(`¡Quiero que vendas para mi evento: ${event.name}! 📅🎟️\n\n🕵️ Puedes unirte en el siguiente enlace, es único para ti (no lo compartas):\n${window.location.origin}/seller/${vendedor.uuid}\n\n🔑 Te pedirá una contraseña para acceder, cuando estés listo pídemela!\n\n📚 Te dejo también un link para que aprendas rápido y fácil cómo vender:\n${window.location.origin}/seller-guide`)} size="sm" title="Copiar invitación a vendedor">
                       <Share className="h-4 w-4" />
-                      <span className="sr-only">Copiar invitación a vendedor</span>
+                      <span className="sr-only">Copiar texto invitación de vendedor</span>
                     </Button>
                     
                     <Button variant="outline" onClick={() => copyToClipboard(`${window.location.origin}/seller/${vendedor.uuid}`)} size="sm" title="Copiar enlace de vendedor">

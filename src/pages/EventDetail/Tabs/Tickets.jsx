@@ -223,7 +223,7 @@ export default function Tickets({}) {
                     
                     <Button variant="outline" onClick={() => copyToClipboard(`¡Acá está tu ticket para el evento ${event.name} 🎟️!\n\n ${window.location.origin}/ticket/${ticket.uuid}`)} size="sm" title="Copiar invitación del cliente">
                       <Share className="h-4 w-4" />
-                      <span className="sr-only">Copiar invitación del cliente</span>
+                      <span className="sr-only">Copiar texto invitación del cliente</span>
                     </Button>
 
                     <Button variant="outline" onClick={() => copyToClipboard(`${window.location.origin}/ticket/${ticket.uuid}`)} size="sm" title="Copiar enlace de ticket">
