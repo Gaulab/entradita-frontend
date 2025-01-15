@@ -311,38 +311,40 @@ export default function EditEvent() {
         </DialogContent>
       </Dialog>
       {/* Diálogo de confirmación de edicion de TicketTag */}
-      <Dialog open={isEditTagDialogOpen} onOpenChange={setIsEditTagDialogOpen}>
-        <DialogContent className="bg-gray-800 text-white">
-          <DialogHeader>
-            <DialogTitle>Editar Ticket Tag</DialogTitle>
-            <DialogDescription>Modifica los detalles de tu Ticket Tag, los tickets y vendedores con esta etiqueta cambiarán. </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleEditTag} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name" className="text-gray-200">
-                Nombre del Ticket Tag
-              </Label>
-              <Input id="name" name="name" defaultValue={ticketTags[tagToEdit].name} required maxLength="25"
-                className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="price" className="text-gray-200">
-                Precio
-              </Label>
-              <Input id="price" name="price" defaultValue={ticketTags[tagToEdit].price} type="number" step="10" maxLength="15"
-                required className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
-            </div>
-            <DialogFooter>
-              <Button onClick={() => setIsEditTagDialogOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600">
-                Cancelar
-              </Button>
-              <Button type="submit" variant="destructive">
-                Actualizar Ticket Tag
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+      { ticketTags.length > 0 ? (
+        <Dialog open={isEditTagDialogOpen} onOpenChange={setIsEditTagDialogOpen}>
+          <DialogContent className="bg-gray-800 text-white">
+            <DialogHeader>
+              <DialogTitle>Editar Ticket Tag</DialogTitle>
+              <DialogDescription>Modifica los detalles de tu Ticket Tag, los tickets y vendedores con esta etiqueta cambiarán. </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleEditTag} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-gray-200">
+                  Nombre del Ticket Tag
+                </Label>
+                <Input id="name" name="name" defaultValue={ticketTags[tagToEdit].name} required maxLength="25"
+                  className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="price" className="text-gray-200">
+                  Precio
+                </Label>
+                <Input id="price" name="price" defaultValue={ticketTags[tagToEdit].price} type="number" step="10" maxLength="15"
+                  required className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+              </div>
+              <DialogFooter>
+                <Button onClick={() => setIsEditTagDialogOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600">
+                  Cancelar
+                </Button>
+                <Button type="submit" variant="destructive">
+                  Actualizar Ticket Tag
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+      ) : ""}
     </div>
   );
 }
