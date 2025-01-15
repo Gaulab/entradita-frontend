@@ -12,7 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../../../components/ui/dialog';
 // Icons
-import { EyeIcon, PlusIcon, Trash2Icon, PencilIcon, TicketX, LinkIcon, TicketCheck, Share2 } from 'lucide-react';
+import { EyeIcon, PlusIcon, Trash2Icon, PencilIcon, TicketX, LinkIcon, TicketCheck, Share2, CopyPlusIcon, Share } from 'lucide-react';
 // api
 import { changeEmployeeStatus } from '@/api/employeeApi';
 
@@ -247,10 +247,17 @@ export default function Sellers({}) {
                   <TableCell className="text-gray-300">{vendedor.seller_capacity !== null ? vendedor.seller_capacity : 'sin límite'}</TableCell>
                   <TableCell className="text-gray-300">{vendedor.ticket_counter}</TableCell>
                   <TableCell className="hidden sm:table-cell  text-right sm:space-x-1 space-y-1">
+                    
+                    <Button variant="outline" onClick={() => copyToClipboard(`¡Quiero que vendas para mi evento: ${event.name}! 📅🎟️\n\n🕵️ Puedes unirte en el siguiente enlace, es único para ti (no lo compartas):\n${window.location.origin}/seller/${vendedor.uuid}\n\n🔑 Te pedirá una contraseña para acceder, cuando estés listo pídemela!\n\n📚 Te dejo también un link para que aprendas rápido y fácil cómo vender:\n${window.location.origin}/seller-guide`)} size="sm" title="Copiar invitación a vendedor">
+                      <Share className="h-4 w-4" />
+                      <span className="sr-only">Copiar invitación a vendedor</span>
+                    </Button>
+                    
                     <Button variant="outline" onClick={() => copyToClipboard(`${window.location.origin}/seller/${vendedor.uuid}`)} size="sm" title="Copiar enlace de vendedor">
                       <LinkIcon className="h-4 w-4" />
                       <span className="sr-only">Copiar enlace de vendedor</span>
                     </Button>
+                    
                     <Button variant="outline" onClick={() => handleEditEmpleado(vendedor)} size="sm" title="Editar vendedor">
                       <PencilIcon className="h-4 w-4" />
                       <span className="sr-only">Editar vendedor</span>

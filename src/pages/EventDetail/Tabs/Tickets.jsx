@@ -13,7 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '../../../components/ui/dialog';
 import { Switch } from '../../../components/ui/switch';
-import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon, Share2 } from 'lucide-react';
+import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon, Share2, Share } from 'lucide-react';
 // API
 import { updateTicketSales } from '../../../api/eventApi';
 
@@ -220,6 +220,12 @@ export default function Tickets({}) {
                   <TableCell className="text-gray-300 hidden sm:table-cell">{ticket.ticket_tag.name}</TableCell>
                   <TableCell className="text-gray-300 ">{ticket.seller_name === 'Unknown' ? 'Organizer' : ticket.seller_name}</TableCell>
                   <TableCell className="hidden sm:table-cell  text-right sm:space-x-1 space-y-1">
+                    
+                    <Button variant="outline" onClick={() => copyToClipboard(`¡Acá está tu ticket para el evento ${event.name} 🎟️!\n\n ${window.location.origin}/ticket/${ticket.uuid}`)} size="sm" title="Copiar invitación del cliente">
+                      <Share className="h-4 w-4" />
+                      <span className="sr-only">Copiar invitación del cliente</span>
+                    </Button>
+
                     <Button variant="outline" onClick={() => copyToClipboard(`${window.location.origin}/ticket/${ticket.uuid}`)} size="sm" title="Copiar enlace de ticket">
                       <LinkIcon className="h-4 w-4" />
                       <span className="sr-only">Copiar enlace de ticket</span>
