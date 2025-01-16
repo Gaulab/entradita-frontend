@@ -30,7 +30,7 @@ const pricingPacks = [
   {
     title: 'Eventos Grandes',
     ticketRange: 'Más de 2500 tickets',
-    price: 79.99,
+    price: 99.99,
     savings: 'Ahorra hasta 47%',
     icon: <Globe className="w-8 h-8 text-green-400" />,
   },
