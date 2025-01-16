@@ -15,14 +15,14 @@ const pricingPacks = [
   {
     title: 'Eventos Pequeños',
     price: 160.0,
-    ticketRange: 'Hasta 500 tickets',
+    ticketRange: 'Hasta 300 tickets',
     savings: 'Precio base',
     icon: <Star className="w-8 h-8 text-yellow-300" />,
   },
   {
     title: 'Eventos Medianos',
-    price: 130,
-    ticketRange: '501 - 2500 tickets',
+    price: 110,
+    ticketRange: '301 - 2500 tickets',
     savings: 'Ahorra hasta 33%',
     isPopular: true,
     icon: <Zap className="w-8 h-8 text-blue-300" />,
