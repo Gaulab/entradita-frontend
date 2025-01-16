@@ -35,7 +35,8 @@ import TicketPurchaseConfig from './pages/EventPage/TicketPurchaseConfig';
 import PurchaseSummaryPage from './pages/EventPage/PurchaseSummaryPage';
 // Trial pages
 import DashboardTrial from './pages/Trial/DashboardTrial';
-import TicketPage1Trial from './pages/Trial/TicketPage1Trial';
+import ScannerPageTrial from './pages/Trial/ScannerPageTrial';
+import TicketPageTrial from './pages/Trial/TicketPageTrial';
 // Guides pages
 import SellerGuide from './pages/Employee/SellerGuide';
 
@@ -67,11 +68,12 @@ function App() {
           <Route path="/seller/:uuid/create-ticket" element={<CreateTicketBySeller />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/dashboard-trial" element={<DashboardTrial />} />
-          <Route path="/ticket-page-trial/:ticket_uuid" element={<TicketPage1Trial />} />
+          <Route path="/ticket-page-trial" element={<TicketPageTrial />} />
+          <Route path="/scanner-page-trial" element={<ScannerPageTrial/>} />
           {/* <Route path="/ticket-purchase/:event_id" element={<PurchaseProvider><TicketPurchasePage /></PurchaseProvider>} /> */}
           {/* <Route path="/purchase-summary" element={<PurchaseProvider><PurchaseSummaryPage /></PurchaseProvider>} /> */}
-        <Route path="/event-page-guide" element={<EventPageGuide />} />
-        <Route path="/seller-guide" element={<SellerGuide />} />
+          <Route path="/event-page-guide" element={<EventPageGuide />} />
+          <Route path="/seller-guide" element={<SellerGuide />} />
         {/* Rutas protegidas */}
           <Route path="/event/:event_id/purchase-config" element={<AuthProvider><PrivateRoute><TicketPurchaseConfig /></PrivateRoute></AuthProvider>} />
           <Route path="/dashboard" element={<AuthProvider><PrivateRoute><Dashboard /></PrivateRoute></AuthProvider>} />
