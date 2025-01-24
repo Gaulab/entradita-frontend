@@ -17,7 +17,7 @@ const EconomicReport = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
-  const [commissionAmount, setCommissionAmount] = useState(100);
+  const [commissionAmount, setCommissionAmount] = useState(500);
   const apiUrl = import.meta.env.VITE_API_URL;
   const { authToken } = useContext(AuthContext);
   const [showAlert, setShowAlert] = useState(true);
