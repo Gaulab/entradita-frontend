@@ -14,22 +14,22 @@ import Badge from '@/components/ui/badge';
 const pricingPacks = [
   {
     title: 'Eventos Pequeños',
-    price: 160.0,
-    ticketRange: 'Hasta 300 tickets',
+    price: 140.0,
+    ticketRange: 'Hasta 500 tickets',
     savings: 'Precio base',
     icon: <Star className="w-8 h-8 text-yellow-300" />,
   },
   {
     title: 'Eventos Medianos',
     price: 110,
-    ticketRange: '301 - 2500 tickets',
+    ticketRange: '500 - 1000 tickets',
     savings: 'Ahorra hasta 33%',
     isPopular: true,
     icon: <Zap className="w-8 h-8 text-blue-300" />,
   },
   {
     title: 'Eventos Grandes',
-    ticketRange: 'Más de 2500 tickets',
+    ticketRange: 'Más de 1000 tickets',
     price: 99.99,
     savings: 'Ahorra hasta 47%',
     icon: <Globe className="w-8 h-8 text-green-400" />,
