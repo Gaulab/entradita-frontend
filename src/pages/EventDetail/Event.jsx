@@ -78,9 +78,9 @@ export default function Event({ event }) {
       </CardContent>
       <CardContent>
         <div className="flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:flex-wrap">
-          <Button onClick={navigateToWebPage} className="font-bold sm:mr-2 sm:mb-2 bg-indigo-600 hover:bg-indigo-700 hover:text-white text-white sm:min-w-48 sm:w-min border hover:border-indigo-600" new>
+          {/* <Button onClick={navigateToWebPage} className="font-bold sm:mr-2 sm:mb-2 bg-indigo-600 hover:bg-indigo-700 hover:text-white text-white sm:min-w-48 sm:w-min border hover:border-indigo-600" new>
             <MonitorCogIcon className="mr-2 h-4 w-4" /> Página WEB
-          </Button>
+          </Button> */}
           <Button onClick={navigateToEconomy} className="font-bold sm:mr-2 bg-green-600 hover:bg-green-700 hover:text-white text-white sm:min-w-48 sm:w-min border hover:border-green-600" new>
             <DollarSign className="mr-2 h-4 w-4" /> Economía
           </Button>

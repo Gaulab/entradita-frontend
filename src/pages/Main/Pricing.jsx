@@ -15,7 +15,7 @@ const pricingPacks = [
   {
     title: 'Eventos Pequeños',
     price: 140.0,
-    ticketRange: 'Hasta 500 tickets',
+    ticketRange: 'Hasta 499 tickets',
     savings: 'Precio base',
     icon: <Star className="w-8 h-8 text-yellow-300" />,
   },
