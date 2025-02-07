@@ -59,7 +59,7 @@ export default function TicketPage() {
         backgroundColor: null,
       });
 
-      const image = canvas.toDataURL('image/jpeg');
+      const image = canvas.toDataURL('image/png');
       const link = document.createElement('a');
       link.href = image;
       link.download = `ticket-${data.event_name}-${data.owner_name}.jpeg`;
@@ -109,7 +109,10 @@ export default function TicketPage() {
           </div>
 
           <div className="bg-white p-0 rounded-xl mb-4">
-            <QRCodeSVG id="qr-code" value={data.qr_payload} size={260} level="M" className="w-full max-w-[260px]" />
+            <QRCodeSVG id="qr-code" value={data.qr_payload} size={260} level="M"
+              fgColor="#000000" // Negro puro
+              bgColor="#FFFFFF" // Blanco puro
+              className="w-full max-w-[260px]" />
           </div>
 
           <div className="relative w-full">
