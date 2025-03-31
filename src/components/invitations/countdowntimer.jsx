@@ -35,28 +35,28 @@ function countdowntimer({ targetDate }) {
   return (
     <div className="grid grid-cols-4 gap-4 text-center">
       <div className="flex flex-col items-center">
-        <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-white text-3xl font-bold text-pink-800 shadow-md">
+        <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-white text-3xl font-bold text-purple-800 shadow-md">
           {timeLeft.days}
         </div>
-        <span className="mt-2 text-sm font-medium text-pink-600">Días</span>
+        <span className="mt-2 text-sm font-medium text-purple-600">Días</span>
       </div>
       <div className="flex flex-col items-center">
-        <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-white text-3xl font-bold text-pink-800 shadow-md">
+        <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-white text-3xl font-bold text-purple-800 shadow-md">
           {timeLeft.hours}
         </div>
-        <span className="mt-2 text-sm font-medium text-pink-600">Horas</span>
+        <span className="mt-2 text-sm font-medium text-purple-600">Horas</span>
       </div>
       <div className="flex flex-col items-center">
-        <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-white text-3xl font-bold text-pink-800 shadow-md">
+        <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-white text-3xl font-bold text-purple-800 shadow-md">
           {timeLeft.minutes}
         </div>
-        <span className="mt-2 text-sm font-medium text-pink-600">Minutos</span>
+        <span className="mt-2 text-sm font-medium text-purple-600">Minutos</span>
       </div>
       <div className="flex flex-col items-center">
-        <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-white text-3xl font-bold text-pink-800 shadow-md">
+        <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-white text-3xl font-bold text-purple-800 shadow-md">
           {timeLeft.seconds}
         </div>
-        <span className="mt-2 text-sm font-medium text-pink-600">Segundos</span>
+        <span className="mt-2 text-sm font-medium text-purple-600">Segundos</span>
       </div>
     </div>
   )

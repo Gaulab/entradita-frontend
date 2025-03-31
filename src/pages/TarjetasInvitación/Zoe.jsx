@@ -7,7 +7,7 @@ import { FaMoneyBill, FaMoneyCheck } from "react-icons/fa"
 
 function Zoe() {
   // Event details - modify as needed
-  const eventDate = new Date("2025-06-15T20:00:00")
+  const eventDate = new Date("2025-06-02T20:00:00")
   const eventLocation = "Finca Don Roque"
   const eventAddress = "Finca Don Roque, RN11, Malabrigo, Santa Fe"
 
@@ -15,16 +15,27 @@ function Zoe() {
       <main className="flex min-h-screen flex-col items-center">
           
       {/* Header Section */}
-      <section className="w-full bg-gradient-to-r from-pink-100 to-pink-200 py-20 text-center">
-        <div className="container px-4 md:px-6">
-          <h1 className="font-extralight text-5xl tracking-tight text-pink-800 md:text-6xl">15's de Zoe</h1>
-          <p className="font-extralight mt-4 text-xl text-pink-700">¡Te invito a celebrar mis quince años!</p>
-        </div>
-      </section>
+        <section
+          className="w-full bg-gradient-to-r from-purple-100 to-purple-200 py-20 text-center"
+          style={{
+            backgroundImage: 'url("/mariposas.jpg")',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundColor: "rgba(255, 255, 255, 0.8)", // Add a semi-transparent overlay
+            backgroundBlendMode: "overlay", // Blend the overlay with the image
+            }}
+          >
+            <div className="container px-4 md:px-6">
+            <h1 className="font-bold text-6xl tracking-tight text-purple-800 md:text-6xl" style={{ fontFamily: "'Dancing Script', cursive" }}>
+              15's de Zoe
+            </h1>
+            <p className="font-normal mt-4 text-xl text-purple-700">¡Te invito a celebrar mis quince años!</p>
+            </div>
+          </section>
 
-      {/* Hero Image Section */}
-      <section className="w-full py-12 md:py-16 bg-white">
-        <div className="container flex flex-col items-center px-4 md:px-6">
+          {/* Hero Image Section */}
+      <section className="w-full py-6 md:py-16 bg-white">
+        <div className="container flex flex-col items-center px-6 md:px-0">
           <div className="relative h-[300px] w-full max-w-3xl overflow-hidden rounded-xl md:h-[400px]">
             <img
               src="Principal.jpeg?text=Zoe's+15th+Birthday"
@@ -36,11 +47,11 @@ function Zoe() {
       </section>
 
       {/* Countdown Section */}
-      <section className="w-full bg-pink-50 py-12 md:py-16">
+      <section className="w-full bg-purple-50 py-12 md:py-16">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-pink-800">Cuenta Regresiva</h2>
-            <p className="mt-2 text-pink-600">¡Faltan solo unos días para la gran celebración!</p>
+            <h2 className="text-3xl font-bold tracking-tight text-purple-800">Cuenta Regresiva</h2>
+            <p className="mt-2 text-purple-600">¡Faltan solo unos días para la gran celebración!</p>
             <div className="mt-8">
               <CountdownTimer targetDate={eventDate} />
             </div>
@@ -54,14 +65,14 @@ function Zoe() {
           <div className="mx-auto grid max-w-3xl gap-8">
             <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-md">
               <div className="p-6 md:p-8">
-                <h2 className="mb-6 text-center text-3xl font-bold text-pink-800">Detalles del Evento</h2>
+                <h2 className="mb-6 text-center text-3xl font-bold text-purple-800">Detalles del Evento</h2>
                 <div className="grid gap-6 md:grid-cols-3">
                   <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-pink-100">
-                      <Calendar className="h-6 w-6 text-pink-600" />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100">
+                      <Calendar className="h-6 w-6 text-purple-600" />
                     </div>
                     <div>
-                      <h3 className="font-medium text-pink-800">Fecha y Hora</h3>
+                      <h3 className="font-medium text-purple-800">Fecha y Hora</h3>
                       <p className="text-sm text-gray-600">
                         {eventDate.toLocaleDateString("es-AR", {
                           weekday: "long",
@@ -79,21 +90,21 @@ function Zoe() {
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-pink-100">
-                      <MapPin className="h-6 w-6 text-pink-600" />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100">
+                      <MapPin className="h-6 w-6 text-purple-600" />
                     </div>
                     <div>
-                      <h3 className="font-medium text-pink-800">Lugar</h3>
+                      <h3 className="font-medium text-purple-800">Lugar</h3>
                       <p className="text-sm text-gray-600">{eventLocation}</p>
                       <p className="text-sm text-gray-600">{eventAddress}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-pink-100">
-                      <Shirt className="h-6 w-6 text-pink-600" />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100">
+                      <Shirt className="h-6 w-6 text-purple-600" />
                     </div>
                     <div>
-                      <h3 className="font-medium text-pink-800">Dress Code</h3>
+                      <h3 className="font-medium text-purple-800">Dress Code</h3>
                       <p className="text-sm text-gray-600">Elegante</p>
                       <p className="text-sm text-gray-600">Formal</p>
                     </div>
@@ -106,30 +117,30 @@ function Zoe() {
       </section>
 
       {/* Ticket Price Section */}
-      <section className="w-full py-12 md:py-16 bg-pink-50">
+      <section className="w-full py-12 md:py-16 bg-purple-50">
         <div className="container px-4 md:px-6">
           <div className="mx-auto max-w-3xl">
             <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-md">
               <div className="p-6 md:p-8">
-                <h2 className="mb-6 text-center text-3xl font-bold text-pink-800">Valor de la Tarjeta</h2>
+                <h2 className="mb-6 text-center text-3xl font-bold text-purple-800">Valor de la Tarjeta</h2>
                 <div className="flex flex-col items-center justify-center">
                 
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-pink-100">
-                      <Ticket className="h-6 w-6 text-pink-600" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100">
+                      <Ticket className="h-6 w-6 text-purple-600" />
                     </div>
                   <div className="flex flex-col gap-2 md:flex-row md:gap-8">
                     <div className="text-center">
-                      <p className="text-lg font-medium text-pink-700">Mayores</p>
-                      <p className="text-2xl font-bold text-pink-800">$25.000</p>
+                      <p className="text-lg font-medium text-purple-700">Mayores</p>
+                      <p className="text-2xl font-bold text-purple-800">$25.000</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-lg font-medium text-pink-700">Menores</p>
-                      <p className="text-2xl font-bold text-pink-800">$15.000</p>
+                      <p className="text-lg font-medium text-purple-700">Menores</p>
+                      <p className="text-2xl font-bold text-purple-800">$15.000</p>
                     </div>
                   </div>
                   <p className="mt-4 text-center text-gray-600">
                     Puedes abonar el valor de la tarjeta mediante transferencia bancaria utilizando los datos de la
-                    sección "Información para Regalos" o en efectivo.
+                    sección "Información bancaria" o en efectivo.
                   </p>
                 </div>
               </div>
@@ -142,8 +153,8 @@ function Zoe() {
       <section className="w-full bg-white py-12 md:py-16">
         <div className="container px-4 md:px-6">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="mb-6 text-center text-3xl font-bold text-pink-800">Confirma tu Asistencia</h2>
-            <p className="mb-8 text-center text-pink-600">Por favor, confirma tu asistencia antes del 1 de junio</p>
+            <h2 className="mb-6 text-center text-3xl font-bold text-purple-800">Confirma tu Asistencia</h2>
+            <p className="mb-8 text-center text-purple-600">Por favor, confirma tu asistencia antes del 28 de Abril</p>
             <a
               href="https://wa.me/5491112345678?text=Hola%20Zoe!%20Confirmo%20mi%20asistencia%20a%20tu%20fiesta%20de%2015%20años.%20Mi%20nombre%20es%3A%20"
               target="_blank"
@@ -157,29 +168,11 @@ function Zoe() {
         </div>
       </section>
 
-      {/* Photo Gallery Section
-      <section className="w-full py-12 md:py-16">
-        <div className="container px-4 md:px-6">
-          <h2 className="mb-6 text-center text-3xl font-bold text-pink-800">Galería</h2>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-              <div key={i} className="relative aspect-square overflow-hidden rounded-lg">
-                <img
-                  src={`https://via.placeholder.com/300?text=Foto ${i}`}
-                  alt={`Foto ${i}`}
-                  className="absolute inset-0 h-full w-full object-cover transition-transform hover:scale-105"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section> */}
-
       {/* Gift Information Section */}
-      <section className="w-full bg-pink-50 py-12 md:py-16">
+      <section className="w-full bg-purple-50 py-12 md:py-16">
         <div className="container px-4 md:px-6">
           <div className="mx-auto max-w-3xl">
-            <h2 className="mb-6 text-center text-3xl font-bold text-pink-800">
+            <h2 className="mb-6 text-center text-3xl font-bold text-purple-800">
               <FaMoneyBill className="mr-2 inline-block h-8 w-8" />
               Información Bancaria
             </h2>
@@ -191,26 +184,26 @@ function Zoe() {
       {/* Location Map Section */}
       <section className="w-full py-8 md:py-10 bg-white">
         <div className="container px-4 md:px-6 ">
-          <h2 className="mb-6 text-center text-3xl font-bold text-pink-800">Ubicación</h2>
-          <div className=" max-w-3xl overflow-hidden rounded-xl bg-pink-50">
+          <h2 className="mb-6 text-center text-3xl font-bold text-purple-800">Ubicación</h2>
+          <div className=" max-w-3xl overflow-hidden rounded-xl bg-purple-50">
             <LocationMap address={eventAddress} />
           </div>
         </div>
       </section>
 
       {/* Contact Section */}
-      <section className="w-full bg-pink-50 py-12 md:py-16">
+      <section className="w-full bg-purple-50 py-12 md:py-16">
         <div className="container px-4 md:px-6">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="mb-6 text-3xl font-bold text-pink-800">Contacto</h2>
+            <h2 className="mb-6 text-3xl font-bold text-purple-800">Contacto</h2>
             <div className="flex flex-col items-center justify-center gap-4 md:flex-row">
               <div className="flex items-center gap-2">
-                <Phone className="h-5 w-5 text-pink-600" />
-                <span className="text-pink-800">+54 11 1234-5678</span>
+                <Phone className="h-5 w-5 text-purple-600" />
+                <span className="text-purple-800">+54 11 1234-5678</span>
               </div>
               <div className="flex items-center gap-2">
-                <Mail className="h-5 w-5 text-pink-600" />
-                <span className="text-pink-800">zoe@example.com</span>
+                <Mail className="h-5 w-5 text-purple-600" />
+                <span className="text-purple-800">zoe@example.com</span>
               </div>
             </div>
           </div>
@@ -218,10 +211,10 @@ function Zoe() {
       </section>
 
       {/* Footer */}
-      <footer className="w-full bg-pink-800 py-6 text-center text-white">
+      <footer className="w-full bg-purple-800 py-6 text-center text-white">
         <div className="container px-4 md:px-6">
           <p className="flex items-center justify-center">
-            Con amor, Zoe <Heart className="ml-2 h-4 w-4 text-pink-300" />
+            Con amor, Zoe <Heart className="ml-2 h-4 w-4 text-purple-300" />
           </p>
         </div>
       </footer>
