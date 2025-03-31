@@ -16,7 +16,7 @@ function Zoe() {
           
       {/* Header Section */}
         <section
-          className="w-full bg-gradient-to-r from-purple-100 to-purple-200 py-20 text-center"
+          className="w-full bg-gradient-to-r from-purple-100 to-purple-200 py-10 text-center"
           style={{
             backgroundImage: 'url("/mariposas.jpg")',
             backgroundSize: "cover",
@@ -34,8 +34,8 @@ function Zoe() {
           </section>
 
           {/* Hero Image Section */}
-      <section className="w-full py-6 md:py-16 bg-white">
-        <div className="container flex flex-col items-center px-6 md:px-0">
+      <section className="w-full py-2 md:py-16 bg-white">
+        <div className="container flex flex-col items-center px-2 md:px-0">
           <div className="relative h-[300px] w-full max-w-3xl overflow-hidden rounded-xl md:h-[400px]">
             <img
               src="Principal.jpeg?text=Zoe's+15th+Birthday"

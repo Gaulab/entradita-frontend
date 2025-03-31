@@ -7,7 +7,7 @@ function giftinfo() {
   // Replace with actual payment information
   const paymentInfo = {
     alias: "zoe.15años",
-    cbu: "0000000000000000000000",
+    cbu: "000000000000000",
     name: "Mariana Silva",
   }
 
