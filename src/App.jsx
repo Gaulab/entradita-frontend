@@ -23,6 +23,7 @@ import Pricing from './pages/Main/Pricing';
 import PrivacyPolicy from './pages/Main/PrivacyPolicy';
 import TicketPurchasePage from './pages/EventPage/TicketPurchasePage';
 import EventPageGuide from './pages/EventPage/EventPageGuide';
+import BuyPage from './pages/EventPage/BuyPage';
 // Private pages
 import Dashboard from './pages/Dashboard';
 import EventDetail from './pages/EventDetail/EventDetail';
@@ -39,6 +40,8 @@ import ScannerPageTrial from './pages/Trial/ScannerPageTrial';
 import TicketPageTrial from './pages/Trial/TicketPageTrial';
 // Guides pages
 import SellerGuide from './pages/Employee/SellerGuide';
+// Invite pages
+import Zoe from './pages/TarjetasInvitación/Zoe';
 
 // SellerWrapper is a functional component that extracts the UUID from the URL using the useParams hook and passes it as a prop to the VendorView component.
 const SellerWrapper = () => {
@@ -69,11 +72,13 @@ function App() {
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/dashboard-trial" element={<DashboardTrial />} />
           <Route path="/ticket-page-trial" element={<TicketPageTrial />} />
-          <Route path="/scanner-page-trial" element={<ScannerPageTrial/>} />
-          {/* <Route path="/ticket-purchase/:event_id" element={<PurchaseProvider><TicketPurchasePage /></PurchaseProvider>} /> */}
-          {/* <Route path="/purchase-summary" element={<PurchaseProvider><PurchaseSummaryPage /></PurchaseProvider>} /> */}
+          <Route path="/scanner-page-trial" element={<ScannerPageTrial />} />
+          <Route path="/buy-page" element={<BuyPage />} />
+          <Route path="/ticket-purchase/:event_id" element={<PurchaseProvider><TicketPurchasePage /></PurchaseProvider>} />
+          <Route path="/purchase-summary" element={<PurchaseProvider><PurchaseSummaryPage /></PurchaseProvider>} />
           <Route path="/event-page-guide" element={<EventPageGuide />} />
           <Route path="/seller-guide" element={<SellerGuide />} />
+          <Route path="/zoe" element={<Zoe />} />
         {/* Rutas protegidas */}
           <Route path="/event/:event_id/purchase-config" element={<AuthProvider><PrivateRoute><TicketPurchaseConfig /></PrivateRoute></AuthProvider>} />
           <Route path="/dashboard" element={<AuthProvider><PrivateRoute><Dashboard /></PrivateRoute></AuthProvider>} />
