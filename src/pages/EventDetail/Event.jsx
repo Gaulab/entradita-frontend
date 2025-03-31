@@ -87,7 +87,7 @@ export default function Event({ event }) {
           {/* <Button onClick={navigateToWhatsapp} className="sm:mr-2 bg-gray-700 hover:bg-gray-600  hover:text-white text-white sm:min-w-48 sm:w-min">
             <User2Icon className="mr-2 h-4 w-4" /> Soporte rápido
           </Button> */}
-          <Button onClick={navigateToOnlineSell} disabled className="font-bold sm:mr-2 bg-gray-600 hover:bg-yellow-600 hover:text-white text-white sm:min-w-48 sm:w-min border hover:border-yellow-500" soon>
+          <Button onClick={navigateToOnlineSell} className="font-bold sm:mr-2 bg-gray-600 hover:bg-yellow-600 hover:text-white text-white sm:min-w-48 sm:w-min border hover:border-yellow-500" soon>
             <ShoppingCartIcon className="mr-2 h-4 w-4" /> Venta online
           </Button>
           {/* <Button onClick={navigateToGuide} disabled className="sm:mr-2 bg-gray-700 hover:bg-gray-600 hover:text-white text-white sm:min-w-48 sm:w-min">
