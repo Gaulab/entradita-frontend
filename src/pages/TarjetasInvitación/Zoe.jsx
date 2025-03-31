@@ -8,7 +8,7 @@ import { FaMoneyBill, FaMoneyCheck } from "react-icons/fa"
 function Zoe() {
   // Event details - modify as needed
   const eventDate = new Date("2025-06-02T20:00:00")
-  const eventLocation = "Finca Don Roque"
+  const eventLocation = ""
   const eventAddress = "Finca Don Roque, RN11, Malabrigo, Santa Fe"
 
   return (
