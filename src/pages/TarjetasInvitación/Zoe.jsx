@@ -74,18 +74,9 @@ function Zoe() {
                     <div>
                       <h3 className="font-medium text-purple-800">Fecha y Hora</h3>
                       <p className="text-sm text-gray-600">
-                        {eventDate.toLocaleDateString("es-AR", {
-                          weekday: "long",
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
+                      Viernes, 2 de mayo de 2025
                       </p>
-                      <p className="text-sm text-gray-600">
-                        {eventDate.toLocaleTimeString("es-AR", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+                      <p className="text-sm text-gray-600"> 20:30 hs.
                       </p>
                     </div>
                   </div>
@@ -116,59 +107,79 @@ function Zoe() {
         </div>
       </section>
 
-      {/* Ticket Price Section */}
-      <section className="w-full py-4 md:py-16 bg-white">
-        <div className="container px-4 md:px-6">
-          <div className="mx-auto max-w-3xl">
-            <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-md">
-              <div className="p-6 md:p-8">
-                <h2 className="mb-6 text-center text-3xl font-bold text-purple-800">Valor de la Tarjeta</h2>
-                <div className="flex flex-col items-center justify-center">
-                
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100">
-                      <Ticket className="h-6 w-6 text-purple-600" />
-                    </div>
-                  <div className="flex flex-col gap-2 md:flex-row md:gap-8">
-                    <div className="text-center">
-                      <p className="text-lg font-medium text-purple-700">Mayores</p>
-                      <p className="text-2xl font-bold text-purple-800">$25.000</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-lg font-medium text-purple-700">Menores</p>
-                      <p className="text-2xl font-bold text-purple-800">$15.000</p>
-                    </div>
-                  </div>
-                  <p className="mt-4 text-center text-gray-600">
-                    Puedes abonar el valor de la tarjeta mediante transferencia bancaria utilizando los datos de la
-                    sección "Información bancaria" o en efectivo.
-                  </p>
-                </div>
+      {/* /* Ticket Price Section */} 
+        <section className="w-full py-4 md:py-16 bg-white">
+          <div className="container px-4 md:px-6">
+            <div className="mx-auto max-w-3xl">
+          <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-md">
+            <div className="p-6 md:p-8">
+              <h2 className="mb-6 text-center text-3xl font-bold text-purple-800">Valor de la Tarjeta</h2>
+              <div className="flex flex-col items-center justify-center">
+              
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100">
+                <Ticket className="h-6 w-6 text-purple-600" />
+              </div>
+            <div className="flex flex-col gap-2 md:flex-row md:gap-8">
+              <div className="text-center">
+                <p className="text-lg font-medium text-purple-700">Mayores</p>
+                <p className="text-2xl font-bold text-purple-800">$25.000</p>
+              </div>
+              <div className="text-center">
+                <p className="text-lg font-medium text-purple-700">Menores</p>
+                <p className="text-2xl font-bold text-purple-800">$15.000</p>
+              </div>
+            </div>
+            <p className="mt-4 text-center text-gray-600">
+              Puedes abonar el valor de la tarjeta mediante transferencia bancaria utilizando los datos de la
+              sección "Información bancaria" o en efectivo.
+            </p>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+            </div>
+          </div>
+        </section>
 
-      {/* Attendance Confirmation Section */}
-      <section className="w-full bg-purple-50 py-6 md:py-16">
-        <div className="container px-4 md:px-6">
-          <div className="mx-auto max-w-3xl text-center">
-            <h2 className="mb-6 text-center text-3xl font-bold text-purple-800">Confirmar asistencia</h2>
-            <p className="mb-8 text-center text-purple-600">Por favor, confirma tu asistencia antes del 28 de Abril</p>
+        {/* Attendance Confirmation Section */}
+        <section className="w-full bg-purple-50 py-6 md:py-16">
+          <div className="container px-4 md:px-6">
+            <div className="mx-auto max-w-3xl text-center">
+          <h2 className="mb-6 text-center text-3xl font-bold text-purple-800">Confirmar asistencia</h2>
+          <p className="mb-8 text-center text-purple-600">Por favor, confirma tu asistencia antes del 28 de Abril</p>
+          <div className="flex flex-col gap-4 md:flex-row md:justify-center">
             <a
-              href="https://wa.me/5491112345678?text=Hola%20Zoe!%20Confirmo%20mi%20asistencia%20a%20tu%20fiesta%20de%2015%20años.%20Mi%20nombre%20es%3A%20"
+              href="https://wa.me/5493482639668?text=Hola%20Mariana!%20Confirmo%20mi%20asistencia%20a%20la%20fiesta%20de%20Zoe.%20Mi%20nombre%20es%3A%20"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-md bg-green-600 px-6 py-3 text-lg font-medium text-white transition-colors hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+              className="inline-flex items-center justify-center rounded-md bg-purple-600 px-4 py-3 text-base font-medium text-white transition-colors hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
             >
               <WhatsApp className="mr-2 h-5 w-5" />
-              Confirmar por WhatsApp
+              Confirmar con Mariana
+            </a>
+            <a
+              href="https://wa.me/5493482625657?text=Hola%20Gordo!%20Confirmo%20mi%20asistencia%20a%20la%20fiesta%20de%20Zoe.%20Mi%20nombre%20es%3A%20"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-md bg-purple-600 px-4 py-3 text-base font-medium text-white transition-colors hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+            >
+              <WhatsApp className="mr-2 h-5 w-5" />
+              Confirmar con Gordo
+            </a>
+            <a
+              href="https://wa.me/5493482213627?text=Hola%20Zoe!%20Confirmo%20mi%20asistencia%20a%20tu%20fiesta%20de%2015%20años.%20Mi%20nombre%20es%3A%20"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-md bg-purple-600 px-4 py-3 text-base font-medium text-white transition-colors hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+            >
+              <WhatsApp className="mr-2 h-5 w-5" />
+              Confirmar con Zoe
             </a>
           </div>
-        </div>
-      </section>
+            </div>
+          </div>
+        </section>
 
-      {/* Gift Information Section */}
+        {/* Gift Information Section */}
       <section className="w-full bg-white py-6 md:py-16">
         <div className="container px-4 md:px-6">
           <div className="mx-auto max-w-3xl">
