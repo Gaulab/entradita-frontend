@@ -6,7 +6,7 @@ import { Copy } from "lucide-react"
 function giftinfo() {
   // Replace with actual payment information
   const paymentInfo = {
-    alias: "zoe.15años",
+    alias: "zoe.fiesta15",
     cbu: "000000000000000",
     name: "Mariana Silva",
   }

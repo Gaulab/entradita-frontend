@@ -7,7 +7,7 @@ import { FaMoneyBill, FaMoneyCheck } from "react-icons/fa"
 
 function Zoe() {
   // Event details - modify as needed
-  const eventDate = new Date("2025-06-02T20:00:00")
+  const eventDate = new Date("2025-05-02T20:00:00")
   const eventLocation = ""
   const eventAddress = "Finca Don Roque, RN11, Malabrigo, Santa Fe"
 
@@ -29,11 +29,11 @@ function Zoe() {
             <h1 className="font-bold text-6xl tracking-tight text-purple-800 md:text-6xl" style={{ fontFamily: "'Dancing Script', cursive" }}>
               15's de Zoe
             </h1>
-            <p className="font-normal mt-4 text-xl text-purple-700">¡Te invito a celebrar mis quince años!</p>
+            <p className="font-normal mt-4 text-xl text-purple-700">¡Te invito a celebrar mis 15's!</p>
             </div>
           </section>
 
-          {/* Hero Image Section */}
+          {/* Hero Image Section
       <section className="w-full py-2 md:py-16 bg-white">
         <div className="container flex flex-col items-center px-2 md:px-0">
           <div className="relative h-[300px] w-full max-w-3xl overflow-hidden rounded-xl md:h-[400px]">
@@ -44,10 +44,10 @@ function Zoe() {
             />
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Countdown Section */}
-      <section className="w-full bg-purple-50 py-12 md:py-16">
+      <section className="w-full bg-white py-12 md:py-16">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center text-center">
             <h2 className="text-3xl font-bold tracking-tight text-purple-800">Cuenta Regresiva</h2>
@@ -60,7 +60,7 @@ function Zoe() {
       </section>
 
       {/* Event Details Section */}
-      <section className="w-full py-4 md:py-16 bg-white">
+      <section className="w-full py-4 md:py-16 bg-purple-50">
         <div className="container px-4 md:px-6">
           <div className="mx-auto grid max-w-3xl gap-8">
             <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-md">
@@ -105,8 +105,8 @@ function Zoe() {
                     </div>
                     <div>
                       <h3 className="font-medium text-purple-800">Dress Code</h3>
-                      <p className="text-sm text-gray-600">Elegante</p>
-                      <p className="text-sm text-gray-600">Formal</p>
+                      <p className="text-sm text-gray-600">Guapos y divinas</p>
+                      {/* <p className="text-sm text-gray-600">Formal</p> */}
                     </div>
                   </div>
                 </div>
@@ -117,7 +117,7 @@ function Zoe() {
       </section>
 
       {/* Ticket Price Section */}
-      <section className="w-full py-4 md:py-16 bg-purple-50">
+      <section className="w-full py-4 md:py-16 bg-white">
         <div className="container px-4 md:px-6">
           <div className="mx-auto max-w-3xl">
             <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-md">
@@ -150,7 +150,7 @@ function Zoe() {
       </section>
 
       {/* Attendance Confirmation Section */}
-      <section className="w-full bg-white py-6 md:py-16">
+      <section className="w-full bg-purple-50 py-6 md:py-16">
         <div className="container px-4 md:px-6">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="mb-6 text-center text-3xl font-bold text-purple-800">Confirma tu Asistencia</h2>
@@ -169,7 +169,7 @@ function Zoe() {
       </section>
 
       {/* Gift Information Section */}
-      <section className="w-full bg-purple-50 py-6 md:py-16">
+      <section className="w-full bg-white py-6 md:py-16">
         <div className="container px-4 md:px-6">
           <div className="mx-auto max-w-3xl">
             <h2 className="mb-6 text-center text-3xl font-bold text-purple-800">
@@ -182,7 +182,7 @@ function Zoe() {
       </section>
 
       {/* Location Map Section */}
-      <section className="w-full py-6 md:py-10 bg-white">
+      <section className="w-full py-6 md:py-10 bg-purple-50">
         <div className="container px-4 md:px-6 ">
           <h2 className="mb-6 text-center text-3xl font-bold text-purple-800">Ubicación</h2>
           <div className=" max-w-3xl overflow-hidden rounded-xl bg-purple-50">
@@ -191,8 +191,8 @@ function Zoe() {
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section className="w-full bg-purple-50 py-12 md:py-16">
+      {/* Contact Section
+      <section className="w-full bg-white py-12 md:py-16">
         <div className="container px-4 md:px-6">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="mb-6 text-3xl font-bold text-purple-800">Contacto</h2>
@@ -208,7 +208,7 @@ function Zoe() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Footer */}
       <footer className="w-full bg-purple-800 py-6 text-center text-white">
