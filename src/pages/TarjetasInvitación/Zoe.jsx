@@ -153,7 +153,7 @@ function Zoe() {
       <section className="w-full bg-purple-50 py-6 md:py-16">
         <div className="container px-4 md:px-6">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="mb-6 text-center text-3xl font-bold text-purple-800">Confirma tu Asistencia</h2>
+            <h2 className="mb-6 text-center text-3xl font-bold text-purple-800">Confirmar asistencia</h2>
             <p className="mb-8 text-center text-purple-600">Por favor, confirma tu asistencia antes del 28 de Abril</p>
             <a
               href="https://wa.me/5491112345678?text=Hola%20Zoe!%20Confirmo%20mi%20asistencia%20a%20tu%20fiesta%20de%2015%20años.%20Mi%20nombre%20es%3A%20"
@@ -174,7 +174,7 @@ function Zoe() {
           <div className="mx-auto max-w-3xl">
             <h2 className="mb-6 text-center text-3xl font-bold text-purple-800">
               <FaMoneyBill className="mr-2 inline-block h-8 w-8" />
-              Información Bancaria
+              Info Bancaria
             </h2>
             <GiftInfo />
           </div>
