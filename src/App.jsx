@@ -42,6 +42,7 @@ import TicketPageTrial from './pages/Trial/TicketPageTrial';
 import SellerGuide from './pages/Employee/SellerGuide';
 // Invite pages
 import Zoe from './pages/TarjetasInvitación/Zoe';
+import Zoe2 from './pages/TarjetasInvitación/Zoe15';
 
 // SellerWrapper is a functional component that extracts the UUID from the URL using the useParams hook and passes it as a prop to the VendorView component.
 const SellerWrapper = () => {
@@ -78,7 +79,8 @@ function App() {
           <Route path="/purchase-summary" element={<PurchaseProvider><PurchaseSummaryPage /></PurchaseProvider>} />
           <Route path="/event-page-guide" element={<EventPageGuide />} />
           <Route path="/seller-guide" element={<SellerGuide />} />
-          <Route path="/zoe" element={<Zoe />} />
+        <Route path="/zoe" element={<Zoe />} />
+        <Route path="/zoe15" element={<Zoe2 />} />
         {/* Rutas protegidas */}
           <Route path="/event/:event_id/purchase-config" element={<AuthProvider><PrivateRoute><TicketPurchaseConfig /></PrivateRoute></AuthProvider>} />
           <Route path="/dashboard" element={<AuthProvider><PrivateRoute><Dashboard /></PrivateRoute></AuthProvider>} />

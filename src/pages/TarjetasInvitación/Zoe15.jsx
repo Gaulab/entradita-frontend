@@ -5,7 +5,7 @@ import LocationMap from "@/components/invitations/locationmap"
 import "../../index.css"
 import { FaMoneyBill, FaMoneyCheck } from "react-icons/fa"
 
-function Zoe() {
+function Zoe2() {
   // Event details - modify as needed
   const eventDate = new Date("2025-05-02T20:00:00")
   const eventLocation = ""
@@ -108,7 +108,7 @@ function Zoe() {
       </section>
 
       {/* /* Ticket Price Section */} 
-        <section className="w-full max-w-xl py-4 md:py-16 bg-white">
+        {/* <section className="w-full max-w-xl py-4 md:py-16 bg-white">
           <div className="container px-4 md:px-6">
             <div className="mx-auto max-w-3xl">
           <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-md">
@@ -138,7 +138,7 @@ function Zoe() {
           </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Attendance Confirmation Section */}
         <section className="w-full max-w-xl bg-purple-50 py-6 md:py-16">
@@ -179,7 +179,7 @@ function Zoe() {
           </div>
         </section>
 
-        {/* Gift Information Section */}
+        {/* Gift Information Section
       <section className="w-full max-w-xl bg-white py-6 md:py-16">
         <div className="container px-4 md:px-6">
           <div className="mx-auto max-w-3xl">
@@ -190,7 +190,7 @@ function Zoe() {
             <GiftInfo />
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Location Map Section */}
       <section className="w-full max-w-xl py-6 md:py-10 bg-purple-50">
@@ -233,5 +233,5 @@ function Zoe() {
   )
 }
 
-export default Zoe
+export default Zoe2
 
