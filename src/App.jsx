@@ -29,7 +29,6 @@ import Dashboard from './pages/Dashboard';
 import EventDetail from './pages/EventDetail/EventDetail';
 import CreateEvent from './pages/CreateEvent';
 import EditEvent from './pages/EditEvent';
-import EventConfigInterface from './pages/EventPage/EventConfigInterface';
 import EventPage from './pages/EventPage/EventPage';
 import Economy from './pages/Economy';
 import TicketPurchaseConfig from './pages/EventPage/TicketPurchaseConfig';
@@ -65,6 +64,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        
           <Route path="/ticket/:ticket_uuid" element={<TicketPage />} />
           <Route path="/ticket-share/:uuid" element={<TicketShare />} />
           <Route path="/seller/:uuid" element={<SellerWrapper />} />
@@ -78,17 +78,16 @@ function App() {
           <Route path="/ticket-purchase/:event_id" element={<PurchaseProvider><TicketPurchasePage /></PurchaseProvider>} />
           <Route path="/purchase-summary" element={<PurchaseProvider><PurchaseSummaryPage /></PurchaseProvider>} />
           <Route path="/event-page-guide" element={<EventPageGuide />} />
+          <Route path="/event-page/:id" element={<EventPage />} />
           <Route path="/seller-guide" element={<SellerGuide />} />
-        <Route path="/zoe" element={<Zoe />} />
-        <Route path="/zoe15" element={<Zoe2 />} />
+          <Route path="/zoe" element={<Zoe />} />
+          <Route path="/zoe15" element={<Zoe2 />} />
         {/* Rutas protegidas */}
           <Route path="/event/:event_id/purchase-config" element={<AuthProvider><PrivateRoute><TicketPurchaseConfig /></PrivateRoute></AuthProvider>} />
           <Route path="/dashboard" element={<AuthProvider><PrivateRoute><Dashboard /></PrivateRoute></AuthProvider>} />
           <Route path="/event/:id/details" element={<AuthProvider><EventDetailsProvider><PrivateRoute><EventDetail /></PrivateRoute></EventDetailsProvider></AuthProvider>} />
           <Route path="/create-event" element={<AuthProvider><PrivateRoute><CreateEvent /></PrivateRoute></AuthProvider>} />
           <Route path="/edit-event/:id" element={<AuthProvider><PrivateRoute><EditEvent /></PrivateRoute></AuthProvider>} />
-          <Route path="/event-page-config/:id" element={<AuthProvider><PrivateRoute><EventConfigInterface /></PrivateRoute></AuthProvider>} />
-          <Route path="/event-page/:id" element={<EventPage />} />
           <Route path="event/:id/economy" element={<AuthProvider><PrivateRoute><Economy /></PrivateRoute></AuthProvider>} />
         </Routes>
       </Router>

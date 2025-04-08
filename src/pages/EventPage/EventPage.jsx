@@ -1,261 +1,115 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { getEventPage } from '@/api/eventPageApi';
-import { googleFonts, FontStyles } from '@/fonts'; 
-import { FaWhatsapp } from "react-icons/fa";
-const CountdownTimer = ({ targetDate }) => {
-  const calculateTimeLeft = () => {
-    const difference = +new Date(targetDate) - +new Date();
-    if (difference <= 0) return {};
+"use client"
 
-    return {
-      días: Math.floor(difference / (1000 * 60 * 60 * 24)),
-      horas: Math.floor((difference / (1000 * 60 * 60)) % 24),
-      minutos: Math.floor((difference / 1000 / 60) % 60),
-      segundos: Math.floor((difference / 1000) % 60),
-    };
-  };
-
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
-
-  useEffect(() => {
-    const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 1000);
-    return () => clearInterval(timer);
-  }, [targetDate]);
-
-  return (
-    <div className="grid grid-cols-4 gap-4 text-center">
-      {Object.keys(timeLeft).length ? (
-        Object.entries(timeLeft).map(([interval, value]) => (
-          <div key={interval} className="flex flex-col items-center">
-            <span className="text-4xl md:text-6xl font-bold">{value}</span>
-            <span className="text-sm md:text-base">{interval}</span>
-          </div>
-        ))
-      ) : (
-        <span>¡El evento ha comenzado!</span>
-      )}
-    </div>
-  );
-};
-
-const Title = ({ title, subtitle, cardColor }) => (
-  <motion.div
-    className="mb-2 text-center w-full p-4 rounded-lg shadow-lg glowing"
-    style={{ backgroundColor: `${cardColor}30` }}
-    initial={{ opacity: 0, y: -50 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
-  >
-    <h1 className="text-5xl md:text-7xl font-bold">{title}</h1>
-    {subtitle && <h2 className="text-xl md:text-4xl mt-2">{subtitle}</h2>}
-  </motion.div>
-);
-
-const SpotifyEmbed = ({ link, text, cardColor }) => {
-  
-  const getSpotifyEmbedUrl = (link) => {
-    const url = new URL(link);
-    const pathSegments = url.pathname.split('/');
-    const type = pathSegments[1]; // 'track', 'playlist', 'album', etc.
-    const id = pathSegments[2];
-    return `https://open.spotify.com/embed/${type}/${id}`;
-  };
-
-  return (
-    <motion.div
-      className="mb-2 w-full p-4 rounded-none shadow-lg"
-      style={{ backgroundColor: `${cardColor}30` }}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      {text && <p className="text-center mb-4 text-lg">{text}</p>}
-      <div className="aspect-w-16 aspect-h-9">
-        <iframe
-          className=' p-0 rounded-2xl'
-          src={getSpotifyEmbedUrl(link)}
-          width="100%"
-          height="360"
-          allowFullScreen=""
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-          loading="eager"
-        >
-        </iframe>
-      </div>
-    </motion.div>
-  );
-};
-
-const Text = ({ content, cardColor }) => (
-  <motion.p
-    className="text-xl md:text-2xl mb-2 text-start w-full p-4 rounded-lg shadow-lg"
-    style={{ backgroundColor: `${cardColor}30` }} // 25% opacity in hex is 40
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ duration: 0.5, delay: 0.4 }}
-  >
-    {content}
-  </motion.p>
-);
-
-const ImageFront = ({ src, alt, cardColor }) => (
-  <motion.img
-    src={src}
-    alt={alt}
-    className="rounded-lg shadow-lg mb-2 w-full opacity-85 object-cover"
-    animate={{
-      boxShadow: [`0 0 10px ${cardColor}90`, `0 0 20px ${cardColor}90`, `0 0 10px ${cardColor}90`],
-    }}
-    transition={{
-      repeat: Infinity,
-      repeatType: 'reverse',
-      duration: 4,
-    }}
-  />
-);
-
-const Button = ({ text, link, color, bgcolor }) => (
-  <motion.a
-    href={link}
-    className="font-bold py-3 px-6 rounded-lg text-xl transition duration-300 ease-in-out transform hover:scale-105 mb-2 inline-block text-center"
-    style={{ color: color, backgroundColor: bgcolor }}
-    whileHover={{ scale: 1.01 }}
-    whileTap={{ scale: 0.95 }}
-  >
-    {text}
-  </motion.a>
-);
-
-const Pay = ({ text, cbu, alias, cardColor }) => (
-  <div className="w-full p-4 rounded-lg shadow-lg mb-2" style={{ backgroundColor: `${cardColor}30` }}>
-    <p className="mb-2">{text}</p>
-    <p className="mb-2">
-      <strong>CBU:</strong> {cbu}
-    </p>
-    <p className="mb-2">
-      <strong>Alias:</strong> {alias}
-    </p>
-  </div>
-);
-
-const Tarjeteros = ({ sellers, text, cardColor }) => (
-  <motion.div
-    className="mb-2 w-full p-4 rounded-lg shadow-lg"
-    style={{ backgroundColor: `${cardColor}30` }}
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
-  >
-    {text && <p className="text-xl mb-4">{text}</p>}
-    <div className="space-y-2">
-      {sellers.map((seller, index) => (
-        <div key={index}  className="p-3 bg-gray-900/70 rounded-lg flex justify-between items-center">
-          <span className="text-lg overflow-hidden overflow-ellipsis ">{seller.name}</span>
-          <a
-            href={`https://wa.me/${seller.phone}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-green-600/80 text-white p-2 rounded-lg hover:bg-green-500/40 hover:text-white transition-colors flex text-center justify-center min-w-20"
-          >
-            <FaWhatsapp size={20} />
-          </a>
-        </div>
-      ))}
-    </div>
-  </motion.div>
-);
+import { useState, useEffect } from "react"
+import { useParams } from "react-router-dom"
+import { getEventPage } from "../../api/eventPageApi"
 
 function EventPage() {
-  const { id } = useParams();
-  const [eventData, setEventData] = useState(null);
+  const { id } = useParams()
+  const [eventData, setEventData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+
 
   useEffect(() => {
     const fetchEventPage = async () => {
       try {
-        const eventPage = await getEventPage(id);
-        setEventData(eventPage);
-        console.log('eventPage', eventPage);
-      } catch (error) {
-        console.error(error.message);
+        setLoading(true)
+        const eventPage = await getEventPage(id)
+        setEventData(eventPage)
+        setError(null)
+      } catch (err) {
+        setError("Failed to load event information. Please try again later.")
+        console.error("Error fetching event data:", err)
+      } finally {
+        setLoading(false)
       }
-    };
-    fetchEventPage();
-  }, [id]);
+    }
+    fetchEventPage()
+  }, [id])
 
-
-  if (!eventData) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-900">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
+  // Format date function
+  const formatDate = (dateString) => {
+    if (!dateString) return ""
+    const options = { year: "numeric", month: "long", day: "numeric" }
+    return new Date(dateString).toLocaleDateString(undefined, options)
+  }
+  // Handle buy button click
+  const handleBuyTicket = () => {
+    // Redirect to a WhatsApp chat link
+    const phoneNumber = "+543482586525"; // Replace with the organizer's phone number
+    const message = encodeURIComponent("Hola, quiero un ticket para el evento " + eventData.name + "con id " + eventData.id);
+    window.location.href = `https://wa.me/${phoneNumber}?text=${message}`;
   }
 
-  const generalBlock = eventData.blocks.find((block) => block.type === 'GENERAL');
-  const cardColor = generalBlock?.data.card_color || '#000000';
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-200 mx-auto"></div>
+          <p className="mt-4 text-gray-200">Loading event information...</p>
+        </div>
+      </div>
+    )
+  }
 
-  const renderBlock = (block) => {
-    switch (block.type) {
-      case 'TITLE':
-        return <Title title={block.data.title} subtitle={block.data.subtitle} cardColor={cardColor} />;
-      case 'TEXT':
-        return <Text content={block.data.text} cardColor={cardColor} />;
-      case 'IMAGE':
-        return <ImageFront src={block.data.image_address} alt={block.data.title || 'Event image'} cardColor={cardColor} />;
-      case 'COUNTDOWN':
-        return (
-          <motion.div
-            className="mb-2 max-w-2xl w-full p-4 rounded-lg shadow-lg"
-            style={{ backgroundColor: `${cardColor}30` }}
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center p-6 max-w-md bg-white rounded-lg shadow-md">
+          <h2 className="text-2xl font-bold text-red-600 mb-4">Error</h2>
+          <p className="text-gray-700">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors"
           >
-            <CountdownTimer targetDate={block.data.contdown_date} />
-          </motion.div>
-        );
-      case 'BUTTON':
-        return <Button text={block.data.button_text} link={block.data.button_link} color={block.data.button_color} bgcolor={block.data.button_bgcolor} />;
-      case 'PAY':
-        return <Pay text={block.data.pay_text} cbu={block.data.pay_cbu} alias={block.data.pay_alias} cardColor={cardColor} />;
-      case 'MERCADOPAGO':
-        return <Button text={block.data.button_text} link={`/ticket-purchase/${id}`} color={block.data.button_color} bgcolor={block.data.button_bgcolor} />;
-      case 'SPOTIFY':
-        return <SpotifyEmbed link={block.data.spotify_link} text={block.data.text} cardColor={cardColor} />;
-  case 'TARJETEROS':
-        return <Tarjeteros sellers={block.data.sellers} text={block.data.text} cardColor={cardColor} />;
-      default:
-        return null;
-    }
-  };
+            Try Again
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  if (!eventData) return null
 
   return (
-    <>
-      <FontStyles />  
-      <div
-        className="min-h-screen text-white relative overflow-hidden"
-        style={{
-          fontFamily: generalBlock?.data.font || 'Arial',
-          color: generalBlock?.data.font_color || '#FFFFFF',
-        }}
-      >
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${generalBlock?.data.image_background})` }} />
-        <div className="absolute inset-0 bg-black opacity-20" />
-
-        <div className="relative z-10 flex flex-col min-h-screen p-4 max-w-lg mx-auto mb-8">
-          {eventData.blocks
-            .sort((a, b) => a.order - b.order)
-            .map((block) => (
-              <React.Fragment key={block.id}>{renderBlock(block)}</React.Fragment>
-            ))}
+    <div className="min-h-screen bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto bg-gray-300 rounded-xl shadow-md overflow-hidden">
+        <div className="md:flex">
+          <div className="md:shrink-0">
+            <img
+              className="h-48 w-full object-cover md:h-full md:w-80"
+              src={eventData.image_address || "/placeholder.svg"}
+              alt={eventData.name}
+            />
+          </div>
+          <div className="p-8 w-full">
+            <div className="uppercase tracking-wide text-sm text-green-600 font-semibold">
+              {formatDate(eventData.date)}
+            </div>
+            <h1 className="mt-2 text-3xl font-bold text-gray-900 leading-tight">{eventData.name}</h1>
+            <p className="mt-2 text-gray-600">
+              <span className="font-medium">Location:</span> {eventData.place}
+            </p>
+            {eventData.organizer_contact && (
+              <p className="mt-2 text-gray-600">
+                <span className="font-medium">Contact:</span> {eventData.organizer_contact}
+              </p>
+            )}
+            <div className="mt-8">
+              <button
+                onClick={handleBuyTicket}
+                className="w-full md:w-auto px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50 transition-colors"
+              >
+                Buy Tickets
+              </button>
+            </div>
+          </div>
         </div>
-
-        <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-sm text-center opacity-70">Powered by entradita.com</div>
       </div>
-    </>
-  );
+    </div>
+  )
 }
 
-export default EventPage;
+export default EventPage

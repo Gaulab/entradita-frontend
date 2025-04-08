@@ -130,7 +130,7 @@ function Zoe() {
               </div>
             </div>
             <p className="mt-4 text-center text-gray-600">
-              Puedes abonar el valor de la tarjeta mediante transferencia bancaria utilizando los datos de la
+              Esta incluye la comida sin bebida, puedes abonar el valor de la tarjeta mediante transferencia bancaria utilizando los datos de la
               sección "Información bancaria" o en efectivo.
             </p>
               </div>
