@@ -193,7 +193,7 @@ export default function EditEvent() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="password_employee" className="text-gray-200">
-                Contraseña para Empleados
+                Establecer nueva contraseña para empleados
               </Label>
               <Input id="password_employee" name="password_employee"  className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
             </div>

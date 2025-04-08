@@ -17,10 +17,11 @@ const EconomicReport = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
-  const [commissionAmount, setCommissionAmount] = useState(500);
+  const [commissionAmount, setCommissionAmount] = useState(null);
   const apiUrl = import.meta.env.VITE_API_URL;
   const { authToken } = useContext(AuthContext);
   const [showAlert, setShowAlert] = useState(true);
+  const [hasMounted, setHasMounted] = useState(false); // controlador bandera para evitar falso patch al cargar pagina
 
   useEffect(() => {
     const fetchEconomicReport = async () => {
@@ -40,6 +41,8 @@ const EconomicReport = () => {
 
         const result = await response.json();
         setData(result);
+        setCommissionAmount(result.commission_per_ticket || 0);
+        setHasMounted(true); // se ha montado el componente
         console.log(result);
       } catch (error) {
         console.error(error.message);
@@ -48,6 +51,37 @@ const EconomicReport = () => {
 
     fetchEconomicReport();
   }, [id, apiUrl, authToken]);
+
+  useEffect(() => {
+    if (!hasMounted) return; // no hacer nada si el componente no se ha montado
+    const updateCommissionAmount = async () => {
+      try {
+        const token = typeof authToken === 'string' ? authToken.trim() : authToken.access.trim();
+        const response = await fetch(`${apiUrl}/api/v1/main/event/${id}/economic-report/`, {
+          method: 'PATCH', // o POST o PUT según tu backend
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ commission_per_ticket: commissionAmount }),
+        });
+  
+        if (!response.ok) {
+          throw new Error('Error al actualizar la comisión.');
+        }
+  
+        const result = await response.json();
+        console.log('Comisión actualizada', result);
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+  
+    if (data) {
+      updateCommissionAmount();
+    }
+  }, [commissionAmount]);
+  
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -221,10 +255,10 @@ const EconomicReport = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="text-gray-300">Tipo de Ticket</TableHead>
-                      <TableHead className="text-gray-300">Precio</TableHead>
-                      <TableHead className="text-gray-300">Cantidad</TableHead>
-                      <TableHead className="text-gray-300">Total</TableHead>
+                      <TableHead className="text-gray-300 text-left">Tipo de Ticket</TableHead>
+                      <TableHead className="text-gray-300 text-left">Precio</TableHead>
+                      <TableHead className="text-gray-300 text-left">Cantidad</TableHead>
+                      <TableHead className="text-gray-300 text-left">Total</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>

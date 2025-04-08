@@ -111,6 +111,18 @@ export default function Tickets({}) {
           </p>
         </div>
         <div className="flex flex-col space-y-2 m-0">
+
+        <Button
+            className="justify-start"
+            variant="entraditaSecondary"
+            onClick={() => {
+              handleShare(ticket);
+              onClose();
+            }}
+          >
+            <Share2 className="mr-2 h-4 w-4" /> Compartir ticket
+          </Button>
+          
           <Button
             className="justify-start"
             variant="entraditaSecondary"
@@ -134,16 +146,7 @@ export default function Tickets({}) {
             <EyeIcon className="mr-2 h-4 w-4" />
             Ver página de ticket
           </Button>
-          <Button
-            className="justify-start"
-            variant="entraditaSecondary"
-            onClick={() => {
-              handleShare(ticket);
-              onClose();
-            }}
-          >
-            <Share2 className="mr-2 h-4 w-4" /> Compartir ticket
-          </Button>
+
           <Button
             className="justify-start"
             variant="entraditaSecondary"
@@ -222,7 +225,7 @@ export default function Tickets({}) {
                   <TableCell className="hidden sm:table-cell  text-right sm:space-x-1 space-y-1">
                     
                     <Button variant="outline" onClick={() => copyToClipboard(`¡Acá está tu ticket para el evento ${event.name} 🎟️!\n\n ${window.location.origin}/ticket/${ticket.uuid}`)} size="sm" title="Copiar invitación del cliente">
-                      <Share className="h-4 w-4" />
+                      <Share2 className="h-4 w-4" />
                       <span className="sr-only">Copiar texto invitación del cliente</span>
                     </Button>
 

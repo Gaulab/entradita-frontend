@@ -131,7 +131,7 @@ export default function Sellers({}) {
             <strong>Ventas:</strong> {seller?.ticket_counter}
           </p>
           <p>
-            <strong>Estado:</strong> {seller?.status === true ? 'Habilitado' : 'Deshabilitado'}
+            <strong>Estado:</strong> {seller?.status === true ? ( <span className="text-green-500"> Habilitado</span> ) : ( <span className="text-red-500"> Deshabilitado</span> )}
           </p>
           <p>
             <strong>Ticket tags:</strong>  
@@ -143,7 +143,7 @@ export default function Sellers({}) {
           </p>
         </div>
         <div className="flex flex-col space-y-2 m-0">
-          <Button
+          {/* <Button
             className="justify-start"
             variant="entraditaSecondary"
             onClick={() => {
@@ -153,23 +153,15 @@ export default function Sellers({}) {
           >
             <LinkIcon className="mr-2 h-4 w-4" />
             Copiar enlace de vendedor
-          </Button>
+          </Button> */}
 
-          <Button
-            className="justify-start"
-            variant="entraditaSecondary"
-            onClick={() => {
-              window.open(`/seller/${seller?.uuid}`, '_blank');
-              onClose();
-            }}
-          >
-            <EyeIcon className="mr-2 h-4 w-4" />
-            Ver página de vendedor
-          </Button>
+
           <Button className="justify-start" variant="entraditaSecondary" onClick={() => handleShare(seller)}>
             <Share2 className="mr-2 h-4 w-4" />
             Invitar al vendedor
           </Button>
+
+
           <Button
             className="justify-start"
             variant="entraditaSecondary"
@@ -186,12 +178,25 @@ export default function Sellers({}) {
             className="justify-start"
             variant="entraditaSecondary"
             onClick={() => {
+              window.open(`/seller/${seller?.uuid}`, '_blank');
+              onClose();
+            }}
+          >
+            <EyeIcon className="mr-2 h-4 w-4" />
+            Ver página de vendedor
+          </Button>
+
+
+          <Button
+            className="justify-start"
+            variant="entraditaSecondary"
+            onClick={() => {
               handleChangeEmpleadoStatus(seller);
               onClose();
             }}
           >
             {seller?.status === true ? <TicketX className="h-4 w-4 mr-2" /> : <TicketCheck className="h-4 w-4 mr-2" />}
-            <span className="">{seller?.status === true ? 'Deshabilitar vendedor' : 'Habilitar vendedor'}</span>
+            <span className="">{seller?.status === true ? 'Deshabilitar  vendedor' : 'Habilitar vendedor'}</span>
           </Button>
           <Button
             className="justify-start"
@@ -249,7 +254,7 @@ export default function Sellers({}) {
                   <TableCell className="hidden sm:table-cell  text-right sm:space-x-1 space-y-1">
                     
                     <Button variant="outline" onClick={() => copyToClipboard(`¡Quiero que vendas para mi evento: ${event.name}! 📅🎟️\n\n🕵️ Puedes unirte en el siguiente enlace, es único para ti (no lo compartas):\n${window.location.origin}/seller/${vendedor.uuid}\n\n🔑 Te pedirá una contraseña para acceder, cuando estés listo pídemela!\n\n📚 Te dejo también un link para que aprendas rápido y fácil cómo vender:\n${window.location.origin}/seller-guide`)} size="sm" title="Copiar invitación a vendedor">
-                      <Share className="h-4 w-4" />
+                      <Share2 className="h-4 w-4" />
                       <span className="sr-only">Copiar texto invitación de vendedor</span>
                     </Button>
                     
@@ -269,7 +274,7 @@ export default function Sellers({}) {
                     <Button
                       onClick={() => handleChangeEmpleadoStatus(vendedor)}
                       size="sm"
-                      title={vendedor.status === false ? 'Deshabilitar vendedor' : 'Habilitar vendedor'}
+                      title={vendedor.status === false ? 'Habilitar vendedor' : 'Deshabilitar vendedor'}
                       className={vendedor.status === false ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-green-600 hover:bg-green-700 text-white'}
                     >
                       {vendedor.status === true ? <TicketCheck className="h-4 w-4" /> : <TicketX className="h-4 w-4" />}
