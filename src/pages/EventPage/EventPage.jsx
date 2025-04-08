@@ -38,7 +38,7 @@ function EventPage() {
   const handleBuyTicket = () => {
     // Redirect to a WhatsApp chat link
     const message = encodeURIComponent(
-      "Hola, quiero un ticket para el evento " + eventData.name + " con id " + eventData.event_id,
+      "Hola, quiero un ticket para el evento " + eventData.name + " con id " + id + ".",
     )
     window.location.href = `https://wa.me/${eventData.organizer_contact}?text=${message}`
   }
