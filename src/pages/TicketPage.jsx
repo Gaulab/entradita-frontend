@@ -79,10 +79,18 @@ export default function TicketPage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-50">
-        <div className="text-gray-600 text-lg">Cargando...</div>
+      <div className="min-h-screen flex items-center justify-center bg-[#121a24]">
+        <div className="text-center">
+          <div className="flex flex-col items-center">
+            <div className="mb-4">
+              <Logo />
+            </div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto"></div>
+            <p className="mt-4 text-gray-200">Cargando información del ticket...</p>
+          </div>
+        </div>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -173,4 +181,19 @@ export default function TicketPage() {
       </div>
     </div>
   );
+}
+
+function Logo({ small = false }) {
+  return (
+    <div className={`flex items-center ${small ? "text-lg" : "text-xl"}`}>
+      <div className="mr-1">
+        <img
+          src="/isotipoWhite.png" // Replace with the path to your logo image
+          alt="Entradita Logo"
+          className={`${small ? "w-10 h-10" : "w-10 h-10"}`}
+        />
+      </div>
+      <span className={`font-bold text-white ${small ? "text-sm" : "text-lg"}`}>entradita.com</span>
+    </div>
+  )
 }
