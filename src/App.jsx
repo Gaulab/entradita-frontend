@@ -37,6 +37,7 @@ import PurchaseSummaryPage from './pages/EventPage/PurchaseSummaryPage';
 import DashboardTrial from './pages/Trial/DashboardTrial';
 import ScannerPageTrial from './pages/Trial/ScannerPageTrial';
 import TicketPageTrial from './pages/Trial/TicketPageTrial';
+import LinkGenerator from './pages/Trial/LinkGenerator';
 // Guides pages
 import SellerGuide from './pages/Employee/SellerGuide';
 // Invite pages
@@ -85,6 +86,7 @@ function App() {
         <Route path="/zoe15" element={<Zoe2 />} />
         <Route path="/new-client/*" element={<NewClient />} />
         <Route path="/documentacion" element={<Documentacion />} />
+        <Route path="/link-generator" element={<LinkGenerator />} />
           
         {/* Rutas protegidas */}
           <Route path="/event/:event_id/purchase-config" element={<AuthProvider><PrivateRoute><TicketPurchaseConfig /></PrivateRoute></AuthProvider>} />
