@@ -20,7 +20,7 @@ export default function LinkGenerator() {
   const [generatedLink, setGeneratedLink] = useState("")
   const [copied, setCopied] = useState(false)
   const [includeBaseUrl, setIncludeBaseUrl] = useState(true)
-  const [baseUrl, setBaseUrl] = useState("https://entradita.com")
+  const [baseUrl, setBaseUrl] = useState("entradita.com")
 
   // Generar el enlace cuando cambian los datos del formulario
   useEffect(() => {
@@ -244,65 +244,29 @@ export default function LinkGenerator() {
             </Card>
           </div>
 
-          {/* Vista previa */}
-          <div className="mt-12">
-            <h2 className="text-2xl font-bold text-center mb-6">¿Cómo funciona?</h2>
-            <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center">
-                  <div className="bg-blue-600 bg-opacity-20 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
-                    <span className="text-xl font-bold">1</span>
-                  </div>
-                  <h3 className="font-bold mb-2">Completa el formulario</h3>
-                  <p className="text-sm text-gray-300">
-                    Ingresa el nombre del cliente, usuario, contraseña y evento opcional.
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="bg-blue-600 bg-opacity-20 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
-                    <span className="text-xl font-bold">2</span>
-                  </div>
-                  <h3 className="font-bold mb-2">Copia el enlace</h3>
-                  <p className="text-sm text-gray-300">
-                    El enlace se genera automáticamente. Cópialo con un solo clic.
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="bg-blue-600 bg-opacity-20 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
-                    <span className="text-xl font-bold">3</span>
-                  </div>
-                  <h3 className="font-bold mb-2">Comparte con el cliente</h3>
-                  <p className="text-sm text-gray-300">
-                    Envía el enlace al cliente para que acceda a su página personalizada.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-900 border-t border-gray-800 py-8">
+      <footer className="bg-gray-900 border-t border-gray-800 py-4">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center mb-4 md:mb-0">
-              <img src="/isotipoWhite.png" alt="entradita.com logo" className="h-8 w-auto mr-2" />
+            
+            <div className="flex items-center mb-2 md:mb-0">
+              <img src="/isotipoWhite.png" alt="entradita.com logo" className="h-8 w-auto mr-2 hidden sm:block" />
               <div>
-                <h3 className="font-bold">entradita.com</h3>
-                <p className="text-xs text-gray-400">Transformando la gestión de eventos</p>
+                <h3 className="font-bold text-center sm:text-left">entradita.com</h3>
+                <p className="text-xs text-gray-400 ">Transformando la gestión de eventos</p>
               </div>
             </div>
 
-            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6">
+            <div className="flex flex-col md:flex-row items-center space-y-1 md:space-y-0 md:space-x-6">
               <Link to="/documentacion" className="text-gray-300 hover:text-white text-sm">
                 Documentación
               </Link>
               <Link to="/contact" className="text-gray-300 hover:text-white text-sm">
                 Contacto
-              </Link>
-              <Link to="/" className="text-gray-300 hover:text-white text-sm">
-                Inicio
               </Link>
             </div>
           </div>

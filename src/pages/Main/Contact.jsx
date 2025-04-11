@@ -261,27 +261,24 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 border-t border-gray-800 py-8">
+          {/* Footer */}
+          <footer className="bg-gray-900 border-t border-gray-800 py-4">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center mb-4 md:mb-0">
-              <img src="/isotipoWhite.png" alt="entradita.com logo" className="h-8 w-auto mr-2" />
+            <div className="flex items-center mb-2 md:mb-0">
+              <img src="/isotipoWhite.png" alt="entradita.com logo" className="h-8 w-auto mr-2 hidden sm:block" />
               <div>
-                <h3 className="font-bold">entradita.com</h3>
-                <p className="text-xs text-gray-400">Transformando la gestión de eventos</p>
+                <h3 className="font-bold text-center sm:text-left">entradita.com</h3>
+                <p className="text-xs text-gray-400 ">Transformando la gestión de eventos</p>
               </div>
             </div>
 
-            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6">
+            <div className="flex flex-col md:flex-row items-center space-y-1 md:space-y-0 md:space-x-6">
               <Link to="/documentacion" className="text-gray-300 hover:text-white text-sm">
                 Documentación
               </Link>
-              <Link to="/pricing" className="text-gray-300 hover:text-white text-sm">
-                Precios
-              </Link>
-              <Link to="/terms-and-conditions" className="text-gray-300 hover:text-white text-sm">
-                Términos de Servicio
+              <Link to="/contact" className="text-gray-300 hover:text-white text-sm">
+                Contacto
               </Link>
             </div>
           </div>

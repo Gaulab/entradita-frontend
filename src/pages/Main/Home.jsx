@@ -1,32 +1,33 @@
-"use client"
+'use client';
 
 // entraditaFrontend/src/pages/Main/Home.jsx
 // react imports
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef } from 'react';
 // react-router imports
-import { Link } from "react-router-dom"
+import { Link } from 'react-router-dom';
 // custom components
-import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 // lucide-react icons
-import { QrCode, Zap, Users, MessageSquareText, Menu, X, Star, Shield, DollarSign, BookOpen, LogIn } from "lucide-react"
+import { QrCode, Zap, Users, MessageSquareText, Menu, X, Star, Shield, DollarSign, BookOpen, LogIn, HeartHandshake, Link2 } from 'lucide-react';
 // prop-types
-import PropTypes from "prop-types"
+import PropTypes from 'prop-types';
+import { FaWhatsapp } from 'react-icons/fa';
 
 export default function Home() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const canvasRef = useRef(null)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const canvasRef = useRef(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current
-    const ctx = canvas.getContext("2d")
-    let animationFrameId
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-    }
-    const particles = []
-    const particleCount = 100
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    const particles = [];
+    const particleCount = 100;
 
     const initParticles = () => {
       for (let i = 0; i < particleCount; i++) {
@@ -39,46 +40,46 @@ export default function Home() {
             x: (Math.random() - 0.5) * 2,
             y: (Math.random() - 0.5) * 2,
           },
-        })
+        });
       }
-    }
+    };
 
     const drawParticles = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       particles.forEach((particle) => {
-        ctx.beginPath()
-        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2)
-        ctx.fillStyle = particle.color
-        ctx.fill()
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+        ctx.fillStyle = particle.color;
+        ctx.fill();
 
-        particle.x += particle.velocity.x
-        particle.y += particle.velocity.y
+        particle.x += particle.velocity.x;
+        particle.y += particle.velocity.y;
 
         if (particle.x < 0 || particle.x > canvas.width) {
-          particle.velocity.x *= -1
+          particle.velocity.x *= -1;
         }
         if (particle.y < 0 || particle.y > canvas.height) {
-          particle.velocity.y *= -1
+          particle.velocity.y *= -1;
         }
-      })
+      });
 
-      animationFrameId = requestAnimationFrame(drawParticles)
-    }
+      animationFrameId = requestAnimationFrame(drawParticles);
+    };
 
-    resizeCanvas()
-    initParticles()
-    drawParticles()
+    resizeCanvas();
+    initParticles();
+    drawParticles();
 
-    window.addEventListener("resize", () => {
-      resizeCanvas()
-      initParticles()
-    })
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+      initParticles();
+    });
 
     return () => {
-      window.removeEventListener("resize", resizeCanvas)
-      cancelAnimationFrame(animationFrameId)
-    }
-  }, [])
+      window.removeEventListener('resize', resizeCanvas);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 overflow-x-hidden">
@@ -87,42 +88,32 @@ export default function Home() {
         <header className="bg-gray-800 shadow-md">
           <div className="container mx-auto px-4 py-4 flex justify-between items-center">
             <div className="flex items-center">
-              <img
-                src="isotipoWhite.png"
-                alt="Logo de Entradita, plataforma para eventos y tickets QR"
-                className="h-10 w-auto mr-2 sm:h-12 sm:mr-4"
-              />
+              <img src="isotipoWhite.png" alt="Logo de Entradita, plataforma para eventos y tickets QR" className="h-10 w-auto mr-2 sm:h-12 sm:mr-4" />
               <h1 className="text-xl sm:text-2xl font-bold text-white">entradita.com</h1>
             </div>
 
-            {/* Desktop Navigation */}
             <nav className="hidden sm:flex items-center space-x-3">
-              <Button variant="entraditaSecondary" className="text-white">
-                <Link className="text-white hover:text-white" to="/contact">
+              <Link className="text-white hover:text-white" to="/contact">
+                <Button variant="entraditaSecondary" className="text-white w-full">
                   Contacto
-                </Link>
-              </Button>
-              <Button variant="entraditaSecondary" className="text-white">
-                <Link className="text-white hover:text-white flex items-center" to="/documentacion">
+                </Button>
+              </Link>
+              <Link className="text-white hover:text-white flex items-center" to="/documentacion">
+                <Button variant="entraditaSecondary" className="text-white w-full">
                   <BookOpen className="h-4 w-4 mr-2" />
                   Documentación
-                </Link>
-              </Button>
-              <Button variant="entraditaPrimary" className="text-white">
-                <Link className="text-white hover:text-white flex items-center" to="/login">
+                </Button>
+              </Link>
+              <Link className="text-white hover:text-white flex items-center" to="/login">
+                <Button variant="entraditaPrimary" className="text-white w-full">
                   <LogIn className="h-4 w-4 mr-2" />
                   Iniciar Sesión
-                </Link>
-              </Button>
+                </Button>
+              </Link>
             </nav>
 
             {/* Mobile Menu Button */}
-            <Button
-              variant="ghost"
-              className="sm:hidden text-white bg-gray-800"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              aria-label="Toggle menu"
-            >
+            <Button variant="ghost" className="sm:hidden text-white bg-gray-800" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
           </div>
@@ -130,32 +121,16 @@ export default function Home() {
           {/* Mobile Navigation */}
           {isMenuOpen && (
             <div className="sm:hidden bg-gray-800 py-2 border-t border-gray-700">
-              <Link
-                to="/contact"
-                className="block px-4 py-2 text-white hover:bg-gray-700"
-                onClick={() => setIsMenuOpen(false)}
-              >
+              <Link to="/contact" className="block px-4 py-2 text-white hover:bg-gray-700" onClick={() => setIsMenuOpen(false)}>
                 Contacto
               </Link>
-              <Link
-                to="/pricing"
-                className="block px-4 py-2 text-white hover:bg-gray-700"
-                onClick={() => setIsMenuOpen(false)}
-              >
+              <Link to="/pricing" className="block px-4 py-2 text-white hover:bg-gray-700" onClick={() => setIsMenuOpen(false)}>
                 Precios
               </Link>
-              <Link
-                to="/terms-and-conditions"
-                className="block px-4 py-2 text-white hover:bg-gray-700"
-                onClick={() => setIsMenuOpen(false)}
-              >
+              <Link to="/terms-and-conditions" className="block px-4 py-2 text-white hover:bg-gray-700" onClick={() => setIsMenuOpen(false)}>
                 Términos de Servicio
               </Link>
-              <Link
-                to="/privacy-policy"
-                className="block px-4 py-2 text-white hover:bg-gray-700"
-                onClick={() => setIsMenuOpen(false)}
-              >
+              <Link to="/privacy-policy" className="block px-4 py-2 text-white hover:bg-gray-700" onClick={() => setIsMenuOpen(false)}>
                 Política de Privacidad
               </Link>
             </div>
@@ -163,17 +138,14 @@ export default function Home() {
         </header>
 
         <main className="container mx-auto px-4">
-          <div className="space-y-16 py-16">
-            <section className="text-center">
+          <div className="space-y-4 py-16">
+            <section className="text-center mb-16">
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-4 text-white animate-fade-in-down">
                 Revoluciona tus <span className="text-blue-500">Eventos</span>
               </h1>
-              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-4 text-gray-300 animate-fade-in-down">
-                Tickets QR seguros y gestión simplificada
-              </h2>
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-4 text-gray-300 animate-fade-in-down">Tickets QR seguros y gestión simplificada</h2>
               <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-8 animate-fade-in-up">
-                Simplifica la venta y verificación de tickets con nuestra plataforma intuitiva y segura. Potencia tus
-                eventos con tecnología de vanguardia.
+                Simplifica la venta y verificación de tickets con nuestra plataforma intuitiva y segura. Potencia tus eventos con tecnología de vanguardia.
               </p>
 
               <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
@@ -203,35 +175,11 @@ export default function Home() {
                   </Button>
                 </Link>
               </div>
-              </section>
-              <section className="bg-gray-800 py-12 rounded-lg shadow-xl">
-                <div className="container mx-auto px-4">
-                  <div className="flex flex-col items-center justify-center mb-6 space-y-4 sm:space-y-0 sm:flex-row sm:space-x-3">
-                    <BookOpen className="h-6 w-6 sm:h-8 sm:w-8 text-blue-400" />
-                    <h2 className="text-2xl sm:text-3xl font-bold text-white text-center">
-                      Documentación Completa
-                    </h2>
-                  </div>
-                  <p className="text-base sm:text-lg text-center text-gray-300 max-w-3xl mx-auto mb-8">
-                    Accede a nuestra guía detallada para aprender a utilizar todas las funcionalidades de entradita.com.
-                    Desde la creación de eventos hasta la gestión de vendedores y tickets, encontrarás todo lo que
-                    necesitas para sacar el máximo provecho de nuestra plataforma.
-                  </p>
-                  <div className="flex justify-center">
-                    <Button variant="entraditaSecondary" size="lg" className="text-white">
-                      <Link className="text-white hover:text-white flex items-center" to="/documentacion">
-                        <BookOpen className="h-5 w-5 mr-2" />
-                        Ver Documentación
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-              </section>
-            <section id="features" className="py-16">
-              <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12 text-white">
-                Características Principales
-              </h2>
-              <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            </section>
+
+            <section id="features" className="pb-8">
+              <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 text-white">Características Principales</h2>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <FeatureCard
                   icon={<QrCode className="h-12 w-12 text-blue-400" />}
                   title="Generación de QR Avanzada"
@@ -265,100 +213,133 @@ export default function Home() {
               </div>
             </section>
 
-            {/* Beneficial Cause Section */}
-            <section id="beneficial-cause" className="bg-gray-800 py-16 rounded-lg shadow-xl">
+            <section className="bg-gray-800 py-8 rounded-lg shadow-xl">
               <div className="container mx-auto px-4">
-                <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 text-white">
-                  ¿Tienes una causa benéfica?
-                </h2>
-                <p className="text-lg sm:text-xl text-center text-gray-300 max-w-3xl mx-auto mb-8">
-                  En entradita.com, creemos en el poder de la comunidad y en apoyar causas que marcan la diferencia. Si
-                  organizas un evento benéfico, queremos ser parte de tu misión auspiciando las entradas. Juntos,
-                  podemos maximizar el impacto de tu evento y crear un cambio positivo en la sociedad.
+                <div className="flex flex-col items-center justify-center mb-4 space-y-4 sm:space-y-0 sm:flex-row sm:space-x-3">
+                  <BookOpen className="h-12 w-12 sm:h-8 sm:w-8 text-blue-400" />
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white text-center">Documentación Completa</h2>
+                </div>
+                <p className="text-base sm:text-lg text-center text-gray-300 max-w-7xl mx-auto mb-4">
+                  Accede a nuestra guía detallada para aprender a utilizar todas las funcionalidades de entradita. Desde la creación de eventos hasta la gestión de vendedores y tickets, encontrarás
+                  todo lo que necesitas para sacar el máximo provecho de nuestra plataforma.
                 </p>
                 <div className="flex justify-center">
-                  <Button variant="entraditaPrimary" size="lg" className="text-white">
-                    <Link className="text-white hover:text-white" to="/contact">
+                  <Link to="/documentacion" className="w-full sm:w-auto">
+                    <Button variant="entraditaSecondary" size="lg" className="text-white w-full sm:w-auto">
+                      <BookOpen className="h-5 w-5 mr-2" />
+                      Ver Documentación
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </section>
+
+            {/* Beneficial Cause Section */}
+            <section id="beneficial-cause" className="bg-gray-800 py-8 rounded-lg shadow-xl">
+              <div className="container mx-auto px-4">
+                <div className="flex flex-col items-center justify-center mb-4 space-y-4 sm:space-y-0 sm:flex-row sm:space-x-3">
+                  <HeartHandshake className="h-12 w-12 sm:h-8 sm:w-8 text-blue-400" />
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white text-center">¿Tienes una causa benéfica?</h2>
+                </div>
+                <p className="text-lg sm:text-xl text-center text-gray-300 max-w-7xl mx-auto mb-4">
+                  En entradita.com, creemos en el poder de la comunidad y en apoyar causas que marcan la diferencia. Si organizas un evento benéfico, queremos ser parte de tu misión auspiciando las
+                  entradas. Juntos, podemos maximizar el impacto de tu evento y crear un cambio positivo en la sociedad.
+                </p>
+                <div className="flex justify-center">
+                  <Link to="/contact" className="w-full sm:w-auto">
+                    <Button variant="entraditaSecondary" size="lg" className="text-white w-full sm:w-auto">
+                      <Link2 className="h-5 w-5 mr-2" />
                       Solicita tu auspicio
-                    </Link>
-                  </Button>
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </section>
+
+            {/* Contact Section */}
+            <section id="contact" className="bg-gray-800 py-8 rounded-lg shadow-xl">
+              <div className="container mx-auto px-4">
+                <div className="flex flex-col items-center justify-center mb-4 space-y-4 sm:space-y-0 sm:flex-row sm:space-x-3">
+                  <MessageSquareText className="h-12 w-12 sm:h-8 sm:w-8 text-blue-400" />
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white text-center">Contáctanos</h2>
+                </div>
+                <p className="text-lg sm:text-xl text-center text-gray-300 max-w-7xl mx-auto mb-4">
+                  ¿Listo para llevar tus eventos al siguiente nivel? <br /> Estamos aquí para ayudarte.
+                </p>
+                <div className="flex justify-center">
+                  <Link to="https://wa.me/543482586525" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
+                    <Button variant="entraditaSecondary" size="lg" className="text-white w-full sm:w-auto">
+                      <FaWhatsapp className="h-5 w-5 mr-2" />
+                      Envíanos un whatsapp
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </section>
 
             {/* About Section */}
-            <section id="about" className="bg-gray-800 py-16 rounded-lg shadow-xl">
+            <section id="about" className="bg-gray-800 py-8 rounded-lg shadow-xl">
               <div className="container mx-auto px-4">
-                <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 text-white">Sobre Nosotros</h2>
-                <p className="text-lg sm:text-xl text-center text-gray-300 max-w-3xl mx-auto">
-                  entradita.com nació de la pasión por simplificar la gestión de eventos y elevar la experiencia de los
-                  asistentes. Nuestra misión es proporcionar una plataforma innovadora y fácil de usar que empodere a
-                  organizadores, vendedores y asistentes, permitiéndoles enfocarse en lo que realmente importa: crear
-                  momentos inolvidables. Con un equipo dedicado de expertos en tecnología y eventos, estamos
-                  comprometidos a revolucionar la industria, un ticket a la vez.
+                <div className="flex flex-col items-center justify-center mb-4 space-y-4 sm:space-y-0 sm:flex-row sm:space-x-3">
+                  <BookOpen className="h-12 w-12 sm:h-8 sm:w-8 text-blue-400" />
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white text-center">Sobre Nosotros</h2>
+                </div>
+                <p className="text-lg sm:text-xl text-center text-gray-300 max-w-7xl mx-auto mb-4">
+                  entradita nació de la pasión por simplificar la gestión de eventos y elevar la experiencia de los asistentes. Nuestra misión es proporcionar una plataforma innovadora y fácil de usar
+                  que empodere a organizadores, vendedores y asistentes, permitiéndoles enfocarse en lo que realmente importa: crear momentos inolvidables.
                 </p>
-              </div>
-            </section>
-
-            {/* Contact Section */}
-            <section id="contact" className="py-16 text-center">
-              <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-white">Contáctanos</h2>
-              <p className="text-lg sm:text-xl mb-6 text-gray-300">
-                ¿Listo para llevar tus eventos al siguiente nivel? <br /> Estamos aquí para ayudarte.
-              </p>
-              <div className="flex justify-center items-center space-x-4">
-                <a
-                  href="https://wa.me/543482586525"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center text-white hover:text-blue-400 transition-colors"
-                >
-                  <MessageSquareText className="h-6 w-6 sm:h-8 sm:w-8 mr-2" />
-                  <span className="text-lg sm:text-xl">+543482586525 WhatsApp</span>
-                </a>
               </div>
             </section>
           </div>
         </main>
       </div>
-      <footer className="relative z-10 bg-gray-800 border-t border-gray-700 py-8">
-        <div className="container mx-auto px-4 text-center text-gray-400">
-          <p className="text-sm sm:text-base">
-            © 2025 entradita.com - Transformando la gestión de eventos. Todos los derechos reservados.
-          </p>
-          <div className="mt-4 flex justify-center space-x-4 text-sm sm:text-base">
-            <Link to="/documentacion" className="hover:text-white transition-colors">
-              Documentación
-            </Link>
-            <Link to="/terms-and-conditions" className="hover:text-white transition-colors">
-              Términos de Servicio
-            </Link>
-            <Link to="/privacy-policy" className="hover:text-white transition-colors">
-              Política de Privacidad
-            </Link>
+      {/* Footer */}
+      <footer className="bg-gray-900 border-t border-gray-800 py-4">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center mb-2 md:mb-0">
+              <img src="/isotipoWhite.png" alt="entradita.com logo" className="h-8 w-auto mr-2 hidden sm:block" />
+              <div>
+                <h3 className="font-bold text-center sm:text-left">entradita.com</h3>
+                <p className="text-xs text-gray-400 ">Transformando la gestión de eventos</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col md:flex-row items-center space-y-1 md:space-y-0 md:space-x-6">
+              <Link to="/documentacion" className="text-gray-300 hover:text-white text-sm">
+                Documentación
+              </Link>
+              <Link to="/contact" className="text-gray-300 hover:text-white text-sm">
+                Contacto
+              </Link>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-800 mt-6 pt-6 text-center text-gray-400">
+            <p className="text-sm">© 2025 entradita.com todos los derechos reservados.</p>
           </div>
         </div>
       </footer>
     </div>
-  )
+  );
 }
 
 function FeatureCard({ icon, title, description }) {
   return (
     <Card className="bg-gray-800 border-gray-700 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 hover:-translate-y-1">
-      <CardHeader>
-        <div className="flex justify-center mb-4">{icon}</div>
+      <CardHeader className="m-0 pt-4 pb-0">
+        <div className="flex justify-center mb-2">{icon}</div>
         <CardTitle className="text-white text-center text-xl sm:text-2xl">{title}</CardTitle>
       </CardHeader>
       <CardContent>
         <p className="text-gray-300 text-center text-base sm:text-lg">{description}</p>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 FeatureCard.propTypes = {
   icon: PropTypes.node.isRequired,
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
-}
+};
