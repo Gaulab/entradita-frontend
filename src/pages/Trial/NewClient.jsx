@@ -131,10 +131,10 @@ function NewClient() {
 
             {/* Banner de documentación destacado */}
             <section className="bg-purple-900/30 p-6 rounded-lg shadow-lg border-l-4 border-purple-500">
-              <div className="flex items-start gap-4">
-                <div className="bg-purple-800/50 p-3 rounded-full">
+                <div className="bg-purple-800/50 p-3 rounded-full w-min mb-2">
                   <FileText className="h-6 w-6 text-purple-300" />
                 </div>
+              <div className="flex items-start gap-4">
                 <div>
                   <h2 className="text-xl font-bold mb-2">Consulta nuestra documentación completa</h2>
                   <p className="text-gray-300 mb-3">

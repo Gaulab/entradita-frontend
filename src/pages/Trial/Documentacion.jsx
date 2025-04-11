@@ -43,11 +43,15 @@ function Documentacion() {
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           
           <h1 className="text-xl font-bold">entradita.com</h1>
-          <Link to="/" className="flex items-center gap-1 text-sm text-white bg-gray-700 px-3 py-1 rounded-full">
+          <button
+            onClick={() => window.history.back()}
+            className="flex items-center gap-1 text-sm bg-gray-700 px-3 py-1 rounded-full hover:text-white transition-colors"
+          >
             <ArrowLeft className="h-4 w-4" />
             Volver
-          </Link>
+          </button>
         </div>
+        
       </header>
 
       {/* Contenido principal */}
