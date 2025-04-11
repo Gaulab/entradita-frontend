@@ -78,7 +78,7 @@ export default function LinkGenerator() {
           <Button variant="entraditaSecondary" className="text-white">
             <Link className="flex items-center hover:text-white text-white" to="/">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Volver al inicio
+              Volver
             </Link>
           </Button>
         </div>

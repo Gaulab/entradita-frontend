@@ -49,7 +49,7 @@ function Documentacion() {
           <Link className="text-white hover:text-white flex items-center" to="/">
             <Button variant="entraditaSecondary" className="text-white w-full">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Volver al inicio
+              Volver
             </Button>
           </Link>
       
