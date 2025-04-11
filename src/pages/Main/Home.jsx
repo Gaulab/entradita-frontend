@@ -242,11 +242,14 @@ export default function Home() {
                   <h2 className="text-2xl sm:text-3xl font-bold text-white text-center">¿Tienes una causa benéfica?</h2>
                 </div>
                 <p className="text-lg sm:text-xl text-center text-gray-300 max-w-7xl mx-auto mb-4">
-                  En entradita.com, creemos en el poder de la comunidad y en apoyar causas que marcan la diferencia. Si organizas un evento benéfico, queremos ser parte de tu misión auspiciando las
+                  En entradita, creemos en el poder de la comunidad y en apoyar causas que marcan la diferencia. Si organizas un evento benéfico, queremos ser parte de tu misión auspiciando las
                   entradas. Juntos, podemos maximizar el impacto de tu evento y crear un cambio positivo en la sociedad.
                 </p>
+                <p className="text-lg sm:text-xl text-center text-gray-300 max-w-7xl mx-auto mb-4">
+                  Por favor, envíanos un mensaje con los detalles de tu causa y cómo podemos ayudarte a hacerla realidad.
+                </p>
                 <div className="flex justify-center">
-                  <Link to="/contact" className="w-full sm:w-auto">
+                  <Link to="https://wa.me/543482586525" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
                     <Button variant="entraditaSecondary" size="lg" className="text-white w-full sm:w-auto">
                       <Link2 className="h-5 w-5 mr-2" />
                       Solicita tu auspicio
@@ -255,8 +258,6 @@ export default function Home() {
                 </div>
               </div>
             </section>
-
-            {/* Contact Section */}
             <section id="contact" className="bg-gray-800 py-8 rounded-lg shadow-xl">
               <div className="container mx-auto px-4">
                 <div className="flex flex-col items-center justify-center mb-4 space-y-4 sm:space-y-0 sm:flex-row sm:space-x-3">
@@ -276,8 +277,6 @@ export default function Home() {
                 </div>
               </div>
             </section>
-
-            {/* About Section */}
             <section id="about" className="bg-gray-800 py-8 rounded-lg shadow-xl">
               <div className="container mx-auto px-4">
                 <div className="flex flex-col items-center justify-center mb-4 space-y-4 sm:space-y-0 sm:flex-row sm:space-x-3">

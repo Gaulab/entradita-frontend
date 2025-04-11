@@ -60,7 +60,6 @@ function NewClient() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
-
       {/* Header */}
       <header className="bg-gray-800 shadow-md">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -97,7 +96,7 @@ function NewClient() {
                   {copied ? 'Copiado!' : 'Copiar'}
                 </button>
               </div>
-
+              <p className="text-gray-300 text-sm mb-4">Antes de continuar, pegáte una leida de lo que dice más abajo</p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button size="lg" variant="entraditaSecondary" className="text-white">
                   <Link className="flex items-center hover:text-white text-white" to="/login">
@@ -116,13 +115,25 @@ function NewClient() {
               <div className="flex items-start gap-4">
                 <div>
                   <h2 className="text-xl font-bold mb-2">Consulta nuestra documentación completa</h2>
-                  <p className="text-gray-300 mb-3">
-                    Hemos preparado una guía detallada con toda la información que necesitas para comenzar a usar entradita. Allí encontrarás instrucciones paso a paso sobre cómo:
+
+                  <p className="text-gray-200 mb-4">
+                    Con entradita cualquier persona puede crear y gestionar eventos fácilmente. La plataforma permite generar tickets digitales con enlace y código QR, venderlos directamente o a
+                    través de vendedores (tarjeteros), y asignar puntos de venta para conocer el origen de cada entrada.
+                    <br />
+                    <br />
+                    Los tickets pueden tener diferentes categorías (VIP, general, anticipadas, etc.), y el panel de control ofrece estadísticas en tiempo real sobre las ventas y recaudaciones por cada
+                    vendedor.
+                    <br />
+                    <br />
+                    El ingreso al evento se gestiona con un escáner integrado en la app: si el QR es válido, se muestra en verde; si ya fue utilizado, se indica en amarillo.
                   </p>
+
+                  <p className="text-gray-300 mb-3">Además, se encuentra disponible una guía completa con todos los pasos necesarios para comenzar a utilizar Entradita:</p>
+
                   <ul className="space-y-2 mb-4">
                     <li className="flex items-start gap-2">
                       <ArrowRight className="h-4 w-4 text-purple-400 mt-1 flex-shrink-0" />
-                      <span>Crear y configurar tu primer evento</span>
+                      <span>Crear y configurar un evento</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <ArrowRight className="h-4 w-4 text-purple-400 mt-1 flex-shrink-0" />
@@ -130,11 +141,11 @@ function NewClient() {
                     </li>
                     <li className="flex items-start gap-2">
                       <ArrowRight className="h-4 w-4 text-purple-400 mt-1 flex-shrink-0" />
-                      <span>Configurar vendedores (tarjeteros)</span>
+                      <span>Asignar y gestionar vendedores</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <ArrowRight className="h-4 w-4 text-purple-400 mt-1 flex-shrink-0" />
-                      <span>Monitorear ventas y estadísticas</span>
+                      <span>Visualizar estadísticas y control de ingresos</span>
                     </li>
                   </ul>
 
