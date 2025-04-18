@@ -172,7 +172,7 @@ const ScannerView = ({ uuid }) => {
               }}
               onScan={validarTicketPayload}
               allowMultiple={true}
-              scanDelay={4000}
+              scanDelay={6000}
               onError={(error) => console.error(error)}
             />
           </div>
