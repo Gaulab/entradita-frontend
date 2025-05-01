@@ -96,7 +96,7 @@ export default function EditEvent() {
   };
 
   const addTicketTag = () => {
-    if (ticketTags.length < 5) {
+    if (ticketTags.length < 50) {
       if (tagName && tagPrice && !isNaN(tagPrice)) {
         setTicketTags([...ticketTags, { name: tagName, price: parseFloat(tagPrice) }]);
         setTagName('');
