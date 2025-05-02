@@ -132,7 +132,7 @@ export default function TicketPage() {
           <div className="w-full space-y-1 mt-1">
             <h1 className="text-base font-bold text-gray-800">{data.event_name}</h1>
 
-            <div className="text-lg font-bold text-blue-400">Ticket para {data.ticket_tag_info?.name}</div>
+            <div className="text-lg font-bold text-amber-500">Ticket para {data.ticket_tag_info?.name}</div>
 
             <div className="grid grid-cols-2 gap-2 text-sm">
               <div className="col-span-1">
