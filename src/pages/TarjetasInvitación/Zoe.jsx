@@ -9,7 +9,7 @@ function Zoe() {
   // Event details - modify as needed
   const eventDate = new Date("2025-05-02T22:00:00")
   const eventLocation = ""
-  const eventAddress = "La Rocka Discotheque"
+  const eventAddress = "La Rocka Discotheque, Malabrigo"
 
   return (
       <main className="flex min-h-screen flex-col items-center">
