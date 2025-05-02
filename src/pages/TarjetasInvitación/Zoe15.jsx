@@ -76,7 +76,7 @@ function Zoe2() {
                       <p className="text-sm text-gray-600">
                       Viernes, 2 de mayo de 2025
                       </p>
-                      <p className="text-sm text-gray-600"> 20:30 hs.
+                      <p className="text-sm text-gray-600"> 22:00 hs.
                       </p>
                     </div>
                   </div>

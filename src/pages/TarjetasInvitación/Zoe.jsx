@@ -7,9 +7,9 @@ import { FaMoneyBill, FaMoneyCheck } from "react-icons/fa"
 
 function Zoe() {
   // Event details - modify as needed
-  const eventDate = new Date("2025-05-02T20:00:00")
+  const eventDate = new Date("2025-05-02T22:00:00")
   const eventLocation = ""
-  const eventAddress = "Finca Don Roque, RN11, Malabrigo, Santa Fe"
+  const eventAddress = "La Rocka Discotheque"
 
   return (
       <main className="flex min-h-screen flex-col items-center">
@@ -76,7 +76,7 @@ function Zoe() {
                       <p className="text-sm text-gray-600">
                       Viernes, 2 de mayo de 2025
                       </p>
-                      <p className="text-sm text-gray-600"> 20:30 hs.
+                      <p className="text-sm text-gray-600"> 22:00 hs.
                       </p>
                     </div>
                   </div>
