@@ -330,7 +330,7 @@ export default function EditEvent() {
                 <Label htmlFor="price" className="text-gray-200">
                   Precio
                 </Label>
-                <Input id="price" name="price" defaultValue={ticketTags[tagToEdit].price} type="number" step="10" maxLength="15"
+                <Input id="price" name="price" defaultValue={ticketTags[tagToEdit].price} type="number" maxLength="15"
                   required className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
               </div>
               <DialogFooter>
