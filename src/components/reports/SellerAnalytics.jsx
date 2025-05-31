@@ -3,9 +3,18 @@
 import PropTypes from "prop-types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { TrendingUp, TrendingDown, Minus } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { useState } from "react"
+import { TrendingUp, TrendingDown, Minus, ChevronDown, ChevronUp } from "lucide-react"
 
 export default function SellerAnalytics({ data, analytics, commissionAmount }) {
+  const displayLimit = 8
+  const [showAll, setShowAll] = useState(false)
+  const sellersToShow = showAll
+    ? analytics.sellersWithStats.sort((a, b) => b.ticketsSold - a.ticketsSold)
+    : analytics.sellersWithStats.sort((a, b) => b.ticketsSold - a.ticketsSold).slice(0, displayLimit)
+  const hasMoreSellers = analytics.sellersWithStats.length > displayLimit
+
   if (!analytics || analytics.realSellersCount === 0) return null
 
   const getPerformanceIcon = (seller) => {
@@ -62,34 +71,55 @@ export default function SellerAnalytics({ data, analytics, commissionAmount }) {
               </TableRow>
             </TableHeader>
             <TableBody className="text-center">
-              {analytics.sellersWithStats
-                .sort((a, b) => b.ticketsSold - a.ticketsSold)
-                .map((seller) => (
-                  <TableRow key={seller.id}>
-                    <TableCell className="font-medium">{seller.assigned_name}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center justify-center gap-2">
-                        {getPerformanceIcon(seller)}
-                        {getPerformanceBadge(seller)}
-                      </div>
-                    </TableCell>
-                    <TableCell>{seller.ticketsSold}</TableCell>
-                    <TableCell className="max-sm:hidden">
-                      {Object.entries(seller.ticket_tag_sales)
-                        .map(([tagId, quantity]) => {
-                          const tag = data.ticket_tags.find((t) => t.id === Number.parseInt(tagId))
-                          return tag ? `${tag.name}: ${quantity}` : null
-                        })
-                        .filter(Boolean)
-                        .join(", ")}
-                    </TableCell>
-                    <TableCell>${seller.totalRevenue.toFixed(2)}</TableCell>
-                    <TableCell>${seller.avgTicketPrice.toFixed(2)}</TableCell>
-                    <TableCell className="font-bold">${seller.commission.toFixed(2)}</TableCell>
-                  </TableRow>
-                ))}
+              {sellersToShow.map((seller) => (
+                <TableRow key={seller.id}>
+                  <TableCell className="font-medium">{seller.assigned_name}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center justify-center gap-2">
+                      {getPerformanceIcon(seller)}
+                      {getPerformanceBadge(seller)}
+                    </div>
+                  </TableCell>
+                  <TableCell>{seller.ticketsSold}</TableCell>
+                  <TableCell className="max-sm:hidden">
+                    {Object.entries(seller.ticket_tag_sales)
+                      .map(([tagId, quantity]) => {
+                        const tag = data.ticket_tags.find((t) => t.id === Number.parseInt(tagId))
+                        return tag ? `${tag.name}: ${quantity}` : null
+                      })
+                      .filter(Boolean)
+                      .join(", ")}
+                  </TableCell>
+                  <TableCell>${seller.totalRevenue.toFixed(2)}</TableCell>
+                  <TableCell>${seller.avgTicketPrice.toFixed(2)}</TableCell>
+                  <TableCell className="font-bold">${seller.commission.toFixed(2)}</TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
+
+          {/* Botón para mostrar más/menos vendedores */}
+          {hasMoreSellers && (
+            <div className="mt-4 text-center">
+              <Button
+                variant="outline"
+                onClick={() => setShowAll(!showAll)}
+                className="flex items-center gap-2 mx-auto"
+              >
+                {showAll ? (
+                  <>
+                    <ChevronUp className="h-4 w-4" />
+                    Mostrar menos
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="h-4 w-4" />
+                    Mostrar todos ({analytics.sellersWithStats.length - displayLimit} más)
+                  </>
+                )}
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Estadísticas adicionales */}

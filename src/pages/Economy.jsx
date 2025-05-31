@@ -382,27 +382,33 @@ const EconomicReport = () => {
               <CardTitle className="text-xl font-bold">Ventas Administrativas</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {analytics.adminStats.map((admin) => (
-                  <div key={admin.id} className="bg-gray-700 p-4 rounded-lg">
-                    <h3 className="font-semibold text-blue-400 mb-2">{admin.assigned_name}</h3>
-                    <div className="space-y-1 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Tickets vendidos:</span>
-                        <span className="font-bold">{admin.ticketsSold}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Total recaudado:</span>
-                        <span className="font-bold">${admin.totalRevenue.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Promedio/ticket:</span>
-                        <span className="font-bold">${admin.avgTicketPrice.toFixed(2)}</span>
-                      </div>
+              {analytics.adminStats.map((admin) => (
+                <div key={admin.id} className="bg-gray-700 p-6 rounded-lg">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-xl font-semibold text-blue-400">{admin.assigned_name}</h3>
+                    <span className="text-sm text-gray-400 bg-blue-900/30 px-3 py-1 rounded-full">Administrador</span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-400">{admin.ticketsSold}</div>
+                      <div className="text-sm text-gray-400">Tickets vendidos</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-400">${admin.totalRevenue.toFixed(2)}</div>
+                      <div className="text-sm text-gray-400">Total recaudado</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-purple-400">${admin.avgTicketPrice.toFixed(2)}</div>
+                      <div className="text-sm text-gray-400">Promedio por ticket</div>
                     </div>
                   </div>
-                ))}
-              </div>
+                  <div className="mt-4 pt-4 border-t border-gray-600">
+                    <p className="text-xs text-gray-400 text-center">
+                      Las ventas administrativas no generan comisiones
+                    </p>
+                  </div>
+                </div>
+              ))}
             </CardContent>
           </Card>
         )}
