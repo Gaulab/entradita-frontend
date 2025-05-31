@@ -9,7 +9,6 @@ import { Button } from '../../components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/card';
 import { Scanner } from '@yudiel/react-qr-scanner';
 import { Input } from '../../components/ui/input';
-import LoadingSpinner from '../../components/ui/loadingspinner';
 // API
 import { getScanner } from '../../api/employeeApi';
 import { checkPassword } from '../../api/employeeApi';
@@ -17,7 +16,6 @@ import { checkTicketByPayload } from '../../api/ticketApi';
 import { checkTicketByDni } from '../../api/ticketApi';
 // PropTypes
 import PropTypes from 'prop-types';
-import { Helmet } from 'react-helmet-async';
 const ScannerView = ({ uuid }) => {
   // main states
   const { id } = useParams();
@@ -27,6 +25,7 @@ const ScannerView = ({ uuid }) => {
   const [dialogColor, setDialogColor] = useState('');
   const [eventId, setEventId] = useState(null);
   const [dniRequired, setDniRequired] = useState(false);
+  const [isScannerActive, setIsScannerActive] = useState(true);
   // password states
   const [password, setPassword] = useState('');
   const [isPasswordCorrect, setIsPasswordCorrect] = useState(false);
@@ -70,21 +69,21 @@ const ScannerView = ({ uuid }) => {
     setTicketData(data);
     setDialogColor(isOldScanned ? 'yellow' : 'green');
     setShowTicketInfo(true);
-    setTimeout(() => setShowTicketInfo(false), 6000); // Hide info after 5 seconds
+    setIsScannerActive(false);
   }, []);
 
   const validarTicketPayload = useCallback(
     async (result) => {
       try {
         const data = await checkTicketByPayload(result[0].rawValue, uuid, eventId);
-        console.log("data", data);
+        console.log('data', data);
         handleTicketValidation(data.ticket, data.old_scanned);
       } catch (error) {
         setDialogColor('red');
         setError(error.message);
         setTicketData(null);
         setShowTicketInfo(true);
-        setTimeout(() => setShowTicketInfo(false), 5000);
+        setIsScannerActive(false);
       }
     },
     [eventId, handleTicketValidation]
@@ -101,7 +100,6 @@ const ScannerView = ({ uuid }) => {
         setDialogColor('red');
         setError(error.message || 'Ticket no encontrado.');
         setShowTicketInfo(true);
-        setTimeout(() => setShowTicketInfo(false), 5000);
       }
     },
     [eventId, handleTicketValidation]
@@ -158,6 +156,7 @@ const ScannerView = ({ uuid }) => {
           <CardDescription className="text-center text-gray-400">Scanee el código QR del ticket para el evento ID: {id}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4 ">
+        {isScannerActive && (
           <div className="aspect-square">
             <Scanner
               components={{
@@ -166,7 +165,7 @@ const ScannerView = ({ uuid }) => {
                 finder: false,
               }}
               styles={{
-                container: {borderRadius: '10px', width: '100%', height: '100%', backgroundColor: 'black', padding: '0'},
+                container: { borderRadius: '10px', width: '100%', height: '100%', backgroundColor: 'black', padding: '0' },
                 video: { borderRadius: '10px', height: '100%', width: '100%', backgroundColor: 'black' },
                 finderBorder: 0,
               }}
@@ -175,14 +174,14 @@ const ScannerView = ({ uuid }) => {
               scanDelay={6000}
               onError={(error) => console.error(error)}
             />
-          </div>
+            </div>
+          )}  
 
-          {dniRequired && (
-          <div className="flex flex-col space-y-4">
-            <Input type="text" placeholder="Ingrese DNI del ticket" value={dni} onChange={(e) => setDni(e.target.value)}
-              className="w-full bg-gray-700 text-white" />
-            <Button onClick={() => validarTicketDni(dni)} className="w-full bg-green-600 hover:bg-green-700 text-white">
-              Buscar por DNI
+          {dniRequired && isScannerActive && (
+            <div className="flex flex-col space-y-4">
+            <Input type="text" placeholder="Ingrese DNI del ticket" value={dni} onChange={(e) => setDni(e.target.value)} className="w-full bg-gray-700 text-white" />
+            <Button onClick={() => validarTicketDni(dni)} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+            Buscar por DNI
             </Button>
             </div>
           )}
@@ -201,6 +200,17 @@ const ScannerView = ({ uuid }) => {
               ) : (
                 <p className="text-black font-bold">{error}</p>
               )}
+              <Button
+                onClick={() => {
+                  setShowTicketInfo(false);
+                  setTicketData(null);
+                  setError('');
+                  setIsScannerActive(true);
+                }}
+                className="w-full mt-4 bg-gray-600 hover:bg-blue-800 text-white"
+              >
+                Volver a escanear
+              </Button>
             </div>
           )}
         </CardContent>
