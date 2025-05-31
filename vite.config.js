@@ -35,8 +35,5 @@ export default defineConfig({
     include: ['@radix-ui/react-select'],
   },
 
-  define: {
-    'process.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL),
-    'process.env.VITE_APP_NAME': JSON.stringify(process.env.VITE_APP_NAME),
-  },
+
 });
