@@ -6,10 +6,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { TrendingUp, TrendingDown, Minus } from "lucide-react"
 
 export default function SellerAnalytics({ data, analytics, commissionAmount }) {
-  if (!analytics) return null
+  if (!analytics || analytics.realSellersCount === 0) return null
 
   const getPerformanceIcon = (seller) => {
-    const avgTickets = data.total_tickets / data.sellers.length
+    const avgTickets =
+      analytics.sellersWithStats.reduce((sum, s) => sum + s.ticketsSold, 0) / analytics.realSellersCount
     if (seller.ticketsSold > avgTickets * 1.2) {
       return <TrendingUp className="h-4 w-4 text-green-500" />
     } else if (seller.ticketsSold < avgTickets * 0.8) {
@@ -19,7 +20,8 @@ export default function SellerAnalytics({ data, analytics, commissionAmount }) {
   }
 
   const getPerformanceBadge = (seller) => {
-    const avgTickets = data.total_tickets / data.sellers.length
+    const avgTickets =
+      analytics.sellersWithStats.reduce((sum, s) => sum + s.ticketsSold, 0) / analytics.realSellersCount
     if (seller.ticketsSold > avgTickets * 1.2) {
       return (
         <span className="inline-flex items-center rounded-full border border-transparent bg-green-100 px-2.5 py-0.5 text-xs font-semibold text-green-800">
@@ -94,7 +96,13 @@ export default function SellerAnalytics({ data, analytics, commissionAmount }) {
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold text-gray-300 mb-2">Promedio de Tickets por Vendedor</h4>
-            <p className="text-2xl font-bold text-blue-400">{(data.total_tickets / data.sellers.length).toFixed(1)}</p>
+            <p className="text-2xl font-bold text-blue-400">
+              {analytics.realSellersCount > 0
+                ? (
+                    analytics.sellersWithStats.reduce((sum, s) => sum + s.ticketsSold, 0) / analytics.realSellersCount
+                  ).toFixed(1)
+                : "0.0"}
+            </p>
           </div>
           <div className="bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold text-gray-300 mb-2">Vendedor Más Eficiente</h4>

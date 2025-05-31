@@ -109,8 +109,12 @@ const EconomicReport = () => {
   const analytics = useMemo(() => {
     if (!data) return null
 
-    // Análisis de vendedores
-    const sellersWithStats = data.sellers.map((seller) => {
+    // Separar vendedores reales del admin
+    const realSellers = data.sellers.filter((seller) => seller.is_seller === true)
+    const adminSellers = data.sellers.filter((seller) => seller.is_seller !== true)
+
+    // Análisis de vendedores reales
+    const sellersWithStats = realSellers.map((seller) => {
       const ticketsSold = seller.ticket_counter || 0
       const totalRevenue = Object.entries(seller.ticket_tag_sales).reduce((total, [tagId, quantity]) => {
         const tag = data.ticket_tags.find((t) => t.id === Number.parseInt(tagId))
@@ -128,12 +132,28 @@ const EconomicReport = () => {
       }
     })
 
-    // Top vendedor
+    // Análisis de ventas del admin
+    const adminStats = adminSellers.map((admin) => {
+      const ticketsSold = Object.values(admin.ticket_tag_sales).reduce((total, quantity) => total + quantity, 0)
+      const totalRevenue = Object.entries(admin.ticket_tag_sales).reduce((total, [tagId, quantity]) => {
+        const tag = data.ticket_tags.find((t) => t.id === Number.parseInt(tagId))
+        return total + (tag ? tag.price * quantity : 0)
+      }, 0)
+
+      return {
+        ...admin,
+        totalRevenue,
+        ticketsSold,
+        avgTicketPrice: ticketsSold > 0 ? totalRevenue / ticketsSold : 0,
+      }
+    })
+
+    // Top vendedor (solo vendedores reales)
     const topSeller = sellersWithStats.reduce((top, seller) => {
       return seller.ticketsSold > (top?.ticketsSold || 0) ? seller : top
     }, null)
 
-    // Vendedor con mayor recaudación
+    // Vendedor con mayor recaudación (solo vendedores reales)
     const topRevenueSeller = sellersWithStats.reduce((top, seller) => {
       return seller.totalRevenue > (top?.totalRevenue || 0) ? seller : top
     }, null)
@@ -164,21 +184,25 @@ const EconomicReport = () => {
 
     return {
       sellersWithStats,
+      adminStats,
       topSeller,
       topRevenueSeller,
       ticketStats,
       mostPopularTicket,
       highestRevenueTicket,
       avgTicketPrice: data.total_tickets > 0 ? data.total_sales / data.total_tickets : 0,
+      realSellersCount: realSellers.length,
     }
   }, [data, commissionAmount])
 
   const totalCommission = useMemo(() => {
     if (!data) return 0
-    return data.sellers.reduce((total, seller) => {
-      const ticketsSold = seller.ticket_counter || 0
-      return total + ticketsSold * commissionAmount
-    }, 0)
+    return data.sellers
+      .filter((seller) => seller.is_seller === true)
+      .reduce((total, seller) => {
+        const ticketsSold = seller.ticket_counter || 0
+        return total + ticketsSold * commissionAmount
+      }, 0)
   }, [data, commissionAmount])
 
   const netRevenue = useMemo(() => {
@@ -271,8 +295,8 @@ const EconomicReport = () => {
             <CardContent>
               <div className="text-2xl font-bold text-blue-400">{data.total_tickets}</div>
               <p className="text-xs text-gray-400 mt-1">
-                {data.sellers.length} vendedor{data.sellers.length !== 1 ? "es" : ""} activo
-                {data.sellers.length !== 1 ? "s" : ""}
+                {analytics?.realSellersCount || 0} vendedor{analytics?.realSellersCount !== 1 ? "es" : ""} activo
+                {analytics?.realSellersCount !== 1 ? "s" : ""}
               </p>
             </CardContent>
           </Card>
@@ -306,8 +330,8 @@ const EconomicReport = () => {
           </Card>
         </div>
 
-        {/* Análisis de rendimiento */}
-        {analytics && (
+        {/* Análisis de rendimiento - solo vendedores reales */}
+        {analytics && analytics.realSellersCount > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <Card className="bg-gray-800 border-gray-700">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -351,8 +375,40 @@ const EconomicReport = () => {
           </div>
         )}
 
-        {/* Componente de rendimiento de vendedores mejorado */}
-        <SellerPerformanceChart data={data} analytics={analytics} />
+        {/* Mostrar información del admin si existe */}
+        {analytics && analytics.adminStats.length > 0 && (
+          <Card className="bg-gray-800 border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-xl font-bold">Ventas Administrativas</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {analytics.adminStats.map((admin) => (
+                  <div key={admin.id} className="bg-gray-700 p-4 rounded-lg">
+                    <h3 className="font-semibold text-blue-400 mb-2">{admin.assigned_name}</h3>
+                    <div className="space-y-1 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Tickets vendidos:</span>
+                        <span className="font-bold">{admin.ticketsSold}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Total recaudado:</span>
+                        <span className="font-bold">${admin.totalRevenue.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Promedio/ticket:</span>
+                        <span className="font-bold">${admin.avgTicketPrice.toFixed(2)}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Componente de rendimiento de vendedores mejorado - solo vendedores reales */}
+        {analytics && analytics.realSellersCount > 0 && <SellerPerformanceChart data={data} analytics={analytics} />}
 
         {/* Componentes de análisis detallado */}
         <SellerAnalytics data={data} analytics={analytics} commissionAmount={commissionAmount} />

@@ -4,14 +4,34 @@ import { useState } from "react"
 import PropTypes from "prop-types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { BarChart3, Users, Grid3X3 } from "lucide-react"
+import { BarChart3, Users, Grid3X3, ChevronDown, ChevronUp } from "lucide-react"
 
 export default function SellerPerformanceChart({ data, analytics }) {
   const [viewMode, setViewMode] = useState("cards") // 'cards', 'ranking', 'comparison'
+  const [showAll, setShowAll] = useState(false)
 
-  if (!analytics) return null
+  if (!analytics || analytics.realSellersCount === 0) {
+    return (
+      <Card className="bg-gray-800 border-gray-700">
+        <CardHeader>
+          <CardTitle className="text-xl font-bold">Rendimiento por Vendedor</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8 text-gray-400">
+            <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
+            <p>No hay vendedores registrados en este evento</p>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
 
   const sortedSellers = analytics.sellersWithStats.sort((a, b) => b.ticketsSold - a.ticketsSold)
+
+  // Limitar a los primeros 6 vendedores por defecto
+  const displayLimit = 6
+  const sellersToShow = showAll ? sortedSellers : sortedSellers.slice(0, displayLimit)
+  const hasMoreSellers = sortedSellers.length > displayLimit
 
   const getPerformanceColor = (seller, index) => {
     if (index === 0) return "text-yellow-400 bg-yellow-400/10 border-yellow-400/20"
@@ -29,7 +49,7 @@ export default function SellerPerformanceChart({ data, analytics }) {
 
   const renderCardsView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-      {sortedSellers.map((seller, index) => (
+      {sellersToShow.map((seller, index) => (
         <div
           key={seller.id}
           className={`p-4 rounded-lg border ${getPerformanceColor(seller, index)} transition-all hover:scale-105`}
@@ -70,7 +90,7 @@ export default function SellerPerformanceChart({ data, analytics }) {
 
   const renderRankingView = () => (
     <div className="space-y-3">
-      {sortedSellers.map((seller, index) => (
+      {sellersToShow.map((seller, index) => (
         <div
           key={seller.id}
           className={`flex items-center justify-between p-4 rounded-lg border ${getPerformanceColor(seller, index)}`}
@@ -99,7 +119,7 @@ export default function SellerPerformanceChart({ data, analytics }) {
 
     return (
       <div className="space-y-4">
-        {sortedSellers.map((seller, index) => (
+        {sellersToShow.map((seller, index) => (
           <div key={seller.id} className="space-y-2">
             <div className="flex justify-between items-center">
               <span className="font-medium text-sm">{seller.assigned_name}</span>
@@ -145,7 +165,9 @@ export default function SellerPerformanceChart({ data, analytics }) {
     <Card className="bg-gray-800 border-gray-700">
       <CardHeader>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <CardTitle className="text-xl font-bold">Rendimiento por Vendedor</CardTitle>
+          <CardTitle className="text-xl font-bold">
+            Rendimiento por Vendedor ({analytics.realSellersCount} vendedores)
+          </CardTitle>
           <div className="flex gap-2">
             <Button
               variant={viewMode === "cards" ? "default" : "outline"}
@@ -182,16 +204,39 @@ export default function SellerPerformanceChart({ data, analytics }) {
         {viewMode === "ranking" && renderRankingView()}
         {viewMode === "comparison" && renderComparisonView()}
 
+        {/* Botón para mostrar más/menos vendedores */}
+        {hasMoreSellers && (
+          <div className="mt-6 text-center">
+            <Button variant="outline" onClick={() => setShowAll(!showAll)} className="flex items-center gap-2 mx-auto">
+              {showAll ? (
+                <>
+                  <ChevronUp className="h-4 w-4" />
+                  Mostrar menos
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="h-4 w-4" />
+                  Mostrar todos ({sortedSellers.length - displayLimit} más)
+                </>
+              )}
+            </Button>
+          </div>
+        )}
+
         {/* Estadísticas resumidas */}
         <div className="mt-6 pt-4 border-t border-gray-700">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             <div>
-              <div className="text-2xl font-bold text-blue-400">{data.sellers.length}</div>
+              <div className="text-2xl font-bold text-blue-400">{analytics.realSellersCount}</div>
               <div className="text-xs text-gray-400">Vendedores</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-green-400">
-                {(data.total_tickets / data.sellers.length).toFixed(1)}
+                {analytics.realSellersCount > 0
+                  ? (
+                      analytics.sellersWithStats.reduce((sum, s) => sum + s.ticketsSold, 0) / analytics.realSellersCount
+                    ).toFixed(1)
+                  : "0.0"}
               </div>
               <div className="text-xs text-gray-400">Promedio tickets</div>
             </div>
@@ -201,7 +246,13 @@ export default function SellerPerformanceChart({ data, analytics }) {
             </div>
             <div>
               <div className="text-2xl font-bold text-purple-400">
-                ${(data.total_sales / data.sellers.length).toFixed(0)}
+                $
+                {analytics.realSellersCount > 0
+                  ? (
+                      analytics.sellersWithStats.reduce((sum, s) => sum + s.totalRevenue, 0) /
+                      analytics.realSellersCount
+                    ).toFixed(0)
+                  : "0"}
               </div>
               <div className="text-xs text-gray-400">Promedio ingresos</div>
             </div>
