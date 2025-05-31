@@ -131,10 +131,10 @@ export default function EditEvent() {
     e.preventDefault();
     const formData = new FormData(e.target);
     const updatedTag = {
+      ...ticketTags[tagToEdit],  // conservar id u otros campos
       name: formData.get('name'),
       price: parseFloat(formData.get('price')),
     };
-
     setTicketTags(ticketTags.map((tag, index) => (index === tagToEdit ? updatedTag : tag)));
     setIsEditTagDialogOpen(false);
   };
