@@ -1,34 +1,32 @@
 "use client"
 
-import React, { useState, useEffect, useMemo, useContext } from "react"
+import { useState, useEffect, useMemo, useContext } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { DollarSign, Tag, Percent, ArrowLeft, Printer, TrendingUp, Users, Award, BarChart3 } from 'lucide-react'
+import { DollarSign, Tag, Percent, ArrowLeft, Printer, TrendingUp, Award, BarChart3 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  Tooltip,
-  Legend,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-} from "recharts"
 import AuthContext from "../context/AuthContext"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import LoadingSpinner from "@/components/ui/loadingspinner"
 import ReportPrintView from "@/components/reports/ReportPrintView"
 import SellerAnalytics from "@/components/reports/SellerAnalytics"
 import TicketAnalytics from "@/components/reports/TicketAnalytics"
+import SellerPerformanceChart from "@/components/reports/SellerPerformanceChart"
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8", "#82CA9D", "#FFC658", "#FF9F40", "#FF6633", "#FF5500"]
+const COLORS = [
+  "#0088FE",
+  "#00C49F",
+  "#FFBB28",
+  "#FF8042",
+  "#8884D8",
+  "#82CA9D",
+  "#FFC658",
+  "#FF9F40",
+  "#FF6633",
+  "#FF5500",
+]
 
 const EconomicReport = () => {
   const { id } = useParams()
@@ -115,7 +113,7 @@ const EconomicReport = () => {
     const sellersWithStats = data.sellers.map((seller) => {
       const ticketsSold = seller.ticket_counter || 0
       const totalRevenue = Object.entries(seller.ticket_tag_sales).reduce((total, [tagId, quantity]) => {
-        const tag = data.ticket_tags.find((t) => t.id === parseInt(tagId))
+        const tag = data.ticket_tags.find((t) => t.id === Number.parseInt(tagId))
         return total + (tag ? tag.price * quantity : 0)
       }, 0)
       const commission = ticketsSold * commissionAmount
@@ -200,15 +198,6 @@ const EconomicReport = () => {
     })
   }, [data])
 
-  const sellerChartData = useMemo(() => {
-    if (!analytics) return []
-    return analytics.sellersWithStats.map((seller) => ({
-      name: seller.assigned_name,
-      tickets: seller.ticketsSold,
-      revenue: seller.totalRevenue,
-    }))
-  }, [analytics])
-
   const handlePrint = () => {
     setShowPrintView(true)
   }
@@ -236,8 +225,8 @@ const EconomicReport = () => {
         {showAlert && (
           <Alert className="mb-4 bg-yellow-900 border-yellow-700">
             <AlertDescription>
-              Para que este reporte funcione correctamente, asegúrese de haber configurado los precios adecuados para los
-              ticket tags en el evento.
+              Para que este reporte funcione correctamente, asegúrese de haber configurado los precios adecuados para
+              los ticket tags en el evento.
             </AlertDescription>
           </Alert>
         )}
@@ -251,7 +240,10 @@ const EconomicReport = () => {
             <ArrowLeft className="mr-2 h-4 w-4" /> Volver
           </Button>
           <h1 className="text-2xl sm:text-3xl font-bold text-center mb-0">Reporte Económico</h1>
-          <Button onClick={handlePrint} className="mb-0 flex items-center max-md:w-full w-72 bg-blue-600 hover:bg-blue-700">
+          <Button
+            onClick={handlePrint}
+            className="mb-0 flex items-center max-md:w-full w-72 bg-blue-600 hover:bg-blue-700"
+          >
             <Printer className="mr-2 h-4 w-4" /> Imprimir Reporte
           </Button>
         </div>
@@ -279,7 +271,8 @@ const EconomicReport = () => {
             <CardContent>
               <div className="text-2xl font-bold text-blue-400">{data.total_tickets}</div>
               <p className="text-xs text-gray-400 mt-1">
-                {data.sellers.length} vendedor{data.sellers.length !== 1 ? "es" : ""} activo{data.sellers.length !== 1 ? "s" : ""}
+                {data.sellers.length} vendedor{data.sellers.length !== 1 ? "es" : ""} activo
+                {data.sellers.length !== 1 ? "s" : ""}
               </p>
             </CardContent>
           </Card>
@@ -323,9 +316,7 @@ const EconomicReport = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-lg font-bold text-yellow-400">{analytics.topSeller?.assigned_name || "N/A"}</div>
-                <p className="text-xs text-gray-400 mt-1">
-                  {analytics.topSeller?.ticketsSold || 0} tickets vendidos
-                </p>
+                <p className="text-xs text-gray-400 mt-1">{analytics.topSeller?.ticketsSold || 0} tickets vendidos</p>
               </CardContent>
             </Card>
 
@@ -360,33 +351,8 @@ const EconomicReport = () => {
           </div>
         )}
 
-        {/* Gráfico de comparación de vendedores */}
-        <Card className="bg-gray-800 border-gray-700">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold">Rendimiento por Vendedor</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={sellerChartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                  <XAxis dataKey="name" stroke="#9CA3AF" />
-                  <YAxis stroke="#9CA3AF" />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "#374151",
-                      border: "none",
-                      borderRadius: "0.375rem",
-                      color: "#F3F4F6",
-                    }}
-                  />
-                  <Bar dataKey="tickets" fill="#3B82F6" name="Tickets Vendidos" />
-                  <Bar dataKey="revenue" fill="#10B981" name="Ingresos ($)" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Componente de rendimiento de vendedores mejorado */}
+        <SellerPerformanceChart data={data} analytics={analytics} />
 
         {/* Componentes de análisis detallado */}
         <SellerAnalytics data={data} analytics={analytics} commissionAmount={commissionAmount} />
@@ -410,9 +376,7 @@ const EconomicReport = () => {
                 onChange={(e) => setCommissionAmount(Number(e.target.value))}
                 className="max-w-xs bg-gray-700 border-gray-600 text-white"
               />
-              <div className="text-sm text-gray-400">
-                Total a pagar en comisiones: ${totalCommission.toFixed(2)}
-              </div>
+              <div className="text-sm text-gray-400">Total a pagar en comisiones: ${totalCommission.toFixed(2)}</div>
             </div>
           </CardContent>
         </Card>
