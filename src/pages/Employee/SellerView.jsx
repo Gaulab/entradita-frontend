@@ -153,7 +153,7 @@ export default function VendedorView({ uuid }) {
         });
     } else {
       // Fallback for browsers that don't support the Web Share API
-      alert(`Comparte este enlace: ${ticket.uuid}`);
+      alert(`Comparte este enlace: ${window.location.origin}/ticket/${ticket.uuid}`);
       navigator.clipboard
         .writeText(ticket.uuid)
         .then(() => {
