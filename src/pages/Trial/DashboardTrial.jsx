@@ -36,7 +36,7 @@ export default function Dashboard() {
         </div>
 
         <Card className="bg-gray-800 border-gray-700 mb-4 flex flex-row items-center p-4">
-          <img src="isotipoWhite.png" alt="Ticket" className="w-10 sm:w-16 mr-2 p-0" />
+          <img src="/isotipoWhite.png" alt="Ticket" className="w-10 sm:w-16 mr-2 p-0" />
           <CardTitle className="text-white text-xl sm:text-2xl text-left mr-2">Tickets disponibles </CardTitle>
           <CardContent className="items-center p-0">
             <p className="text-2xl sm:text-3xl text-blue-200 font-bold">{ticket_limit}</p>

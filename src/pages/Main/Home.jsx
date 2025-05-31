@@ -88,7 +88,7 @@ export default function Home() {
         <header className="bg-gray-800 shadow-md">
           <div className="container mx-auto px-4 py-4 flex justify-between items-center">
             <div className="flex items-center">
-              <img src="isotipoWhite.png" alt="Logo de Entradita, plataforma para eventos y tickets QR" className="h-10 w-auto mr-2 sm:h-12 sm:mr-4" />
+              <img src="/isotipoWhite.png" alt="Logo de Entradita, plataforma para eventos y tickets QR" className="h-10 w-auto mr-2 sm:h-12 sm:mr-4" />
               <h1 className="text-xl sm:text-2xl font-bold text-white">entradita.com</h1>
             </div>
 
