@@ -4,7 +4,7 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 // UI Components
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/ca';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/card';
 import { Alert, AlertDescription } from '../../components/ui/alert';
 import { Button } from '../../components/ui/button';
 import { Switch } from '../../components/ui/switch';
