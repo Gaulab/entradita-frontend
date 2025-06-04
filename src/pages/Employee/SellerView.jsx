@@ -1,169 +1,160 @@
-"use client"
+'use client';
 
 // react imports
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useCallback, useRef } from 'react';
 // react-router imports
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from 'react-router-dom';
 // lucide-react icons imports
-import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon, ShoppingCart, Printer } from "lucide-react"
+import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon, ShoppingCart, Printer } from 'lucide-react';
 // prop-types imports
-import PropTypes from "prop-types"
+import PropTypes from 'prop-types';
 // custom components
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 // apis imports
-import { deleteTicketBySeller } from "@/api/ticketApi"
-import { checkPassword } from "@/api/employeeApi"
-import { getSeller } from "@/api/employeeApi"
+import { deleteTicketBySeller } from '@/api/ticketApi';
+import { checkPassword } from '@/api/employeeApi';
+import { getSeller } from '@/api/employeeApi';
 // custom components
-import MobileActionDialog from "@/components/seller/MobileActionDialog"
-import PasswordForm from "@/components/seller/PasswordForm"
+import MobileActionDialog from '@/components/seller/MobileActionDialog';
+import PasswordForm from '@/components/seller/PasswordForm';
 
-import { QRCodeSVG } from "qrcode.react"
-import html2canvas from "html2canvas"
+import { QRCodeSVG } from 'qrcode.react';
+import html2canvas from 'html2canvas';
 
 export default function VendedorView({ uuid }) {
   // main states
-  const [tickets, setTickets] = useState([])
-  const [vendedor, setVendedor] = useState(null)
-  const [dniRequired, setDniRequired] = useState(false)
-  const [ticketsSalesEnabled, setTicketsSalesEnabled] = useState(true)
-  const [organizerHasCapacity, setOrganizerHasCapacity] = useState(true)
+  const [tickets, setTickets] = useState([]);
+  const [vendedor, setVendedor] = useState(null);
+  const [dniRequired, setDniRequired] = useState(false);
+  const [ticketsSalesEnabled, setTicketsSalesEnabled] = useState(true);
+  const [organizerHasCapacity, setOrganizerHasCapacity] = useState(true);
   // password states
-  const [password, setPassword] = useState("")
-  const [isPasswordCorrect, setIsPasswordCorrect] = useState(false)
-  const [passwordError, setPasswordError] = useState("")
+  const [password, setPassword] = useState('');
+  const [isPasswordCorrect, setIsPasswordCorrect] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
 
   // search states
-  const [filteredTickets, setFilteredTickets] = useState([])
-  const [searchTerm, setSearchTerm] = useState("")
-  const [vendedorNotFound, setVendedorNotFound] = useState(false)
-  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false)
-  const [ticketToDelete, setTicketToDelete] = useState(null)
-  const [copyMessage, setCopyMessage] = useState("")
-  const [ticketTags, setTicketTags] = useState([])
-  const [selectedTicket, setSelectedTicket] = useState(null)
-  const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 5
-  const pageCount = Math.ceil(filteredTickets.length / itemsPerPage)
-  const paginatedTickets = filteredTickets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+  const [filteredTickets, setFilteredTickets] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [vendedorNotFound, setVendedorNotFound] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [ticketToDelete, setTicketToDelete] = useState(null);
+  const [copyMessage, setCopyMessage] = useState('');
+  const [ticketTags, setTicketTags] = useState([]);
+  const [selectedTicket, setSelectedTicket] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  const pageCount = Math.ceil(filteredTickets.length / itemsPerPage);
+  const paginatedTickets = filteredTickets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   // Print states
-  const [printPayload, setPrintPayload] = useState(null)
-  const [ticketToPrint, setTicketToPrint] = useState(null)
+  const [printPayload, setPrintPayload] = useState(null);
+  const [ticketToPrint, setTicketToPrint] = useState(null);
 
   // Ref al div oculto que tendrá el <QRCodeSVG> para "foto" con html2canvas
-  const hiddenQrRef = useRef(null)
+  const hiddenQrRef = useRef(null);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const copyToClipboard = useCallback((text) => {
     navigator.clipboard
       .writeText(text)
       .then(() => {
-        setCopyMessage("Copiado")
-        setTimeout(() => setCopyMessage(""), 2000) // El mensaje desaparece después de 2 segundos
+        setCopyMessage('Copiado');
+        setTimeout(() => setCopyMessage(''), 2000); // El mensaje desaparece después de 2 segundos
       })
       .catch((err) => {
-        console.error("Error al copiar: ", err)
-        setCopyMessage("Error al copiar")
-        setTimeout(() => setCopyMessage(""), 2000)
-      })
-  }, [])
+        console.error('Error al copiar: ', err);
+        setCopyMessage('Error al copiar');
+        setTimeout(() => setCopyMessage(''), 2000);
+      });
+  }, []);
 
   const shareTicketLink = useCallback(
     (link) => {
       if (navigator.share) {
         navigator
           .share({
-            title: "Compartir Ticket",
-            text: "Aquí está el enlace de tu ticket QR:",
+            title: 'Compartir Ticket',
+            text: 'Aquí está el enlace de tu ticket QR:',
             url: link,
           })
           .then(() => {
-            console.log("Compartido exitosamente")
+            console.log('Compartido exitosamente');
           })
           .catch((err) => {
-            console.error("Error al intentar compartir:", err)
-          })
+            console.error('Error al intentar compartir:', err);
+          });
       } else {
-        copyToClipboard(link)
+        copyToClipboard(link);
       }
     },
-    [copyToClipboard],
-  )
+    [copyToClipboard]
+  );
 
   useEffect(() => {
     const handleBeforeUnload = () => {
-      localStorage.removeItem("isPasswordCorrect")
-    }
-    window.addEventListener("beforeunload", handleBeforeUnload)
+      localStorage.removeItem('isPasswordCorrect');
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
     return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload)
-    }
-  }, [])
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   useEffect(() => {
-    const storedPasswordStatus = localStorage.getItem("isPasswordCorrect")
+    const storedPasswordStatus = localStorage.getItem('isPasswordCorrect');
     if (storedPasswordStatus) {
-      setIsPasswordCorrect(JSON.parse(storedPasswordStatus))
+      setIsPasswordCorrect(JSON.parse(storedPasswordStatus));
     }
     const fetchTickets = async () => {
       try {
-        const data = await getSeller(uuid)
-        setVendedor(data.seller)
-        setTickets(data.tickets.sort((a, b) => b.id - a.id))
-        setFilteredTickets(data.tickets)
-        setTicketsSalesEnabled(data.sales_enabled)
-        setDniRequired(data.dni_required)
-        setOrganizerHasCapacity(data.organizer_has_capacity)
-        setTicketTags(data.seller.ticket_tags)
+        const data = await getSeller(uuid);
+        setVendedor(data.seller);
+        setTickets(data.tickets.sort((a, b) => b.id - a.id));
+        setFilteredTickets(data.tickets);
+        setTicketsSalesEnabled(data.sales_enabled);
+        setDniRequired(data.dni_required);
+        setOrganizerHasCapacity(data.organizer_has_capacity);
+        setTicketTags(data.seller.ticket_tags);
       } catch (error) {
-        console.error(error.message)
+        console.error(error.message);
       }
-    }
+    };
     if (isPasswordCorrect) {
-      fetchTickets()
+      fetchTickets();
     }
-  }, [uuid, isPasswordCorrect])
+  }, [uuid, isPasswordCorrect]);
 
   const verifyPassword = async () => {
     try {
-      await checkPassword(uuid, password)
-      setIsPasswordCorrect(true)
-      localStorage.setItem("isPasswordCorrect", "true")
-      setPasswordError("")
+      await checkPassword(uuid, password);
+      setIsPasswordCorrect(true);
+      localStorage.setItem('isPasswordCorrect', 'true');
+      setPasswordError('');
     } catch (error) {
       if (error.response?.status === 429) {
-        setPasswordError("Demasiados intentos. Intenta nuevamente en un minuto.")
+        setPasswordError('Demasiados intentos. Intenta nuevamente en un minuto.');
       } else {
-        setPasswordError("Contraseña incorrecta.")
+        setPasswordError('Contraseña incorrecta.');
       }
     }
-  }
+  };
 
   const handleSearch = (event) => {
-    const term = event.target.value.toLowerCase()
-    setSearchTerm(term)
+    const term = event.target.value.toLowerCase();
+    setSearchTerm(term);
     if (term) {
-      const filtered = tickets.filter(
-        (ticket) => ticket.owner_name.toLowerCase().includes(term) || ticket.owner_dni.toLowerCase().includes(term),
-      )
-      setFilteredTickets(filtered)
+      const filtered = tickets.filter((ticket) => ticket.owner_name.toLowerCase().includes(term) || ticket.owner_dni.toLowerCase().includes(term));
+      setFilteredTickets(filtered);
     } else {
-      setFilteredTickets(tickets)
+      setFilteredTickets(tickets);
     }
-  }
+  };
 
   const handleShare = (ticket) => {
     if (navigator.share) {
@@ -174,79 +165,77 @@ export default function VendedorView({ uuid }) {
           url: `${window.location.origin}/ticket/${ticket.uuid}`,
         })
         .then(() => {
-          console.log("Ticket compartido exitosamente")
+          console.log('Ticket compartido exitosamente');
         })
         .catch((error) => {
-          console.log("Error sharing", error)
-        })
+          console.log('Error sharing', error);
+        });
     } else {
       // Fallback for browsers that don't support the Web Share API
-      alert(`Comparte este enlace: ${window.location.origin}/ticket/${ticket.uuid}`)
+      alert(`Comparte este enlace: ${window.location.origin}/ticket/${ticket.uuid}`);
       navigator.clipboard
         .writeText(ticket.uuid)
         .then(() => {
-          console.log("Ticket URL copiado al portapapeles")
+          console.log('Ticket URL copiado al portapapeles');
         })
         .catch((error) => {
-          console.log("Error al copiar el URL", error)
-        })
+          console.log('Error al copiar el URL', error);
+        });
     }
-  }
+  };
 
   const handleCreateTicket = (dniRequired, ticketTags) => {
-    navigate(`/seller/${uuid}/create-ticket`, { state: { dniRequired, ticketTags } })
-  }
+    navigate(`/seller/${uuid}/create-ticket`, { state: { dniRequired, ticketTags } });
+  };
 
   const handleViewTicket = useCallback((ticketId) => {
-    window.open(`/ticket/${ticketId}`, "_blank")
-  }, [])
+    window.open(`/ticket/${ticketId}`, '_blank');
+  }, []);
 
   const handleDeleteTicket = (ticket) => {
-    setTicketToDelete(ticket)
-    setIsDeleteConfirmOpen(true)
-  }
+    setTicketToDelete(ticket);
+    setIsDeleteConfirmOpen(true);
+  };
 
   const confirmDeleteTicket = async () => {
-    if (!ticketToDelete) return
+    if (!ticketToDelete) return;
     try {
-      await deleteTicketBySeller(uuid, ticketToDelete.id)
-      const remainingTickets = tickets.filter((t) => t.id !== ticketToDelete.id)
-      setTickets(remainingTickets)
-      setFilteredTickets(remainingTickets)
+      await deleteTicketBySeller(uuid, ticketToDelete.id);
+      const remainingTickets = tickets.filter((t) => t.id !== ticketToDelete.id);
+      setTickets(remainingTickets);
+      setFilteredTickets(remainingTickets);
 
       // Actualizar el contador de tickets del vendedor
       setVendedor((prevVendedor) => ({
         ...prevVendedor,
         ticket_counter: prevVendedor.ticket_counter - 1,
-      }))
+      }));
     } catch (error) {
-      console.error(error.message)
+      console.error(error.message);
     }
-    setIsDeleteConfirmOpen(false)
-    setTicketToDelete(null)
-  }
+    setIsDeleteConfirmOpen(false);
+    setTicketToDelete(null);
+  };
 
   const handlePrintTicketQR = async (ticket) => {
-    if (!ticket) return
+    if (!ticket) return;
 
-    setPrintPayload(ticket.qr_payload)
+    setPrintPayload(ticket.qr_payload);
 
     setTimeout(async () => {
-      if (!hiddenQrRef.current) return
+      if (!hiddenQrRef.current) return;
       try {
         const canvas = await html2canvas(hiddenQrRef.current, {
           scale: 4,
           backgroundColor: null,
-        })
-        const dataUrl = canvas.toDataURL("image/png")
+        });
+        const dataUrl = canvas.toDataURL('image/png');
 
-        const printWindow = window.open("", "_blank", `width=800,height=600`)
-        if (!printWindow) return
+        const printWindow = window.open('', '_blank', `width=800,height=600`);
+        if (!printWindow) return;
 
-        const eventDate = ticket.event_date
-          ? new Date(ticket.event_date).toLocaleDateString("es-ES")
-          : "Fecha no disponible"
-        const ticketDate = new Date(ticket.created_at).toLocaleDateString("es-ES")
+        const eventDate = ticket.event_date ? new Date(ticket.event_date).toLocaleDateString('es-ES') : 'Fecha no disponible';
+        const ticketDate = new Date(ticket.created_at).toLocaleDateString('es-ES');
 
         const html = `
         <!DOCTYPE html>
@@ -441,7 +430,7 @@ export default function VendedorView({ uuid }) {
           <body>
             <div class="page">
               <div class="instructions-header">
-                <h1>Ticket para ${vendedor?.event_name || "Evento"}</h1>
+                <h1>Ticket para ${vendedor?.event_name || 'Evento'}</h1>
                 <p>Generado por entradita.com - ${eventDate}</p>
               </div>
               
@@ -459,7 +448,7 @@ export default function VendedorView({ uuid }) {
                   
                   <div class="ticket-right">
                     <div class="ticket-header">
-                      <h2 class="event-name">${vendedor?.event_name || "Evento"}</h2>
+                      <h2 class="event-name">${vendedor?.event_name || 'Evento'}</h2>
                       <p class="event-date">${eventDate}</p>
                     </div>
                     
@@ -477,7 +466,7 @@ export default function VendedorView({ uuid }) {
                         <div class="info-value">${ticket.owner_dni}</div>
                       </div>
                       `
-                          : ""
+                          : ''
                       }
                       
                       <div class="info-row">
@@ -531,35 +520,28 @@ export default function VendedorView({ uuid }) {
             </script>
           </body>
         </html>
-      `
+      `;
 
-        printWindow.document.write(html)
-        printWindow.document.close()
+        printWindow.document.write(html);
+        printWindow.document.close();
       } catch (err) {
-        console.error("Error al imprimir:", err)
+        console.error('Error al imprimir:', err);
       } finally {
-        setPrintPayload(null)
+        setPrintPayload(null);
       }
-    }, 50)
-  }
+    }, 50);
+  };
 
   if (vendedorNotFound) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
         <h1 className="text-2xl">Vendedor no encontrado</h1>
       </div>
-    )
+    );
   }
 
   if (!isPasswordCorrect) {
-    return (
-      <PasswordForm
-        password={password}
-        setPassword={setPassword}
-        verifyPassword={verifyPassword}
-        passwordError={passwordError}
-      />
-    )
+    return <PasswordForm password={password} setPassword={setPassword} verifyPassword={verifyPassword} passwordError={passwordError} />;
   }
 
   return (
@@ -568,9 +550,9 @@ export default function VendedorView({ uuid }) {
       <div
         ref={hiddenQrRef}
         style={{
-          position: "absolute",
-          top: "-9999px",
-          left: "-9999px",
+          position: 'absolute',
+          top: '-9999px',
+          left: '-9999px',
         }}
       >
         {printPayload && (
@@ -589,9 +571,7 @@ export default function VendedorView({ uuid }) {
                 <ShoppingCart className="mr-2" />
                 Vendedor page
               </CardTitle>
-              <CardDescription className="text-gray-400">
-                Estas vendiendo para el evento {vendedor?.event_name}
-              </CardDescription>
+              <CardDescription className="text-gray-400">Estas vendiendo para el evento {vendedor?.event_name}</CardDescription>
             </CardHeader>
             <CardContent>
               {vendedor && (
@@ -605,13 +585,7 @@ export default function VendedorView({ uuid }) {
                     </p>
                   ) : (
                     <p className="text-gray-200">
-                      Tickets disponibles:{" "}
-                      <a className="text-blue-400 ">
-                        {vendedor.seller_capacity !== null
-                          ? vendedor.seller_capacity - vendedor.ticket_counter
-                          : "ilimitados"}{" "}
-                        tickets
-                      </a>
+                      Tickets disponibles: <a className="text-blue-400 ">{vendedor.seller_capacity !== null ? vendedor.seller_capacity - vendedor.ticket_counter : 'ilimitados'} tickets</a>
                     </p>
                   )}
                   <p className="text-gray-200">
@@ -626,8 +600,7 @@ export default function VendedorView({ uuid }) {
             <CardHeader>
               <CardTitle className="text-white ">Tickets</CardTitle>
               <CardDescription className="text-gray-400">
-                Gestiona los tickets para el evento <br />{" "}
-                {window.innerWidth < 640 && "Haz click en una fila para ver más acciones"}
+                Gestiona los tickets para el evento <br /> {window.innerWidth < 640 && 'Haz click en una fila para ver más acciones'}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -636,9 +609,7 @@ export default function VendedorView({ uuid }) {
                   disabled={
                     (vendedor && vendedor.status === false) ||
                     !ticketsSalesEnabled ||
-                    (vendedor &&
-                      vendedor.seller_capacity !== null &&
-                      vendedor.ticket_counter >= vendedor.seller_capacity) ||
+                    (vendedor && vendedor.seller_capacity !== null && vendedor.ticket_counter >= vendedor.seller_capacity) ||
                     (vendedor && organizerHasCapacity === false)
                   }
                   onClick={() => handleCreateTicket(dniRequired, ticketTags)}
@@ -657,11 +628,7 @@ export default function VendedorView({ uuid }) {
                   />
                 </div>
               </div>
-              {(!ticketsSalesEnabled || !organizerHasCapacity) && (
-                <CardDescription className="text-red-400 mb-3">
-                  El organizador deshabilitó la venta de tickets
-                </CardDescription>
-              )}
+              {(!ticketsSalesEnabled || !organizerHasCapacity) && <CardDescription className="text-red-400 mb-3">El organizador deshabilitó la venta de tickets</CardDescription>}
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
@@ -679,56 +646,30 @@ export default function VendedorView({ uuid }) {
                         className="border-gray-700 cursor-pointer sm:cursor-default h-16"
                         onClick={() => {
                           if (window.innerWidth < 640) {
-                            setSelectedTicket(ticket)
+                            setSelectedTicket(ticket);
                           }
                         }}
                       >
                         <TableCell className="text-gray-300 truncate overflow-hidden whitespace-nowrap max-w-28">
                           {ticket.owner_name} {ticket.owner_lastname}
                         </TableCell>
-                        {dniRequired && (
-                          <TableCell className="text-gray-300 truncate overflow-hidden whitespace-nowrap max-w-15">
-                            {ticket.owner_dni ? ticket.owner_dni : "No disponible"}
-                          </TableCell>
-                        )}
+                        {dniRequired && <TableCell className="text-gray-300 truncate overflow-hidden whitespace-nowrap max-w-15">{ticket.owner_dni ? ticket.owner_dni : 'No disponible'}</TableCell>}
                         <TableCell className="text-gray-300 ">{ticket.ticket_tag.name}</TableCell>
                         <TableCell className="text-right space-x-1 space-y-1 min-w-40 hidden sm:table-cell">
-                          <Button
-                            variant="outline"
-                            onClick={() => handlePrintTicketQR(ticket)}
-                            size="sm"
-                            title="Imprimir QR"
-                          >
-                            <Printer className="h-4 w-4" />
-                            <span className="sr-only">Imprimir</span>
-                          </Button>
-
-                          <Button
-                            variant="outline"
-                            onClick={() => shareTicketLink(`${window.location.origin}/ticket/${ticket.uuid}`)}
-                            size="sm"
-                            title="Compartir enlace de ticket"
-                          >
+                          <Button variant="outline" onClick={() => shareTicketLink(`${window.location.origin}/ticket/${ticket.uuid}`)} size="sm" title="Compartir enlace de ticket">
                             <LinkIcon className="h-4 w-4" />
                             <span className="sr-only">Compartir enlace de ticket</span>
                           </Button>
 
-                          <Button
-                            variant="outline"
-                            onClick={() => handleViewTicket(ticket.uuid)}
-                            size="sm"
-                            title="Ver ticket"
-                          >
+                          <Button variant="outline" onClick={() => handleViewTicket(ticket.uuid)} size="sm" title="Ver ticket">
                             <EyeIcon className="h-4 w-4" />
                             <span className="sr-only">Ver ticket</span>
                           </Button>
-
-                          <Button
-                            variant="destructive"
-                            onClick={() => handleDeleteTicket(ticket)}
-                            size="sm"
-                            title="Eliminar ticket"
-                          >
+                          <Button variant="outline" onClick={() => handlePrintTicketQR(ticket)} size="sm" title="Imprimir QR">
+                            <Printer className="h-4 w-4" />
+                            <span className="sr-only">Imprimir</span>
+                          </Button>
+                          <Button variant="destructive" onClick={() => handleDeleteTicket(ticket)} size="sm" title="Eliminar ticket">
                             <Trash2Icon className="h-4 w-4" />
                             <span className="sr-only">Eliminar ticket</span>
                           </Button>
@@ -739,21 +680,13 @@ export default function VendedorView({ uuid }) {
                 </Table>
               </div>
               <div className="flex justify-between items-center mt-4">
-                <Button
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
-                  disabled={currentPage === 1}
-                  className="bg-gray-700 text-white"
-                >
+                <Button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))} disabled={currentPage === 1} className="bg-gray-700 text-white">
                   Anterior
                 </Button>
                 <span className="text-gray-400">
                   Página {currentPage} de {pageCount}
                 </span>
-                <Button
-                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, pageCount))}
-                  disabled={currentPage === pageCount}
-                  className="bg-gray-700 text-white"
-                >
+                <Button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, pageCount))} disabled={currentPage === pageCount} className="bg-gray-700 text-white">
                   Siguiente
                 </Button>
               </div>
@@ -769,26 +702,16 @@ export default function VendedorView({ uuid }) {
           </Card>
         </div>
         {/* Mensaje de copiado simple */}
-        {copyMessage && (
-          <div className="fixed bottom-4 right-4 bg-green-400 text-black px-4 py-2 rounded-md shadow-lg">
-            {copyMessage}
-          </div>
-        )}
+        {copyMessage && <div className="fixed bottom-4 right-4 bg-green-400 text-black px-4 py-2 rounded-md shadow-lg">{copyMessage}</div>}
 
         <Dialog open={isDeleteConfirmOpen} onOpenChange={setIsDeleteConfirmOpen} className="">
           <DialogContent className="bg-gray-800 text-white ">
             <DialogHeader>
               <DialogTitle>Confirmar eliminación de ticket</DialogTitle>
-              <DialogDescription>
-                ¿Estás seguro de que deseas eliminar este ticket? Esta acción no se puede deshacer.
-              </DialogDescription>
+              <DialogDescription>¿Estás seguro de que deseas eliminar este ticket? Esta acción no se puede deshacer.</DialogDescription>
             </DialogHeader>
             <DialogFooter className=" space-y-2">
-              <Button
-                onClick={() => setIsDeleteConfirmOpen(false)}
-                variant="outline"
-                className="bg-gray-700 text-white hover:bg-gray-600 mt-2"
-              >
+              <Button onClick={() => setIsDeleteConfirmOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600 mt-2">
                 Cancelar
               </Button>
               <Button onClick={confirmDeleteTicket} variant="destructive">
@@ -799,9 +722,9 @@ export default function VendedorView({ uuid }) {
         </Dialog>
       </div>
     </>
-  )
+  );
 }
 
 VendedorView.propTypes = {
   uuid: PropTypes.string.isRequired,
-}
+};

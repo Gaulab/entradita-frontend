@@ -4,19 +4,19 @@ import { useNavigate, useParams } from 'react-router-dom';
 // react imports
 import { useState, useContext, useEffect } from 'react';
 // Custom components imports
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import LoadingSpinner from '@/components/ui/loadingspinner';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card.jsx';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog.jsx';
+import { Alert, AlertDescription } from '@/components/ui/alert.jsx';
+import { Button } from '@/components/ui/button.jsx';
+import { Switch } from '@/components/ui/switch.jsx';
+import { Input } from '@/components/ui/input.jsx';
+import { Label } from '@/components/ui/label.jsx';
+import LoadingSpinner from '@/components/ui/loadingspinner.jsx';
 
 // context imports
-import AuthContext from '@/context/AuthContext';
+import AuthContext from '@/context/AuthContext.jsx';
 // API
-import { getEvent, updateEvent, deleteEvent } from '@/api/eventApi';
+import { getEvent, updateEvent, deleteEvent } from '@/api/eventApi.jsx';
 import { ArrowLeftIcon, Edit, Edit2, HelpCircle, X } from 'lucide-react';
 
 export default function EditEvent() {

@@ -2,17 +2,17 @@
 // react imports
 import { useState, useContext, useEffect } from 'react';
 // Context
-import AuthContext from '../context/AuthContext';
+import AuthContext from '../../context/AuthContext.jsx';
 // Components
-import { Button } from '../components/ui/button';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
-import LoadingSpinner from '../components/ui/loadingspinner';
+import { Button } from '../../components/ui/button.jsx';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/card.jsx';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table.jsx';
+import LoadingSpinner from '../../components/ui/loadingspinner.jsx';
 // Icons
 import { LogOutIcon, PlusIcon, Eye } from 'lucide-react';
 
 // API
-import { getEvents } from '../api/eventApi';
+import { getEvents } from '../../api/eventApi.jsx';
 
 export default function Dashboard() {
   const { logoutUser, authToken } = useContext(AuthContext);

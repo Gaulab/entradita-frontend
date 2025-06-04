@@ -1,15 +1,15 @@
 import { useState, useContext } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 // Custom components
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/card';
-import { Alert, AlertDescription } from '../components/ui/alert';
-import { Dropdown } from '../components/ui/dropdownlist';
-import AuthContext from '../context/AuthContext';
+import { Button } from '../../components/ui/button.jsx';
+import { Input } from '../../components/ui/input.jsx';
+import { Label } from '../../components/ui/label.jsx';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/card.jsx';
+import { Alert, AlertDescription } from '../../components/ui/alert.jsx';
+import { Dropdown } from '../../components/ui/dropdownlist.jsx';
+import AuthContext from '../../context/AuthContext.jsx';
 // API
-import { createTicket } from '../api/ticketApi';
+import { createTicket } from '../../api/ticketApi.jsx';
 
 export default function CreateTicket() {
   const { authToken } = useContext(AuthContext);
