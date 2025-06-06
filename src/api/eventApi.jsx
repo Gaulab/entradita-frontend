@@ -1,6 +1,32 @@
 // entraditaFront/src/api/eventApi.jsx
 const apiUrl = import.meta.env.VITE_API_URL;
 
+export const loadMoreTicketsApi = async ({ eventId, page = 1, limit = 10, search = "", token }) => {
+  try {
+    const response = await fetch(`${apiUrl}/api/v1/main/events/${eventId}/tickets/`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        page,  // Enviar número de página
+        limit, // Cantidad de tickets por página
+        search, // Término de búsqueda
+      }),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error("Respuesta inesperada:", errText);
+      throw new Error("Error al cargar más tickets");
+    }
+
+    return await response.json();
+  } catch (error) {
+    throw new Error(error.message || "Error al cargar más tickets");
+  }
+};
 
 export const putPurchaseInfo = async (eventId, purchaseInfo, authToken) => {
   try {
@@ -81,6 +107,8 @@ export const getEventDetails = async (id, authToken) => {
     throw new Error(error.message || 'Error al cargar los detalles del evento');
   }
 }
+
+
 
 // Devuelve todos los eventos de un usuario
 export const getEvents = async (authToken) => {

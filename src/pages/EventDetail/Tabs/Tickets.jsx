@@ -23,7 +23,9 @@ export default function Tickets({}) {
   const [selectedTicket, setSelectedTicket] = useState(null);
   const {
     event,
-    paginatedTickets,
+    tickets,
+    hasMoreTickets,
+    // loadMoreTickets,
     setSearchTerm,
     searchTerm,
     currentPage,
@@ -43,7 +45,7 @@ export default function Tickets({}) {
 
   const handleGenerarTicket = useCallback(() => {
     setIsCreateTicketDialogOpen(true);
-  }, []);
+  }, [setIsCreateTicketDialogOpen]);
 
   const handleUpdateTicketSales = useCallback(async () => {
     try {
@@ -52,7 +54,7 @@ export default function Tickets({}) {
     } catch (error) {
       console.error(error.message);
     }
-  }, [event]);
+  }, [event, authToken, setTicketSalesEnabled]);
 
   const handleDeleteTicket = useCallback((id_ticket) => {
     setItemToDelete({ type: 'ticket', id: id_ticket });
@@ -111,8 +113,7 @@ export default function Tickets({}) {
           </p>
         </div>
         <div className="flex flex-col space-y-2 m-0">
-
-        <Button
+          <Button
             className="justify-start"
             variant="entraditaSecondary"
             onClick={() => {
@@ -122,7 +123,7 @@ export default function Tickets({}) {
           >
             <Share2 className="mr-2 h-4 w-4" /> Compartir ticket
           </Button>
-          
+
           <Button
             className="justify-start"
             variant="entraditaSecondary"
@@ -205,7 +206,7 @@ export default function Tickets({}) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {paginatedTickets.map((ticket, index) => (
+              {tickets.map((ticket) => (
                 <TableRow
                   key={ticket.id}
                   className="border-gray-700 cursor-pointer sm:cursor-default h-16" // Added h-16 for row height
@@ -223,8 +224,12 @@ export default function Tickets({}) {
                   <TableCell className="text-gray-300 hidden sm:table-cell">{ticket.ticket_tag.name}</TableCell>
                   <TableCell className="text-gray-300 ">{ticket.seller_name === 'Unknown' ? 'Organizer' : ticket.seller_name}</TableCell>
                   <TableCell className="hidden sm:table-cell  text-right sm:space-x-1 space-y-1">
-                    
-                    <Button variant="outline" onClick={() => copyToClipboard(`¡Acá está tu ticket para el evento ${event.name} 🎟️!\n\n ${window.location.origin}/ticket/${ticket.uuid}`)} size="sm" title="Copiar invitación del cliente">
+                    <Button
+                      variant="outline"
+                      onClick={() => copyToClipboard(`¡Acá está tu ticket para el evento ${event.name} 🎟️!\n\n ${window.location.origin}/ticket/${ticket.uuid}`)}
+                      size="sm"
+                      title="Copiar invitación del cliente"
+                    >
                       <Share2 className="h-4 w-4" />
                       <span className="sr-only">Copiar texto invitación del cliente</span>
                     </Button>
@@ -256,13 +261,11 @@ export default function Tickets({}) {
           </Table>
         </div>
         <div className="flex justify-between items-center mt-4">
-          <Button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))} disabled={currentPage === 1} className="bg-gray-700 text-white">
+          <Button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} disabled={currentPage === 1} className="bg-gray-700 text-white">
             Anterior
           </Button>
-          <span className="text-gray-400">
-            Página {currentPage} de {pageCount}
-          </span>
-          <Button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, pageCount))} disabled={currentPage === pageCount} className="bg-gray-700 text-white">
+          <span className="text-gray-400">Página {currentPage}</span>
+          <Button disabled={!hasMoreTickets} onClick={() => setCurrentPage((prev) => prev + 1)} className="bg-gray-700 text-white">
             Siguiente
           </Button>
         </div>
