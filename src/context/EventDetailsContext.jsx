@@ -136,7 +136,7 @@ export const EventDetailsProvider = ({ children }) => {
 
 
   useEffect(() => {
-    const fetchFilteredTickets = async () => {
+    const debounceFetchFilteredTickets = setTimeout(async () => {
       if (searchTerm.trim() === "" && currentPage <= 1) {
         setTickets(allTickets.slice(0, itemsPerPage));
         setCurrentPage(1);
@@ -154,19 +154,19 @@ export const EventDetailsProvider = ({ children }) => {
             token: authToken.access,
           });
 
-          setTickets(data.results);
+          setTickets(data.results.slice(0, itemsPerPage));
           setCurrentPage(1);
           setHasMoreTickets(false);
         } catch (error) {
           console.error("Error fetching filtered tickets:", error.message);
         }
       }
-    };
+    }, 300); // Delay of 300ms
 
-    fetchFilteredTickets();
+    return () => clearTimeout(debounceFetchFilteredTickets); // Cleanup timeout on dependency change
   }, [searchTerm, totalTickets, id, authToken, allTickets, itemsPerPage]);
 
-  
+
   useEffect(() => {
     const getEventEmployees = async () => {
       const data = await getEmployees(id, authToken.access);
