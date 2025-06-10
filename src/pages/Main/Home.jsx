@@ -111,10 +111,10 @@ export default function ModernHome() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 overflow-x-hidden">
-      <canvas ref={canvasRef} className="fixed inset-0 z-0" />
+      <canvas ref={canvasRef} className="fixed inset-0 z-[-1]" /> {/* Adjusted z-index to move canvas behind everything */}
 
       {/* Gradient Overlay */}
-      <div className="fixed inset-0 bg-gradient-to-b from-transparent via-slate-900/20 to-slate-900/40 z-[1]" />
+      <div className="fixed inset-0 bg-gradient-to-b from-transparent via-slate-900/20 to-slate-900/40 z-[0]" />
 
       <div className="relative z-10 flex-grow">
         {/* Header */}
@@ -339,13 +339,15 @@ export default function ModernHome() {
       <footer className="backdrop-blur-md bg-slate-900/80 border-t border-slate-700/50 py-8 sm:py-12">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center mb-6 sm:mb-8">
+            <a href="https://gaulab.com" target="_blank" rel="noopener noreferrer" className="flex items-center mb-4 md:mb-0">
             <div className="flex items-center mb-4 md:mb-0">
-              <img src="/isotipoWhite.png" alt="entradita.com logo" className="h-6 w-auto sm:h-8 mr-2 sm:mr-3" />
+              <img src="/GaulabPng.svg" alt="gaulab.com logo" className="h-8 w-auto sm:h-12 mr-2 sm:mr-3" />
               <div>
-                <h3 className="font-bold text-white text-base sm:text-lg">entradita.com</h3>
-                <p className="text-xs sm:text-sm text-slate-400">Transformando la gestión de eventos</p>
+                <p className="text-xs sm:text-sm text-slate-400">Powered by</p>
+                <h3 className="font-bold text-white text-base sm:text-lg">Gaulab.com</h3>
               </div>
-            </div>
+              </div>
+            </a>
 
             <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
               <Link to="/documentacion" className="text-slate-300 hover:text-white transition-colors text-sm sm:text-base">

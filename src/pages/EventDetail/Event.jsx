@@ -2,24 +2,8 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/card';
 import { Progress } from '../../components/ui/progress';
 import { Button } from '../../components/ui/button';
-import {
-  BadgeDollarSign,
-  BookMarkedIcon,
-  Calendar,
-  CalendarDaysIcon,
-  DollarSign,
-  LibraryBigIcon,
-  LibraryIcon,
-  LucideShoppingCart,
-  MapPin,
-  Monitor,
-  MonitorCogIcon,
-  ShoppingCartIcon,
-  Ticket,
-  TicketSlashIcon,
-  User2Icon,
-  UsersRound,
-} from 'lucide-react';
+import { CalendarDaysIcon, DollarSign, LucideShoppingCart, MapPin, Monitor, TicketSlashIcon } from 'lucide-react';
+
 export default function Event({ event }) {
   const tickets_sold = event.tickets_counter === 0 ? 1 : event.tickets_counter;
   const percentage = (event.tickets_scanned / tickets_sold) * 100;
@@ -27,33 +11,30 @@ export default function Event({ event }) {
   const navigateToEconomy = () => {
     window.location.href = `/event/${event.id}/economy`;
   };
-  
+
   const navigateToWebPage = () => {
     window.location.href = `/event-page/${event.id}`;
   };
 
   const navigateToGuide = () => {
     window.location.href = `/event/${event.id}/guide`;
-  }
+  };
   const navigateToOnlineSell = () => {
     window.location.href = `/event/${event.id}/purchase-config`;
-  }
+  };
 
   const navigateToWhatsapp = () => {
-    window.location.href = `https://wa.me/543482275737?text=Hola!%20Necesito%20ayuda%20con%20el%20evento%20${event.name
-      .split(' ')
-      .join('%20')}`;
-  }
-
+    window.location.href = `https://wa.me/543482275737?text=Hola!%20Necesito%20ayuda%20con%20el%20evento%20${event.name.split(' ').join('%20')}`;
+  };
 
   return (
     <Card className="bg-gray-800 border-gray-700 mb-4">
       <CardHeader>
-        <div className="flex flex-row items-center mb-0">
+        <div className="flex flex-col sm:flex-row items-center mb-0">
           <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-700 mr-4">
             <img src={event.image_address} alt="Event Logo" className="w-full h-full object-cover" />
           </div>
-          <CardTitle className="text-2xl font-bold text-white">{event.name}</CardTitle>
+          <CardTitle className="text-xl font-bold text-white">{event.name}</CardTitle>
         </div>
       </CardHeader>
       <CardContent>

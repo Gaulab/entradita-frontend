@@ -34,11 +34,11 @@ export default function EventDetails() {
     }
   
   return (
-    <div className="flex justify-center space-y-6 pb-8 bg-gradient-to-b from-gray-900 to-gray-950 text-white p-4 min-h-screen w-screen ">
+    <div className="flex justify-center space-y-6 pb-8 bg-gradient-to-b from-gray-900 to-gray-950 text-white p-4 min-h-screen">
       <div className="max-w-6xl mx-auto w-full">
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+        <div className="flex flex-row sm:flex-row justify-between sm:justify-normal items-center mb-4 gap-4">
           <Button onClick={() => navigate('/dashboard')} variant="entraditaTertiary" className="w-full sm:w-auto">
-            <ArrowLeftIcon className="mr-2 h-4 w-4" /> Volver al Dashboard
+            <ArrowLeftIcon className="mr-2 h-4 w-4" /> Volver
           </Button>
           <Button onClick={() => navigate(`/edit-event/${id}`)} variant="entraditaTertiary" className="w-full sm:w-auto">
             <EditIcon className="mr-2 h-4 w-4" /> Editar Evento

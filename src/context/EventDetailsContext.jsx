@@ -1,23 +1,21 @@
 // entraditaFront/src/context/EventDetailsContext.jsx
 
 // react imports
-import React, { createContext, useState, useEffect, useCallback, useContext } from "react";
+import { createContext, useState, useEffect, useCallback, useContext } from "react";
 // react-router imports
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 // context imports
 import AuthContext from "./AuthContext";
 // API functions
-import { getEventDetails, updateTicketSales } from "../api/eventApi";
-import { getEmployees, createEmployee, updateEmployee, deleteEmployee, changeEmployeeStatus } from "../api/employeeApi";
+import { getEventDetails } from "../api/eventApi";
+import { getEmployees } from "../api/employeeApi";
 import { loadMoreTicketsApi } from "../api/eventApi";
 
-import { use } from "react";
 
 const EventDetailsContext = createContext();
 
 export const EventDetailsProvider = ({ children }) => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const { authToken } = useContext(AuthContext);
   // Loading status
   const [isLoading, setIsLoading] = useState(true);
@@ -183,6 +181,7 @@ export const EventDetailsProvider = ({ children }) => {
     const fetchTickets = async () => {
       const data = await getEventDetails(id, authToken.access);
       setTickets(data.tickets.sort((a, b) => b.id - a.id));
+      setAllTickets(data.tickets.sort((a, b) => b.id - a.id));
     }
     fetchTickets().catch(error => {
       console.error("Error fetching tickets:", error.message);

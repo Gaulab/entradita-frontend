@@ -2,7 +2,6 @@
 // react imports
 import { useState, useContext, useEffect } from 'react';
 // react-router imports
-import { useNavigate } from 'react-router-dom';
 // custom components
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -20,7 +19,6 @@ export default function DialogCreateTicket() {
   const { authToken } = useContext(AuthContext);
   const { event, isCreateTicketDialogOpen, setIsCreateTicketDialogOpen, ticketTags, reloadTickets, setReloadTickets } = useContext(EventDetailsContext);
   const [error, setError] = useState('');
-  const navigate = useNavigate();
   const id = event.id;
   const dni_required = event.dni_required;
   const [valueDropdown, setValueDropdown] = useState(null);
