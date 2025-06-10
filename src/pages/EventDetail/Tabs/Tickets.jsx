@@ -17,7 +17,6 @@ import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon, Share2 } from 'luc
 import { updateTicketSales } from '../../../api/eventApi';
 import PropTypes from 'prop-types';
 
-
 export default function Tickets() {
   const { authToken } = useContext(AuthContext);
   const [selectedTicket, setSelectedTicket] = useState(null);
@@ -51,12 +50,13 @@ export default function Tickets() {
     }
   }, [event, authToken, setTicketSalesEnabled]);
 
-  const handleDeleteTicket = useCallback((id_ticket) => {
-    setItemToDelete({ type: 'ticket', id: id_ticket });
-    setIsDeleteConfirmDialogOpen(true);
-  }, [setItemToDelete, setIsDeleteConfirmDialogOpen]);
-
-
+  const handleDeleteTicket = useCallback(
+    (id_ticket) => {
+      setItemToDelete({ type: 'ticket', id: id_ticket });
+      setIsDeleteConfirmDialogOpen(true);
+    },
+    [setItemToDelete, setIsDeleteConfirmDialogOpen]
+  );
 
   return (
     <Card className="bg-gray-800 border-gray-700">
@@ -183,16 +183,22 @@ const ticketShape = {
 };
 
 function MobileActionDialog({ ticket, onClose }) {
-  const { event, copyToClipboard, handleDeleteTicket } = useContext(EventDetailsContext);
+  const { event, copyToClipboard, setItemToDelete, setIsDeleteConfirmDialogOpen } = useContext(EventDetailsContext);
+  const handleDeleteTicket = useCallback(
+    (id_ticket) => {
+      setItemToDelete({ type: 'ticket', id: id_ticket });
+      setIsDeleteConfirmDialogOpen(true);
+    },
+    [setItemToDelete, setIsDeleteConfirmDialogOpen]
+  );
+
   return (
     <Dialog className="" open={!!ticket} onOpenChange={() => onClose()}>
       <DialogContent className="sm:max-w-[425px] bg-gray-800 ">
         <DialogHeader>
           <DialogTitle>Acciones para el ticket</DialogTitle>
         </DialogHeader>
-        <DialogDescription className="mb-0 m-0">
-          Selecciona una acción para realizar sobre el ticket de:
-        </DialogDescription>
+        <DialogDescription className="mb-0 m-0">Selecciona una acción para realizar sobre el ticket de:</DialogDescription>
         <div className="text-gray-300">
           <p>
             <strong>Nombre:</strong> {ticket?.owner_name} {ticket?.owner_lastname}
@@ -203,7 +209,8 @@ function MobileActionDialog({ ticket, onClose }) {
             </p>
           )}
           <p>
-            <strong>Tipo:</strong> {ticket?.ticket_tag.name}</p>
+            <strong>Tipo:</strong> {ticket?.ticket_tag.name}
+          </p>
           <p>
             <strong>Vendedor:</strong> {ticket?.seller_name === 'Unknown' ? 'Organizer' : ticket?.seller_name}
           </p>
@@ -214,11 +221,13 @@ function MobileActionDialog({ ticket, onClose }) {
             variant="entraditaSecondary"
             onClick={() => {
               if (navigator.share) {
-                navigator.share({
-                  title: `🎟️ Tu ticket para el evento ${event.name}`,
-                  text: `¡Acá está tu ticket para el evento ${event.name} 🎟️!🎉\n${ticket.owner_name} ${ticket.owner_lastname}:\n`,
-                  url: `${window.location.origin}/ticket/${ticket.uuid}`,
-                }).catch(console.error);
+                navigator
+                  .share({
+                    title: `🎟️ Tu ticket para el evento ${event.name}`,
+                    text: `¡Acá está tu ticket para el evento ${event.name} 🎟️!🎉\n${ticket.owner_name} ${ticket.owner_lastname}:\n`,
+                    url: `${window.location.origin}/ticket/${ticket.uuid}`,
+                  })
+                  .catch(console.error);
               } else {
                 alert(`Comparte este enlace: ${window.location.origin}/ticket/${ticket.uuid}`);
                 navigator.clipboard.writeText(`${window.location.origin}/ticket/${ticket.uuid}`);
