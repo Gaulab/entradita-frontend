@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect, useCallback } from "react"
+import { useState, useRef, useEffect } from "react"
 import PropTypes from "prop-types"
 
 export const Slider = ({
@@ -25,16 +25,16 @@ export const Slider = ({
     updateValue(e)
   }
 
-  const handleMouseMove = useCallback((e) => {
+  const handleMouseMove = (e) => {
     if (!isDragging || disabled) return
     updateValue(e)
-  }, [isDragging, disabled, updateValue])
+  }
 
   const handleMouseUp = () => {
     setIsDragging(false)
   }
 
-  const updateValue = useCallback((e) => {
+  const updateValue = (e) => {
     if (!sliderRef.current) return
 
     const rect = sliderRef.current.getBoundingClientRect()
@@ -46,7 +46,7 @@ export const Slider = ({
     if (onValueChange && clampedValue !== currentValue) {
       onValueChange([clampedValue])
     }
-  }, [sliderRef, min, max, step, onValueChange, currentValue])
+  }
 
   const handleTrackClick = (e) => {
     if (disabled) return
@@ -97,7 +97,8 @@ export const Slider = ({
         document.removeEventListener("touchend", handleMouseUp)
       }
     }
-  }, [isDragging, handleMouseMove])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDragging])
 
   return (
     <div className={`relative flex items-center w-full ${className}`}>
