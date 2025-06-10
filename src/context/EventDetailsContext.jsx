@@ -78,12 +78,12 @@ export const EventDetailsProvider = ({ children }) => {
 
 
   useEffect(() => {
-    console.log("-----------------------------")
-    console.log("Tickets:", tickets);
-    console.log("All Tickets:", allTickets);
-    console.log("currentPage:", currentPage);
-    console.log("Has More Tickets:", hasMoreTickets);
-    console.log("Total Tickets:", totalTickets);
+    // console.log("-----------------------------")
+    // console.log("Tickets:", tickets);
+    // console.log("All Tickets:", allTickets);
+    // console.log("currentPage:", currentPage);
+    // console.log("Has More Tickets:", hasMoreTickets);
+    // console.log("Total Tickets:", totalTickets);
 
   }, [tickets, allTickets, currentPage]);
 

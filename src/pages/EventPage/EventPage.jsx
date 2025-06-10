@@ -115,10 +115,6 @@ function EventPage() {
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <h1 className="text-3xl font-bold text-white leading-tight">{eventData.name}</h1>
-                    <div className="hidden md:block">
-                      <div className="text-xs text-blue-400 font-medium">powered by</div>
-                      <Logo small />
-                    </div>
                   </div>
 
                   <div className="space-y-4 mt-6">
