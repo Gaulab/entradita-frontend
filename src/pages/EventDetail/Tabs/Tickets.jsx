@@ -2,7 +2,6 @@
 // react imports
 import { useState, useContext, useCallback } from 'react';
 // react-router imports
-import { useNavigate } from 'react-router-dom';
 // context imports
 import AuthContext from '../../../context/AuthContext';
 import EventDetailsContext from '../../../context/EventDetailsContext';
@@ -11,14 +10,15 @@ import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../components/ui/table';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '../../../components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../../../components/ui/dialog';
 import { Switch } from '../../../components/ui/switch';
-import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon, Share2, Share } from 'lucide-react';
+import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon, Share2 } from 'lucide-react';
 // API
 import { updateTicketSales } from '../../../api/eventApi';
+import PropTypes from 'prop-types';
 
-export default function Tickets({}) {
-  const navigate = useNavigate();
+
+export default function Tickets() {
   const { authToken } = useContext(AuthContext);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const {
@@ -30,16 +30,11 @@ export default function Tickets({}) {
     searchTerm,
     currentPage,
     setCurrentPage,
-    itemsPerPage,
-    pageCount,
     ticketSalesEnabled,
     setTicketSalesEnabled,
     copyToClipboard,
-    copyMessage,
-    setCopyMessage,
     setItemToDelete,
     setIsDeleteConfirmDialogOpen,
-    isCreateTicketDialogOpen,
     setIsCreateTicketDialogOpen,
   } = useContext(EventDetailsContext);
 
@@ -59,110 +54,10 @@ export default function Tickets({}) {
   const handleDeleteTicket = useCallback((id_ticket) => {
     setItemToDelete({ type: 'ticket', id: id_ticket });
     setIsDeleteConfirmDialogOpen(true);
-  }, []);
+  }, [setItemToDelete, setIsDeleteConfirmDialogOpen]);
 
-  const handleShare = (ticket) => {
-    if (navigator.share) {
-      navigator
-        .share({
-          title: `🎟️ Tu ticket para el evento ${event.name}`,
-          text: `¡Acá está tu ticket para el evento ${event.name} 🎟️!🎉\n${ticket.owner_name} ${ticket.owner_lastname}:\n`,
-          url: `${window.location.origin}/ticket/${ticket.uuid}`,
-        })
-        .then(() => {
-          console.log('Ticket compartido exitosamente');
-        })
-        .catch((error) => {
-          console.log('Error al compartir el ticket', error);
-        });
-    } else {
-      // Fallback for browsers that don't support the Web Share API
-      alert(`Comparte este enlace: ${window.location.origin}/ticket/${ticket.uuid}`);
-      navigator.clipboard
-        .writeText(`${window.location.origin}/ticket/${ticket.uuid}`)
-        .then(() => {
-          console.log('URL del ticket copiada al portapapeles');
-        })
-        .catch((error) => {
-          console.log('Error al copiar el URL', error);
-        });
-    }
-  };
 
-  const MobileActionDialog = ({ ticket, onClose }) => (
-    <Dialog className="" open={!!ticket} onOpenChange={() => onClose()}>
-      <DialogContent className="sm:max-w-[425px] bg-gray-800 ">
-        <DialogHeader>
-          <DialogTitle>Acciones para el ticket</DialogTitle>
-        </DialogHeader>
-        <DialogDescription className="mb-0 m-0">Selecciona una accion para realizar sobre el ticket de:</DialogDescription>
-        <div className="text-gray-300">
-          <p>
-            <strong>Nombre:</strong> {ticket?.owner_name} {ticket?.owner_lastname}
-          </p>
-          {event.dniRequired && (
-            <p>
-              <strong>DNI:</strong> {ticket?.owner_dni ? ticket.owner_dni : 'No disponible'}
-            </p>
-          )}
-          <p>
-            <strong>Tipo:</strong> {ticket?.ticket_tag.name}
-          </p>
-          <p>
-            <strong>Vendedor:</strong> {ticket?.seller_name === 'Unknown' ? 'Organizer' : ticket?.seller_name}
-          </p>
-        </div>
-        <div className="flex flex-col space-y-2 m-0">
-          <Button
-            className="justify-start"
-            variant="entraditaSecondary"
-            onClick={() => {
-              handleShare(ticket);
-              onClose();
-            }}
-          >
-            <Share2 className="mr-2 h-4 w-4" /> Compartir ticket
-          </Button>
 
-          <Button
-            className="justify-start"
-            variant="entraditaSecondary"
-            onClick={() => {
-              copyToClipboard(`${window.location.origin}/ticket/${ticket?.uuid}`);
-              onClose();
-            }}
-          >
-            <LinkIcon className="mr-2 h-4 w-4" />
-            Copiar enlace de ticket
-          </Button>
-
-          <Button
-            className="justify-start"
-            variant="entraditaSecondary"
-            onClick={() => {
-              window.open(`/ticket/${ticket?.uuid}`, '_blank');
-              onClose();
-            }}
-          >
-            <EyeIcon className="mr-2 h-4 w-4" />
-            Ver página de ticket
-          </Button>
-
-          <Button
-            className="justify-start"
-            variant="entraditaSecondary"
-            onClick={() => {
-              handleDeleteTicket(ticket?.id);
-              onClose();
-            }}
-          >
-            <Trash2Icon className="mr-2 h-4 w-4" />
-            Eliminar ticket
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
   return (
     <Card className="bg-gray-800 border-gray-700">
       <CardHeader>
@@ -274,3 +169,105 @@ export default function Tickets({}) {
     </Card>
   );
 }
+
+const ticketShape = {
+  id: PropTypes.number.isRequired,
+  uuid: PropTypes.string.isRequired,
+  owner_name: PropTypes.string,
+  owner_lastname: PropTypes.string,
+  owner_dni: PropTypes.string,
+  seller_name: PropTypes.string,
+  ticket_tag: PropTypes.shape({
+    name: PropTypes.string,
+  }),
+};
+
+function MobileActionDialog({ ticket, onClose }) {
+  const { event, copyToClipboard, handleDeleteTicket } = useContext(EventDetailsContext);
+  return (
+    <Dialog className="" open={!!ticket} onOpenChange={() => onClose()}>
+      <DialogContent className="sm:max-w-[425px] bg-gray-800 ">
+        <DialogHeader>
+          <DialogTitle>Acciones para el ticket</DialogTitle>
+        </DialogHeader>
+        <DialogDescription className="mb-0 m-0">
+          Selecciona una acción para realizar sobre el ticket de:
+        </DialogDescription>
+        <div className="text-gray-300">
+          <p>
+            <strong>Nombre:</strong> {ticket?.owner_name} {ticket?.owner_lastname}
+          </p>
+          {event.dniRequired && (
+            <p>
+              <strong>DNI:</strong> {ticket?.owner_dni || 'No disponible'}
+            </p>
+          )}
+          <p>
+            <strong>Tipo:</strong> {ticket?.ticket_tag.name}</p>
+          <p>
+            <strong>Vendedor:</strong> {ticket?.seller_name === 'Unknown' ? 'Organizer' : ticket?.seller_name}
+          </p>
+        </div>
+        <div className="flex flex-col space-y-2 m-0">
+          <Button
+            className="justify-start"
+            variant="entraditaSecondary"
+            onClick={() => {
+              if (navigator.share) {
+                navigator.share({
+                  title: `🎟️ Tu ticket para el evento ${event.name}`,
+                  text: `¡Acá está tu ticket para el evento ${event.name} 🎟️!🎉\n${ticket.owner_name} ${ticket.owner_lastname}:\n`,
+                  url: `${window.location.origin}/ticket/${ticket.uuid}`,
+                }).catch(console.error);
+              } else {
+                alert(`Comparte este enlace: ${window.location.origin}/ticket/${ticket.uuid}`);
+                navigator.clipboard.writeText(`${window.location.origin}/ticket/${ticket.uuid}`);
+              }
+              onClose();
+            }}
+          >
+            <Share2 className="mr-2 h-4 w-4" /> Compartir ticket
+          </Button>
+          <Button
+            className="justify-start"
+            variant="entraditaSecondary"
+            onClick={() => {
+              copyToClipboard(`${window.location.origin}/ticket/${ticket?.uuid}`);
+              onClose();
+            }}
+          >
+            <LinkIcon className="mr-2 h-4 w-4" />
+            Copiar enlace de ticket
+          </Button>
+          <Button
+            className="justify-start"
+            variant="entraditaSecondary"
+            onClick={() => {
+              window.open(`/ticket/${ticket?.uuid}`, '_blank');
+              onClose();
+            }}
+          >
+            <EyeIcon className="mr-2 h-4 w-4" />
+            Ver página de ticket
+          </Button>
+          <Button
+            className="justify-start"
+            variant="entraditaSecondary"
+            onClick={() => {
+              handleDeleteTicket(ticket?.id);
+              onClose();
+            }}
+          >
+            <Trash2Icon className="mr-2 h-4 w-4" />
+            Eliminar ticket
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+MobileActionDialog.propTypes = {
+  ticket: PropTypes.shape(ticketShape),
+  onClose: PropTypes.func.isRequired,
+};

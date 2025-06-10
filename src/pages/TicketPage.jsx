@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import { Button } from '@/components/ui/button';
-import { Download, Calendar, MapPin } from 'lucide-react';
+import { Download } from 'lucide-react';
 import { getTicket } from '../api/ticketApi';
 import html2canvas from 'html2canvas';
-import { Helmet } from 'react-helmet-async';
 
 export default function TicketPage() {
   const { ticket_uuid } = useParams();
@@ -185,6 +185,10 @@ export default function TicketPage() {
 }
 
 function Logo({ small = false }) {
+  Logo.propTypes = {
+    small: PropTypes.bool,
+  };
+
   return (
     <div className={`flex items-center ${small ? "text-lg" : "text-xl"}`}>
       <div className="mr-1">
@@ -196,5 +200,5 @@ function Logo({ small = false }) {
       </div>
       <span className={`font-bold text-white ${small ? "text-sm" : "text-lg"}`}>entradita.com</span>
     </div>
-  )
+  );
 }
