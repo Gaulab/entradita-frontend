@@ -64,7 +64,7 @@ export default function MobileActionDialog({
             <EyeIcon className="mr-2 h-4 w-4" />
             Ver página de ticket
           </Button>
-          <Button
+          {/* <Button
             className="justify-start"
             variant="entraditaSecondary"
             onClick={() => {
@@ -74,7 +74,7 @@ export default function MobileActionDialog({
           >
             <Trash2Icon className="mr-2 h-4 w-4" />
             Eliminar ticket
-          </Button>
+          </Button> */}
         </div>
       </DialogContent>
     </Dialog>

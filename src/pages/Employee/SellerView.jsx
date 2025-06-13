@@ -669,10 +669,10 @@ export default function VendedorView({ uuid }) {
                             <Printer className="h-4 w-4" />
                             <span className="sr-only">Imprimir</span>
                           </Button>
-                          <Button variant="destructive" onClick={() => handleDeleteTicket(ticket)} size="sm" title="Eliminar ticket">
+                          {/* <Button variant="destructive" onClick={() => handleDeleteTicket(ticket)} size="sm" title="Eliminar ticket">
                             <Trash2Icon className="h-4 w-4" />
                             <span className="sr-only">Eliminar ticket</span>
-                          </Button>
+                          </Button> */}
                         </TableCell>
                       </TableRow>
                     ))}
