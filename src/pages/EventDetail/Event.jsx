@@ -80,11 +80,11 @@ export default function Event({ event }) {
       <CardContent>
         <div className="space-y-2">
           <div className="relative">
-            <Progress value={91} className="h-4 bg-gray-800  border border-gray-500" />
-            <div className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full" style={{ width: `${91}%` }} />
+            <Progress value={86} className="h-4 bg-gray-800  border border-gray-500" />
+            <div className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full" style={{ width: `${86}%` }} />
           </div>
           <div className="flex justify-between text-xs text-gray-400">
-            <span>{percentage.toFixed(1)}%</span>
+            <span>85%</span>
             <span>{event.tickets_scanned} personas ingresaron al evento</span>
           </div>
         </div>
