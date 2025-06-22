@@ -80,7 +80,7 @@ export default function Event({ event }) {
       <CardContent>
         <div className="space-y-2">
           <div className="relative">
-            <Progress value={percentage} className="h-4 bg-gray-800  border border-gray-500" />Add commentMore actions
+            <Progress value={percentage} className="h-4 bg-gray-800  border border-gray-500" />
             <div className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full" style={{ width: `${percentage}%` }} />
           </div>
           <div className="flex justify-between text-xs text-gray-400">
