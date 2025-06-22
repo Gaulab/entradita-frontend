@@ -84,8 +84,8 @@ export default function Event({ event }) {
             <div className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full" style={{ width: `${86}%` }} />
           </div>
           <div className="flex justify-between text-xs text-gray-400">
-            <span>85%</span>
-            <span>{event.tickets_scanned} personas ingresaron al evento</span>
+            <span>86%</span>
+            <span>290 personas ingresaron al evento</span>
           </div>
         </div>
       </CardContent>
