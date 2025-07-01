@@ -31,7 +31,9 @@ function EventPage() {
   const formatDate = (dateString) => {
     if (!dateString) return ""
     const options = { year: "numeric", month: "long", day: "numeric" }
-    return new Date(dateString).toLocaleDateString(undefined, options)
+    const date = new Date(dateString)
+    const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
+    return utcDate.toLocaleDateString(undefined, options)
   }
 
   // Handle buy button click
