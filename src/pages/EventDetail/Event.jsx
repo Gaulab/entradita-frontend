@@ -77,7 +77,7 @@ export default function Event({ event }) {
           </Button> */}
         </div>
       </CardContent>
-      <CardContent>
+      {/* <CardContent>
         <div className="space-y-2">
           <div className="relative">
             <Progress value={percentage} className="h-4 bg-gray-800  border border-gray-500" />
@@ -88,7 +88,7 @@ export default function Event({ event }) {
             <span>{event.tickets_scanned} personas ingresaron al evento</span>
           </div>
         </div>
-      </CardContent>
+      </CardContent> */}
     </Card>
   );
 }
