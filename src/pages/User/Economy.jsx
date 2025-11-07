@@ -273,34 +273,51 @@ const EconomicReport = () => {
         </div>
 
         {/* Métricas principales */}
+        {/* Métricas principales */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Recaudación Total */}
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Recaudación Total</CardTitle>
               <DollarSign className="h-4 w-4 text-green-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-400">${data.total_sales.toFixed(2)}</div>
+              <div className="text-2xl font-bold text-green-400">
+                $
+                {data.total_sales.toLocaleString('es-AR', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </div>
               <p className="text-xs text-gray-400 mt-1">
-                Promedio por ticket: ${analytics?.avgTicketPrice.toFixed(2) || "0.00"}
+                Promedio por ticket: $
+                {(analytics?.avgTicketPrice || 0).toLocaleString('es-AR', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
               </p>
             </CardContent>
           </Card>
 
+          {/* Total de Tickets */}
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total de Tickets</CardTitle>
               <Tag className="h-4 w-4 text-blue-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-blue-400">{data.total_tickets}</div>
+              <div className="text-2xl font-bold text-blue-400">
+                {data.total_tickets.toLocaleString('es-AR')}
+              </div>
               <p className="text-xs text-gray-400 mt-1">
-                {analytics?.realSellersCount || 0} vendedor{analytics?.realSellersCount !== 1 ? "es" : ""} activo
+                {analytics?.realSellersCount || 0} vendedor
+                {analytics?.realSellersCount !== 1 ? "es" : ""} activo
                 {analytics?.realSellersCount !== 1 ? "s" : ""}
               </p>
             </CardContent>
           </Card>
 
+          {/* Comisión Total */}
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Comisión Total</CardTitle>
@@ -308,12 +325,26 @@ const EconomicReport = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-orange-400">
-                ${isNaN(totalCommission) ? "0.00" : totalCommission.toFixed(2)}
+                $
+                {isNaN(totalCommission)
+                  ? "0,00"
+                  : totalCommission.toLocaleString('es-AR', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
               </div>
-              <p className="text-xs text-gray-400 mt-1">${commissionAmount} por ticket</p>
+              <p className="text-xs text-gray-400 mt-1">
+                $
+                {commissionAmount.toLocaleString('es-AR', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}{" "}
+                por ticket
+              </p>
             </CardContent>
           </Card>
 
+          {/* Ingreso Neto */}
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Ingreso Neto</CardTitle>
@@ -321,7 +352,13 @@ const EconomicReport = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-purple-400">
-                ${isNaN(netRevenue) ? "0.00" : netRevenue.toFixed(2)}
+                $
+                {isNaN(netRevenue)
+                  ? "0,00"
+                  : netRevenue.toLocaleString('es-AR', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
               </div>
               <p className="text-xs text-gray-400 mt-1">
                 {((netRevenue / data.total_sales) * 100).toFixed(1)}% del total
@@ -329,6 +366,7 @@ const EconomicReport = () => {
             </CardContent>
           </Card>
         </div>
+
 
         {/* Análisis de rendimiento - solo vendedores reales */}
         {analytics && analytics.realSellersCount > 0 && (
