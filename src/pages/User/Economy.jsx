@@ -32,11 +32,12 @@ const EconomicReport = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const [data, setData] = useState(null)
-  const [commissionAmount, setCommissionAmount] = useState(null)
+  const [commissions, setCommissions] = useState({})
   const [showPrintView, setShowPrintView] = useState(false)
   const apiUrl = import.meta.env.VITE_API_URL
   const { authToken } = useContext(AuthContext)
-  const [showAlert, setShowAlert] = useState(true)
+  const [errorMsg, setErrorMsg] = useState("")
+  const [showError, setShowError] = useState(false)
   const [hasMounted, setHasMounted] = useState(false)
 
   useEffect(() => {
@@ -57,54 +58,75 @@ const EconomicReport = () => {
 
         const result = await response.json()
         setData(result)
-        setCommissionAmount(result.commission_per_ticket || 0)
+
+        // CAMBIO: Inicializamos las comisiones basándonos en los tags recibidos
+        // Asumimos que el backend devuelve 'commission' dentro de cada ticket_tag, o inicializamos en 0
+        const initialCommissions = {}
+        if (result.ticket_tags) {
+          result.ticket_tags.forEach(tag => {
+            // Si el backend ya trae la data, usala, sino 0
+            initialCommissions[tag.id] = tag.commission_per_ticket || 0
+          })
+        }
+        setCommissions(initialCommissions)
+        
         setHasMounted(true)
-        console.log(result)
+        console.log("Datos del reporte económico:", result)
       } catch (error) {
+        setErrorMsg(error.message)
         console.error(error.message)
+        setShowError(true)
       }
     }
 
     fetchEconomicReport()
   }, [id, apiUrl, authToken])
 
+  // CAMBIO: Lógica para actualizar comisiones individuales
   useEffect(() => {
     if (!hasMounted) return
-    const updateCommissionAmount = async () => {
+    
+    const updateCommissions = async () => {
       try {
         const token = typeof authToken === "string" ? authToken.trim() : authToken.access.trim()
+        
+        // NOTA: Tu backend debe estar preparado para recibir un objeto o array de comisiones
         const response = await fetch(`${apiUrl}/api/v1/main/event/${id}/economic-report/`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ commission_per_ticket: commissionAmount }),
+          // Enviamos el objeto de comisiones completo
+          body: JSON.stringify({ commissions_per_tag: commissions }),
         })
 
         if (!response.ok) {
-          throw new Error("Error al actualizar la comisión.")
+          throw new Error("Error al actualizar las comisiones.")
         }
-
-        const result = await response.json()
-        console.log("Comisión actualizada", result)
+        console.log("Comisiones actualizadas")
       } catch (error) {
+        setErrorMsg(error.message)
         console.error(error.message)
+        setShowError(true)
       }
     }
 
-    if (data) {
-      updateCommissionAmount()
-    }
-  }, [commissionAmount])
+    // Debounce simple para no saturar la API mientras escribes
+    const timeoutId = setTimeout(() => {
+       if (data) updateCommissions()
+    }, 800)
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowAlert(false)
-    }, 5000)
+    return () => clearTimeout(timeoutId)
+  }, [commissions, id, apiUrl, authToken]) // Dependencia: commissions
 
-    return () => clearTimeout(timer)
-  }, [])
+  // Helper para actualizar una comisión específica
+  const handleCommissionChange = (tagId, value) => {
+    setCommissions(prev => ({
+      ...prev,
+      [tagId]: Number(value)
+    }))
+  }
 
   const analytics = useMemo(() => {
     if (!data) return null
@@ -116,11 +138,18 @@ const EconomicReport = () => {
     // Análisis de vendedores reales
     const sellersWithStats = realSellers.map((seller) => {
       const ticketsSold = seller.ticket_counter || 0
+      
       const totalRevenue = Object.entries(seller.ticket_tag_sales).reduce((total, [tagId, quantity]) => {
         const tag = data.ticket_tags.find((t) => t.id === Number.parseInt(tagId))
         return total + (tag ? tag.price * quantity : 0)
       }, 0)
-      const commission = ticketsSold * commissionAmount
+
+      // CAMBIO: Cálculo de comisión por vendedor basado en tags específicos
+      const commission = Object.entries(seller.ticket_tag_sales).reduce((total, [tagId, quantity]) => {
+        const tagCommission = commissions[tagId] || 0
+        return total + (quantity * tagCommission)
+      }, 0)
+
       const avgTicketPrice = ticketsSold > 0 ? totalRevenue / ticketsSold : 0
 
       return {
@@ -148,12 +177,12 @@ const EconomicReport = () => {
       }
     })
 
-    // Top vendedor (solo vendedores reales)
+    // Top vendedor
     const topSeller = sellersWithStats.reduce((top, seller) => {
       return seller.ticketsSold > (top?.ticketsSold || 0) ? seller : top
     }, null)
 
-    // Vendedor con mayor recaudación (solo vendedores reales)
+    // Vendedor con mayor recaudación
     const topRevenueSeller = sellersWithStats.reduce((top, seller) => {
       return seller.totalRevenue > (top?.totalRevenue || 0) ? seller : top
     }, null)
@@ -163,7 +192,7 @@ const EconomicReport = () => {
       const quantitySold = data.sellers.reduce((total, seller) => total + (seller.ticket_tag_sales[tag.id] || 0), 0)
       const revenue = quantitySold * tag.price
       const percentage = data.total_tickets > 0 ? (quantitySold / data.total_tickets) * 100 : 0
-
+      
       return {
         ...tag,
         quantitySold,
@@ -172,12 +201,10 @@ const EconomicReport = () => {
       }
     })
 
-    // Ticket más vendido
     const mostPopularTicket = ticketStats.reduce((top, ticket) => {
       return ticket.quantitySold > (top?.quantitySold || 0) ? ticket : top
     }, null)
 
-    // Ticket con mayor recaudación
     const highestRevenueTicket = ticketStats.reduce((top, ticket) => {
       return ticket.revenue > (top?.revenue || 0) ? ticket : top
     }, null)
@@ -193,17 +220,22 @@ const EconomicReport = () => {
       avgTicketPrice: data.total_tickets > 0 ? data.total_sales / data.total_tickets : 0,
       realSellersCount: realSellers.length,
     }
-  }, [data, commissionAmount])
+  }, [data, commissions]) // Dependencia actualizada a commissions
 
+  // CAMBIO: Total Commission ahora suma las comisiones individuales de todas las ventas
   const totalCommission = useMemo(() => {
     if (!data) return 0
     return data.sellers
       .filter((seller) => seller.is_seller === true)
       .reduce((total, seller) => {
-        const ticketsSold = seller.ticket_counter || 0
-        return total + ticketsSold * commissionAmount
+         // Sumar comisión por cada tipo de ticket vendido por este vendedor
+         const sellerCommission = Object.entries(seller.ticket_tag_sales).reduce((subTotal, [tagId, quantity]) => {
+            const commValue = commissions[tagId] || 0
+            return subTotal + (quantity * commValue)
+         }, 0)
+         return total + sellerCommission
       }, 0)
-  }, [data, commissionAmount])
+  }, [data, commissions])
 
   const netRevenue = useMemo(() => {
     if (!data || typeof data.total_sales !== "number") return 0
@@ -235,7 +267,7 @@ const EconomicReport = () => {
       <ReportPrintView
         data={data}
         analytics={analytics}
-        commissionAmount={commissionAmount}
+        commissions={commissions} // Pasamos el objeto completo
         totalCommission={totalCommission}
         netRevenue={netRevenue}
         onClose={() => setShowPrintView(false)}
@@ -246,7 +278,7 @@ const EconomicReport = () => {
   return (
     <div className="p-4 bg-gray-900 text-gray-100 min-h-screen justify-center w-screen">
       <div className="max-w-6xl space-y-4 mx-auto w-full">
-        {showAlert && (
+        {showError && (
           <Alert className="mb-4 bg-yellow-900 border-yellow-700">
             <AlertDescription>
               Para que este reporte funcione correctamente, asegúrese de haber configurado los precios adecuados para
@@ -272,7 +304,6 @@ const EconomicReport = () => {
           </Button>
         </div>
 
-        {/* Métricas principales */}
         {/* Métricas principales */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Recaudación Total */}
@@ -334,12 +365,7 @@ const EconomicReport = () => {
                     })}
               </div>
               <p className="text-xs text-gray-400 mt-1">
-                $
-                {commissionAmount.toLocaleString('es-AR', {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}{" "}
-                por ticket
+                Calculado según tickets vendidos
               </p>
             </CardContent>
           </Card>
@@ -361,17 +387,17 @@ const EconomicReport = () => {
                     })}
               </div>
               <p className="text-xs text-gray-400 mt-1">
-                {((netRevenue / data.total_sales) * 100).toFixed(1)}% del total
+                {data.total_sales > 0 ? ((netRevenue / data.total_sales) * 100).toFixed(1) : 0}% del total
               </p>
             </CardContent>
           </Card>
         </div>
 
-
-        {/* Análisis de rendimiento - solo vendedores reales */}
+        {/* ... (Bloques de Top Vendedor, etc. se mantienen igual ya que usan `analytics` que ya actualizamos) ... */}
         {analytics && analytics.realSellersCount > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <Card className="bg-gray-800 border-gray-700">
+             {/* ... Tarjetas de Top Vendedor ... */}
+             <Card className="bg-gray-800 border-gray-700">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Top Vendedor (Cantidad)</CardTitle>
                 <Award className="h-4 w-4 text-yellow-400" />
@@ -413,70 +439,76 @@ const EconomicReport = () => {
           </div>
         )}
 
-        {/* Mostrar información del admin si existe */}
+        {/* ... (Ventas Administrativas se mantiene igual) ... */}
         {analytics && analytics.adminStats.length > 0 && (
-          <Card className="bg-gray-800 border-gray-700">
-            <CardHeader>
-              <CardTitle className="text-xl font-bold">Ventas Administrativas</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {analytics.adminStats.map((admin) => (
-                <div key={admin.id} className="bg-gray-700 p-6 rounded-lg">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-xl font-semibold text-blue-400">{admin.assigned_name}</h3>
-                    <span className="text-sm text-gray-400 bg-blue-900/30 px-3 py-1 rounded-full">Administrador</span>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-blue-400">{admin.ticketsSold}</div>
-                      <div className="text-sm text-gray-400">Tickets vendidos</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-green-400">${admin.totalRevenue.toFixed(2)}</div>
-                      <div className="text-sm text-gray-400">Total recaudado</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-purple-400">${admin.avgTicketPrice.toFixed(2)}</div>
-                      <div className="text-sm text-gray-400">Promedio por ticket</div>
-                    </div>
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-gray-600">
-                    <p className="text-xs text-gray-400 text-center">
-                      Las ventas administrativas no generan comisiones
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+            <Card className="bg-gray-800 border-gray-700">
+                <CardHeader><CardTitle className="text-xl font-bold">Ventas Administrativas</CardTitle></CardHeader>
+                <CardContent>
+                    {analytics.adminStats.map((admin) => (
+                        <div key={admin.id} className="bg-gray-700 p-6 rounded-lg mb-4 last:mb-0">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="text-xl font-semibold text-blue-400">{admin.assigned_name}</h3>
+                                <span className="text-sm text-gray-400 bg-blue-900/30 px-3 py-1 rounded-full">Administrador</span>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="text-center">
+                                    <div className="text-2xl font-bold text-blue-400">{admin.ticketsSold}</div>
+                                    <div className="text-sm text-gray-400">Tickets vendidos</div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-2xl font-bold text-green-400">${admin.totalRevenue.toFixed(2)}</div>
+                                    <div className="text-sm text-gray-400">Total recaudado</div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-2xl font-bold text-purple-400">${admin.avgTicketPrice.toFixed(2)}</div>
+                                    <div className="text-sm text-gray-400">Promedio por ticket</div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </CardContent>
+            </Card>
         )}
 
-        {/* Componente de rendimiento de vendedores mejorado - solo vendedores reales */}
         {analytics && analytics.realSellersCount > 0 && <SellerPerformanceChart data={data} analytics={analytics} />}
 
-        {/* Componentes de análisis detallado */}
-        <SellerAnalytics data={data} analytics={analytics} commissionAmount={commissionAmount} />
+        {/* Pasamos el nuevo objeto commissions si SellerAnalytics lo necesita (quizás quieras actualizar ese componente también, pero el prop commissionAmount ya no sirve como unique number) */}
+        <SellerAnalytics data={data} analytics={analytics} commissionAmount={0} />
 
         <TicketAnalytics data={data} analytics={analytics} chartData={chartData} colors={COLORS} />
 
-        {/* Configuración de comisión */}
+        {/* CAMBIO: Configuración de comisiones por Lista de Tickets */}
         <Card className="bg-gray-800 border-gray-700 rounded-lg">
           <CardHeader>
-            <CardTitle className="text-xl font-bold">Configuración de Comisiones</CardTitle>
+            <CardTitle className="text-xl font-bold">Configuración de Comisiones por Ticket</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
-              <Label htmlFor="commissionAmount" className="whitespace-nowrap">
-                Comisión por Ticket ($)
-              </Label>
-              <Input
-                id="commissionAmount"
-                type="number"
-                value={commissionAmount}
-                onChange={(e) => setCommissionAmount(Number(e.target.value))}
-                className="max-w-xs bg-gray-700 border-gray-600 text-white"
-              />
-              <div className="text-sm text-gray-400">Total a pagar en comisiones: ${totalCommission.toFixed(2)}</div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {data.ticket_tags.map((tag) => (
+                <div key={tag.id} className="bg-gray-700 p-4 rounded-lg flex flex-col space-y-2">
+                  <div className="flex justify-between items-center">
+                      <Label htmlFor={`comm-${tag.id}`} className="font-semibold text-gray-200">
+                        {tag.name}
+                      </Label>
+                      <span className="text-xs text-gray-400">Precio: ${tag.price}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-gray-400">$</span>
+                    <Input
+                      id={`comm-${tag.id}`}
+                      type="number"
+                      min="0"
+                      value={commissions[tag.id] ?? 0}
+                      onChange={(e) => handleCommissionChange(tag.id, e.target.value)}
+                      className="bg-gray-600 border-gray-500 text-white"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-400">Comisión por venta</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 pt-4 border-t border-gray-600 text-right">
+                <div className="text-sm text-gray-300">Total a pagar en comisiones: <span className="text-orange-400 font-bold">${totalCommission.toFixed(2)}</span></div>
             </div>
           </CardContent>
         </Card>

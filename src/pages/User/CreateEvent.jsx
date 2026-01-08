@@ -23,6 +23,7 @@ export default function CreateEvent() {
   const [ticketTags, setTicketTags] = useState([]);
   const [tagName, setTagName] = useState('');
   const [tagPrice, setTagPrice] = useState('');
+  const [tagCommission, setTagCommission] = useState('');
   const { authToken, user } = useContext(AuthContext);
   const [error, setError] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
@@ -53,8 +54,7 @@ export default function CreateEvent() {
     console.log('Evento a crear:', eventObject);
 
     try {
-      const data = await createEvent(eventObject, authToken.access);
-      // console.log('Evento creado:', data);
+      await createEvent(eventObject, authToken.access);
       navigate('/dashboard');
     } catch (error) {
       console.error('Error al crear el evento:', error.message);
@@ -65,10 +65,13 @@ export default function CreateEvent() {
   const addTicketTag = () => {
     if (ticketTags.length < 6) {
       if (tagName && tagPrice && !isNaN(tagPrice)) {
-        setTicketTags([...ticketTags, { name: tagName, price: parseFloat(tagPrice) }]);
+        const commission = tagCommission && !isNaN(tagCommission) ? parseFloat(tagCommission) : 0;
+        setTicketTags([...ticketTags, { name: tagName, price: parseFloat(tagPrice), commission_per_ticket: commission }]);
         setTagName('');
         setTagPrice('');
+        setTagCommission('');
       }
+      console.log('Ticket Tags actuales:', ticketTags);
     } else {
       setError('Solo puedes agregar hasta 6 Ticket Tags.');
       setTimeout(() => setError(''), 3000); // Limpia el error después de 3 segundos
@@ -86,22 +89,22 @@ export default function CreateEvent() {
   };
 
   return (
-    <div className="min-h-screen w-screen p-4 bg-gray-900 text-gray-100 ">
-      <div className="max-w-6xl mx-auto w-full flex flex-col items-center">
-        <Button onClick={() => navigate(`/dashboard`)} variant="entraditaTertiary" className="w-full max-w-md mb-4">
+    <div className="min-h-screen md:w-3/4 mx-auto p-4 bg-gray-900 text-gray-100 ">
+      <div className="max-w-6xl mx-auto w-full flex flex-col items-center w-3/4">
+        <Button onClick={() => navigate(`/dashboard`)} variant="entraditaTertiary" className="w-full mb-4">
           <ArrowLeftIcon className="mr-2 h-4 w-4" /> Volver al dashboard
         </Button>
-        <Card className="w-full max-w-md bg-gray-800 border-gray-700">
+        <Card className="w-full bg-gray-800 border-gray-700">
           <CardHeader>
             <CardTitle className="text-white">Crear Nuevo Evento</CardTitle>
             <CardDescription className="text-gray-400">Ingresa los detalles de tu nuevo evento</CardDescription>
           </CardHeader>
           <CardContent className="">
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-2">
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-gray-200 flex items-center">
                   Nombre del Evento
-                  <Tooltip content="ℹ️ Ingresa el nombre oficial del evento">
+                  <Tooltip content="ℹ️ Ingresa el nombre del evento">
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
@@ -171,7 +174,7 @@ export default function CreateEvent() {
               <div className="flex flex-col space-y-2">
                 <Label htmlFor="dni_required" className="text-gray-200 flex items-center">
                   Requerir DNI
-                  <Tooltip content="ℹ️ Si activas esta opción, para crear un ticket deberas ingresar el DNI el dueño del ticket al crearlo, ademas de su nombre y apelido. Obligatorio, no podra editarse luego">
+                  <Tooltip content="ℹ️ Si activas esta opción, para crear un ticket deberas ingresar el DNI el dueño del ticket al crearlo, ademas de su nombre y apellido. Obligatorio, no podra editarse luego">
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
@@ -179,41 +182,80 @@ export default function CreateEvent() {
                 <Input type="hidden" name="dni_required" value={requireDNI} />
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2 md:col-span-2">
                 <Label className="text-gray-200 flex items-center">
                   Ticket Tags
                   <Tooltip
-                    content={`ℹ️ Estas son las categorias de tickets que se podran vender para el evento, podras agregar hasta 5 categorias y podras editarlas mas adelante. \nEjemplo de categorias: VIP, STAFF, General, etc. \nTambien puedes diferenciar tandas de tickets con categorias aqui, como 'Early Bird - General', 'Preventa - VIP', etc. \nSi necesitas mas categorias puedes contactar con soporte.`}
+                    content={`ℹ️ Estas son las categorias de tickets que se podran vender para el evento, podras agregar hasta 6 categorias y podras editarlas mas adelante. \nEjemplo de categorias: VIP, STAFF, General, etc. \nTambien puedes diferenciar tandas de tickets con categorias aqui, como 'Early Bird - General', 'Preventa - VIP', etc. \nSi necesitas mas categorias puedes contactar con soporte.`}
                   >
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
-                <div className="flex space-x-2">
-                  <Input value={tagName} onChange={(e) => setTagName(e.target.value)} placeholder="Nombre" maxLength="25" className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
-                  <Input
-                    value={tagPrice}
-                    onChange={(e) => setTagPrice(e.target.value)}
-                    placeholder="Precio"
-                    type="number"
-                    step="100"
-                    max="99999999"
-                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
-                  />
-                  <Button type="button" onClick={addTicketTag} className="bg-blue-600 hover:bg-blue-700 text-white">
-                    +
-                  </Button>
-                </div>
-                <div className="flex flex-col gap-2 mt-2">
-                  {ticketTags.map((tag, index) => (
-                    <div key={index} className="bg-gray-700 text-white py-2 px-4 rounded flex items-center justify-between">
-                      <span>
-                        {tag.name} - ${tag.price.toFixed(2)}
-                      </span>
-                      <button type="button" onClick={() => removeTicketTag(index)} className="text-gray-400 hover:text-gray-200 p-1">
-                        <X size={20} />
-                      </button>
-                    </div>
-                  ))}
+                <div className="space-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                    <Input
+                      value={tagName}
+                      onChange={(e) => setTagName(e.target.value)}
+                      placeholder="Nombre"
+                      maxLength="25"
+                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 text-sm"
+                    />
+                    <Input
+                      value={tagPrice}
+                      onChange={(e) => setTagPrice(e.target.value)}
+                      placeholder="Precio ($)"
+                      type="number"
+                      step="100"
+                      max="99999999"
+                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 text-sm"
+                    />
+                    <Input
+                      value={tagCommission}
+                      onChange={(e) => setTagCommission(e.target.value)}
+                      placeholder="Comisión ($)"
+                      type="number"
+                      step="0.01"
+                      max="100"
+                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 text-sm"
+                    />
+                    <Button
+                      type="button"
+                      onClick={() => addTicketTag()}
+                      className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:col-span-1 col-span-1"
+                    >
+                      <span className="hidden sm:inline">Agregar</span>
+                      <span className="sm:hidden">+</span>
+                    </Button>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-3">
+                    {ticketTags.map((tag, index) => (
+                      <div
+                        key={index}
+                        className="bg-gray-700 text-white p-3 rounded-lg border border-gray-600 hover:border-gray-500 transition-all flex flex-col justify-between"
+                      >
+                        <div className="space-y-1 flex-1">
+                          <div className="font-semibold text-white text-sm sm:text-base break-words">
+                            {tag.name}
+                          </div>
+                          <div className="text-gray-300 text-xs sm:text-sm">
+                            Precio: <span className="text-green-400 font-semibold">${tag.price.toFixed(2)}</span>
+                          </div>
+                          {tag.commission_per_ticket > 0 && (
+                            <div className="text-gray-300 text-xs sm:text-sm">
+                              Comisión: <span className="text-yellow-400 font-semibold">${tag.commission_per_ticket.toFixed(2)}</span>
+                            </div>
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeTicketTag(index)}
+                          className="mt-2 text-gray-400 hover:text-red-400 p-1 w-full flex justify-center rounded hover:bg-gray-600 transition-colors"
+                        >
+                          <X size={16} className="sm:w-5 sm:h-5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -222,7 +264,7 @@ export default function CreateEvent() {
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
-              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+              <Button type="submit" className="w-full md:col-span-2 bg-blue-600 hover:bg-blue-700 text-white">
                 Crear Evento
               </Button>
             </form>
