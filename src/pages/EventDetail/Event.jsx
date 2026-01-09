@@ -8,7 +8,7 @@ import EventDetailsContext from '../../context/EventDetailsContext';
 
 export default function Event({ event }) {
   const { setIsResetDialogOpen } = useContext(EventDetailsContext);
-  const tickets_sold = event.tickets_counter === 0 ? 1 : event.tickets_counter;
+  const tickets_sold = event.tickets_sold === 0 ? 1 : event.tickets_counter;
   const percentage = (event.tickets_scanned / tickets_sold) * 100;
 
   const handleResetEvent = useCallback(() => {
@@ -89,7 +89,7 @@ export default function Event({ event }) {
           </Button> */}
         </div>
       </CardContent>
-      {/* <CardContent>
+      <CardContent>
         <div className="space-y-2">
           <div className="relative">
             <Progress value={percentage} className="h-4 bg-gray-800  border border-gray-500" />
@@ -100,7 +100,7 @@ export default function Event({ event }) {
             <span>{event.tickets_scanned} personas ingresaron al evento</span>
           </div>
         </div>
-      </CardContent> */}
+      </CardContent>
     </Card>
   );
 }

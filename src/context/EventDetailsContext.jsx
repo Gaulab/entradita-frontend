@@ -63,7 +63,7 @@ export const EventDetailsProvider = ({ children }) => {
         setEvent(data.event);
         setSellers(data.sellers);
         setScanners(data.scanners);
-        setTotalTickets(data.total_tickets);
+        setTotalTickets(data.event.tickets_counter);
         setTickets(data.tickets.sort((a, b) => b.id - a.id));
         setTicketSalesEnabled(data.event.ticket_sales_enabled);
         setAllTickets(data.tickets.sort((a, b) => b.id - a.id));

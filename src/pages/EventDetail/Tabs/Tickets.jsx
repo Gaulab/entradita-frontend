@@ -97,6 +97,7 @@ export default function Tickets() {
                 {event.dni_required && <TableHead className="text-gray-300 sm:table-cell ">DNI</TableHead>}
                 <TableHead className="text-gray-300 hidden sm:table-cell">Tipo</TableHead>
                 <TableHead className="text-gray-300 ">Vendedor</TableHead>
+                <TableHead className="text-gray-300">Escaneado</TableHead>
                 <TableHead className="text-gray-300 hidden sm:table-cell text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
@@ -118,6 +119,7 @@ export default function Tickets() {
                   )}
                   <TableCell className="text-gray-300 hidden sm:table-cell">{ticket.ticket_tag.name}</TableCell>
                   <TableCell className="text-gray-300 ">{ticket.seller_name === 'Unknown' ? 'Organizer' : ticket.seller_name}</TableCell>
+                  <TableCell className="text-gray-300 ">{ticket.scanned ? '✅' : '❌'}</TableCell>
                   <TableCell className="hidden sm:table-cell  text-right sm:space-x-1 space-y-1">
                     <Button
                       variant="outline"
