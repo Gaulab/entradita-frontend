@@ -39,7 +39,7 @@ export const putPurchaseInfo = async (eventId, purchaseInfo, authToken) => {
       body: JSON.stringify(purchaseInfo),
         });
       } catch (error) {
-        throw new Error(error.message || 'Error al actualizar la información de compra');
+        throw new Error(error.error || 'Error al actualizar la información de compra');
       }
     };
 
@@ -149,7 +149,7 @@ export const createEvent = async (eventData, authToken) => {
     } else {
       const errorData = await response.json();
       console.error("Error al crear el evento:", errorData); // Muestra el error detallado
-      throw new Error(errorData.detail || 'Error al crear el evento');
+      throw new Error(errorData.error || 'Error al crear el evento');
     }
   } catch (error) {
     console.error("Error en createEvent:", error.message);
@@ -173,7 +173,8 @@ export const updateEvent = async (eventData, eventId, token) => {
     });
 
     if (!response.ok) {
-      throw new Error('Error al actualizar el evento');
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Error al actualizar el evento');
     }
 
     return await response.json();
@@ -202,6 +203,29 @@ export const updateTicketSales = async (id, authToken) => {
 
   } catch (error) {
     throw new Error(error.message || 'Error desconocido al editar el evento');
+  }
+};
+
+// Reseteo de un evento periódico
+export const resetEvent = async (id, authToken) => {
+  try {
+    const response = await fetch(`${apiUrl}/api/v1/main/event/${id}/reset/`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      },
+    });
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Error al reiniciar el evento');
+    }
+
+  } catch (error) {
+    throw new Error(error.message || 'Error desconocido al reiniciar el evento');
   }
 };
 

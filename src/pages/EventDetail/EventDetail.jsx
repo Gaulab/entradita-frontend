@@ -22,11 +22,18 @@ import DialogCreateEmployee from './Dialogs/DialogCreateEmployee';
 import DialogEditEmployee from './Dialogs/DialogEditEmployee';
 import DialogDeleteItem from './Dialogs/DialogDeleteItem';
 import DialogCreateTicket from './Dialogs/DialogCreateTicket';
+import DialogResetEvent from './Dialogs/DialogResetEvent';
 
 export default function EventDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { event, copyMessage, activeTab, setActiveTab, isLoading } = useContext(EventDetailsContext);
+
+  const nextDate = event?.date
+    ? new Date(new Date(`${event.date}T00:00:00`).getTime() + 7 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .slice(0, 10)
+    : '';
 
     // Mostrar loading si isLoading es true
     if (isLoading) {
@@ -85,6 +92,7 @@ export default function EventDetails() {
         <DialogCreateTicket />
         <DialogEditEmployee />
         <DialogDeleteItem />
+        <DialogResetEvent currentDate={event.date} newDate={nextDate} soldTicketsCount={event.tickets_counter} />
       </div>
     </div>
   );

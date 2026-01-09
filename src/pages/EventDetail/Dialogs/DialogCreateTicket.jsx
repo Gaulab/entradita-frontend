@@ -23,7 +23,6 @@ export default function DialogCreateTicket() {
   const dni_required = event.dni_required;
   const [valueDropdown, setValueDropdown] = useState(null);
 
-
   const [formData, setFormData] = useState({
     name: '',
     surname: '',
@@ -56,13 +55,6 @@ export default function DialogCreateTicket() {
     setValueDropdown(selectedOption);
   };
 
-  // const handleDropdownChange = (selectedOption) => {
-  //   setFormData((prevData) => ({
-  //     ...prevData,
-  //     ticketTag: selectedOption,
-  //   }));
-  // };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
@@ -74,8 +66,7 @@ export default function DialogCreateTicket() {
     };
 
     try {
-      const response = await createTicket(submitData, id, authToken.access);
-      // console.log('API Response:', response);
+      await createTicket(submitData, id, authToken.access);
       setIsCreateTicketDialogOpen(false);
       setReloadTickets(!reloadTickets);
     } catch (error) {

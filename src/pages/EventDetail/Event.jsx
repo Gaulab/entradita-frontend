@@ -2,11 +2,18 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/card';
 import { Progress } from '../../components/ui/progress';
 import { Button } from '../../components/ui/button';
-import { CalendarDaysIcon, DollarSign, LucideShoppingCart, MapPin, Monitor, TicketSlashIcon } from 'lucide-react';
+import { CalendarDaysIcon, DollarSign, LucideShoppingCart, MapPin, Monitor, RotateCcw, TicketSlashIcon } from 'lucide-react';
+import { useCallback, useContext } from 'react';
+import EventDetailsContext from '../../context/EventDetailsContext';
 
 export default function Event({ event }) {
+  const { setIsResetDialogOpen } = useContext(EventDetailsContext);
   const tickets_sold = event.tickets_counter === 0 ? 1 : event.tickets_counter;
   const percentage = (event.tickets_scanned / tickets_sold) * 100;
+
+  const handleResetEvent = useCallback(() => {
+    setIsResetDialogOpen(true);
+  }, [setIsResetDialogOpen]);
 
   const navigateToEconomy = () => {
     window.location.href = `/event/${event.id}/economy`;
@@ -66,6 +73,11 @@ export default function Event({ event }) {
           <Button onClick={navigateToEconomy} className="font-bold sm:mr-2 bg-green-600 hover:bg-green-700 hover:text-white text-white sm:min-w-48 sm:w-min border hover:border-green-600" new>
             <DollarSign className="mr-2 h-4 w-4" /> Economía
           </Button>
+          { event.is_periodic &&
+            <Button onClick={() => handleResetEvent(true)} className="font-bold sm:mr-2 bg-red-600 hover:bg-red-700 hover:text-white text-white sm:min-w-48 sm:w-min border hover:border-red-600">
+              <RotateCcw className="mr-2 h-4 w-4" /> Reiniciar Evento
+            </Button>
+          }
           {/* <Button onClick={navigateToWhatsapp} className="sm:mr-2 bg-gray-700 hover:bg-gray-600  hover:text-white text-white sm:min-w-48 sm:w-min">
             <User2Icon className="mr-2 h-4 w-4" /> Soporte rápido
           </Button> */}

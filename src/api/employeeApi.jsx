@@ -47,7 +47,7 @@ export const createEmployee = async (formData, authToken, eventId) => {
         } else {
             const errorData = await response.json();
             console.error("Error al crear el empleado (API)", errorData);
-            throw new Error(errorData.message || 'Error desconocido al crear el empleado');
+            throw new Error(errorData.error || 'Error desconocido al crear el empleado');
         }
     } catch (error) {
         console.error("Error al crear el empleado:", error);

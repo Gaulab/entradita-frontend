@@ -28,6 +28,7 @@ export const EventDetailsProvider = ({ children }) => {
   // Dialogs 
   const [isCreateEmployeeDialogOpen, setIsCreateEmployeeDialogOpen] = useState(false);
   const [isCreateTicketDialogOpen, setIsCreateTicketDialogOpen] = useState(false);
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
   const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
   const [isEditEmployeeDialogOpen, setIsEditEmployeeDialogOpen] = useState(false);
   // Reloads
@@ -182,6 +183,7 @@ export const EventDetailsProvider = ({ children }) => {
       const data = await getEventDetails(id, authToken.access);
       setTickets(data.tickets.sort((a, b) => b.id - a.id));
       setAllTickets(data.tickets.sort((a, b) => b.id - a.id));
+      setEvent(data.event);
     }
     fetchTickets().catch(error => {
       console.error("Error fetching tickets:", error.message);
@@ -220,6 +222,7 @@ export const EventDetailsProvider = ({ children }) => {
         isCreateEmployeeDialogOpen, setIsCreateEmployeeDialogOpen,
         isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen,
         isCreateTicketDialogOpen, setIsCreateTicketDialogOpen,
+        isResetDialogOpen, setIsResetDialogOpen,
         isEditEmployeeDialogOpen, setIsEditEmployeeDialogOpen,
         // Reloads
         reloadTickets, setReloadTickets,

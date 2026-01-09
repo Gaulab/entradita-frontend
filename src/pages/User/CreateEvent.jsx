@@ -16,21 +16,37 @@ import AuthContext from '../../context/AuthContext';
 // API
 import { createEvent } from '../../api/eventApi';
 // ICONS
-import { ArrowLeftIcon, HelpCircle, X } from 'lucide-react';
+import { ArrowLeftIcon, HelpCircle, X, CalendarDays, Repeat } from 'lucide-react';
+
+const DAYS_OF_WEEK = [
+  { id: 0, label: 'Lun', full: 'Lunes' },
+  { id: 1, label: 'Mar', full: 'Martes' },
+  { id: 2, label: 'Mié', full: 'Miércoles' },
+  { id: 3, label: 'Jue', full: 'Jueves' },
+  { id: 4, label: 'Vie', full: 'Viernes' },
+  { id: 5, label: 'Sáb', full: 'Sábado' },
+  { id: 6, label: 'Dom', full: 'Domingo' },
+];
 
 export default function CreateEvent() {
+  // Estados existentes
   const [requireDNI, setRequireDNI] = useState(false);
   const [ticketTags, setTicketTags] = useState([]);
   const [tagName, setTagName] = useState('');
   const [tagPrice, setTagPrice] = useState('');
   const [tagCommission, setTagCommission] = useState('');
-  const { authToken, user } = useContext(AuthContext);
+  const { authToken } = useContext(AuthContext);
   const [error, setError] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const navigate = useNavigate();
 
+  // Nuevos estados para periodicidad
+  const [isPeriodic, setIsPeriodic] = useState(false);
+  const [periodicity, setPeriodicity] = useState(null); // Array de IDs de días
+  const [recurrenceEndDate, setRecurrenceEndDate] = useState('');
+
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Evita el comportamiento predeterminado del formulario
+    event.preventDefault();
 
     if (ticketTags.length === 0) {
       setError('Debes agregar al menos un Ticket Tag.');
@@ -38,18 +54,48 @@ export default function CreateEvent() {
       return;
     }
 
-    // Extrae los datos del formulario y construye el objeto del evento
-    const formData = new FormData(event.target);
-    const selectedDate = new Date(formData.get('date') + 'T00:00:00');
-    const currentDate = new Date(new Date().toISOString().split('T')[0] + 'T00:00:00');
-    if (selectedDate < currentDate) {
-      setError('La fecha seleccionada no puede ser menor a la fecha actual.');
+    // Validaciones extra para eventos periódicos
+    if (isPeriodic && periodicity === null) {
+      setError('Debes seleccionar un día de la semana para el evento periódico.');
       setTimeout(() => setError(''), 3000);
       return;
     }
+
+    const formData = new FormData(event.target);
+    const selectedDate = new Date(formData.get('date') + 'T00:00:00');
+    const currentDate = new Date(new Date().toISOString().split('T')[0] + 'T00:00:00');
+
+    if (selectedDate < currentDate) {
+      setError('La fecha de inicio no puede ser menor a la fecha actual.');
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
+
+    // Si hay fecha de fin, validamos que sea mayor a la de inicio
+    if (isPeriodic && recurrenceEndDate) {
+      const endDateObj = new Date(recurrenceEndDate + 'T00:00:00');
+      if (endDateObj < selectedDate) {
+        setError('La fecha de fin debe ser posterior a la fecha de inicio.');
+        setTimeout(() => setError(''), 3000);
+        return;
+      }
+    }
+
     const eventObject = Object.fromEntries(Array.from(formData.entries()).filter(([key, value]) => value !== ''));
-    eventObject.dni_required = requireDNI; // Agrega el requerimiento de DNI al objeto
-    eventObject.ticket_tags = ticketTags; // Agrega los TicketTags al objeto
+
+    // Agregamos campos booleanos y arrays
+    eventObject.dni_required = requireDNI;
+    eventObject.ticket_tags = ticketTags;
+
+    // Lógica de periodicidad para el backend
+    eventObject.is_periodic = isPeriodic;
+    if (isPeriodic) {
+      // Convertimos el array [0, 2] a string "0,2"
+      eventObject.periodicity = periodicity;
+      if (recurrenceEndDate) {
+        eventObject.recurrence_end_date = recurrenceEndDate;
+      }
+    }
 
     console.log('Evento a crear:', eventObject);
 
@@ -71,10 +117,9 @@ export default function CreateEvent() {
         setTagPrice('');
         setTagCommission('');
       }
-      console.log('Ticket Tags actuales:', ticketTags);
     } else {
       setError('Solo puedes agregar hasta 6 Ticket Tags.');
-      setTimeout(() => setError(''), 3000); // Limpia el error después de 3 segundos
+      setTimeout(() => setError(''), 3000);
     }
   };
 
@@ -84,8 +129,17 @@ export default function CreateEvent() {
 
   const handleDateChange = (event) => {
     const inputDate = new Date(event.target.value);
-    const offsetDate = new Date(inputDate.getTime() - 3 * 60 * 60 * 1000); // Ajuste a zona horaria -3
-    setDate(offsetDate.toISOString().split('T')[0]); // Formato YYYY-MM-DD
+    // Ajuste simple para evitar problemas de zona horaria al visualizar
+    const offsetDate = new Date(inputDate.getTime() - 3 * 60 * 60 * 1000);
+    setDate(offsetDate.toISOString().split('T')[0]);
+  };
+
+  const toggleDay = (dayId) => {
+    if (periodicity === dayId) {
+      setPeriodicity(null);
+    } else {
+      setPeriodicity(dayId);
+    }
   };
 
   return (
@@ -100,7 +154,9 @@ export default function CreateEvent() {
             <CardDescription className="text-gray-400">Ingresa los detalles de tu nuevo evento</CardDescription>
           </CardHeader>
           <CardContent className="">
-            <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-2">
+            <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-4">
+
+              {/* --- Sección Nombre --- */}
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-gray-200 flex items-center">
                   Nombre del Evento
@@ -111,20 +167,87 @@ export default function CreateEvent() {
                 <Input id="name" name="name" maxLength="25" required className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
               </div>
 
-              <div className="space-y-2">
+              {/* --- Sección Tipo de Evento (Switch) --- */}
+              <div className="space-y-2 flex flex-col justify-end">
+                <div className="flex items-center justify-between bg-gray-700 p-2 rounded-lg border border-gray-600">
+                  <Label htmlFor="is_periodic" className="text-gray-200 flex items-center cursor-pointer">
+                    <Repeat className="w-4 h-4 mr-2 text-blue-400" />
+                    ¿Es un evento periódico?
+                    <Tooltip content="Activa esto si el evento se repite semanalmente (ej: todos los sábados)">
+                      <HelpCircle className="w-4 h-4 ml-1 text-gray-400" />
+                    </Tooltip>
+                  </Label>
+                  <Switch
+                    id="is_periodic"
+                    checked={isPeriodic}
+                    onCheckedChange={setIsPeriodic}
+                  />
+                </div>
+              </div>
+
+              {/* --- Sección Fechas (Dinámica) --- */}
+              <div className={`space-y-2 ${!isPeriodic ? "md:col-span-2" : "md:col-span-1"}`}>
                 <Label htmlFor="date" className="text-gray-200 flex items-center">
-                  Fecha
-                  <Tooltip content="ℹ️ Ingresa la fecha en la que se realizara el evento. Obligatorio, podras editarlo mas adelante">
+                  {isPeriodic ? "Fecha de Inicio (Primera fecha)" : "Fecha del Evento"}
+                  <Tooltip content="ℹ️ Cuándo comienza el evento.">
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
                 <Input type="date" id="date" name="date" required className="bg-gray-700 border-gray-600 text-white" onChange={handleDateChange} />
               </div>
 
+              {/* Si es periódico, mostramos la fecha de fin y selector de días */}
+              {isPeriodic && (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="recurrence_end_date" className="text-gray-200 flex items-center">
+                      Fecha de Fin (Opcional)
+                      <Tooltip content="ℹ️ Hasta cuándo se repetirá el evento. Si se deja vacío, será indefinido.">
+                        <HelpCircle className="w-4 h-4 ml-1" />
+                      </Tooltip>
+                    </Label>
+                    <Input
+                      type="date"
+                      id="recurrence_end_date"
+                      value={recurrenceEndDate}
+                      onChange={(e) => setRecurrenceEndDate(e.target.value)}
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+
+                  <div className="md:col-span-2 space-y-2 bg-gray-700/30 p-3 rounded-lg border border-gray-600 border-dashed">
+                    <Label className="text-gray-200 flex items-center mb-2">
+                      Días de repetición
+                      <Tooltip content="Selecciona qué días de la semana ocurre el evento.">
+                        <HelpCircle className="w-4 h-4 ml-1" />
+                      </Tooltip>
+                    </Label>
+                    <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+                      {DAYS_OF_WEEK.map((day) => (
+                        <button
+                          key={day.id}
+                          type="button"
+                          onClick={() => toggleDay(day.id)}
+                          className={`px-3 py-2 rounded-md text-sm font-medium transition-all
+                            ${periodicity === day.id
+                              ? 'bg-blue-600 text-white border-blue-500 shadow-lg scale-105'
+                              : 'bg-gray-700 text-gray-300 border border-gray-600 hover:bg-gray-600'}`}
+                        >
+                          {day.label}
+                        </button>
+                      ))}
+                    </div>
+                    {periodicity === null && (
+                      <p className="text-xs text-red-400 mt-1">Selecciona un día de la semana.</p>
+                    )}
+                  </div>
+                </>
+              )}
+
               <div className="space-y-2">
                 <Label htmlFor="place" className="text-gray-200 flex items-center">
                   Lugar
-                  <Tooltip content="ℹ️ Ingresa el lugar en el que se realizara el evento. Obligatorio, podras editarlo mas adelante">
+                  <Tooltip content="ℹ️ Ingresa el lugar en el que se realizara el evento.">
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
@@ -133,18 +256,18 @@ export default function CreateEvent() {
 
               <div className="space-y-2">
                 <Label htmlFor="capacity" className="text-gray-200 flex items-center">
-                  Capacidad
-                  <Tooltip content="ℹ️ Esta capacidad sera la cantidad maxima de tickets que se podran vender para el evento. Si no se completa seran ilimitados, podra editarse mas adelante">
+                  Capacidad {isPeriodic ? "por fecha" : "Total"}
+                  <Tooltip content="ℹ️ Cantidad máxima de tickets a vender.">
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
-                <Input id="capacity" name="capacity" type="number" min="0" inputMode="numeric--" pattern="[0-9]*" className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+                <Input id="capacity" name="capacity" type="number" min="0" className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="contact" className="text-gray-200 flex items-center">
                   Contacto
-                  <Tooltip content="ℹ️ Este es un numero de whatsapp para que las personas puedan contactar directamente para la compra de tickets, es opcional y se puede modificar luego. Ingresar el numero entero sin espacios ni caracteristica del país">
+                  <Tooltip content="ℹ️ WhatsApp de contacto (opcional)">
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
@@ -154,7 +277,7 @@ export default function CreateEvent() {
               <div className="space-y-2">
                 <Label htmlFor="image_address" className="text-gray-200 flex items-center">
                   Dirección de la Imagen (Logo)
-                  <Tooltip content="ℹ️ Esta es la dirección de la imagen que se mostrara en los tickets y en la pagina del evento. No es obligatorio y puedes modificarla luego, si no sabes como obtener la dirección de una imagen puedes consultar con soporte">
+                  <Tooltip content="ℹ️ URL del logo del evento">
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
@@ -164,35 +287,40 @@ export default function CreateEvent() {
               <div className="space-y-2">
                 <Label htmlFor="password_employee" className="text-gray-200 flex items-center">
                   Contraseña para Empleados
-                  <Tooltip content=" ℹ️ Esta contraseña es un metodo mas de seguridad para los empleados que trabajen en el evento. Obligatorio, podras editarlo mas adelante">
+                  <Tooltip content=" ℹ️ Seguridad para empleados.">
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
                 <Input id="password_employee" name="password_employee" required maxLength="25" className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
               </div>
 
-              <div className="flex flex-col space-y-2">
-                <Label htmlFor="dni_required" className="text-gray-200 flex items-center">
-                  Requerir DNI
-                  <Tooltip content="ℹ️ Si activas esta opción, para crear un ticket deberas ingresar el DNI el dueño del ticket al crearlo, ademas de su nombre y apellido. Obligatorio, no podra editarse luego">
-                    <HelpCircle className="w-4 h-4 ml-1" />
-                  </Tooltip>
-                </Label>
-                <Switch id="dni_required" checked={requireDNI} onCheckedChange={setRequireDNI} />
-                <Input type="hidden" name="dni_required" value={requireDNI} />
+              <div className="space-y-2 flex flex-col justify-end">
+                <div className="flex items-center justify-between bg-gray-700 p-2 rounded-lg border border-gray-600">
+                  <Label htmlFor="is_periodic" className="text-gray-200 flex items-center cursor-pointer">
+                    <Repeat className="w-4 h-4 mr-2 text-blue-400" />
+                    ¿Requerir DNI?
+                    <Tooltip content="ℹ️ Hacer que el DNI sea obligatorio para comprar tickets.">
+                      <HelpCircle className="w-4 h-4 ml-1" />
+                    </Tooltip>
+                  </Label>
+                  <Switch
+                    id="dni_required"
+                    checked={requireDNI}
+                    onCheckedChange={setRequireDNI}
+                  />
+                </div>
               </div>
 
-              <div className="space-y-2 md:col-span-2">
-                <Label className="text-gray-200 flex items-center">
+              {/* --- Sección Ticket Tags --- */}
+              <div className="space-y-2 md:col-span-2 pt-4 border-t border-gray-700">
+                <Label className="text-gray-200 flex items-center text-lg font-semibold">
                   Ticket Tags
-                  <Tooltip
-                    content={`ℹ️ Estas son las categorias de tickets que se podran vender para el evento, podras agregar hasta 6 categorias y podras editarlas mas adelante. \nEjemplo de categorias: VIP, STAFF, General, etc. \nTambien puedes diferenciar tandas de tickets con categorias aqui, como 'Early Bird - General', 'Preventa - VIP', etc. \nSi necesitas mas categorias puedes contactar con soporte.`}
-                  >
+                  <Tooltip content={`ℹ️ Categorías de tickets (VIP, General, etc).`}>
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
                 <div className="space-y-3">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
                     <Input
                       value={tagName}
                       onChange={(e) => setTagName(e.target.value)}
@@ -215,7 +343,6 @@ export default function CreateEvent() {
                       placeholder="Comisión ($)"
                       type="number"
                       step="0.01"
-                      max="100"
                       className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 text-sm"
                     />
                     <Button
@@ -260,11 +387,11 @@ export default function CreateEvent() {
               </div>
 
               {error && (
-                <Alert variant="destructive">
+                <Alert variant="destructive" className="md:col-span-2">
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
-              <Button type="submit" className="w-full md:col-span-2 bg-blue-600 hover:bg-blue-700 text-white">
+              <Button type="submit" className="w-full md:col-span-2 bg-blue-600 hover:bg-blue-700 text-white mt-4">
                 Crear Evento
               </Button>
             </form>
