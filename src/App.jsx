@@ -20,7 +20,6 @@ import ScannerView from './pages/Employee/ScannerView';
 import CreateTicketBySeller from './pages/Employee/CreateTicektBySeller';
 import Pricing from './pages/Main/Pricing';
 import PrivacyPolicy from './pages/Main/PrivacyPolicy';
-import TicketPurchasePage from './pages/EventPage/TicketPurchasePage';
 import EventPageGuide from './pages/EventPage/EventPageGuide';
 import BuyPage from './pages/EventPage/BuyPage';
 // Private pages
@@ -29,6 +28,7 @@ import EventDetail from './pages/EventDetail/EventDetail';
 import CreateEvent from './pages/User/CreateEvent';
 import EditEvent from './pages/User/EditEvent.jsx';
 import EventPage from './pages/EventPage/EventPage';
+import PurchaseForm from './pages/EventPage/PurchaseForm.jsx';
 import Economy from './pages/User/Economy.jsx';
 import TicketPurchaseConfig from './pages/EventPage/TicketPurchaseConfig';
 import PurchaseSummaryPage from './pages/EventPage/PurchaseSummaryPage';
@@ -42,6 +42,8 @@ import SellerGuide from './pages/Employee/SellerGuide';
 // Invite pages
 import NewClient from './pages/Trial/NewClient';
 import Documentacion from './pages/Trial/Documentacion';
+import PaymentSuccess from './pages/EventPage/PaymentSuccess.jsx';
+import PaymentFailure from './pages/EventPage/PaymentFailure.jsx';
 // SellerWrapper is a functional component that extracts the UUID from the URL using the useParams hook and passes it as a prop to the VendorView component.
 const SellerWrapper = () => {
   const { uuid } = useParams(); // Obtén el UUID de la URL
@@ -82,14 +84,6 @@ function App() {
         <Route path="/scanner-page-trial" element={<ScannerPageTrial />} />
         <Route path="/buy-page" element={<BuyPage />} />
         <Route
-          path="/ticket-purchase/:event_id"
-          element={
-            <PurchaseProvider>
-              <TicketPurchasePage />
-            </PurchaseProvider>
-          }
-        />
-        <Route
           path="/purchase-summary"
           element={
             <PurchaseProvider>
@@ -99,6 +93,9 @@ function App() {
         />
         <Route path="/event-page-guide" element={<EventPageGuide />} />
         <Route path="/event-page/:id" element={<EventPage />} />
+        <Route path="/event-page/:id/purchase" element={<PurchaseForm />} />
+        <Route path="/payment/success" element={<PaymentSuccess />} />
+        <Route path="/payment/failure" element={<PaymentFailure />} />
         <Route path="/seller-guide" element={<SellerGuide />} />
         <Route path="/new-client/*" element={<NewClient />} />
         <Route path="/link-generator" element={<LinkGenerator />} />
