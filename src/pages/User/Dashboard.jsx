@@ -1,6 +1,8 @@
 // entraditaFront/src/pages/Dashboard.jsx
 // react imports
 import { useState, useContext, useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom'; // IMPORTANTE: Agregamos useNavigate y useSearchParams
+
 // Context
 import AuthContext from '../../context/AuthContext.jsx';
 // Components
@@ -13,31 +15,84 @@ import { LogOutIcon, PlusIcon, Eye } from 'lucide-react';
 
 // API
 import { getEvents } from '../../api/eventApi.jsx';
+import { getAuthorizationUrl } from '../../api/paymentApi.js';
 
 export default function Dashboard() {
   const { logoutUser, authToken } = useContext(AuthContext);
+
+  // Hooks para leer la URL
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  // Estados de datos
   const [events, setEvents] = useState([]);
   const [ticket_limit, setTicketLimit] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Estados para MP
+  const [mpSync, setMpSync] = useState(false);
+  const [showMpDialog, setShowMpDialog] = useState(false);
+  const [mpDialogType, setMpDialogType] = useState(''); // 'success' | 'error'
+  const [mpDialogMessage, setMpDialogMessage] = useState('');
+
+  // 1. Efecto para detectar el retorno de Mercado Pago
+  useEffect(() => {
+    const status = searchParams.get('mp_status');
+    const details = searchParams.get('details');
+
+    if (status) {
+      setShowMpDialog(true);
+
+      if (status === 'success') {
+        setMpDialogType('success');
+        setMpDialogMessage('¡Tu cuenta de Mercado Pago se vinculó correctamente!');
+      } else {
+        setMpDialogType('error');
+        // Limpiamos un poco el mensaje de error si viene en formato JSON string
+        setMpDialogMessage(details || 'Hubo un error al intentar conectar con Mercado Pago.');
+      }
+
+      // Limpiamos la URL para que si recarga la página no vuelva a procesar la alerta
+      navigate('/dashboard', { replace: true });
+    }
+
+    setTimeout(() => {
+      setShowMpDialog(false);
+    }, 4000);
+    
+  }, [searchParams, navigate]);
+
+  // 2. Efecto para cargar eventos
   useEffect(() => {
     const fetchEvents = async () => {
       const data = await getEvents(authToken.access);
-      setEvents(data.events); // Actualiza el estado con los eventos obtenidos
+      setEvents(data.events);
       setTicketLimit(data.ticket_limit);
-      setIsLoading(false); // Oculta el loading después de cargar
+      setMpSync(data.mp_sync);
+      setIsLoading(false);
     };
 
     if (authToken.access) {
-      fetchEvents(); // Llamar a la función para obtener eventos
+      fetchEvents();
     }
-  }, [authToken.access]); // Dependencia del authToken para que se recargue si cambia
+  }, [authToken.access, showMpDialog]);
 
-  
-  // Mostrar loading si isLoading es true
+  const handleGetAuthorizationUrl = async () => {
+    try {
+      const data = await getAuthorizationUrl(authToken.access);
+      window.location.href = data.url;
+    } catch (error) {
+      console.error('Error al obtener la URL de autorización:', error.message);
+      alert('No se pudo obtener la URL de autorización. Por favor, intenta nuevamente.');
+    }
+  };
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
+
+  // Definimos el color basado en tu lógica (success -> green, error -> red)
+  const dialogColor = mpDialogType === 'success' ? 'green' : 'red';
 
   return (
     <div className="min-h-screen w-screen p-4 bg-gray-900 text-gray-100 ">
@@ -48,12 +103,42 @@ export default function Dashboard() {
           </Button>
         </div>
 
-        <Card className="bg-gray-800 border-gray-700 mb-4 flex flex-row items-center p-4">
-          <img src='/isotipoWhite.png' alt="Ticket" className="w-10 sm:w-16 mr-2 p-0" />
-          <CardTitle className="text-white text-xl sm:text-2xl text-left mr-2">Tickets disponibles </CardTitle>
-          <CardContent className="items-center p-0">
-            <p className="text-2xl sm:text-3xl text-blue-200 font-bold">{ticket_limit}</p>
-          </CardContent>
+        {/* --- DIALOGO DE FEEDBACK MERCADO PAGO --- */}
+        {showMpDialog && (
+          <div className={`mb-6 p-4 rounded-lg ${dialogColor === 'green' ? 'bg-green-600' : 'bg-red-600'} text-black transition-all duration-300`}>
+            {mpDialogType === 'success' ? (
+              <>
+                <p className="text-black font-bold">¡Conexión Exitosa!</p>
+                <p className="text-black">{mpDialogMessage}</p>
+                <p className="text-black text-sm mt-1">Ya puedes recibir pagos de tus eventos.</p>
+              </>
+            ) : (
+              <>
+                <p className="text-black font-bold">Error de Conexión</p>
+                <p className="text-black">{mpDialogMessage}</p>
+              </>
+            )}
+          </div>
+        )}
+        {/* ---------------------------------------- */}
+
+        <Card className="bg-gray-800 border-gray-700 mb-4 p-4 flex justify-between items-center">
+          <div className='flex flex-row items-center'>
+            <img src='/isotipoWhite.png' alt="Ticket" className="w-10 sm:w-16 mr-2 p-0" />
+            <CardTitle className="text-white text-xl sm:text-2xl text-left mr-2">Tickets disponibles </CardTitle>
+            <CardContent className="items-center p-0">
+              <p className="text-2xl sm:text-3xl text-blue-200 font-bold">{ticket_limit}</p>
+            </CardContent>
+          </div>
+          {!mpSync ? (
+            <Button className="mt-4 sm:mt-0" variant="entraditaPrimary" onClick={() => handleGetAuthorizationUrl()}>
+              Vincular Mercado Pago
+            </Button>
+          ) : (
+            <Button className="mt-4 sm:mt-0 pointer-events-none" variant="entraditaSuccess" tabIndex={-1}>
+              Mercado Pago Vinculado
+            </Button>
+          )}
         </Card>
 
         <Card className="bg-gray-800 border-gray-700 mb-8">
