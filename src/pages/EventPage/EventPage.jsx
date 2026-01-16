@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { getEventPage } from "../../api/eventPageApi"
 
 function EventPage() {
@@ -9,6 +9,7 @@ function EventPage() {
   const [eventData, setEventData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchEventPage = async () => {
@@ -177,12 +178,24 @@ function EventPage() {
                 </div>
 
                 <div className="mt-8">
-                  <button
-                    onClick={handleBuyTicket}
-                    className="w-full px-6 py-3 bg-blue-500 text-white font-medium rounded-lg shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all transform hover:-translate-y-0.5"
-                  >
-                    Comprar Tickets
-                  </button>
+                  <div className="space-y-3">
+                    <button
+                      onClick={handleBuyTicket}
+                      className="w-full px-6 py-3 bg-[#25D366] text-white font-medium rounded-lg shadow-lg hover:bg-white hover:text-[#25D366] focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-opacity-50 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-3"
+                    >
+                      <img src="/whatsapp.png" alt="WhatsApp" className="w-6 h-6" />
+                      Comprar por WhatsApp
+                    </button>
+                    
+                    <button
+                      onClick={() => navigate(`/event-page/${id}/purchase`)}
+                      className="w-full px-6 py-3 hover:bg-white hover:text-[#009ee3] font-medium rounded-lg shadow-lg bg-[#0082c3] text-white focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-3"
+                    >
+                      <img src="/mercadopago.png" alt="Mercado Pago" className="w-6 h-6" />
+                      Comprar con Mercado Pago
+                    </button>
+                  </div>
+                  
                   <div className="text-center mt-2 text-xs text-gray-400">
                     Tickets QR seguros y verificación instantánea
                   </div>

@@ -22,3 +22,24 @@ export const getEventPage = async (eventId) => {
     }
 }
 
+export const getEventPurchaseInfo = async (eventId) => {
+    try {
+        const response = await fetch(`${apiUrl}/api/v1/main/event/${eventId}/purchase-info/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            return await response.json();
+        }
+        else {
+            throw new Error('Evento no encontrado');
+        }
+    }
+    catch (error) {
+        throw new Error(error.message || 'Error al obtener los datos de compra del evento');
+    }
+}
+
