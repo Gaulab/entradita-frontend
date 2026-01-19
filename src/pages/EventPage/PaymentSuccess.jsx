@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { CheckCircle, Download, Home, Loader2 } from "lucide-react";
+import { CheckCircle, Download, Home, Loader2, Mail } from "lucide-react";
 
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();
@@ -11,7 +11,7 @@ export default function PaymentSuccess() {
     // Capturamos los datos que nos mandó el Backend desde la URL
     const externalRef = searchParams.get("order_id");
     const payId = searchParams.get("payment_id");
-    
+
     setOrderId(externalRef);
     setPaymentId(payId);
   }, [searchParams]);
@@ -19,7 +19,7 @@ export default function PaymentSuccess() {
   return (
     <div className="min-h-screen bg-[#121a24] flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-[#1a2433] rounded-2xl shadow-2xl border border-gray-800 overflow-hidden text-center p-8 animate-in fade-in zoom-in duration-500">
-        
+
         {/* Icono Animado */}
         <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
           <CheckCircle className="w-10 h-10 text-green-500" />
@@ -31,30 +31,26 @@ export default function PaymentSuccess() {
         </p>
 
         {/* Detalles de la Transacción */}
-        <div className="bg-[#121a24] rounded-lg p-4 mb-8 text-left border border-gray-800">
-          <div className="flex justify-between mb-2">
-            <span className="text-gray-500 text-sm">Orden ID:</span>
-            <span className="text-white font-mono text-sm">{orderId || "Cargando..."}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500 text-sm">Pago MP:</span>
-            <span className="text-white font-mono text-sm">{paymentId || "Pendiente"}</span>
+        <div className="bg-[#121a24] rounded-lg p-4 text-left border border-gray-800 flex justify-between items-center">
+          <p className="text-gray-400 text-xs tracking-wider uppercase font-semibold">ID del pago</p>
+          <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-green-700/40 bg-gradient-to-r from-green-600/10 to-emerald-500/10">
+            <span className="font-mono text-green-300 text-base select-all">
+              {paymentId || "Pendiente"}
+            </span>
           </div>
         </div>
 
-        {/* Botones de Acción */}
-        <div className="space-y-3">
-          <Link 
-            to="/dashboard" // O a donde muestres tus tickets
-            className="w-full block bg-[#009ee3] hover:bg-[#0082c3] text-white font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
-          >
-            <Download className="w-5 h-5" />
-            Ver mis Tickets
-          </Link>
+        {/* Aviso de envío por mail */}
+        <div className="my-8 flex gap-2 text-lg items-center justify-center text-gray-300">
+          <Mail className="text-blue-400" />
+          <span>Los QRs serán enviados por correo.</span>
+        </div>
 
-          <Link 
-            to="/" 
-            className="w-full block bg-transparent border border-gray-600 hover:bg-gray-800 text-gray-300 font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+        {/* Botonon de Acción */}
+        <div className="space-y-3">
+          <Link
+            to="/" // O a donde muestres tus tickets
+            className="w-full block bg-blue-600 hover:bg-blue-500 text-gray-100 hover:text-white font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
           >
             <Home className="w-5 h-5" />
             Volver al Inicio

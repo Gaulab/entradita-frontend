@@ -4,6 +4,8 @@ import { Loader2, Ticket, User, CreditCard, ChevronRight, Calendar, MapPin, Aler
 import { getEventPurchaseInfo } from "../../api/eventPageApi";
 import { createPaymentPreference } from "../../api/paymentApi";
 
+const mp_commission = import.meta.env.MP_COMISSION_PERCENTAGE
+
 export default function PurchaseForm() {
   const { id } = useParams();
 
@@ -74,9 +76,18 @@ export default function PurchaseForm() {
     setAttendees(newAttendees);
   };
 
-  const calculateTotal = () => {
+  const calculateSubtotal = () => {
     if (!selectedTag) return 0;
     return parseFloat(selectedTag.price) * quantity;
+  };
+
+  const calculateMercadoPagoFee = () => {
+    const subtotal = calculateSubtotal();
+    return subtotal * mp_commission;
+  };
+
+  const calculateTotal = () => {
+    return calculateSubtotal() + calculateMercadoPagoFee();
   };
 
   // Envio del Formulario (Crear Preferencia)
@@ -157,7 +168,13 @@ export default function PurchaseForm() {
           </div>
           <div className="text-right flex flex-col justify-center">
             <span className="text-xs text-gray-500 uppercase tracking-wide">Total a Pagar</span>
-            <span className="text-3xl font-bold text-[#009ee3]">${calculateTotal().toLocaleString()}</span>
+            <div className="space-y-1 mt-2">
+              <p className="text-sm text-gray-400">Entradas: <span className="text-white font-semibold">${calculateSubtotal().toLocaleString()}</span></p>
+              <p className="text-sm text-gray-400">Total Mercado Pago: <span className="text-white font-semibold">${calculateMercadoPagoFee().toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>
+              <div className="border-t border-gray-700 pt-1 mt-1">
+                <span className="text-2xl font-bold text-[#009ee3]">${calculateTotal().toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              </div>
+            </div>
           </div>
         </div>
 
