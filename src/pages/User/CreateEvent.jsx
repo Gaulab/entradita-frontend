@@ -16,7 +16,7 @@ import AuthContext from '../../context/AuthContext';
 // API
 import { createEvent } from '../../api/eventApi';
 // ICONS
-import { ArrowLeftIcon, HelpCircle, X, CalendarDays, Repeat } from 'lucide-react';
+import { ArrowLeftIcon, HelpCircle, X, CalendarDays, Repeat, Store } from 'lucide-react';
 
 const DAYS_OF_WEEK = [
   { id: 0, label: 'Lun', full: 'Lunes' },
@@ -35,6 +35,7 @@ export default function CreateEvent() {
   const [tagName, setTagName] = useState('');
   const [tagPrice, setTagPrice] = useState('');
   const [tagCommission, setTagCommission] = useState('');
+  const [tagWebSale, setTagWebSale] = useState(false);
   const { authToken } = useContext(AuthContext);
   const [error, setError] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
@@ -112,10 +113,11 @@ export default function CreateEvent() {
     if (ticketTags.length < 6) {
       if (tagName && tagPrice && !isNaN(tagPrice)) {
         const commission = tagCommission && !isNaN(tagCommission) ? parseFloat(tagCommission) : 0;
-        setTicketTags([...ticketTags, { name: tagName, price: parseFloat(tagPrice), commission_per_ticket: commission }]);
+        setTicketTags([...ticketTags, { name: tagName, price: parseFloat(tagPrice), commission_per_ticket: commission, web_sale: tagWebSale }]);
         setTagName('');
         setTagPrice('');
         setTagCommission('');
+        setTagWebSale(false);
       }
     } else {
       setError('Solo puedes agregar hasta 6 Ticket Tags.');
@@ -320,7 +322,7 @@ export default function CreateEvent() {
                   </Tooltip>
                 </Label>
                 <div className="space-y-3">
-                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
                     <Input
                       value={tagName}
                       onChange={(e) => setTagName(e.target.value)}
@@ -345,6 +347,16 @@ export default function CreateEvent() {
                       step="0.01"
                       className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 text-sm"
                     />
+                    <div className="flex items-center justify-between bg-gray-700 p-2 rounded-lg border border-gray-600">
+                      <label className="text-gray-200 flex items-center cursor-pointer flex-1 gap-2">
+                        <Store className="w-4 h-4 text-blue-400" />
+                        <span className="text-xs sm:text-sm font-medium">Venta Web</span>
+                      </label>
+                      <Switch
+                        checked={tagWebSale}
+                        onCheckedChange={setTagWebSale}
+                      />
+                    </div>
                     <Button
                       type="button"
                       onClick={() => addTicketTag()}
@@ -370,6 +382,12 @@ export default function CreateEvent() {
                           {tag.commission_per_ticket > 0 && (
                             <div className="text-gray-300 text-xs sm:text-sm">
                               Comisión: <span className="text-yellow-400 font-semibold">${tag.commission_per_ticket.toFixed(2)}</span>
+                            </div>
+                          )}
+                          {tag.web_sale && (
+                            <div className="flex items-center gap-1 mt-2 pt-2 border-t border-gray-600">
+                              <Store className="w-3 h-3 text-blue-400" />
+                              <span className="text-xs text-blue-400 font-semibold">Venta Web Habilitada</span>
                             </div>
                           )}
                         </div>

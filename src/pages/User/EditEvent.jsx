@@ -18,7 +18,7 @@ import LoadingSpinner from '@/components/ui/loadingspinner.jsx';
 import AuthContext from '@/context/AuthContext.jsx';
 // API
 import { getEvent, updateEvent, deleteEvent } from '@/api/eventApi.jsx';
-import { ArrowLeftIcon, Edit2, HelpCircle, X, Repeat } from 'lucide-react';
+import { ArrowLeftIcon, Edit2, HelpCircle, X, Repeat, Store } from 'lucide-react';
 
 const DAYS_OF_WEEK = [
   { id: 0, label: 'Lun', full: 'Lunes' },
@@ -56,6 +56,7 @@ export default function EditEvent() {
   const [tagName, setTagName] = useState('');
   const [tagPrice, setTagPrice] = useState('');
   const [tagCommission, setTagCommission] = useState('');
+  const [tagWebSale, setTagWebSale] = useState(false);
 
   // Estados para diálogos de tags
   const [isDeleteTagDialogOpen, setIsDeleteTagDialogOpen] = useState(false);
@@ -191,13 +192,15 @@ export default function EditEvent() {
           {
             name: tagName,
             price: parseFloat(tagPrice),
-            commission_per_ticket: commission
+            commission_per_ticket: commission,
+            web_sale: tagWebSale
           }
         ]);
 
         setTagName('');
         setTagPrice('');
         setTagCommission('');
+        setTagWebSale(false);
       }
     } else {
       setError('Límite de Ticket Tags alcanzado.');
@@ -422,7 +425,7 @@ export default function EditEvent() {
                 </Label>
 
                 <div className="space-y-3">
-                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
                     <Input
                       value={tagName}
                       onChange={(e) => setTagName(e.target.value)}
@@ -447,10 +450,20 @@ export default function EditEvent() {
                       step="0.01"
                       className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 text-sm"
                     />
+                    <div className="flex items-center justify-between bg-gray-700 p-2 rounded-lg border border-gray-600">
+                      <label className="text-gray-200 flex items-center cursor-pointer flex-1 gap-2">
+                        <Store className="w-4 h-4 text-blue-400" />
+                        <span className="text-xs sm:text-sm font-medium">Venta Web</span>
+                      </label>
+                      <Switch
+                        checked={tagWebSale}
+                        onCheckedChange={setTagWebSale}
+                      />
+                    </div>
                     <Button
                       type="button"
                       onClick={addTicketTag}
-                      className="bg-blue-600 hover:bg-blue-700 text-white w-full"
+                      className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:col-span-1 col-span-1"
                     >
                       <span className="hidden sm:inline">Agregar</span>
                       <span className="sm:hidden">+</span>
@@ -476,6 +489,12 @@ export default function EditEvent() {
                               ${tag.commission_per_ticket ? parseFloat(tag.commission_per_ticket).toFixed(2) : "0.00"}
                             </span>
                           </div>
+                          {tag.web_sale && (
+                            <div className="flex items-center gap-1 mt-2 pt-2 border-t border-gray-600">
+                              <Store className="w-3 h-3 text-blue-400" />
+                              <span className="text-xs text-blue-400 font-semibold">Venta Web Habilitada</span>
+                            </div>
+                          )}
                         </div>
 
                         <div className="flex space-x-2 mt-3 pt-2 border-t border-gray-600">

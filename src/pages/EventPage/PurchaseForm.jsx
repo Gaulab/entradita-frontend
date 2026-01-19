@@ -4,7 +4,7 @@ import { Loader2, Ticket, User, CreditCard, ChevronRight, Calendar, MapPin, Aler
 import { getEventPurchaseInfo } from "../../api/eventPageApi";
 import { createPaymentPreference } from "../../api/paymentApi";
 
-const mp_commission = import.meta.env.MP_COMISSION_PERCENTAGE
+const mp_commission = import.meta.env.VITE_MP_COMMISSION_PERCENTAGE
 
 export default function PurchaseForm() {
   const { id } = useParams();
@@ -83,7 +83,7 @@ export default function PurchaseForm() {
 
   const calculateMercadoPagoFee = () => {
     const subtotal = calculateSubtotal();
-    return subtotal * mp_commission;
+    return subtotal * parseFloat(mp_commission);
   };
 
   const calculateTotal = () => {
