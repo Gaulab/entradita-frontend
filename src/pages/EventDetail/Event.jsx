@@ -3,17 +3,43 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../..
 import { Progress } from '../../components/ui/progress';
 import { Button } from '../../components/ui/button';
 import { CalendarDaysIcon, DollarSign, LucideShoppingCart, MapPin, Monitor, RotateCcw, TicketSlashIcon } from 'lucide-react';
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import EventDetailsContext from '../../context/EventDetailsContext';
+import { Switch } from '../../components/ui/switch';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../../components/ui/dialog';
+import { updateWebSale } from '../../api/eventApi';
+import AuthContext from '../../context/AuthContext';
 
 export default function Event({ event }) {
-  const { setIsResetDialogOpen } = useContext(EventDetailsContext);
-  const tickets_sold = event.tickets_sold === 0 ? 1 : event.tickets_counter;
-  const percentage = (event.tickets_scanned / tickets_sold) * 100;
+  const { authToken } = useContext(AuthContext);
+  const { 
+    setIsResetDialogOpen,
+    webSalesEnabled,
+    setWebSalesEnabled
+   } = useContext(EventDetailsContext);
+  
+  const [errorDialog, setErrorDialog] = useState({
+    isOpen: false,
+    message: ''
+  });
+
+  const percentage = (event.tickets_scanned / event.tickets_sold) * 100;
 
   const handleResetEvent = useCallback(() => {
     setIsResetDialogOpen(true);
   }, [setIsResetDialogOpen]);
+
+  const handleUpdateWebSale = useCallback(async () => {
+    try {
+      const response = await updateWebSale(event.id, authToken.access);
+      setWebSalesEnabled(response.web_sale_enabled);
+    } catch (error) {
+      setErrorDialog({
+        isOpen: true,
+        message: error.message
+      });
+    }
+  }, [event.id, authToken, setWebSalesEnabled]);
 
   const navigateToEconomy = () => {
     window.location.href = `/event/${event.id}/economy`;
@@ -21,17 +47,6 @@ export default function Event({ event }) {
 
   const navigateToWebPage = () => {
     window.location.href = `/event-page/${event.id}`;
-  };
-
-  const navigateToGuide = () => {
-    window.location.href = `/event/${event.id}/guide`;
-  };
-  const navigateToOnlineSell = () => {
-    window.location.href = `/event/${event.id}/purchase-config`;
-  };
-
-  const navigateToWhatsapp = () => {
-    window.location.href = `https://wa.me/543482275737?text=Hola!%20Necesito%20ayuda%20con%20el%20evento%20${event.name.split(' ').join('%20')}`;
   };
 
   return (
@@ -65,7 +80,7 @@ export default function Event({ event }) {
           </p>
         </div>
       </CardContent>
-      <CardContent>
+      <CardContent className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
         <div className="flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:flex-wrap">
           <Button onClick={navigateToWebPage} className="font-bold sm:mr-2 sm:mb-2 bg-indigo-600 hover:bg-indigo-700 hover:text-white text-white sm:min-w-48 sm:w-min border hover:border-indigo-600">
             <Monitor className="mr-2 h-4 w-4" /> Página WEB
@@ -78,15 +93,10 @@ export default function Event({ event }) {
               <RotateCcw className="mr-2 h-4 w-4" /> Reiniciar Evento
             </Button>
           }
-          {/* <Button onClick={navigateToWhatsapp} className="sm:mr-2 bg-gray-700 hover:bg-gray-600  hover:text-white text-white sm:min-w-48 sm:w-min">
-            <User2Icon className="mr-2 h-4 w-4" /> Soporte rápido
-          </Button> */}
-          {/* <Button onClick={navigateToOnlineSell} className="font-bold sm:mr-2 bg-gray-600 hover:bg-yellow-600 hover:text-white text-white sm:min-w-48 sm:w-min border hover:border-yellow-500" soon>
-            <ShoppingCartIcon className="mr-2 h-4 w-4" /> Venta online
-          </Button> */}
-          {/* <Button onClick={navigateToGuide} disabled className="sm:mr-2 bg-gray-700 hover:bg-gray-600 hover:text-white text-white sm:min-w-48 sm:w-min">
-            <BookMarkedIcon className="mr-2 h-4 w-4" /> Guias de uso
-          </Button> */}
+        </div>
+        <div className="flex flex-row items-center ">
+          <Switch checked={webSalesEnabled} onChange={() => handleUpdateWebSale()} />
+          <span className="text-sm text-gray-400 ml-2">Habilitar venta web del evento</span>
         </div>
       </CardContent>
       <CardContent>
@@ -101,6 +111,23 @@ export default function Event({ event }) {
           </div>
         </div>
       </CardContent>
+
+      <Dialog open={errorDialog.isOpen} onOpenChange={(isOpen) => setErrorDialog({ ...errorDialog, isOpen })}>
+        <DialogContent className="bg-gray-800 text-white border-gray-700">
+          <DialogHeader>
+            <DialogTitle className="text-red-500">Error al actualizar venta web</DialogTitle>
+          </DialogHeader>
+          <p className="text-gray-200">{errorDialog.message}</p>
+          <DialogFooter>
+            <Button 
+              onClick={() => setErrorDialog({ ...errorDialog, isOpen: false })}
+              className="bg-gray-700 hover:bg-gray-600"
+            >
+              Aceptar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }

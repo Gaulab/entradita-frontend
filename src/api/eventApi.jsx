@@ -37,11 +37,11 @@ export const putPurchaseInfo = async (eventId, purchaseInfo, authToken) => {
         'Authorization': `Bearer ${authToken}`
       },
       body: JSON.stringify(purchaseInfo),
-        });
-      } catch (error) {
-        throw new Error(error.error || 'Error al actualizar la información de compra');
-      }
-    };
+    });
+  } catch (error) {
+    throw new Error(error.error || 'Error al actualizar la información de compra');
+  }
+};
 
 
 export const getPurchaseInfo = async (eventId) => {
@@ -52,7 +52,7 @@ export const getPurchaseInfo = async (eventId) => {
         'Content-Type': 'application/json',
       },
     });
-    
+
     if (response.ok) {
       return await response.json();
     } else {
@@ -80,7 +80,7 @@ export const getEvent = async (id, authToken) => {
     } else {
       throw new Error('Error al cargar el evento');
     }
-    
+
   } catch (error) {
     throw new Error(error.message || 'Error al cargar el evento');
   }
@@ -102,7 +102,7 @@ export const getEventDetails = async (id, authToken) => {
     } else {
       throw new Error('Error al cargar los detalles del evento');
     }
-    
+
   } catch (error) {
     throw new Error(error.message || 'Error al cargar los detalles del evento');
   }
@@ -120,7 +120,7 @@ export const getEvents = async (authToken) => {
         'Authorization': `Bearer ${authToken}`,
       },
     });
-    
+
 
     if (response.ok) {
       return await response.json(); // Devuelve los datos de los eventos
@@ -199,6 +199,30 @@ export const updateTicketSales = async (id, authToken) => {
       return await response.json();
     } else {
       throw new Error('Error al editar el evento');
+    }
+
+  } catch (error) {
+    throw new Error(error.message || 'Error desconocido al editar el evento');
+  }
+};
+
+// Deshabilitacion / Habilitacion venta web del evento
+export const updateWebSale = async (id, authToken) => {
+  try {
+    const response = await fetch(`${apiUrl}/api/v1/main/event/${id}/web-sale/`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      },
+    });
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      const errorData = await response.json();
+      console.log("Error: ", errorData);
+      throw new Error(errorData.error || 'Error al actualizar la venta web del evento');
     }
 
   } catch (error) {

@@ -186,16 +186,18 @@ function EventPage() {
                       <img src="/whatsapp.png" alt="WhatsApp" className="w-6 h-6" />
                       Comprar por WhatsApp
                     </button>
-                    
-                    <button
-                      onClick={() => navigate(`/event-page/${id}/purchase`)}
-                      className="w-full px-6 py-3 hover:bg-white hover:text-[#009ee3] font-medium rounded-lg shadow-lg bg-[#0082c3] text-white focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-3"
-                    >
-                      <img src="/mercadopago.png" alt="Mercado Pago" className="w-6 h-6" />
-                      Comprar con Mercado Pago
-                    </button>
+
+                    { eventData.web_sale &&
+                      <button
+                        onClick={() => navigate(`/event-page/${id}/purchase`)}
+                        className="w-full px-6 py-3 hover:bg-white hover:text-[#009ee3] font-medium rounded-lg shadow-lg bg-[#0082c3] text-white focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-3"
+                      >
+                        <img src="/mercadopago.png" alt="Mercado Pago" className="w-6 h-6" />
+                        Comprar con Mercado Pago
+                      </button>
+                    }
                   </div>
-                  
+
                   <div className="text-center mt-2 text-xs text-gray-400">
                     Tickets QR seguros y verificación instantánea
                   </div>

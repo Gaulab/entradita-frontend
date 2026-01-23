@@ -25,6 +25,7 @@ export const EventDetailsProvider = ({ children }) => {
   const [scanners, setScanners] = useState([]);
   const [ticketTags, setTicketTags] = useState([]);
   const [ticketSalesEnabled, setTicketSalesEnabled] = useState(false);
+  const [webSalesEnabled, setWebSalesEnabled] = useState(false);
   // Dialogs 
   const [isCreateEmployeeDialogOpen, setIsCreateEmployeeDialogOpen] = useState(false);
   const [isCreateTicketDialogOpen, setIsCreateTicketDialogOpen] = useState(false);
@@ -66,6 +67,7 @@ export const EventDetailsProvider = ({ children }) => {
         setTotalTickets(data.event.tickets_counter);
         setTickets(data.tickets.sort((a, b) => b.id - a.id));
         setTicketSalesEnabled(data.event.ticket_sales_enabled);
+        setWebSalesEnabled(data.event.web_sale);
         setAllTickets(data.tickets.sort((a, b) => b.id - a.id));
         setTicketTags(data.event.ticket_tags);
       } catch (error) {
@@ -218,6 +220,7 @@ export const EventDetailsProvider = ({ children }) => {
         scanners, setScanners,
         ticketTags, setTicketTags,
         ticketSalesEnabled, setTicketSalesEnabled,
+        webSalesEnabled, setWebSalesEnabled,
         // Dialogs
         isCreateEmployeeDialogOpen, setIsCreateEmployeeDialogOpen,
         isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen,
