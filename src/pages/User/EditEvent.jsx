@@ -231,6 +231,7 @@ export default function EditEvent() {
       name: formData.get('name'),
       price: parseFloat(formData.get('price')),
       commission_per_ticket: parseFloat(formData.get('commission') || 0),
+      web_sale: ticketTags[tagToEdit].web_sale
     };
     setTicketTags(ticketTags.map((tag, index) => (index === tagToEdit ? updatedTag : tag)));
     setIsEditTagDialogOpen(false);
@@ -626,6 +627,22 @@ export default function EditEvent() {
                   type="number"
                   step="0.01"
                   className="bg-gray-700 border-gray-600 text-white"
+                />
+              </div>
+              <div className="flex items-center justify-between bg-gray-700 p-2 rounded-lg border border-gray-600">
+                <label className="text-gray-200 flex items-center cursor-pointer flex-1 gap-2">
+                  <Store className="w-4 h-4 text-blue-400" />
+                  <span className="text-xs sm:text-sm font-medium">Venta Web</span>
+                </label>
+                <Switch
+                  checked={ticketTags[tagToEdit].web_sale}
+                  onCheckedChange={(checked) => {
+                    const updatedTag = {
+                      ...ticketTags[tagToEdit],
+                      web_sale: checked,
+                    };
+                    setTicketTags(ticketTags.map((tag, index) => (index === tagToEdit ? updatedTag : tag)));
+                  }}
                 />
               </div>
               <DialogFooter>

@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import { Loader2, Ticket, User, CreditCard, ChevronRight, Calendar, MapPin, AlertCircle, X } from "lucide-react";
 import { getEventPurchaseInfo } from "../../api/eventPageApi";
 import { createPaymentPreference } from "../../api/paymentApi";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../../components/ui/dialog";
+import { Button } from "../../components/ui/button";
 
 const mp_commission = import.meta.env.VITE_MP_COMMISSION_PERCENTAGE
 
@@ -113,7 +115,7 @@ export default function PurchaseForm() {
 
       const response = await createPaymentPreference(payload);
 
-      if(!response.init_point) {
+      if (!response.init_point) {
         throw new Error("No se recibió el link de pago. Por favor intenta nuevamente.");
       }
 
@@ -170,7 +172,7 @@ export default function PurchaseForm() {
             <span className="text-xs text-gray-500 uppercase tracking-wide">Total a Pagar</span>
             <div className="space-y-1 mt-2">
               <p className="text-sm text-gray-400">Entradas: <span className="text-white font-semibold">${calculateSubtotal().toLocaleString()}</span></p>
-              <p className="text-sm text-gray-400">Total Mercado Pago: <span className="text-white font-semibold">${calculateMercadoPagoFee().toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>
+              <p className="text-sm text-gray-400">Comisión Mercado Pago: <span className="text-white font-semibold">${calculateMercadoPagoFee().toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>
               <div className="border-t border-gray-700 pt-1 mt-1">
                 <span className="text-2xl font-bold text-[#009ee3]">${calculateTotal().toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
@@ -279,7 +281,7 @@ export default function PurchaseForm() {
                       onChange={(e) => handleAttendeeChange(index, 'lastname', e.target.value)}
                       placeholder="Apellido"
                     />
-                    { eventData.dni_required &&
+                    {eventData.dni_required &&
                       <Input
                         label="DNI"
                         value={attendee.dni}
@@ -318,27 +320,25 @@ export default function PurchaseForm() {
       </div>
 
       {/* Error Dialog */}
-      {showErrorDialog && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-4 animate-in fade-in duration-200">
-          <div className="bg-[#1a2433] rounded-xl p-6 max-w-md w-full border border-red-500/30 shadow-2xl animate-in slide-in-from-bottom-4 duration-300">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
-                  <AlertCircle className="w-6 h-6 text-red-400" />
-                </div>
-                <h3 className="text-xl font-bold text-white">Error</h3>
-              </div>
+      <Dialog open={showErrorDialog} onOpenChange={setShowErrorDialog}>
+        <DialogContent className="bg-gray-800 text-white border-gray-700">
+          <DialogHeader>
+            <div className="flex items-center gap-3">
+              <DialogTitle className="text-red-500">Error al generar el pago</DialogTitle>
             </div>
-            <p className="text-gray-300 mb-6 leading-relaxed">{error}</p>
-            <button
+          </DialogHeader>
+          <p className="text-gray-200">{error}</p>
+          <DialogFooter>
+            <Button
               onClick={() => setShowErrorDialog(false)}
-              className="w-full py-3 bg-red-500 hover:bg-red-600 rounded-lg font-bold text-white transition-colors"
+              className="bg-gray-700 hover:bg-gray-600"
             >
-              Cerrar
-            </button>
-          </div>
-        </div>
-      )}
+              Aceptar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }
