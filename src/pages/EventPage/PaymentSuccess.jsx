@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { CheckCircle, Download, Home, Loader2, Mail } from "lucide-react";
+import { CheckCircle, Home, Mail, Store } from "lucide-react";
 
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();
-  const [orderId, setOrderId] = useState(null);
+  const [eventId, setEventId] = useState(null);
   const [paymentId, setPaymentId] = useState(null);
 
   useEffect(() => {
     // Capturamos los datos que nos mandó el Backend desde la URL
-    const externalRef = searchParams.get("order_id");
+    const event_id = searchParams.get("event_id");
     const payId = searchParams.get("payment_id");
 
-    setOrderId(externalRef);
+    setEventId(event_id);
     setPaymentId(payId);
   }, [searchParams]);
 
@@ -49,12 +49,21 @@ export default function PaymentSuccess() {
         {/* Botonon de Acción */}
         <div className="space-y-3">
           <Link
-            to="/" // O a donde muestres tus tickets
+            to="/"
             className="w-full block bg-blue-600 hover:bg-blue-500 text-gray-100 hover:text-white font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
           >
             <Home className="w-5 h-5" />
-            Volver al Inicio
+            Inicio
           </Link>
+          {eventId && (
+            <Link
+              to={`/event-page/${eventId}`}
+              className="w-full block bg-pink-600 hover:bg-pink-500 text-gray-100 hover:text-white font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+            >
+              <Store className="w-5 h-5" />
+              Evento
+            </Link>
+          )}
         </div>
 
       </div>
