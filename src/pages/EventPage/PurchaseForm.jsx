@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Loader2, Ticket, User, CreditCard, ChevronRight, Calendar, MapPin, AlertCircle, X } from "lucide-react";
-import { getEventPurchaseInfo } from "../../api/eventPageApi";
+import { getEventPurchaseInfo } from "../../api/eventApi";
 import { createPaymentPreference } from "../../api/paymentApi";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../../components/ui/dialog";
 import { Button } from "../../components/ui/button";

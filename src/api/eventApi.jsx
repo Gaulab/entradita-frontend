@@ -1,3 +1,5 @@
+import { handleApiError } from "../utils/apiUtils";
+
 // entraditaFront/src/api/eventApi.jsx
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -15,51 +17,10 @@ export const loadMoreTicketsApi = async ({ eventId, page = 1, limit = 10, search
         search, // Término de búsqueda
       }),
     });
-
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error("Respuesta inesperada:", errText);
-      throw new Error("Error al cargar más tickets");
-    }
-
+    await handleApiError(response, 'Error al cargar más tickets');
     return await response.json();
   } catch (error) {
-    throw new Error(error.message || "Error al cargar más tickets");
-  }
-};
-
-export const putPurchaseInfo = async (eventId, purchaseInfo, authToken) => {
-  try {
-    const response = await fetch(`${apiUrl}/api/v1/main/event/${eventId}/purchase-info/`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}`
-      },
-      body: JSON.stringify(purchaseInfo),
-    });
-  } catch (error) {
-    throw new Error(error.error || 'Error al actualizar la información de compra');
-  }
-};
-
-
-export const getPurchaseInfo = async (eventId) => {
-  try {
-    const response = await fetch(`${apiUrl}/api/v1/main/event/${eventId}/purchase-info/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error('Error al cargar los detalles del evento');
-    }
-  } catch (error) {
-    throw new Error(error.message || 'Error al cargar los detalles del evento');
+    throw error;
   }
 };
 
@@ -74,15 +35,10 @@ export const getEvent = async (id, authToken) => {
         'Authorization': `Bearer ${authToken}`
       },
     });
-
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error('Error al cargar el evento');
-    }
-
+    await handleApiError(response, 'Error al cargar el evento');
+    return await response.json();
   } catch (error) {
-    throw new Error(error.message || 'Error al cargar el evento');
+    throw error;
   }
 }
 
@@ -96,15 +52,10 @@ export const getEventDetails = async (id, authToken) => {
         'Authorization': `Bearer ${authToken}`
       },
     });
-
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error('Error al cargar los detalles del evento');
-    }
-
+    await handleApiError(response, 'Error al cargar los detalles del evento');
+    return await response.json();
   } catch (error) {
-    throw new Error(error.message || 'Error al cargar los detalles del evento');
+    throw error;
   }
 }
 
@@ -120,15 +71,10 @@ export const getEvents = async (authToken) => {
         'Authorization': `Bearer ${authToken}`,
       },
     });
-
-
-    if (response.ok) {
-      return await response.json(); // Devuelve los datos de los eventos
-    } else {
-      throw new Error('Error al obtener eventos');
-    }
+    await handleApiError(response, 'Error al cargar los eventos');
+    return await response.json();
   } catch (error) {
-    throw new Error(error.message || 'Error desconocido al obtener eventos');
+    throw error;
   }
 };
 
@@ -143,16 +89,9 @@ export const createEvent = async (eventData, authToken) => {
       },
       body: JSON.stringify(eventData),
     });
-
-    if (response.ok) {
-      return await response.json();
-    } else {
-      const errorData = await response.json();
-      console.error("Error al crear el evento:", errorData); // Muestra el error detallado
-      throw new Error(errorData.error || 'Error al crear el evento');
-    }
+    await handleApiError(response, 'Error al crear el evento');
+    return await response.json();
   } catch (error) {
-    console.error("Error en createEvent:", error.message);
     throw error;
   }
 };
@@ -171,12 +110,7 @@ export const updateEvent = async (eventData, eventId, token) => {
       },
       body: JSON.stringify(eventData),
     });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Error al actualizar el evento');
-    }
-
+    await handleApiError(response, 'Error al actualizar el evento');
     return await response.json();
   } catch (error) {
     throw error;
@@ -194,15 +128,10 @@ export const updateTicketSales = async (id, authToken) => {
         'Authorization': `Bearer ${authToken}`
       },
     });
-
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error('Error al editar el evento');
-    }
-
+    await handleApiError(response, 'Error al actualizar la venta de tickets del evento');
+    return await response.json();
   } catch (error) {
-    throw new Error(error.message || 'Error desconocido al editar el evento');
+    throw error;
   }
 };
 
@@ -216,17 +145,10 @@ export const updateWebSale = async (id, authToken) => {
         'Authorization': `Bearer ${authToken}`
       },
     });
-
-    if (response.ok) {
-      return await response.json();
-    } else {
-      const errorData = await response.json();
-      console.log("Error: ", errorData);
-      throw new Error(errorData.error || 'Error al actualizar la venta web del evento');
-    }
-
+    await handleApiError(response, 'Error al actualizar la venta web del evento');
+    return await response.json();
   } catch (error) {
-    throw new Error(error.message || 'Error desconocido al editar el evento');
+    throw error;
   }
 };
 
@@ -240,16 +162,10 @@ export const resetEvent = async (id, authToken) => {
         'Authorization': `Bearer ${authToken}`
       },
     });
-
-    if (response.ok) {
-      return await response.json();
-    } else {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Error al reiniciar el evento');
-    }
-
+    await handleApiError(response, 'Error al reiniciar el evento');
+    return await response.json();
   } catch (error) {
-    throw new Error(error.message || 'Error desconocido al reiniciar el evento');
+    throw error;
   }
 };
 
@@ -263,16 +179,45 @@ export const deleteEvent = async (id, authToken) => {
         'Authorization': `Bearer ${authToken}`
       },
     });
-
-    if (response.ok) {
-      return true;
-    } else {
-      throw new Error('Error al eliminar el evento');
-    }
-
+    await handleApiError(response, 'Error al eliminar el evento');
+    return true;
   } catch (error) {
-    throw new Error(error.message || 'Error desconocido al eliminar el evento');
+    throw error;
   }
 };
+
+// Devuelve los detalles de la pagina web de un evento
+export const getEventPage = async (eventId) => {
+  try {
+    const response = await fetch(`${apiUrl}/api/v1/main/event/${eventId}/info-for-web/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    await handleApiError(response, 'Error al cargar los datos del evento para la web');
+    return await response.json();
+  }
+  catch (error) {
+    throw error;
+  }
+}
+
+// Devuelve la información de compra de un evento
+export const getEventPurchaseInfo = async (eventId) => {
+  try {
+    const response = await fetch(`${apiUrl}/api/v1/main/event/${eventId}/purchase-info/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    await handleApiError(response, 'Error al cargar los datos de compra del evento');
+    return await response.json();
+  }
+  catch (error) {
+    throw error;
+  }
+}
 
 

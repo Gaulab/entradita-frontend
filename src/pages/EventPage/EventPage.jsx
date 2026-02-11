@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { getEventPage } from "../../api/eventPageApi"
+import { getEventPage } from "../../api/eventApi"
 
 function EventPage() {
   const { id } = useParams()

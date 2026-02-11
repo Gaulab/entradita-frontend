@@ -1,3 +1,5 @@
+import { handleApiError } from "../utils/apiUtils";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 // Devuelve un ticket por uuid
@@ -10,14 +12,10 @@ export const getTicket = async (ticket_uuid) => {
         'Content-Type': 'application/json',
       },
     });
-
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error('QR inexistente');
-    }
+    await handleApiError(response, 'QR inexistente');
+    return await response.json();
   } catch (error) {
-    throw new Error(error.message || 'QR inexistente');
+    throw error;
   }
 };
 
@@ -39,15 +37,10 @@ export const createTicket = async (formData, eventId, authToken) => {
         ticket_tag: formData.ticket_tag,
       }),
     });
-    const data = await response.json();
-
-    if (response.ok) {
-      return data;
-    } else {
-      throw new Error(data.error || 'Error al crear el ticket');
-    }
+    await handleApiError(response, 'Error al crear el ticket');
+    return await response.json();
   } catch (error) {
-    throw new Error(error.message || 'Error desconocido al crear el ticket');
+    throw error;
   }
 };
 // Creacion ticket por vendedor
@@ -61,14 +54,10 @@ export const createTicketBySeller = async (formData, uuid) => {
       },
       body: JSON.stringify(formData),
     });
-    const data = await response.json();
-    if (response.ok) {
-      return data;
-    } else {
-      throw new Error(data.error || 'Error al crear el ticket');
-    }
+    await handleApiError(response, 'Error al crear el ticket');
+    return await response.json();
   } catch (error) {
-    throw new Error(error.message || 'Error desconocido al crear el ticket');
+    throw error;
   }
 };
 
@@ -82,8 +71,10 @@ export const deleteTicket = async (authToken, itemToDelete) => {
         Authorization: `Bearer ${authToken}`,
       },
     });
+    await handleApiError(response, 'Error al eliminar el ticket');
+    return true;
   } catch (error) {
-    throw new Error(error.message || 'Error desconocido al eliminar el ticket');
+    throw error;
   }
 };
 
@@ -96,8 +87,10 @@ export const deleteTicketBySeller = async (uuid, ticketId) => {
         'Content-Type': 'application/json',
       },
     });
+    await handleApiError(response, 'Error al eliminar el ticket');
+    return true;
   } catch (error) {
-    throw new Error(error.message || 'Error desconocido al eliminar el ticket');
+    throw error;
   }
 };
 
@@ -111,13 +104,10 @@ export const checkTicketByPayload = async (payload, scanner, eventId) => {
       },
       body: JSON.stringify({ event_id: eventId, scanner_id: scanner }),
     });
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error('Ticket no encontrado');
-    }
+    await handleApiError(response, 'Ticket no encontrado');
+    return await response.json();
   } catch (error) {
-    throw new Error(error.message || 'Ticket no encontrado');
+    throw error;
   }
 };
 
@@ -131,13 +121,9 @@ export const checkTicketByDni = async (dni, scanner, eventId) => {
       },
       body: JSON.stringify({ event_id: eventId, scanner_id: scanner }),
     });
-
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error('Ticket no encontrado');
-    }
+    await handleApiError(response, 'Ticket no encontrado');
+    return await response.json();
   } catch (error) {
-    throw new Error(error.message || 'Ticket no encontrado');
+    throw error;
   }
 };

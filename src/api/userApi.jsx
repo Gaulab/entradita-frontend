@@ -1,3 +1,5 @@
+import { handleApiError } from "../utils/apiUtils";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 // Create token
@@ -10,15 +12,10 @@ export const login = async (e) => {
             },
             body: JSON.stringify({ 'username': e.target.username.value, 'password': e.target.password.value })
         });
-
-        if (response.ok) {
-            return await response.json();
-        }
-        else {
-            throw new Error('Error al obtener el token');
-        }
+        await handleApiError(response, 'Error al obtener el token');
+        return await response.json();
     } catch (error) {
-        throw new Error(error.message || 'Error desconocido al obtener el token');
+        throw error;
     }
 }
 
@@ -32,14 +29,9 @@ export const refreshToken = async (authToken) => {
             },
             body: JSON.stringify({ 'refresh': authToken?.refresh })
         });
-
-        if (response.ok) {
-            return await response.json();
-        }
-        else {
-            throw new Error('Error al actualizar el token');
-        }
+        await handleApiError(response, 'Error al actualizar el token');
+        return await response.json();
     } catch (error) {
-        throw new Error(error.message || 'Error desconocido al actualizar el token');
+        throw error;
     }
 }

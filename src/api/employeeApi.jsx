@@ -1,9 +1,11 @@
+import { handleApiError } from "../utils/apiUtils";
+
 // entradaFront/src/api/employeeApi.jsx
 const apiUrl = import.meta.env.VITE_API_URL;
 
 // Devuelve los empleados de un evento
 export const getEmployees = async (id, authToken) => {
-    try{
+    try {
         const response = await fetch(`${apiUrl}/api/v1/main/event/${id}/employees/`, {
             method: 'GET',
             headers: {
@@ -11,21 +13,15 @@ export const getEmployees = async (id, authToken) => {
                 'Authorization': `Bearer ${authToken}`
             },
         });
-
-        if (response.ok) {
-            return await response.json();
-        }
-        else {
-            throw new Error('Error al obtener empleados');
-        }
+        await handleApiError(response, 'Error al cargar los empleados');
+        return await response.json();
     }
     catch (error) {
-        throw new Error(error.message || 'Error desconocido al obtener empleados');
+        throw error;
     }
 }
 
 export const createEmployee = async (formData, authToken, eventId) => {
-    console.log("id en API: ", formData);
     try {
         const response = await fetch(`${apiUrl}/api/v1/main/employee/`, {
             method: 'POST',
@@ -41,17 +37,11 @@ export const createEmployee = async (formData, authToken, eventId) => {
                 ticket_tags: formData.ticket_tags
             })
         });
-
-        if (response.ok) {
-            return await response.json();
-        } else {
-            const errorData = await response.json();
-            console.error("Error al crear el empleado (API)", errorData);
-            throw new Error(errorData.error || 'Error desconocido al crear el empleado');
-        }
+        await handleApiError(response, 'Error al crear el empleado');
+        return await response.json();
     } catch (error) {
         console.error("Error al crear el empleado:", error);
-        throw new Error(error.message || 'Error desconocido al crear el empleado');
+        throw error;
     }
 };
 
@@ -69,16 +59,11 @@ export const changeEmployeeStatus = async (authToken, itemToChange) => {
                 status: !itemToChange.status
             })
         });
-
-        if (response.ok) {
-            return await response.json();
-        }
-        else {
-            throw new Error('Error al cambiar el estado del empleado');
-        }
+        await handleApiError(response, 'Error al cambiar el estado del empleado');
+        return await response.json();
     }
     catch (error) {
-        throw new Error(error.message || 'Error desconocido al cambiar el estado del empleado');
+        throw error;
     }
 }
 
@@ -86,10 +71,6 @@ export const changeEmployeeStatus = async (authToken, itemToChange) => {
 
 // Actualización de un empleado
 export const updateEmployee = async (submitData, authToken, employeeId) => {
-    // console.log("newTicketTags en API: ", newTicketTags);
-    // console.log("editingEmpleado en API: ", editingEmpleado);
-    // console.log("newEmpleadoName en API: ", newEmpleadoName);
-    // console.log("newEmpleadoCapacity en API: ", newEmpleadoCapacity);
     try {
         const response = await fetch(`${apiUrl}/api/v1/main/employee/${employeeId}/`, {
             method: 'PUT',
@@ -103,16 +84,11 @@ export const updateEmployee = async (submitData, authToken, employeeId) => {
                 ticket_tags: submitData.ticket_tags
             })
         });
-
-        if (response.ok) {
-            return await response.json();
-        }
-        else {
-            throw new Error('Error al editar el empleado');
-        }
+        await handleApiError(response, 'Error al editar el empleado');
+        return await response.json();
     }
     catch (error) {
-        throw new Error(error.message || 'Error desconocido al editar el empleado');
+        throw error;
     }
 };
 
@@ -141,16 +117,11 @@ export const getScanner = async (uuid) => {
                 'Content-Type': 'application/json',
             },
         });
-
-        if (response.ok) {
-            return await response.json();
-        }
-        else {
-            throw new Error('Scanner no encontrado');
-        }
+        await handleApiError(response, 'Error al cargar los datos del scanner');
+        return await response.json();
     }
     catch (error) {
-        throw new Error(error.message || 'Error al obtener los datos del scanner');
+        throw error;
     }
 }
 
@@ -163,36 +134,28 @@ export const getSeller = async (uuid) => {
                 'Content-Type': 'application/json',
             },
         });
-
-        if (response.ok) {
-            return await response.json();
-        }
-        else {
-            throw new Error('Vendedor no encontrado');
-        }
+        await handleApiError(response, 'Error al cargar los datos del vendedor');
+        return await response.json();
     }
     catch (error) {
-        throw new Error(error.message || 'Error al obtener los datos del vendedor');
+        throw error;
     }
 }
 
 // Check password
 export const checkPassword = async (uuid, password) => {
     try {
-      const response = await fetch(`${apiUrl}/api/v1/main/event/${uuid}/check-password/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ password }),
-      });
-      const data = await response.json();
-      if (response.ok) {
+        const response = await fetch(`${apiUrl}/api/v1/main/event/${uuid}/check-password/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ password }),
+        });
+        await handleApiError(response, 'Error al verificar la contraseña');
+        const data = await response.json();
         return data;
-      } else {
-        throw new Error(data.error || "Error al verificar la contraseña");
-      }
     } catch (error) {
-        throw new Error(error.message || 'Error al verificar la contraseña');
+        throw error;
     }
-  };
+};

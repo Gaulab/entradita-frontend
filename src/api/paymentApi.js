@@ -1,3 +1,5 @@
+import { handleApiError } from "../utils/apiUtils";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 // Función para procesar el pago
@@ -10,16 +12,10 @@ export const getAuthorizationUrl = async (authToken) => {
         Authorization: `Bearer ${authToken}`,
       },
     });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      return data;
-    } else {
-      throw new Error(data.error || 'Error al obtener la URL de autorización');
-    }
+    await handleApiError(response, 'Error al obtener la URL de autorización');
+    return await response.json();
   } catch (error) {
-    throw new Error(error.message || 'Error desconocido al obtener la URL de autorización');
+    throw error;
   }
 }
 
@@ -32,15 +28,9 @@ export const createPaymentPreference = async (purchaseData) => {
       },
       body: JSON.stringify(purchaseData),
     });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      return data;
-    } else {
-      throw new Error(data.error + (data.details ? `: ${data.details}` : '') || 'Error al crear la preferencia de pago');
-    }
+    await handleApiError(response, 'Error al crear la preferencia de pago');
+    return await response.json();
   } catch (error) {
-    throw new Error(error.message || 'Error desconocido al crear la preferencia de pago');
+    throw error;
   }
 }
