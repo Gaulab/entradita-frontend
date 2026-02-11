@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-
 // Context imports
 import { AuthProvider } from './context/AuthContext';
 import { EventDetailsProvider } from './context/EventDetailsContext'; // Importa el contexto de EventDetails
-import { PurchaseProvider } from './context/PurchaseContext'; // Importa el contexto de Purchase
 // Utils imports
 import PrivateRoute from './utils/PrivateRoute';
 // Public pages
@@ -30,8 +29,6 @@ import EditEvent from './pages/User/EditEvent.jsx';
 import EventPage from './pages/EventPage/EventPage';
 import PurchaseForm from './pages/EventPage/PurchaseForm.jsx';
 import Economy from './pages/User/Economy.jsx';
-import TicketPurchaseConfig from './pages/EventPage/TicketPurchaseConfig';
-import PurchaseSummaryPage from './pages/EventPage/PurchaseSummaryPage';
 // Trial pages
 import DashboardTrial from './pages/Trial/DashboardTrial';
 import ScannerPageTrial from './pages/Trial/ScannerPageTrial';
@@ -83,14 +80,6 @@ function App() {
         <Route path="/ticket-page-trial" element={<TicketPageTrial />} />
         <Route path="/scanner-page-trial" element={<ScannerPageTrial />} />
         <Route path="/buy-page" element={<BuyPage />} />
-        <Route
-          path="/purchase-summary"
-          element={
-            <PurchaseProvider>
-              <PurchaseSummaryPage />
-            </PurchaseProvider>
-          }
-        />
         <Route path="/event-page-guide" element={<EventPageGuide />} />
         <Route path="/event-page/:id" element={<EventPage />} />
         <Route path="/event-page/:id/purchase" element={<PurchaseForm />} />
@@ -102,16 +91,6 @@ function App() {
         <Route path="/documentacion" element={<Documentacion />} />
 
         {/* Rutas protegidas */}
-        <Route
-          path="/event/:event_id/purchase-config"
-          element={
-            <AuthProvider>
-              <PrivateRoute>
-                <TicketPurchaseConfig />
-              </PrivateRoute>
-            </AuthProvider>
-          }
-        />
         <Route
           path="/dashboard"
           element={
