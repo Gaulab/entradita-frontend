@@ -339,16 +339,13 @@ export default function ModernHome() {
       <footer className="backdrop-blur-md bg-slate-900/80 border-t border-slate-700/50 py-8 sm:py-12">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center mb-6 sm:mb-8">
-            <a href="https://gaulab.com" target="_blank" rel="noopener noreferrer" className="flex items-center mb-4 md:mb-0">
             <div className="flex items-center mb-4 md:mb-0">
               <img src="/GaulabPng.svg" alt="gaulab.com logo" className="h-8 w-auto sm:h-12 mr-2 sm:mr-3" />
               <div>
                 <p className="text-xs sm:text-sm text-slate-400">Powered by</p>
-                <h3 className="font-bold text-white text-base sm:text-lg">Gaulab.com</h3>
+                <h3 className="font-bold text-white text-base sm:text-lg">Gaulab</h3>
               </div>
-              </div>
-            </a>
-
+            </div>
             <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
               <Link to="/documentacion" className="text-slate-300 hover:text-white transition-colors text-sm sm:text-base">
                 Documentación
@@ -397,16 +394,16 @@ FeatureCard.propTypes = {
 };
 
 function ContentSection({ icon, title, description, additionalText, buttonText, buttonIcon, href, external }) {
-ContentSection.propTypes = {
-  icon: PropTypes.node.isRequired,
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  additionalText: PropTypes.string,
-  buttonText: PropTypes.string,
-  buttonIcon: PropTypes.node,
-  href: PropTypes.string,
-  external: PropTypes.bool,
-};
+  ContentSection.propTypes = {
+    icon: PropTypes.node.isRequired,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    additionalText: PropTypes.string,
+    buttonText: PropTypes.string,
+    buttonIcon: PropTypes.node,
+    href: PropTypes.string,
+    external: PropTypes.bool,
+  };
   return (
     <section className="backdrop-blur-md bg-slate-800/40 border border-slate-700/50 py-8 sm:py-12 px-4 sm:px-8 rounded-2xl">
       <div className="max-w-4xl mx-auto text-center">

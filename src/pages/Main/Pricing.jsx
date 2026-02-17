@@ -117,13 +117,11 @@ export default function ModernPricing() {
           </div>
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-4 sm:mb-6">
-            <span className="bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent">Potencia tu Evento con </span>
-            <span className="bg-gradient-to-r from-blue-400 to-green-500 bg-clip-text text-transparent">Precios Flexibles</span>
+            <span className="bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent">Potencia tu Evento </span>
           </h1>
-
-          <p className="text-base sm:text-lg lg:text-xl text-slate-300 max-w-3xl mx-auto mb-6 sm:mb-8 leading-relaxed px-4 sm:px-0">
-            Disfruta de todas nuestras características premium sin importar el tamaño de tu evento. Nuestros precios se adaptan a tu éxito, disminuyendo a medida que vendes más entradas.
-          </p>
+          <h2 className='text-xl sm:text-3xl font-bold text-slate-200'>
+            con <span className="bg-gradient-to-r from-blue-400 to-green-500 bg-clip-text text-transparent">Precios Flexibles</span>
+          </h2>
         </section>
 
         {/* Interactive Pricing Calculator - Reduced padding */}
@@ -185,7 +183,7 @@ export default function ModernPricing() {
                     onClick={() => handleChoosePlan(currentTier)}
                     className="mt-4 sm:mt-6 w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 text-white border-0 px-6 sm:px-8 py-2 sm:py-3"
                   >
-                    Elegir este plan
+                    Elegir plan
                     <ChevronRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>

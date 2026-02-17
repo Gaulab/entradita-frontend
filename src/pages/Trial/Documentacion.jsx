@@ -27,6 +27,18 @@ import {
   ImageIcon,
   AlertCircle,
   Scan,
+  Store,
+  TagIcon,
+  Repeat,
+  MapPinCheck,
+  HelpCircleIcon,
+  ImagesIcon,
+  AlertCircleIcon,
+  TagsIcon,
+  LockIcon,
+  Monitor,
+  DollarSign,
+  RotateCcw,
 } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 
@@ -52,7 +64,7 @@ function Documentacion() {
               Volver
             </Button>
           </Link>
-      
+
         </div>
       </header>
 
@@ -175,7 +187,7 @@ function Documentacion() {
                       Tickets disponibles
                     </h4>
                     <p className="text-sm text-gray-300 mb-2">
-                      En la parte superior del dashboard podrás ver la cantidad de tickets que tienes disponibles para usar en tus eventos. Estos tickets son otorgados por la administración al
+                      En la parte superior izquierda del dashboard podrás ver la cantidad de tickets que tienes disponibles para usar en tus eventos. Estos tickets son otorgados por la administración al
                       realizar la compra de un paquete.
                     </p>
                     <div className="bg-gray-800/70 p-3 rounded text-xs text-gray-400">
@@ -186,7 +198,17 @@ function Documentacion() {
 
                   <div className="bg-gray-700/50 p-4 rounded-lg">
                     <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-blue-400" />
+                      <Store className="h-4 w-4 text-blue-400" />
+                      Vincular Mercado Pago
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-2">
+                      En la parte superior derecha del dashboard podrás ver el botón "Vincular Mercado Pago". Al hacerlo, podrás asociar tu cuenta de Mercado Pago con la plataforma para poder vender tickets de tus eventos a través de ella.
+                    </p>
+                  </div>
+
+                  <div className="bg-gray-700/50 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Calendar className="h-4 w-4 text-purple-400" />
                       Crear nuevo evento
                     </h4>
                     <p className="text-sm text-gray-300">
@@ -232,8 +254,7 @@ function Documentacion() {
               <div className="p-6 bg-gray-800/50">
                 <h3 className="text-xl font-bold mb-3">Configuración de un nuevo evento</h3>
                 <p className="mb-4">
-                  Al crear un nuevo evento, deberás completar un formulario con toda la información necesaria. Esta información será utilizada para generar los tickets y configurar el sistema de
-                  ventas.
+                  El formulario de creación te permite configurar eventos únicos o repetitivos, definir la seguridad de acceso y estructurar tu esquema de precios con comisiones personalizadas.
                 </p>
 
                 <div className="space-y-5">
@@ -243,15 +264,18 @@ function Documentacion() {
                         <Tag className="h-4 w-4 text-blue-400" />
                         Nombre del evento
                       </h4>
-                      <p className="text-sm text-gray-300">Elige un nombre distintivo para tu evento. Este nombre aparecerá en los tickets y en todas las comunicaciones relacionadas con el evento.</p>
+                      <p className="text-sm text-gray-300">Elige un nombre distintivo. Este aparecerá en los tickets digitales y en el panel de control.</p>
                     </div>
 
                     <div className="bg-gray-700/50 p-4 rounded-lg">
                       <h4 className="font-semibold mb-2 flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-blue-400" />
-                        Fecha del evento
+                        <Repeat className="h-4 w-4 text-blue-400" />
+                        Periodicidad y Fechas
                       </h4>
-                      <p className="text-sm text-gray-300">Selecciona la fecha y hora en que se realizará el evento. Esta información aparecerá en los tickets y es importante para la organización.</p>
+                      <p className="text-sm text-gray-300">
+                        Puedes crear un evento de fecha única o activarlo como <strong>periódico</strong>. Si es periódico, deberás seleccionar una fecha de inicio, los días de la semana en que se
+                        repite (ej: Sábados) y opcionalmente una fecha de fin.
+                      </p>
                     </div>
 
                     <div className="bg-gray-700/50 p-4 rounded-lg">
@@ -259,7 +283,7 @@ function Documentacion() {
                         <MapPin className="h-4 w-4 text-blue-400" />
                         Lugar del evento
                       </h4>
-                      <p className="text-sm text-gray-300">Indica dónde se llevará a cabo el evento. Esta información aparecerá en los tickets para que los asistentes sepan dónde dirigirse.</p>
+                      <p className="text-sm text-gray-300">Indica la ubicación física donde se llevará a cabo el evento para informar a los asistentes.</p>
                     </div>
 
                     <div className="bg-gray-700/50 p-4 rounded-lg">
@@ -268,8 +292,7 @@ function Documentacion() {
                         Capacidad
                       </h4>
                       <p className="text-sm text-gray-300">
-                        Si tu lugar tiene una capacidad máxima, puedes limitar la cantidad de tickets a vender. Si dejas este campo vacío, la capacidad será ilimitada. Este valor puede modificarse
-                        posteriormente.
+                        Define el límite máximo de tickets a vender. En el caso de eventos periódicos, esta capacidad se aplica <strong>por cada fecha</strong> individualmente.
                       </p>
                     </div>
 
@@ -278,9 +301,7 @@ function Documentacion() {
                         <HelpCircle className="h-4 w-4 text-blue-400" />
                         Contacto
                       </h4>
-                      <p className="text-sm text-gray-300">
-                        Ingresa tu número de teléfono para que el administrador pueda contactarte rápidamente en caso de necesitar asistencia o información adicional.
-                      </p>
+                      <p className="text-sm text-gray-300">Número de teléfono para soporte o comunicación directa con la administración.</p>
                     </div>
 
                     <div className="bg-gray-700/50 p-4 rounded-lg">
@@ -288,21 +309,15 @@ function Documentacion() {
                         <ImageIcon className="h-4 w-4 text-blue-400" />
                         Logo del evento
                       </h4>
-                      <p className="text-sm text-gray-300">
-                        Puedes agregar un logo que aparecerá en los tickets. Debes proporcionar una URL de la imagen (puedes usar servicios como Imgur). Si no tienes un logo, puedes dejar este campo
-                        vacío o solicitar ayuda al administrador.
-                      </p>
+                      <p className="text-sm text-gray-300">URL de la imagen representativa del evento. Se mostrará en la cabecera de los tickets generados.</p>
                     </div>
 
                     <div className="bg-gray-700/50 p-4 rounded-lg">
                       <h4 className="font-semibold mb-2 flex items-center gap-2">
-                        <Lock className="h-4 w-4 text-blue-400" />
+                        <LockIcon className="h-4 w-4 text-blue-400" />
                         Contraseña para empleados
                       </h4>
-                      <p className="text-sm text-gray-300">
-                        Esta contraseña será solicitada tanto a los tarjeteros (vendedores) como a los scanners (personal de ingreso). Se recomienda una contraseña que sea fácil de recordar pero no
-                        demasiado obvia.
-                      </p>
+                      <p className="text-sm text-gray-300">Clave única que utilizarán tus vendedores y el personal de escaneo (puerta) para acceder a sus funciones en la app.</p>
                     </div>
 
                     <div className="bg-gray-700/50 p-4 rounded-lg">
@@ -311,34 +326,39 @@ function Documentacion() {
                         Solicitar DNI
                       </h4>
                       <p className="text-sm text-gray-300">
-                        Si activas esta opción, al crear un ticket se solicitará el DNI del asistente. Esto es recomendable para tener un mejor control de los asistentes y evitar la reventa de
-                        tickets.
+                        Al activar esta opción, será obligatorio ingresar el documento de identidad de cada asistente al momento de emitir el ticket, aumentando la seguridad.
                       </p>
                     </div>
                   </div>
 
                   <div className="bg-gray-700/50 p-4 rounded-lg">
                     <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <Tag className="h-4 w-4 text-blue-400" />
+                      <TagIcon className="h-4 w-4 text-blue-400" />
                       Categorías de tickets (Ticket tags)
                     </h4>
-                    <p className="text-sm text-gray-300 mb-2">
-                      Aquí podrás crear diferentes categorías para los tickets. Puedes dividirlos por tipo (VIP, General), por promociones (Early Bird, Primera tanda), o cualquier otra clasificación
-                      que necesites para tu evento.
-                    </p>
-                    <p className="text-sm text-gray-300">Para cada categoría podrás establecer un precio diferente y controlar la cantidad de tickets disponibles de forma independiente.</p>
+                    <p className="text-sm text-gray-300 mb-2">Configura los tipos de entrada (ej: General, VIP). Para cada categoría debes definir:</p>
+                    <ul className="list-disc list-inside text-sm text-gray-300 ml-2">
+                      <li>
+                        <strong>Nombre y Precio:</strong> Valor base de la entrada.
+                      </li>
+                      <li>
+                        <strong>Comisión:</strong> El monto que recibe el vendedor por cada ticket vendido de este tipo.
+                      </li>
+                      <li>
+                        <strong>Venta Web:</strong> Un interruptor para habilitar o deshabilitar la venta online de esa categoría específica.
+                      </li>
+                    </ul>
                   </div>
 
                   <div className="bg-blue-900/30 p-4 rounded-lg">
                     <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <AlertCircle className="h-4 w-4 text-blue-400" />
-                      Consejos para la creación de eventos
+                      <AlertCircleIcon className="h-4 w-4 text-blue-400" />
+                      Recomendaciones
                     </h4>
                     <ul className="list-disc list-inside space-y-1 text-sm text-gray-300">
-                      <li>Asegúrate de revisar toda la información antes de crear el evento, especialmente la fecha y el lugar.</li>
-                      <li>Crea categorías de tickets que se adapten a tu estrategia de ventas (diferentes precios, promociones, etc.).</li>
-                      <li>Si no estás seguro de la capacidad exacta, es mejor establecer un límite conservador que puedas aumentar más tarde.</li>
-                      <li>La contraseña para empleados debe ser fácil de recordar pero segura. Evita usar palabras demasiado obvias.</li>
+                      <li>Verifica si tu evento requiere repetición semanal para configurar correctamente la periodicidad.</li>
+                      <li>Utiliza la opción de "Venta Web" en los Ticket Tags para controlar qué entradas están disponibles al público general y cuáles son exclusivas de venta por WhatsApp.</li>
+                      <li>Si configuras una fecha de fin en eventos periódicos, el sistema dejará de generar fechas automáticamente después de ese día.</li>
                     </ul>
                   </div>
                 </div>
@@ -369,19 +389,30 @@ function Documentacion() {
                     <h4 className="font-semibold mb-2">Información general</h4>
                     <p className="text-sm text-gray-300 mb-2">En la parte superior de la página encontrarás la información general del evento:</p>
                     <ul className="list-disc list-inside space-y-1 ml-2 text-gray-400 text-sm">
-                      <li>Nombre del evento</li>
-                      <li>Fecha y hora</li>
-                      <li>Lugar</li>
-                      <li>Capacidad total y tickets vendidos</li>
+                      <li>Nombre del evento con imagen representativa</li>
+                      <li>Fecha del evento</li>
+                      <li>Lugar donde se realizará</li>
+                      <li>Capacidad total (o "Ilimitada" si no hay límite)</li>
+                      <li>Cantidad de tickets vendidos</li>
                     </ul>
                   </div>
 
                   <div className="bg-gray-700/50 p-4 rounded-lg">
                     <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <BarChart className="h-4 w-4 text-green-400" />
-                      Datos económicos
+                      <Monitor className="h-4 w-4 text-indigo-400" />
+                      Página WEB
                     </h4>
-                    <p className="text-sm text-gray-300 mb-2">Puedes acceder a los datos económicos del evento, donde encontrarás información sobre:</p>
+                    <p className="text-sm text-gray-300">
+                      El botón "Página WEB" te permite acceder a la página pública del evento donde los usuarios pueden ver la información y comprar tickets online. Esta es la página que compartirás con tu público.
+                    </p>
+                  </div>
+
+                  <div className="bg-gray-700/50 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <DollarSign className="h-4 w-4 text-green-400" />
+                      Economía
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-2">El botón "Economía" te lleva a una sección detallada con datos financieros del evento, donde encontrarás información sobre:</p>
                     <ul className="list-disc list-inside space-y-1 ml-2 text-gray-400 text-sm">
                       <li>Ventas totales por categoría</li>
                       <li>Comisiones a tarjeteros</li>
@@ -392,48 +423,78 @@ function Documentacion() {
 
                   <div className="bg-gray-700/50 p-4 rounded-lg">
                     <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <Users className="h-4 w-4 text-blue-400" />
-                      Control de asistencia
+                      <RotateCcw className="h-4 w-4 text-red-400" />
+                      Reiniciar Evento (Solo eventos periódicos)
                     </h4>
                     <p className="text-sm text-gray-300">
-                      Podrás ver la cantidad de personas que han ingresado al evento en tiempo real. Este dato se calcula a partir de la cantidad de tickets que han sido escaneados en la entrada.
+                      Si tu evento está configurado como periódico (por ejemplo, una fiesta semanal), verás el botón "Reiniciar Evento". Esta función te permite resetear las estadísticas del evento para la próxima fecha disponible, manteniendo la configuración base.
+                    </p>
+                  </div>
+
+                  <div className="bg-gray-700/50 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Settings className="h-4 w-4 text-blue-400" />
+                      Control de venta web
+                    </h4>
+                    <p className="text-sm text-gray-300">
+                      Encontrarás un interruptor para "Habilitar venta web del evento". Con este control puedes activar o desactivar la posibilidad de que el público compre tickets a través de la página web del evento. Cuando está desactivado, solo se pueden vender tickets de forma manual.
+                    </p>
+                  </div>
+
+                  <div className="bg-gray-700/50 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Users className="h-4 w-4 text-purple-400" />
+                      Control de asistencia en tiempo real
+                    </h4>
+                    <p className="text-sm text-gray-300 mb-2">
+                      En la página principal del evento verás una barra de progreso que muestra el porcentaje de personas que han ingresado al evento. Esta información incluye:
+                    </p>
+                    <ul className="list-disc list-inside space-y-1 ml-2 text-gray-400 text-sm">
+                      <li>Porcentaje de asistencia (calculado sobre tickets vendidos)</li>
+                      <li>Cantidad exacta de personas que ingresaron (tickets escaneados)</li>
+                      <li>Visualización gráfica con barra de progreso colorida</li>
+                    </ul>
+                    <p className="text-sm text-gray-300 mt-2">
+                      Este dato se actualiza automáticamente cada vez que se escanea un ticket en la entrada del evento.
                     </p>
                   </div>
 
                   <div className="bg-gray-700/50 p-4 rounded-lg">
                     <h4 className="font-semibold mb-2 flex items-center gap-2">
                       <Settings className="h-4 w-4 text-orange-400" />
-                      Navegación y controles
+                      Navegación entre secciones
                     </h4>
-                    <p className="text-sm text-gray-300 mb-3">En la parte superior de la página encontrarás botones de navegación que te permitirán acceder a las diferentes secciones del evento:</p>
+                    <p className="text-sm text-gray-300 mb-3">Además de estos controles principales, en otras partes de la interfaz encontrarás botones de navegación para acceder a:</p>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
                       <div className="bg-gray-800/70 p-3 rounded text-center">
                         <Ticket className="h-4 w-4 mx-auto mb-1 text-blue-400" />
                         <span className="text-xs">Tickets</span>
+                        <p className="text-xs text-gray-400 mt-1">Ver todos los tickets del evento</p>
                       </div>
                       <div className="bg-gray-800/70 p-3 rounded text-center">
                         <Users className="h-4 w-4 mx-auto mb-1 text-blue-400" />
                         <span className="text-xs">Vendedores</span>
+                        <p className="text-xs text-gray-400 mt-1">Gestionar tarjeteros</p>
                       </div>
                       <div className="bg-gray-800/70 p-3 rounded text-center">
                         <Scan className="h-4 w-4 mx-auto mb-1 text-blue-400" />
                         <span className="text-xs">Scanners</span>
+                        <p className="text-xs text-gray-400 mt-1">Configurar control de acceso</p>
                       </div>
                     </div>
-                    <p className="text-sm text-gray-300">
-                      También encontrarás un botón para habilitar o deshabilitar la creación de tickets. Esto te permite controlar si los vendedores pueden seguir generando tickets o no.
-                    </p>
                   </div>
 
-                  <div className="bg-gray-700/50 p-4 rounded-lg">
+                  <div className="bg-blue-900/30 p-4 rounded-lg">
                     <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <Ticket className="h-4 w-4 text-yellow-400" />
-                      Lista de tickets
+                      <AlertCircle className="h-4 w-4 text-blue-400" />
+                      Recomendaciones
                     </h4>
-                    <p className="text-sm text-gray-300">
-                      En la sección de tickets podrás ver todos los tickets creados, tanto por ti como por los vendedores. Al hacer clic en un ticket, accederás a su información detallada y podrás
-                      realizar acciones como copiar el link o eliminarlo.
-                    </p>
+                    <ul className="list-disc list-inside space-y-1 text-sm text-gray-300">
+                      <li>Activa la venta web solo cuando estés seguro de que toda la información del evento es correcta.</li>
+                      <li>Monitorea regularmente la barra de progreso de asistencia durante el evento para controlar el ingreso de personas.</li>
+                      <li>Si tienes un evento periódico, usa la función "Reiniciar Evento" después de cada fecha para comenzar con estadísticas limpias.</li>
+                      <li>Comparte el enlace de la Página WEB en tus redes sociales para facilitar la venta de tickets.</li>
+                    </ul>
                   </div>
                 </div>
               </div>
