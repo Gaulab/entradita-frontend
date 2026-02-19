@@ -30,9 +30,6 @@ import EventPage from './pages/EventPage/EventPage';
 import PurchaseForm from './pages/EventPage/PurchaseForm.jsx';
 import Economy from './pages/User/Economy.jsx';
 // Trial pages
-import DashboardTrial from './pages/Trial/DashboardTrial';
-import ScannerPageTrial from './pages/Trial/ScannerPageTrial';
-import TicketPageTrial from './pages/Trial/TicketPageTrial';
 import LinkGenerator from './pages/Trial/LinkGenerator';
 // Guides pages
 import SellerGuide from './pages/Employee/SellerGuide';
@@ -76,9 +73,6 @@ function App() {
         <Route path="/scanner/:uuid" element={<ScannerWrapper />} />
         <Route path="/seller/:uuid/create-ticket" element={<CreateTicketBySeller />} />
         <Route path="/pricing" element={<Pricing />} />
-        <Route path="/dashboard-trial" element={<DashboardTrial />} />
-        <Route path="/ticket-page-trial" element={<TicketPageTrial />} />
-        <Route path="/scanner-page-trial" element={<ScannerPageTrial />} />
         <Route path="/buy-page" element={<BuyPage />} />
         <Route path="/event-page-guide" element={<EventPageGuide />} />
         <Route path="/event-page/:id" element={<EventPage />} />

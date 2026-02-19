@@ -3,8 +3,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle, ChevronRight, BookOpen, Tag, Copy, Check, HelpCircle, ArrowRight, FileText, Info, LogIn, DollarSign } from 'lucide-react';
-import { FaMoneyBill, FaWhatsapp } from 'react-icons/fa';
-import Login from '../Main/Login';
 import { Button } from '../../components/ui/button';
 
 function NewClient() {
