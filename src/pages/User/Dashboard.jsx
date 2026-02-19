@@ -16,6 +16,7 @@ import { LogOutIcon, PlusIcon, Eye } from 'lucide-react';
 // API
 import { getEvents } from '../../api/eventApi.jsx';
 import { getAuthorizationUrl } from '../../api/paymentApi.js';
+import { formatDate } from '../../utils/dateUtils.js';
 
 export default function Dashboard() {
   const { logoutUser, authToken } = useContext(AuthContext);
@@ -166,7 +167,7 @@ export default function Dashboard() {
                   {events.map((event) => (
                     <TableRow key={event.id} className="border-gray-700 text-left">
                       <TableCell className="text-white">{event.name}</TableCell>
-                      <TableCell className="text-gray-300 hidden sm:table-cell">{event.date}</TableCell>
+                      <TableCell className="text-gray-300 hidden sm:table-cell">{formatDate(event.date)}</TableCell>
                       <TableCell className="text-gray-300 hidden md:table-cell">{event.place}</TableCell>
                       <TableCell className="text-gray-300 hidden md:table-cell">{event.tickets_counter}</TableCell>
                       <TableCell className="text-right">

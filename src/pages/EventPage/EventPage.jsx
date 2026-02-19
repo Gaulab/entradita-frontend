@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { getEventPage } from "../../api/eventApi"
+import { formatDate } from "../../utils/dateUtils"
 
 function EventPage() {
   const { id } = useParams()
@@ -27,15 +28,6 @@ function EventPage() {
     }
     fetchEventPage()
   }, [id])
-
-  // Format date function
-  const formatDate = (dateString) => {
-    if (!dateString) return ""
-    const options = { year: "numeric", month: "long", day: "numeric" }
-    const date = new Date(dateString)
-    const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
-    return utcDate.toLocaleDateString(undefined, options)
-  }
 
   // Handle buy button click
   const handleBuyTicket = () => {

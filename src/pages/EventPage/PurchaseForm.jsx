@@ -5,6 +5,7 @@ import { getEventPurchaseInfo } from "../../api/eventApi";
 import { createPaymentPreference } from "../../api/paymentApi";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../../components/ui/dialog";
 import { Button } from "../../components/ui/button";
+import { formatDate } from "../../utils/dateUtils";
 
 const mp_commission = import.meta.env.VITE_MP_COMMISSION_PERCENTAGE
 
@@ -161,7 +162,7 @@ export default function PurchaseForm() {
             <h1 className="text-2xl font-bold text-white mb-2">{eventData.name}</h1>
             <div className="flex items-center text-gray-400 mb-1">
               <Calendar className="w-4 h-4 mr-2 text-blue-400" />
-              <span>{eventData.date}</span>
+              <span>{formatDate(eventData.date)}</span>
             </div>
             <div className="flex items-center text-gray-400">
               <MapPin className="w-4 h-4 mr-2 text-blue-400" />

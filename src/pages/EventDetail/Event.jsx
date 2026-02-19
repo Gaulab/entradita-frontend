@@ -9,6 +9,7 @@ import { Switch } from '../../components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../../components/ui/dialog';
 import { updateWebSale } from '../../api/eventApi';
 import AuthContext from '../../context/AuthContext';
+import { formatDate } from '../../utils/dateUtils';
 
 export default function Event({ event }) {
   const { authToken } = useContext(AuthContext);
@@ -63,7 +64,7 @@ export default function Event({ event }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 ">
           <p className="text-gray-200 flex flex-row items-center">
             <CalendarDaysIcon className="h-5 mr-1" />
-            Fecha:<span className="text-white ml-2">{event.date}</span>
+            Fecha:<span className="text-white ml-2">{formatDate(event.date)}</span>
           </p>
           <p className="text-gray-200 flex flex-row items-center">
             <MapPin className="h-5 mr-1" />
