@@ -357,7 +357,7 @@ export default function ModernHome() {
           </div>
 
           <div className="border-t border-slate-700/50 pt-6 sm:pt-8 text-center">
-            <p className="text-xs sm:text-sm text-slate-400">© 2025 entradita.com todos los derechos reservados.</p>
+            <p className="text-xs sm:text-sm text-slate-400">© 2026 entradita.com todos los derechos reservados.</p>
           </div>
         </div>
       </footer>

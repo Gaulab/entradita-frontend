@@ -272,7 +272,7 @@ export default function LinkGenerator() {
           </div>
 
           <div className="border-t border-gray-800 mt-6 pt-6 text-center text-gray-400">
-            <p className="text-sm">© 2025 entradita.com todos los derechos reservados.</p>
+            <p className="text-sm">© 2026 entradita.com todos los derechos reservados.</p>
           </div>
         </div>
       </footer>

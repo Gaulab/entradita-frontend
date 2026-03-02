@@ -85,7 +85,7 @@ export default function TermsOfService() {
 
       <footer className="bg-gray-800 text-white py-4">
         <div className="container mx-auto px-4 text-center">
-          <p>&copy; 2024 entradita.com. Todos los derechos reservados.</p>
+          <p>&copy; 2026 entradita.com. Todos los derechos reservados.</p>
         </div>
       </footer>
     </div>

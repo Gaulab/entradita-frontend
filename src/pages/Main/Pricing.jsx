@@ -12,7 +12,7 @@ const pricingTiers = [
   {
     name: 'Eventos Pequeños',
     range: [1, 499],
-    price: 140,
+    price: 160,
     color: 'bg-blue-400',
     icon: <Star className="w-5 h-5 sm:w-6 sm:h-6" />,
     description: 'Perfecto para eventos íntimos y exclusivos',
@@ -20,7 +20,7 @@ const pricingTiers = [
   {
     name: 'Eventos Medianos',
     range: [500, 1000],
-    price: 110,
+    price: 130,
     color: 'bg-green-400',
     icon: <Zap className="w-5 h-5 sm:w-6 sm:h-6" />,
     description: 'Ideal para eventos corporativos y festivales',
@@ -29,7 +29,7 @@ const pricingTiers = [
   {
     name: 'Eventos Grandes',
     range: [1001, 5000],
-    price: 99.99,
+    price: 119.99,
     color: 'bg-purple-400',
     icon: <Globe className="w-5 h-5 sm:w-6 sm:h-6" />,
     description: 'Para grandes producciones y conciertos',
@@ -333,7 +333,7 @@ export default function ModernPricing() {
       <footer className="backdrop-blur-md bg-slate-900/80 border-t border-slate-700/50 py-8 sm:py-12">
         <div className="container mx-auto px-4">
           <div className="text-center text-slate-400 mb-4 sm:mb-6">
-            <p className="text-base sm:text-lg mb-3 sm:mb-4">© 2025 entradita.com - Transformando la gestión de eventos</p>
+            <p className="text-base sm:text-lg mb-3 sm:mb-4">© 2026 entradita.com - Transformando la gestión de eventos</p>
             <div className="flex justify-center space-x-4 sm:space-x-6">
               <Link to="/terms-and-conditions" className="hover:text-white transition-colors text-sm sm:text-base">
                 Términos de Servicio
