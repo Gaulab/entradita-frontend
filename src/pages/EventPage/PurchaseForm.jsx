@@ -148,7 +148,7 @@ export default function PurchaseForm() {
   }
 
   return (
-    <div className="min-h-screen bg-[#121a24] py-8 px-4 sm:px-6 lg:px-8 text-gray-100 font-sans">
+    <div className="min-h-screen bg-[#121a24] py-8 px-4 sm:px-6 lg:px-8 text-gray-100 font-sans" style={{ touchAction: 'pan-y' }}>
       <div className="max-w-3xl mx-auto">
 
         {/* Header del Evento (Resumen) */}

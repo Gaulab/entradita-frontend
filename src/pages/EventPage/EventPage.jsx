@@ -100,7 +100,7 @@ function EventPage() {
   const eventDate = parseEventDate(eventData.date)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a0f1a] via-[#121a24] to-[#0d1520]">
+    <div className="min-h-screen bg-gradient-to-br from-[#0a0f1a] via-[#121a24] to-[#0d1520]" style={{ touchAction: 'pan-y' }}>
       {/* Hero */}
       <div className="relative h-[52vh] sm:h-[56vh] overflow-hidden">
         <img
@@ -172,33 +172,29 @@ function EventPage() {
 
             <div className="space-y-3">
               {eventData.organizer_contact && (
-                <motion.button
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.98 }}
+                <button
                   onClick={handleBuyTicket}
-                  className="group w-full px-5 py-4 bg-[#25D366] text-white font-semibold rounded-2xl shadow-lg shadow-[#25D366]/20 hover:shadow-[#25D366]/30 hover:bg-[#22c55e] transition-all flex items-center justify-between"
+                  className="group w-full px-5 py-4 bg-[#25D366] text-white font-semibold rounded-2xl shadow-lg shadow-[#25D366]/20 hover:shadow-[#25D366]/30 hover:bg-[#22c55e] active:scale-[0.98] transition-all flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3">
                     <img src="/whatsapp.png" alt="WhatsApp" className="w-6 h-6" />
                     <span className="text-[15px]">Comprar por WhatsApp</span>
                   </div>
                   <ChevronArrow />
-                </motion.button>
+                </button>
               )}
 
               {eventData.web_sale && (
-                <motion.button
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.98 }}
+                <button
                   onClick={() => navigate(`/event-page/${id}/purchase`)}
-                  className="group w-full px-5 py-4 bg-[#009ee3] text-white font-semibold rounded-2xl shadow-lg shadow-[#009ee3]/20 hover:shadow-[#009ee3]/30 hover:bg-[#00b4ff] transition-all flex items-center justify-between"
+                  className="group w-full px-5 py-4 bg-[#009ee3] text-white font-semibold rounded-2xl shadow-lg shadow-[#009ee3]/20 hover:shadow-[#009ee3]/30 hover:bg-[#00b4ff] active:scale-[0.98] transition-all flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3">
                     <img src="/mercadopago.png" alt="Mercado Pago" className="w-6 h-6" />
                     <span className="text-[15px]">Comprar con Mercado Pago</span>
                   </div>
                   <ChevronArrow />
-                </motion.button>
+                </button>
               )}
             </div>
 
