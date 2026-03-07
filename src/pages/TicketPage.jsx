@@ -104,23 +104,22 @@ export default function TicketPage() {
   return (
     <div className="flex justify-center min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 p-4 overflow-auto">
       <div className="w-full max-w-md">
-        <div ref={ticketRef} className="p-8 py-2 flex flex-col h-min items-center bg-white rounded-3xl">
-          <div className="w-full h-15 mb-2">
-            <div className="w-full h-full flex items-center justify-center">
-              <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-gray-300" style={{ width: '100px', aspectRatio: 1 }}>
-                <img src={data.event_image_address} alt="Event Logo" className="w-full h-full object-cover" style={{ objectFit: 'cover', width: '100%', height: '100%' }} crossOrigin="anonymous" />
-              </div>
-            </div>
-          </div>
-          <div className="text-center mb-2">
+        <div ref={ticketRef} className="p-8 py-2 flex flex-col h-min items-center rounded-3xl" style={{ backgroundColor: '#FFFFFF', colorScheme: 'light' }}>
+          <div className="text-center mb-2 mt-2">
             <p className="text-sm text-gray-500">Point this QR to the scan</p>
           </div>
 
-          <div className="bg-white p-0 rounded-xl mb-4">
-            <QRCodeSVG id="qr-code" value={data.qr_payload} size={260} level="M"
-              fgColor="#000000" // Negro puro
-              bgColor="#FFFFFF" // Blanco puro
-              className="w-full max-w-[260px]" />
+          <div className="relative rounded-xl mb-4" style={{ backgroundColor: '#FFFFFF' }}>
+            <QRCodeSVG id="qr-code" value={data.qr_payload} size={260} level="H"
+              fgColor="#000000"
+              bgColor="#FFFFFF"
+              className="w-full max-w-[260px]"
+              style={{ backgroundColor: '#FFFFFF' }} />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-[72px] h-[72px] rounded-full overflow-hidden border-[3px] border-gray-200 shadow-md" style={{ backgroundColor: '#FFFFFF' }}>
+                <img src={data.event_image_address} alt="Event Logo" className="w-full h-full object-cover" crossOrigin="anonymous" />
+              </div>
+            </div>
           </div>
 
           <div className="relative w-full">

@@ -4,7 +4,7 @@ import { useState, useContext, useCallback } from 'react';
 // custom components
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../../../components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../components/ui/table';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '../../../components/ui/card';
 import { Button } from '../../../components/ui/button';
 // icons
 import { PlusIcon, Trash2Icon, PencilIcon, TicketX, LinkIcon, EyeIcon, TicketCheck } from 'lucide-react';
@@ -63,11 +63,11 @@ export default function Scanners({}) {
 
   const MobileActionDialog = ({ scanner, onClose }) => (
     <Dialog className="" open={!!scanner} onOpenChange={() => onClose()}>
-      <DialogContent className="sm:max-w-[425px] bg-gray-800 ">
+      <DialogContent className="sm:max-w-[425px] bg-gray-800">
         <DialogHeader>
-          <DialogTitle>Acciones para el scanner</DialogTitle>
+          <DialogTitle className="text-white">Acciones para el scanner</DialogTitle>
         </DialogHeader>
-        <DialogDescription className="mb-0 m-0">Selecciona una accion para realizar sobre el scanner:</DialogDescription>
+        <DialogDescription className="mb-0 m-0 text-gray-300">Selecciona una acción para realizar sobre el scanner:</DialogDescription>
         <div className="text-gray-300">
           <p>
             <strong>Nombre:</strong> {scanner?.assigned_name}
@@ -125,16 +125,16 @@ export default function Scanners({}) {
   );
   return (
     <Card className="bg-gray-800 border-gray-700">
-      <CardHeader>
-        <CardTitle className="text-white">Scanners</CardTitle>
-        <CardDescription className="text-gray-400">
-          Gestiona los enlaces para escáneres <br /> {window.innerWidth < 640 && 'Haz click en una fila para ver más acciones'}{' '}
-        </CardDescription>
+      <CardHeader className="pb-3 space-y-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-white">Scanners</CardTitle>
+          <Button onClick={() => handleCreateEmployee(false)} size="sm" className="bg-blue-600 hover:bg-blue-700 text-white shrink-0">
+            <PlusIcon className="h-4 w-4 mr-1.5" /> Nuevo
+          </Button>
+        </div>
       </CardHeader>
-      <CardContent>
-        <Button onClick={() => handleCreateEmployee(false)} className="mb-4 w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
-          <PlusIcon className="mr-2 h-4 w-4" /> Nuevo Scanner
-        </Button>
+
+      <CardContent className="pt-0 pb-3">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -147,27 +147,44 @@ export default function Scanners({}) {
               {scanners.map((scanner) => (
                 <TableRow
                   key={scanner.id}
-                  className="border-gray-700 cursor-pointer sm:cursor-default h-16"
+                  className="border-gray-700 cursor-pointer sm:cursor-default hover:bg-gray-700/30 transition-colors"
                   onClick={() => {
                     if (window.innerWidth < 640) {
                       setSelectedScanner(scanner);
                     }
                   }}
                 >
-                  <TableCell className="text-gray-300">{scanner.assigned_name}</TableCell>
-                  <TableCell className="hidden sm:table-cell text-right space-x-1 space-y-1">
-                    <Button variant="outline" onClick={() => copyToClipboard(`${window.location.origin}/scanner/${scanner.uuid}`)} size="sm" title="Copiar enlace de scanner">
-                      <LinkIcon className="h-4 w-4" />
-                      <span className="sr-only">Copiar enlace de scanner</span>
-                    </Button>
-                    <Button variant="outline" onClick={() => handleEditEmployee(scanner)} size="sm" title="Editar escáner">
-                      <PencilIcon className="h-4 w-4" />
-                      <span className="sr-only">Editar escáner</span>
-                    </Button>
-                    <Button variant="destructive" onClick={() => handleDeleteEmployee(scanner)} size="sm" title={'Eliminar escáner'}>
-                      <Trash2Icon className="h-4 w-4" />
-                      <span className="sr-only">Eliminar escáner</span>
-                    </Button>
+                  <TableCell className="text-white">{scanner.assigned_name}</TableCell>
+                  <TableCell className="hidden sm:table-cell text-right">
+                    <div className="flex items-center justify-end gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0 text-gray-400 hover:text-white"
+                        onClick={() => copyToClipboard(`${window.location.origin}/scanner/${scanner.uuid}`)}
+                        title="Copiar enlace"
+                      >
+                        <LinkIcon className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0 text-gray-400 hover:text-white"
+                        onClick={() => handleEditEmployee(scanner)}
+                        title="Editar"
+                      >
+                        <PencilIcon className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0 text-gray-400 hover:text-red-400"
+                        onClick={() => handleDeleteEmployee(scanner)}
+                        title="Eliminar"
+                      >
+                        <Trash2Icon className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -175,6 +192,7 @@ export default function Scanners({}) {
           </Table>
         </div>
       </CardContent>
+
       <MobileActionDialog scanner={selectedScanner} onClose={() => setSelectedScanner(null)} />
     </Card>
   );

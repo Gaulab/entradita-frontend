@@ -216,7 +216,7 @@ export default function ModernLogin() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="p-2 absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-100 hover:text-slate-200 transition-colors"
+                    className="p-2 absolute right-3 top-1/2 transform -translate-y-1/2 bg-slate-700/60 text-slate-200 hover:text-white hover:bg-slate-600/60 rounded transition-colors"
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4 sm:h-5 sm:w-5" />

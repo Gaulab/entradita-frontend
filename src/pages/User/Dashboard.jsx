@@ -1,7 +1,7 @@
 // entraditaFront/src/pages/Dashboard.jsx
 // react imports
 import { useState, useContext, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom'; // IMPORTANTE: Agregamos useNavigate y useSearchParams
+import { useSearchParams, useNavigate } from 'react-router-dom';
 
 // Context
 import AuthContext from '../../context/AuthContext.jsx';
@@ -11,7 +11,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../..
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table.jsx';
 import LoadingSpinner from '../../components/ui/loadingspinner.jsx';
 // Icons
-import { LogOutIcon, PlusIcon, Eye } from 'lucide-react';
+import { LogOutIcon, PlusIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // API
 import { getEvents } from '../../api/eventApi.jsx';
@@ -29,6 +29,8 @@ export default function Dashboard() {
   const [events, setEvents] = useState([]);
   const [ticket_limit, setTicketLimit] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const EVENTS_PER_PAGE = 5;
 
   // Estados para MP
   const [mpSync, setMpSync] = useState(false);
@@ -92,8 +94,14 @@ export default function Dashboard() {
     return <LoadingSpinner />;
   }
 
-  // Definimos el color basado en tu lógica (success -> green, error -> red)
   const dialogColor = mpDialogType === 'success' ? 'green' : 'red';
+
+  const sortedEvents = [...events].sort((a, b) => new Date(b.date) - new Date(a.date));
+  const totalPages = Math.max(1, Math.ceil(sortedEvents.length / EVENTS_PER_PAGE));
+  const paginatedEvents = sortedEvents.slice(
+    (currentPage - 1) * EVENTS_PER_PAGE,
+    currentPage * EVENTS_PER_PAGE
+  );
 
   return (
     <div className="min-h-screen w-screen p-4 bg-gray-900 text-gray-100 ">
@@ -123,7 +131,7 @@ export default function Dashboard() {
         )}
         {/* ---------------------------------------- */}
 
-        <Card className="bg-gray-800 border-gray-700 mb-4 p-4 flex justify-between items-center">
+        <Card className="bg-gray-800 border-gray-700 mb-4 p-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
           <div className='flex flex-row items-center'>
             <img src='/isotipoWhite.png' alt="Ticket" className="w-10 sm:w-16 mr-2 p-0" />
             <CardTitle className="text-white text-xl sm:text-2xl text-left mr-2">Tickets disponibles </CardTitle>
@@ -132,11 +140,11 @@ export default function Dashboard() {
             </CardContent>
           </div>
           {!mpSync ? (
-            <Button className="mt-4 sm:mt-0" variant="entraditaPrimary" onClick={() => handleGetAuthorizationUrl()}>
+            <Button className="w-full sm:w-auto" variant="entraditaPrimary" onClick={() => handleGetAuthorizationUrl()}>
               Vincular Mercado Pago
             </Button>
           ) : (
-            <Button className="mt-4 sm:mt-0 pointer-events-none" variant="entraditaSuccess" tabIndex={-1}>
+            <Button className="w-full sm:w-auto pointer-events-none" variant="entraditaSuccess" tabIndex={-1}>
               Mercado Pago Vinculado
             </Button>
           )}
@@ -156,30 +164,58 @@ export default function Dashboard() {
               <Table>
                 <TableHeader>
                   <TableRow className="border-gray-700 text-left">
-                    <TableHead className="text-gray-300 ">Nombre</TableHead>
+                    <TableHead className="text-gray-300">Nombre</TableHead>
                     <TableHead className="text-gray-300 hidden sm:table-cell">Fecha</TableHead>
                     <TableHead className="text-gray-300 hidden md:table-cell">Ubicación</TableHead>
                     <TableHead className="text-gray-300 hidden md:table-cell">Tickets Vendidos</TableHead>
-                    <TableHead className="text-gray-300 text-right">Acciones</TableHead>
+                    <TableHead className="w-8"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {events.map((event) => (
-                    <TableRow key={event.id} className="border-gray-700 text-left">
-                      <TableCell className="text-white">{event.name}</TableCell>
+                  {paginatedEvents.map((event) => (
+                    <TableRow
+                      key={event.id}
+                      className="border-gray-700 text-left cursor-pointer hover:bg-gray-700/50 transition-colors"
+                      onClick={() => navigate(`/event/${event.id}/details/`)}
+                    >
+                      <TableCell>
+                        <span className="text-white">{event.name}</span>
+                        <span className="block sm:hidden text-xs text-gray-400 mt-0.5">{formatDate(event.date)}</span>
+                      </TableCell>
                       <TableCell className="text-gray-300 hidden sm:table-cell">{formatDate(event.date)}</TableCell>
                       <TableCell className="text-gray-300 hidden md:table-cell">{event.place}</TableCell>
                       <TableCell className="text-gray-300 hidden md:table-cell">{event.tickets_counter}</TableCell>
                       <TableCell className="text-right">
-                        <Button variant="entraditaSecondary" to={`/event/${event.id}/details/`} title="Ver detalles">
-                          <Eye className="mr-2 h-4 w-4" /> Ver
-                        </Button>
+                        <ChevronRight className="h-4 w-4 text-gray-500" />
                       </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </div>
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
+                <Button
+                  variant="entraditaTertiary"
+                  size="sm"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(p => p - 1)}
+                >
+                  <ChevronLeft className="h-4 w-4 mr-1" /> Anterior
+                </Button>
+                <span className="text-sm text-gray-400">
+                  Página {currentPage} de {totalPages}
+                </span>
+                <Button
+                  variant="entraditaTertiary"
+                  size="sm"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage(p => p + 1)}
+                >
+                  Siguiente <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

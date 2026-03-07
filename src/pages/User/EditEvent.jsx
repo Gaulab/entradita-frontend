@@ -242,8 +242,8 @@ export default function EditEvent() {
   }
 
   return (
-    <div className="min-h-screen md:w-3/4 mx-auto p-4 bg-gray-900 text-gray-100">
-      <div className="max-w-6xl mx-auto w-full flex flex-col items-center w-3/4">
+    <div className="min-h-screen mx-auto p-4 bg-gray-900 text-gray-100">
+      <div className="max-w-6xl mx-auto w-full md:w-3/4 flex flex-col items-center">
 
         <Button onClick={() => navigate(`/event/${id}/details`)} variant="entraditaTertiary" className="w-full mb-4">
           <ArrowLeftIcon className="mr-2 h-4 w-4" /> Volver al evento
@@ -287,7 +287,7 @@ export default function EditEvent() {
               </div>
 
               {/* --- Sección Fechas --- */}
-              <div className={`space-y-2 ${!isPeriodic ? "md:col-span-2" : "md:col-span-1"}`}>
+              <div className={`space-y-2 min-w-0 ${!isPeriodic ? "md:col-span-2" : "md:col-span-1"}`}>
                 <Label htmlFor="date" className="text-gray-200 flex items-center">
                   {isPeriodic ? "Fecha de Inicio" : "Fecha del Evento"}
                   <Tooltip content="ℹ️ Fecha de inicio o fecha única del evento.">
@@ -300,7 +300,7 @@ export default function EditEvent() {
               {/* Si es periódico, mostramos la fecha de fin y selector de días */}
               {isPeriodic && (
                 <>
-                  <div className="space-y-2">
+                  <div className="space-y-2 min-w-0">
                     <Label htmlFor="recurrence_end_date" className="text-gray-200 flex items-center">
                       Fecha de Fin (Opcional)
                       <Tooltip content="ℹ️ Hasta cuándo se repetirá el evento. Si se deja vacío, será indefinido.">
@@ -534,7 +534,7 @@ export default function EditEvent() {
 
           <CardFooter className="flex flex-col items-stretch border-t border-gray-700 pt-6 mt-2">
             <Label className="text-red-400 mb-2 text-center">Zona de Peligro</Label>
-            <Button onClick={() => setIsDeleteDialogOpen(true)} variant="destructive" className="w-full">
+            <Button onClick={() => setIsDeleteDialogOpen(true)} className="w-full bg-red-600 hover:bg-red-700 text-white border-0">
               Eliminar Evento
             </Button>
           </CardFooter>

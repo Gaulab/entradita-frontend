@@ -137,25 +137,25 @@ export default function ModernHome() {
 
               <nav className="hidden lg:flex items-center space-x-2">
                 <Link to="/contact">
-                  <Button variant="ghost" className="text-slate-300 hover:text-white hover:bg-slate-800/50 text-sm">
+                  <Button variant="ghost" className="bg-slate-800/70 text-slate-200 hover:text-white hover:bg-slate-700/70 text-sm border-0">
                     Contacto
                   </Button>
                 </Link>
                 <Link to="/documentacion">
-                  <Button variant="ghost" className="text-slate-300 hover:text-white hover:bg-slate-800/50 text-sm">
+                  <Button variant="ghost" className="bg-slate-800/70 text-slate-200 hover:text-white hover:bg-slate-700/70 text-sm border-0">
                     <BookOpen className="h-4 w-4 mr-2" />
                     Documentación
                   </Button>
                 </Link>
                 <Link to="/login">
-                  <Button className="bg-gradient-to-r from-blue-600 to-blue-700  text-white border-0 text-sm">
+                  <Button className="bg-gradient-to-r from-blue-600 to-blue-700 text-white border-0 text-sm">
                     <LogIn className="h-4 w-4 mr-2" />
                     Iniciar Sesión
                   </Button>
                 </Link>
               </nav>
 
-              <Button variant="ghost" className="lg:hidden text-white p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              <Button variant="ghost" className="lg:hidden bg-slate-800/70 text-slate-200 hover:text-white hover:bg-slate-700/70 p-2 border-0" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                 {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </Button>
             </div>
@@ -165,12 +165,12 @@ export default function ModernHome() {
               <div className="lg:hidden mt-3 p-3 backdrop-blur-md bg-slate-800/90 rounded-xl border border-slate-700/50">
                 <div className="flex flex-col space-y-2">
                   <Link to="/contact" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start text-slate-300 hover:text-white text-sm py-2">
+                    <Button variant="ghost" className="w-full justify-start bg-slate-700/50 text-slate-200 hover:text-white hover:bg-slate-600/50 text-sm py-2 border-0">
                       Contacto
                     </Button>
                   </Link>
                   <Link to="/documentacion" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start text-slate-300 hover:text-white text-sm py-2">
+                    <Button variant="ghost" className="w-full justify-start bg-slate-700/50 text-slate-200 hover:text-white hover:bg-slate-600/50 text-sm py-2 border-0">
                       <BookOpen className="h-4 w-4 mr-2" />
                       Documentación
                     </Button>
