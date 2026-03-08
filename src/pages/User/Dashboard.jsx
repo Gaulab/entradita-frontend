@@ -141,10 +141,12 @@ export default function Dashboard() {
           </div>
           {!mpSync ? (
             <Button className="w-full sm:w-auto" variant="entraditaPrimary" onClick={() => handleGetAuthorizationUrl()}>
+              <img src="/mercadopago.png" alt="Mercado Pago" className="h-5 w-auto mr-2 shrink-0" />
               Vincular Mercado Pago
             </Button>
           ) : (
             <Button className="w-full sm:w-auto pointer-events-none" variant="entraditaSuccess" tabIndex={-1}>
+              <img src="/mercadopago.png" alt="Mercado Pago" className="h-5 w-auto mr-2 shrink-0" />
               Mercado Pago Vinculado
             </Button>
           )}
@@ -201,10 +203,10 @@ export default function Dashboard() {
                   disabled={currentPage === 1}
                   onClick={() => setCurrentPage(p => p - 1)}
                 >
-                  <ChevronLeft className="h-4 w-4 mr-1" /> Anterior
+                  <ChevronLeft className="h-4 w-4" />
                 </Button>
                 <span className="text-sm text-gray-400">
-                  Página {currentPage} de {totalPages}
+                  {currentPage}/{totalPages}
                 </span>
                 <Button
                   variant="entraditaTertiary"
@@ -212,7 +214,7 @@ export default function Dashboard() {
                   disabled={currentPage === totalPages}
                   onClick={() => setCurrentPage(p => p + 1)}
                 >
-                  Siguiente <ChevronRight className="h-4 w-4 ml-1" />
+                  <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
             )}

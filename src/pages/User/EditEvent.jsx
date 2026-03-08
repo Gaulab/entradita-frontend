@@ -478,9 +478,8 @@ export default function EditEvent() {
                         className="bg-gray-700 text-white p-3 rounded-lg border border-gray-600 hover:border-gray-500 transition-all flex flex-col justify-between"
                       >
                         <div className="space-y-1 flex-1">
-                          <div className="font-semibold text-white text-sm sm:text-base break-words flex justify-between">
+                          <div className="font-semibold text-white text-sm sm:text-base break-words">
                             {tag.name}
-                            {tag.id && <span className="text-xs text-gray-500">#{tag.id}</span>}
                           </div>
                           <div className="text-gray-300 text-xs sm:text-sm">
                             Precio: <span className="text-green-400 font-semibold">${parseFloat(tag.price).toFixed(2)}</span>

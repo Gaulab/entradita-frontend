@@ -102,82 +102,113 @@ export default function TicketPage() {
   }
 
   return (
-    <div className="flex justify-center min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 p-4 overflow-auto">
-      <div className="w-full max-w-md">
-        <div ref={ticketRef} className="p-8 py-2 flex flex-col h-min items-center rounded-3xl" style={{ backgroundColor: '#FFFFFF', colorScheme: 'light' }}>
-          <div className="text-center mb-2 mt-2">
-            <p className="text-sm text-gray-500">Point this QR to the scan</p>
-          </div>
+    <div className="flex justify-center items-center min-h-dvh bg-gradient-to-b from-gray-900 to-gray-950 p-4">
+      <div className="w-full max-w-md ticket-appear">
 
-          <div className="relative rounded-xl mb-4" style={{ backgroundColor: '#FFFFFF' }}>
-            <QRCodeSVG id="qr-code" value={data.qr_payload} size={260} level="H"
-              fgColor="#000000"
-              bgColor="#FFFFFF"
-              className="w-full max-w-[260px]"
-              style={{ backgroundColor: '#FFFFFF' }} />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-[72px] h-[72px] rounded-full overflow-hidden border-[3px] border-gray-200 shadow-md" style={{ backgroundColor: '#FFFFFF' }}>
-                <img src={data.event_image_address} alt="Event Logo" className="w-full h-full object-cover" crossOrigin="anonymous" />
+        <div ref={ticketRef} className="flex flex-col h-min items-center rounded-3xl overflow-hidden shadow-2xl" style={{ backgroundColor: '#FFFFFF', colorScheme: 'light' }}>
+
+            {/* Gradient accent top */}
+            <div className="w-full h-1.5" style={{ background: 'linear-gradient(90deg, #3b82f6, #8b5cf6, #3b82f6)' }} />
+
+            {/* Top marquee */}
+            <div className="w-full overflow-hidden py-2" style={{ backgroundColor: '#FFFFFF' }}>
+              <div className="flex items-center ticket-marquee-track">
+                {[...Array(2)].map((_, i) => (
+                  <div key={i} className="flex items-center shrink-0">
+                    {[...Array(8)].map((_, j) => (
+                      <span key={j} className="text-[10px] font-bold tracking-wider mx-3 whitespace-nowrap text-gray-400">
+                        entradita.com
+                      </span>
+                    ))}
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
 
-          <div className="relative w-full">
-            <div className="absolute -left-9 top-1/2 w-4 h-7 bg-gray-950 rounded-r-full transform -translate-y-1/2" />
-            <div className="absolute -right-9 top-1/2 w-4 h-7 bg-gray-950 rounded-l-full transform -translate-y-1/2" />
-            <div className="border-t-2 border-dashed border-gray-800 my-2" />
-          </div>
+            {/* QR Section */}
+            <div className="w-full px-8 pb-4 flex flex-col items-center" style={{ backgroundColor: '#FFFFFF' }}>
+              <p className="text-[10px] text-gray-400 tracking-[0.2em] uppercase mb-3 font-medium">Presentá este QR en la entrada</p>
 
-          <div className="w-full space-y-1 mt-1">
-            <h1 className="text-base font-bold text-gray-800">{data.event_name}</h1>
-
-            <div className="text-lg font-bold text-gray-800">
-              Ticket para <span className="text-green-600">{data.ticket_tag_info?.name}</span>
-            </div>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              <div className="col-span-1">
-                <p className="text-gray-500">Name</p>
-                <p className="font-medium text-gray-800">
-                  {data.owner_name} {data.owner_lastname}
-                </p>
-              </div>
-
-              {data.owner_dni && (
-                <div className="col-span-1">
-                  <p className="text-gray-500">DNI</p>
-                  <p className="font-medium text-gray-800">{data.owner_dni}</p>
+              <div className="relative" style={{ backgroundColor: '#FFFFFF' }}>
+                <QRCodeSVG id="qr-code" value={data.qr_payload} size={240} level="H"
+                  fgColor="#000000"
+                  bgColor="#FFFFFF"
+                  className="w-full max-w-[240px]"
+                  style={{ backgroundColor: '#FFFFFF' }} />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-[68px] h-[68px] rounded-full overflow-hidden border-[3px] border-gray-200 shadow-md" style={{ backgroundColor: '#FFFFFF' }}>
+                    <img src={data.event_image_address} alt="Event Logo" className="w-full h-full object-cover" crossOrigin="anonymous" />
+                  </div>
                 </div>
-              )}
-              {!data.owner_dni && <div className="col-span-1"></div>}
-
-              <div className="col-span-1">
-                <p className="text-gray-500 flex items-center gap-2">Date & Time</p>
-                <p className="font-medium text-gray-800">{data.event_date}</p>
-              </div>
-
-              <div className="col-span-1">
-                <p className="text-gray-500 flex items-center gap-2">Location</p>
-                <p className="font-medium text-gray-800">{data.event_place}</p>
               </div>
             </div>
 
-            <div className="mt-4">
-              <p className="font-sm text-sm text-red-800">
-                No compartas esta entrada con nadie <br /> Es única y personal.
-              </p>
+            {/* Tear line (troquelado) */}
+            <div className="relative w-full px-8">
+              <div className="absolute -left-4 top-1/2 w-8 h-8 bg-gray-950 rounded-full transform -translate-y-1/2 z-10" />
+              <div className="absolute -right-4 top-1/2 w-8 h-8 bg-gray-950 rounded-full transform -translate-y-1/2 z-10" />
+              <div className="border-t-2 border-dashed border-gray-300 my-1" />
             </div>
 
-            <div className="">
-              {!isDownloading && <p className="text-sm text-gray-600 mb-2 text-start">Descarga tu entrada por si luego no tenés internet o batería en tu celular</p>}
-              <Button onClick={handleDownload} disabled={isDownloading} className="w-full bg-gray-700 hover:bg-gray-600 text-white transition-colors">
-                <Download className="mr-2 h-4 w-4" />
-                {isDownloading ? 'Generando...' : 'Descargar QR'}
+            {/* Info Section */}
+            <div className="w-full px-7 pt-3 pb-3">
+              {/* Event name + tag */}
+              <div className="mb-4">
+                <h1 className="text-lg font-bold text-gray-900 leading-tight">{data.event_name}</h1>
+                <span className="inline-block mt-1.5 text-xs font-semibold px-2.5 py-1 rounded-full" style={{ color: '#6d28d9', backgroundColor: '#f5f3ff' }}>
+                  {data.ticket_tag_info?.name}
+                </span>
+              </div>
+
+              {/* Details grid */}
+              <div className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+                <div>
+                  <p className="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Nombre</p>
+                  <p className="font-semibold text-gray-800 mt-0.5">{data.owner_name} {data.owner_lastname}</p>
+                </div>
+
+                {data.owner_dni ? (
+                  <div>
+                    <p className="text-[11px] text-gray-400 uppercase tracking-wider font-medium">DNI</p>
+                    <p className="font-semibold text-gray-800 mt-0.5">{data.owner_dni}</p>
+                  </div>
+                ) : <div />}
+
+                <div>
+                  <p className="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Fecha</p>
+                  <p className="font-semibold text-gray-800 mt-0.5">{data.event_date}</p>
+                </div>
+
+                <div>
+                  <p className="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Lugar</p>
+                  <p className="font-semibold text-gray-800 mt-0.5">{data.event_place}</p>
+                </div>
+              </div>
+
+              {/* Warning + Download */}
+              <p className="mt-2 text-[11px] text-red-400 text-center">⚠ No compartas esta entrada. Es única y personal.</p>
+              <Button onClick={handleDownload} disabled={isDownloading} className="w-full bg-gray-100 hover:bg-gray-200 text-gray-500 transition-colors rounded-xl h-9 text-xs font-medium border-0 mt-2">
+                <Download className="mr-1.5 h-3.5 w-3.5" />
+                {isDownloading ? 'Generando...' : 'Descargar entrada'}
               </Button>
             </div>
 
-            <div className="text-center font-bold text-gray-400 text-sm">entradita.com</div>
+            {/* Bottom marquee (reverse direction) */}
+            <div className="w-full overflow-hidden py-2" style={{ backgroundColor: '#FFFFFF' }}>
+              <div className="flex items-center ticket-marquee-track-reverse">
+                {[...Array(2)].map((_, i) => (
+                  <div key={i} className="flex items-center shrink-0">
+                    {[...Array(8)].map((_, j) => (
+                      <span key={j} className="text-[10px] font-bold tracking-wider mx-3 whitespace-nowrap text-gray-400">
+                        entradita.com
+                      </span>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+
           </div>
-        </div>
       </div>
     </div>
   );
