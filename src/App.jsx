@@ -2,6 +2,8 @@
 
 // React imports
 import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom';
+// Notifications
+import { Toaster } from 'sonner';
 // Context imports
 import { AuthProvider } from './context/AuthContext';
 import { EventDetailsProvider } from './context/EventDetailsContext'; // Importa el contexto de EventDetails
@@ -51,94 +53,97 @@ const ScannerWrapper = () => {
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Rutas públicas */}
-        <Route path="/" element={<Home />} />
-        <Route
-          path="/login"
-          element={
-            <AuthProvider>
-              <Login />
-            </AuthProvider>
-          }
-        />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+    <>
+      <Toaster richColors position="top-right" />
+      <Router>
+        <Routes>
+          {/* Rutas públicas */}
+          <Route path="/" element={<Home />} />
+          <Route
+            path="/login"
+            element={
+              <AuthProvider>
+                <Login />
+              </AuthProvider>
+            }
+          />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
-        <Route path="/ticket/:ticket_uuid" element={<TicketPage />} />
-        <Route path="/ticket-share/:uuid" element={<TicketShare />} />
-        <Route path="/seller/:uuid" element={<SellerWrapper />} />
-        <Route path="/scanner/:uuid" element={<ScannerWrapper />} />
-        <Route path="/seller/:uuid/create-ticket" element={<CreateTicketBySeller />} />
-        <Route path="/pricing" element={<Pricing />} />
-        <Route path="/buy-page" element={<BuyPage />} />
-        <Route path="/event-page-guide" element={<EventPageGuide />} />
-        <Route path="/event-page/:id" element={<EventPage />} />
-        <Route path="/event-page/:id/purchase" element={<PurchaseForm />} />
-        <Route path="/payment/success" element={<PaymentSuccess />} />
-        <Route path="/payment/failure" element={<PaymentFailure />} />
-        <Route path="/seller-guide" element={<SellerGuide />} />
-        <Route path="/new-client/*" element={<NewClient />} />
-        <Route path="/link-generator" element={<LinkGenerator />} />
-        <Route path="/documentacion" element={<Documentacion />} />
+          <Route path="/ticket/:ticket_uuid" element={<TicketPage />} />
+          <Route path="/ticket-share/:uuid" element={<TicketShare />} />
+          <Route path="/seller/:uuid" element={<SellerWrapper />} />
+          <Route path="/scanner/:uuid" element={<ScannerWrapper />} />
+          <Route path="/seller/:uuid/create-ticket" element={<CreateTicketBySeller />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/buy-page" element={<BuyPage />} />
+          <Route path="/event-page-guide" element={<EventPageGuide />} />
+          <Route path="/event-page/:id" element={<EventPage />} />
+          <Route path="/event-page/:id/purchase" element={<PurchaseForm />} />
+          <Route path="/payment/success" element={<PaymentSuccess />} />
+          <Route path="/payment/failure" element={<PaymentFailure />} />
+          <Route path="/seller-guide" element={<SellerGuide />} />
+          <Route path="/new-client/*" element={<NewClient />} />
+          <Route path="/link-generator" element={<LinkGenerator />} />
+          <Route path="/documentacion" element={<Documentacion />} />
 
-        {/* Rutas protegidas */}
-        <Route
-          path="/dashboard"
-          element={
-            <AuthProvider>
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            </AuthProvider>
-          }
-        />
-        <Route
-          path="/event/:id/details"
-          element={
-            <AuthProvider>
-              <EventDetailsProvider>
+          {/* Rutas protegidas */}
+          <Route
+            path="/dashboard"
+            element={
+              <AuthProvider>
                 <PrivateRoute>
-                  <EventDetail />
+                  <Dashboard />
                 </PrivateRoute>
-              </EventDetailsProvider>
-            </AuthProvider>
-          }
-        />
-        <Route
-          path="/create-event"
-          element={
-            <AuthProvider>
-              <PrivateRoute>
-                <CreateEvent />
-              </PrivateRoute>
-            </AuthProvider>
-          }
-        />
-        <Route
-          path="/edit-event/:id"
-          element={
-            <AuthProvider>
-              <PrivateRoute>
-                <EditEvent />
-              </PrivateRoute>
-            </AuthProvider>
-          }
-        />
-        <Route
-          path="event/:id/economy"
-          element={
-            <AuthProvider>
-              <PrivateRoute>
-                <Economy />
-              </PrivateRoute>
-            </AuthProvider>
-          }
-        />
-      </Routes>
-    </Router>
+              </AuthProvider>
+            }
+          />
+          <Route
+            path="/event/:id/details"
+            element={
+              <AuthProvider>
+                <EventDetailsProvider>
+                  <PrivateRoute>
+                    <EventDetail />
+                  </PrivateRoute>
+                </EventDetailsProvider>
+              </AuthProvider>
+            }
+          />
+          <Route
+            path="/create-event"
+            element={
+              <AuthProvider>
+                <PrivateRoute>
+                  <CreateEvent />
+                </PrivateRoute>
+              </AuthProvider>
+            }
+          />
+          <Route
+            path="/edit-event/:id"
+            element={
+              <AuthProvider>
+                <PrivateRoute>
+                  <EditEvent />
+                </PrivateRoute>
+              </AuthProvider>
+            }
+          />
+          <Route
+            path="event/:id/economy"
+            element={
+              <AuthProvider>
+                <PrivateRoute>
+                  <Economy />
+                </PrivateRoute>
+              </AuthProvider>
+            }
+          />
+        </Routes>
+      </Router>
+    </>
   );
 }
 export default App;

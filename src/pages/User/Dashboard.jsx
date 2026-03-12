@@ -17,6 +17,7 @@ import { LogOutIcon, PlusIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getEvents } from '../../api/eventApi.jsx';
 import { getAuthorizationUrl } from '../../api/paymentApi.js';
 import { formatDate } from '../../utils/dateUtils.js';
+import { notifyError, notifySuccess } from '../../utils/notify.js';
 
 export default function Dashboard() {
   const { logoutUser, authToken } = useContext(AuthContext);
@@ -34,9 +35,7 @@ export default function Dashboard() {
 
   // Estados para MP
   const [mpSync, setMpSync] = useState(false);
-  const [showMpDialog, setShowMpDialog] = useState(false);
-  const [mpDialogType, setMpDialogType] = useState(''); // 'success' | 'error'
-  const [mpDialogMessage, setMpDialogMessage] = useState('');
+  const [mpRefreshKey, setMpRefreshKey] = useState(0);
 
   // 1. Efecto para detectar el retorno de Mercado Pago
   useEffect(() => {
@@ -44,25 +43,14 @@ export default function Dashboard() {
     const details = searchParams.get('details');
 
     if (status) {
-      setShowMpDialog(true);
-
       if (status === 'success') {
-        setMpDialogType('success');
-        setMpDialogMessage('¡Tu cuenta de Mercado Pago se vinculó correctamente!');
+        notifySuccess('¡Tu cuenta de Mercado Pago se vinculó correctamente!');
       } else {
-        setMpDialogType('error');
-        // Limpiamos un poco el mensaje de error si viene en formato JSON string
-        setMpDialogMessage(details || 'Hubo un error al intentar conectar con Mercado Pago.');
+        notifyError(details || 'Hubo un error al intentar conectar con Mercado Pago.');
       }
-
-      // Limpiamos la URL para que si recarga la página no vuelva a procesar la alerta
+      setMpRefreshKey((k) => k + 1);
       navigate('/dashboard', { replace: true });
     }
-
-    setTimeout(() => {
-      setShowMpDialog(false);
-    }, 4000);
-    
   }, [searchParams, navigate]);
 
   // 2. Efecto para cargar eventos
@@ -78,7 +66,7 @@ export default function Dashboard() {
     if (authToken.access) {
       fetchEvents();
     }
-  }, [authToken.access, showMpDialog]);
+  }, [authToken.access, mpRefreshKey]);
 
   const handleGetAuthorizationUrl = async () => {
     try {
@@ -86,7 +74,7 @@ export default function Dashboard() {
       window.location.href = data.url;
     } catch (error) {
       console.error('Error al obtener la URL de autorización:', error.message);
-      alert('No se pudo obtener la URL de autorización. Por favor, intenta nuevamente.');
+      notifyError('No se pudo obtener la URL de autorización. Por favor, intenta nuevamente.');
     }
   };
 
@@ -94,7 +82,6 @@ export default function Dashboard() {
     return <LoadingSpinner />;
   }
 
-  const dialogColor = mpDialogType === 'success' ? 'green' : 'red';
 
   const sortedEvents = [...events].sort((a, b) => new Date(b.date) - new Date(a.date));
   const totalPages = Math.max(1, Math.ceil(sortedEvents.length / EVENTS_PER_PAGE));
@@ -113,22 +100,6 @@ export default function Dashboard() {
         </div>
 
         {/* --- DIALOGO DE FEEDBACK MERCADO PAGO --- */}
-        {showMpDialog && (
-          <div className={`mb-6 p-4 rounded-lg ${dialogColor === 'green' ? 'bg-green-600' : 'bg-red-600'} text-black transition-all duration-300`}>
-            {mpDialogType === 'success' ? (
-              <>
-                <p className="text-black font-bold">¡Conexión Exitosa!</p>
-                <p className="text-black">{mpDialogMessage}</p>
-                <p className="text-black text-sm mt-1">Ya puedes recibir pagos de tus eventos.</p>
-              </>
-            ) : (
-              <>
-                <p className="text-black font-bold">Error de Conexión</p>
-                <p className="text-black">{mpDialogMessage}</p>
-              </>
-            )}
-          </div>
-        )}
         {/* ---------------------------------------- */}
 
         <Card className="bg-gray-800 border-gray-700 mb-4 p-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">

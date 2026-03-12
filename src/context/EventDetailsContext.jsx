@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import AuthContext from "./AuthContext";
 // API functions
 import { getEventDetails } from "../api/eventApi";
+import { notifyError } from "../utils/notify";
 import { getEmployees } from "../api/employeeApi";
 import { loadMoreTicketsApi } from "../api/eventApi";
 
@@ -176,7 +177,7 @@ export const EventDetailsProvider = ({ children }) => {
     };
     getEventEmployees().catch(error => {
       console.error("Error fetching empleados data:", error.message);
-      alert(error.message);
+      notifyError(error.message);
     });
   }, [reloadEmployees, id, authToken]);
 

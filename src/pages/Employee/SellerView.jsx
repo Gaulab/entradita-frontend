@@ -21,6 +21,7 @@ import { getSeller } from '@/api/employeeApi';
 // custom components
 import MobileActionDialog from '@/components/seller/MobileActionDialog';
 import PasswordForm from '@/components/seller/PasswordForm';
+import { notifyInfo } from '@/utils/notify';
 
 import { QRCodeSVG } from 'qrcode.react';
 import html2canvas from 'html2canvas';
@@ -174,7 +175,7 @@ export default function VendedorView({ uuid }) {
         });
     } else {
       // Fallback for browsers that don't support the Web Share API
-      alert(`Comparte este enlace: ${window.location.origin}/ticket/${ticket.uuid}`);
+      notifyInfo(`Comparte este enlace: ${window.location.origin}/ticket/${ticket.uuid}`);
       navigator.clipboard
         .writeText(ticket.uuid)
         .then(() => {
