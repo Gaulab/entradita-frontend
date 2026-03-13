@@ -56,11 +56,16 @@ export default function Dashboard() {
   // 2. Efecto para cargar eventos
   useEffect(() => {
     const fetchEvents = async () => {
-      const data = await getEvents(authToken.access);
-      setEvents(data.events);
-      setTicketLimit(data.ticket_limit);
-      setMpSync(data.mp_sync);
-      setIsLoading(false);
+      try {
+        const data = await getEvents(authToken.access);
+        setEvents(data.events);
+        setTicketLimit(data.ticket_limit);
+        setMpSync(data.mp_sync);
+      } catch (err) {
+        notifyError(err.message || 'No se pudieron cargar los eventos.');
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     if (authToken.access) {

@@ -21,7 +21,7 @@ import { getSeller } from '@/api/employeeApi';
 // custom components
 import MobileActionDialog from '@/components/seller/MobileActionDialog';
 import PasswordForm from '@/components/seller/PasswordForm';
-import { notifyInfo } from '@/utils/notify';
+import { notifyInfo, notifyError } from '@/utils/notify';
 
 import { QRCodeSVG } from 'qrcode.react';
 import html2canvas from 'html2canvas';
@@ -122,7 +122,7 @@ export default function VendedorView({ uuid }) {
         setOrganizerHasCapacity(data.organizer_has_capacity);
         setTicketTags(data.seller.ticket_tags);
       } catch (error) {
-        console.error(error.message);
+        notifyError(error.message || 'No se pudieron cargar los datos del vendedor.');
       }
     };
     if (isPasswordCorrect) {
@@ -209,7 +209,7 @@ export default function VendedorView({ uuid }) {
         ticket_counter: prevVendedor.ticket_counter - 1,
       }));
     } catch (error) {
-      console.error(error.message);
+      notifyError(error.message || 'No se pudo eliminar el ticket.');
     }
     setIsDeleteConfirmOpen(false);
     setTicketToDelete(null);
