@@ -1,7 +1,7 @@
 "use client"
 
 import PropTypes from "prop-types"
-import { EyeIcon, LinkIcon, Share2, Trash2Icon, Printer } from "lucide-react"
+import { EyeIcon, LinkIcon, Share2, Printer } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 
@@ -11,7 +11,6 @@ export default function MobileActionDialog({
   copyToClipboard,
   handleShare,
   handleViewTicket,
-  handleDeleteTicket,
   handlePrintTicket,
 }) {
   if (!ticket) return null
@@ -66,15 +65,6 @@ export default function MobileActionDialog({
               Imprimir QR
             </Button>
           )}
-          <div className="border-t border-gray-700 my-1" />
-          <Button
-            className="justify-start text-red-400 hover:text-red-300 hover:bg-red-500/10"
-            variant="ghost"
-            onClick={() => { handleDeleteTicket(ticket); onClose(); }}
-          >
-            <Trash2Icon className="mr-2.5 h-4 w-4" />
-            Eliminar ticket
-          </Button>
         </div>
       </DialogContent>
     </Dialog>
@@ -87,6 +77,5 @@ MobileActionDialog.propTypes = {
   copyToClipboard: PropTypes.func.isRequired,
   handleShare: PropTypes.func.isRequired,
   handleViewTicket: PropTypes.func.isRequired,
-  handleDeleteTicket: PropTypes.func.isRequired,
   handlePrintTicket: PropTypes.func,
 }

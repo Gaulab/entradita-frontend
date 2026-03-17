@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 // react-router imports
 import { useNavigate } from 'react-router-dom';
 // lucide-react icons imports
-import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon, Printer, ChevronLeft, ChevronRight, ChevronRight as ChevronRightRow } from 'lucide-react';
+import { PlusIcon, SearchIcon, EyeIcon, LinkIcon, Printer, ChevronLeft, ChevronRight, ChevronRight as ChevronRightRow } from 'lucide-react';
 // prop-types imports
 import PropTypes from 'prop-types';
 // custom components
@@ -15,7 +15,6 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 // apis imports
-import { deleteTicketBySeller } from '@/api/ticketApi';
 import { checkPassword } from '@/api/employeeApi';
 import { getSeller } from '@/api/employeeApi';
 // custom components
@@ -42,8 +41,6 @@ export default function VendedorView({ uuid }) {
   const [filteredTickets, setFilteredTickets] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [vendedorNotFound] = useState(false);
-  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
-  const [ticketToDelete, setTicketToDelete] = useState(null);
   const [copyMessage, setCopyMessage] = useState('');
   const [ticketTags, setTicketTags] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
@@ -194,26 +191,6 @@ export default function VendedorView({ uuid }) {
   const handleViewTicket = useCallback((ticketId) => {
     window.open(`/ticket/${ticketId}`, '_blank');
   }, []);
-
-  const confirmDeleteTicket = async () => {
-    if (!ticketToDelete) return;
-    try {
-      await deleteTicketBySeller(uuid, ticketToDelete.id);
-      const remainingTickets = tickets.filter((t) => t.id !== ticketToDelete.id);
-      setTickets(remainingTickets);
-      setFilteredTickets(remainingTickets);
-
-      // Actualizar el contador de tickets del vendedor
-      setVendedor((prevVendedor) => ({
-        ...prevVendedor,
-        ticket_counter: prevVendedor.ticket_counter - 1,
-      }));
-    } catch (error) {
-      notifyError(error.message || 'No se pudo eliminar el ticket.');
-    }
-    setIsDeleteConfirmOpen(false);
-    setTicketToDelete(null);
-  };
 
   const handlePrintTicketQR = async (ticket) => {
     if (!ticket) return;
@@ -705,14 +682,6 @@ export default function VendedorView({ uuid }) {
                             >
                               <Printer className="h-3.5 w-3.5" />
                             </Button>
-                            <Button
-                              variant="ghost"
-                              className="h-8 w-8 p-0 text-gray-400 hover:text-red-400 hover:bg-gray-700"
-                              onClick={(e) => { e.stopPropagation(); setTicketToDelete(ticket); setIsDeleteConfirmOpen(true); }}
-                              title="Eliminar"
-                            >
-                              <Trash2Icon className="h-3.5 w-3.5" />
-                            </Button>
                           </div>
                         </TableCell>
                         <TableCell className="sm:hidden w-6 p-0 pr-3">
@@ -755,7 +724,6 @@ export default function VendedorView({ uuid }) {
               copyToClipboard={copyToClipboard}
               handleShare={handleShare}
               handleViewTicket={handleViewTicket}
-              handleDeleteTicket={(ticket) => { setTicketToDelete(ticket); setIsDeleteConfirmOpen(true); }}
               handlePrintTicket={handlePrintTicketQR}
             />
           </Card>
@@ -771,24 +739,6 @@ export default function VendedorView({ uuid }) {
           </div>
         )}
 
-        <Dialog open={isDeleteConfirmOpen} onOpenChange={setIsDeleteConfirmOpen}>
-          <DialogContent className="bg-gray-800 text-white border-gray-700">
-            <DialogHeader>
-              <DialogTitle className="text-white">Eliminar ticket</DialogTitle>
-              <DialogDescription className="text-gray-300">
-                ¿Estás seguro? Esta acción no se puede deshacer.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter className="gap-2 sm:gap-0">
-              <Button onClick={() => setIsDeleteConfirmOpen(false)} variant="ghost" className="text-gray-300 hover:text-white hover:bg-gray-700">
-                Cancelar
-              </Button>
-              <Button onClick={confirmDeleteTicket} className="bg-red-600 hover:bg-red-700 text-white border-0">
-                Eliminar
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </div>
     </>
   );

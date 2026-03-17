@@ -54,17 +54,6 @@ export const deleteTicket = async (authToken, itemToDelete) => {
   return true;
 };
 
-// Eliminacion de un ticket por vendedor
-export const deleteTicketBySeller = async (uuid, ticketId) => {
-  await apiRequest(`${apiUrl}/api/v1/main/employees/seller/${uuid}/delete-ticket/${ticketId}/`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }, 'Error al eliminar el ticket');
-  return true;
-};
-
 // Validar ticket por payload
 export const checkTicketByPayload = async (payload, scanner, eventId) => {
   return apiRequest(`${apiUrl}/api/v1/main/ticket/scan-qr/${payload}/`, {
