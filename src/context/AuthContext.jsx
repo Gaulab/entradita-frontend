@@ -13,7 +13,6 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(() => localStorage.getItem('authTokens') ? jwtDecode(localStorage.getItem('authTokens')) : null);
     const [authToken, setAuthToken] = useState(() => localStorage.getItem('authTokens') ? JSON.parse(localStorage.getItem('authTokens')) : null);
     const [loading, setLoading] = useState(true);
-    const apiUrl = import.meta.env.VITE_API_URL;
 
     const navigate = useNavigate();
 
@@ -21,12 +20,13 @@ export const AuthProvider = ({ children }) => {
         e.preventDefault();
         try{
             const data = await login(e);
+            const decoded = jwtDecode(data.access);
             setAuthToken(data);
-            setUser(jwtDecode(data.access));
+            setUser(decoded);
             localStorage.setItem('authTokens', JSON.stringify(data));
-            return { success: true }; // Devuelve éxito
+            return { success: true, user: decoded };
         } catch (error) {
-            return { success: false, error: error.message }; // Devuelve error
+            return { success: false, error: error.message };
         }
     };
 

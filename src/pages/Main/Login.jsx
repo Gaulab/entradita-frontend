@@ -28,7 +28,7 @@ export default function ModernLogin() {
       setErrorMessage("Credenciales incorrectas, intente nuevamente.")
     } else {
       setErrorMessage(null)
-      navigate("/dashboard")
+      navigate(response.user?.is_staff ? "/admin" : "/dashboard")
     }
 
     setIsLoading(false)

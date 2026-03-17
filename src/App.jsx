@@ -40,6 +40,7 @@ import NewClient from './pages/Trial/NewClient';
 import Documentacion from './pages/Trial/Documentacion';
 import PaymentSuccess from './pages/EventPage/PaymentSuccess.jsx';
 import PaymentFailure from './pages/EventPage/PaymentFailure.jsx';
+import AdminPanel from './pages/Admin/AdminPanel.jsx';
 // SellerWrapper is a functional component that extracts the UUID from the URL using the useParams hook and passes it as a prop to the VendorView component.
 const SellerWrapper = () => {
   const { uuid } = useParams(); // Obtén el UUID de la URL
@@ -89,6 +90,16 @@ function App() {
           <Route path="/documentacion" element={<Documentacion />} />
 
           {/* Rutas protegidas */}
+          <Route
+            path="/admin"
+            element={
+              <AuthProvider>
+                <PrivateRoute>
+                  <AdminPanel />
+                </PrivateRoute>
+              </AuthProvider>
+            }
+          />
           <Route
             path="/dashboard"
             element={

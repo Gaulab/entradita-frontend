@@ -20,7 +20,7 @@ import { formatDate } from '../../utils/dateUtils.js';
 import { notifyError, notifySuccess } from '../../utils/notify.js';
 
 export default function Dashboard() {
-  const { logoutUser, authToken } = useContext(AuthContext);
+  const { logoutUser, authToken, user } = useContext(AuthContext);
 
   // Hooks para leer la URL
   const [searchParams, setSearchParams] = useSearchParams();
@@ -102,6 +102,11 @@ export default function Dashboard() {
           <Button onClick={logoutUser} variant="entraditaTertiary" className="w-full sm:w-auto">
             <LogOutIcon className="mr-2 h-4 w-4" /> Cerrar Sesión
           </Button>
+          {user?.is_staff && (
+            <Button onClick={() => navigate('/admin')} variant="entraditaTertiary" className="w-full sm:w-auto">
+              Panel de administración →
+            </Button>
+          )}
         </div>
 
         {/* --- DIALOGO DE FEEDBACK MERCADO PAGO --- */}
