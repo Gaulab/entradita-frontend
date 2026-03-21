@@ -133,8 +133,38 @@ export const handleApiError = async (response, defaultMessage = 'Ocurrió un err
   throw new ApiClientError(normalized);
 };
 
+const injectBypassHeader = (options) => {
+  const token = localStorage.getItem('maintenance_token');
+  if (!token) return options;
+
+  return {
+    ...options,
+    headers: {
+      ...options.headers,
+      'X-Maintenance-Bypass': token,
+    },
+  };
+};
+
+export const MAINTENANCE_EVENT = 'maintenance-mode-detected';
+
 export const apiRequest = async (url, options = {}, defaultMessage = 'Ocurrió un error inesperado') => {
-  const response = await fetch(url, options);
+  const response = await fetch(url, injectBypassHeader(options));
+
+  if (response.status === 503) {
+    let body = null;
+    try { body = await response.clone().json(); } catch {}
+    if (body?.detail === 'maintenance_mode') {
+      window.dispatchEvent(new CustomEvent(MAINTENANCE_EVENT));
+      throw new ApiClientError({
+        message: 'El sitio se encuentra en mantenimiento.',
+        status: 503,
+        code: 'maintenance_mode',
+        details: null,
+        data: body,
+      });
+    }
+  }
 
   await handleApiError(response, defaultMessage);
 

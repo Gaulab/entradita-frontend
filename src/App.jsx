@@ -6,9 +6,13 @@ import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-
 import { Toaster } from 'sonner';
 // Context imports
 import { AuthProvider } from './context/AuthContext';
-import { EventDetailsProvider } from './context/EventDetailsContext'; // Importa el contexto de EventDetails
+import { EventDetailsProvider } from './context/EventDetailsContext';
+import { MaintenanceProvider, useMaintenance } from './context/MaintenanceContext';
 // Utils imports
 import PrivateRoute from './utils/PrivateRoute';
+import PropTypes from 'prop-types';
+// Pages
+import MaintenancePage from './pages/Main/MaintenancePage';
 // Public pages
 import Home from './pages/Main/Home';
 import Login from './pages/Main/Login';
@@ -48,8 +52,18 @@ const SellerWrapper = () => {
 };
 // ScannerWrapper is a functional component that extracts the UUID from the URL using the useParams hook and passes it as a prop to the ScannerView component.
 const ScannerWrapper = () => {
-  const { uuid } = useParams(); // Obtén el UUID de la URL
-  return <ScannerView uuid={uuid} />; // Pasa el UUID al componente VendorView
+  const { uuid } = useParams();
+  return <ScannerView uuid={uuid} />;
+};
+
+const MaintenanceGate = ({ children }) => {
+  const { isMaintenance } = useMaintenance();
+  if (isMaintenance) return <MaintenancePage />;
+  return children;
+};
+
+MaintenanceGate.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 function App() {
@@ -57,6 +71,8 @@ function App() {
     <>
       <Toaster richColors position="top-right" />
       <Router>
+        <MaintenanceProvider>
+        <MaintenanceGate>
         <Routes>
           {/* Rutas públicas */}
           <Route path="/" element={<Home />} />
@@ -153,6 +169,8 @@ function App() {
             }
           />
         </Routes>
+        </MaintenanceGate>
+        </MaintenanceProvider>
       </Router>
     </>
   );
