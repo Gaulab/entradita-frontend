@@ -13,8 +13,9 @@ import {
 
 import PropTypes from 'prop-types';
 
-import { getLogs, getAdminEvents, chargeEvent, getTicketHistory } from '../../api/adminApi.js';
+import { getLogs, getAdminEvents, chargeEvent, getTicketHistory, getAdminTicketRequests, approveTicketRequest, rejectTicketRequest } from '../../api/adminApi.js';
 import { getTierForCount } from '../../config/pricingConfig.js';
+import { Eye, CheckCircle2, XCircle, X } from 'lucide-react';
 
 function formatPrice(amount) {
   return `$${amount.toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
@@ -33,7 +34,7 @@ function useIsSmall() {
   return isSmall;
 }
 
-const TABS = { LOGS: 'logs', EVENTS: 'events', HISTORY: 'history' };
+const TABS = { LOGS: 'logs', EVENTS: 'events', HISTORY: 'history', TICKET_REQUESTS: 'ticket_requests' };
 const SORT_KEYS = { organizer: 'organizer_name', name: 'name', date: 'date', tickets: 'tickets_sold', total: 'price_total' };
 
 const LOG_COLORS = {
@@ -297,21 +298,22 @@ function EventsTab({ token }) {
                 ['tickets', 'Tickets vendidos'],
                 ['total', 'Precio total'],
                 ['pagado', 'Pagado'],
-              ].map(([key, label]) => (
-                key !== 'pagado' ? (
+              ].map(([key, label]) => {
+                const alignClass = (key === 'name' || key === 'date') ? 'text-left' : 'text-center';
+                return key !== 'pagado' ? (
                   <TableHead
                     key={key}
                     onClick={() => handleSort(key)}
-                    className="cursor-pointer select-none text-gray-500 bg-gray-950 whitespace-nowrap text-center"
+                    className={`cursor-pointer select-none text-gray-500 bg-gray-950 whitespace-nowrap ${alignClass}`}
                   >
                     {label}{arrow(key)}
                   </TableHead>
                 ) : (
-                  <TableHead key={key} className="text-gray-500 bg-gray-950 text-center">
+                  <TableHead key={key} className={`text-gray-500 bg-gray-950 ${alignClass}`}>
                     {label}
                   </TableHead>
-                )
-              ))}
+                );
+              })}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -380,7 +382,7 @@ EventsTab.propTypes = { token: PropTypes.string };
 
 // ─── Histórico Tab ────────────────────────────────────────────────────────────
 
-const MONTH_LABELS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const MONTH_LABELS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
 function formatMonthLabel(yyyymm) {
   const [year, month] = yyyymm.split('-');
@@ -474,6 +476,160 @@ function HistoricoTab({ token }) {
 
 HistoricoTab.propTypes = { token: PropTypes.string };
 
+// ─── Ticket Requests Tab ──────────────────────────────────────────────────────
+
+function TicketRequestsTab({ token }) {
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState(null);
+  const [viewUrl, setViewUrl] = useState(null);
+  const [rejectModal, setRejectModal] = useState(null);
+  const [rejectReason, setRejectReason] = useState('');
+
+  const fetchRequests = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await getAdminTicketRequests(token);
+      setRequests(data.requests);
+    } catch { /* silently ignore */ } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => { fetchRequests(); }, [fetchRequests]);
+
+  const handleApprove = async (id) => {
+    setActionLoading(id);
+    try {
+      await approveTicketRequest(id, token);
+      setRequests((prev) => prev.filter((r) => r.id !== id));
+    } catch { /* silently ignore */ } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleRejectConfirm = async () => {
+    if (!rejectModal) return;
+    setActionLoading(rejectModal);
+    try {
+      await rejectTicketRequest(rejectModal, rejectReason, token);
+      setRequests((prev) => prev.filter((r) => r.id !== rejectModal));
+    } catch { /* silently ignore */ } finally {
+      setActionLoading(null);
+      setRejectModal(null);
+      setRejectReason('');
+    }
+  };
+
+  const isPdf = (url) => url && url.toLowerCase().endsWith('.pdf');
+
+  return (
+    <div>
+      <div className="flex items-center gap-4 mb-4">
+        <span className="text-gray-500 text-xs flex-1">
+          {requests.length} solicitudes pendientes{loading ? ' · cargando…' : ''}
+        </span>
+        <Button variant="entraditaTertiary" size="sm" onClick={fetchRequests}>
+          ↻ Refresh
+        </Button>
+      </div>
+
+      {requests.length === 0 ? (
+        <div className="text-center text-gray-500 py-8">No hay solicitudes pendientes</div>
+      ) : (
+        <div className="space-y-3">
+          {requests.map((req) => (
+            <div key={req.id} className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex-1 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-white font-semibold">{req.organizer_name}</span>
+                    <Badge variant="default">{req.quantity} tickets</Badge>
+                  </div>
+                  <div className="flex gap-4 text-sm text-gray-400">
+                    <span>Precio/ticket: <span className="text-white">${parseFloat(req.unit_price).toFixed(2)}</span></span>
+                    <span>Total: <span className="text-green-400 font-bold">${parseFloat(req.total_price).toLocaleString('es-AR')}</span></span>
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {new Date(req.created_at).toLocaleString('es-AR')}
+                  </div>
+                </div>
+                <div className="flex gap-2 flex-shrink-0">
+                  {req.comprobante_url && (
+                    <Button variant="entraditaTertiary" size="sm" onClick={() => setViewUrl(req.comprobante_url)}>
+                      <Eye className="w-4 h-4 mr-1" /> Ver
+                    </Button>
+                  )}
+                  <Button
+                    size="sm"
+                    disabled={actionLoading === req.id}
+                    onClick={() => handleApprove(req.id)}
+                    className="bg-green-700 hover:bg-green-600 text-white"
+                  >
+                    <CheckCircle2 className="w-4 h-4 mr-1" /> Aprobar
+                  </Button>
+                  <Button
+                    variant="entraditaTertiary"
+                    size="sm"
+                    disabled={actionLoading === req.id}
+                    onClick={() => { setRejectModal(req.id); setRejectReason(''); }}
+                    className="border-red-800 text-red-400 hover:bg-red-950"
+                  >
+                    <XCircle className="w-4 h-4 mr-1" /> Rechazar
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* View comprobante modal */}
+      {viewUrl && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={() => setViewUrl(null)}>
+          <div className="relative max-w-4xl max-h-[90vh] w-full bg-gray-900 rounded-lg overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setViewUrl(null)} className="absolute top-3 right-3 z-10 p-1 bg-gray-800 rounded-full hover:bg-gray-700">
+              <X className="w-5 h-5 text-white" />
+            </button>
+            {isPdf(viewUrl) ? (
+              <iframe src={viewUrl} className="w-full h-[85vh]" title="Comprobante" />
+            ) : (
+              <div className="flex items-center justify-center p-4 h-[85vh]">
+                <img src={viewUrl} alt="Comprobante" className="max-w-full max-h-full object-contain" />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Reject reason modal */}
+      {rejectModal && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={() => setRejectModal(null)}>
+          <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-white font-semibold text-lg mb-4">Rechazar solicitud</h3>
+            <textarea
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              placeholder="Motivo del rechazo (opcional)"
+              className="w-full h-24 bg-gray-700 border border-gray-600 rounded-md p-3 text-white text-sm resize-none focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+            <div className="flex gap-2 mt-4 justify-end">
+              <Button variant="entraditaTertiary" size="sm" onClick={() => setRejectModal(null)}>
+                Cancelar
+              </Button>
+              <Button size="sm" onClick={handleRejectConfirm} disabled={actionLoading === rejectModal} className="bg-red-700 hover:bg-red-600 text-white">
+                {actionLoading === rejectModal ? 'Rechazando...' : 'Confirmar rechazo'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+TicketRequestsTab.propTypes = { token: PropTypes.string };
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function AdminPanel() {
@@ -503,17 +659,17 @@ export default function AdminPanel() {
       <nav className="flex gap-1 px-8 py-3 border-b border-gray-800">
         {[
           [TABS.EVENTS, '🗓 Eventos'],
+          [TABS.TICKET_REQUESTS, '🎫 Solicitudes'],
           [TABS.HISTORY, '📊 Histórico'],
           [TABS.LOGS, '📋 Logs de Pagos'],
         ].map(([key, label]) => (
           <button
             key={key}
             onClick={() => setTab(key)}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer border-0 ${
-              tab === key
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer border-0 ${tab === key
                 ? 'bg-gray-800 text-gray-100'
                 : 'bg-transparent text-gray-400 hover:text-gray-200'
-            }`}
+              }`}
           >
             {label}
           </button>
@@ -525,6 +681,7 @@ export default function AdminPanel() {
           <CardContent className="pt-6">
             {tab === TABS.LOGS && <LogsTab token={token} />}
             {tab === TABS.EVENTS && <EventsTab token={token} />}
+            {tab === TABS.TICKET_REQUESTS && <TicketRequestsTab token={token} />}
             {tab === TABS.HISTORY && <HistoricoTab token={token} />}
           </CardContent>
         </Card>

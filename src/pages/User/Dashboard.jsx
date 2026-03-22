@@ -11,7 +11,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../..
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table.jsx';
 import LoadingSpinner from '../../components/ui/loadingspinner.jsx';
 // Icons
-import { LogOutIcon, PlusIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LogOutIcon, PlusIcon, ChevronLeft, ChevronRight, ShoppingCart } from 'lucide-react';
 
 // API
 import { getEvents } from '../../api/eventApi.jsx';
@@ -120,17 +120,24 @@ export default function Dashboard() {
               <p className="text-2xl sm:text-3xl text-blue-200 font-bold">{ticket_limit}</p>
             </CardContent>
           </div>
-          {!mpSync ? (
-            <Button className="w-full sm:w-auto" variant="entraditaPrimary" onClick={() => handleGetAuthorizationUrl()}>
-              <img src="/mercadopago.png" alt="Mercado Pago" className="h-5 w-auto mr-2 shrink-0" />
-              Vincular Mercado Pago
+          <div className='flex lg:flex-row flex-col items-center gap-2'>
+            <Button className="w-full lg:w-auto" variant="entraditaPrimary" onClick={() => navigate('/buy-tickets')}>
+              <ShoppingCart className="h-4 w-4 mr-2" />
+              Comprar Tickets
             </Button>
-          ) : (
-            <Button className="w-full sm:w-auto pointer-events-none" variant="entraditaSuccess" tabIndex={-1}>
-              <img src="/mercadopago.png" alt="Mercado Pago" className="h-5 w-auto mr-2 shrink-0" />
-              Mercado Pago Vinculado
-            </Button>
-          )}
+
+            {!mpSync ? (
+              <Button className="w-full lg:w-auto" variant="entraditaPrimary" onClick={() => handleGetAuthorizationUrl()}>
+                <img src="/mercadopago.png" alt="Mercado Pago" className="h-5 w-auto mr-2 shrink-0" />
+                Vincular Mercado Pago
+              </Button>
+            ) : (
+              <Button className="w-full lg:w-auto pointer-events-none justify-center" variant="entraditaSuccess" tabIndex={-1}>
+                <img src="/mercadopago.png" alt="Mercado Pago" className="h-5 w-auto mr-2 shrink-0" />
+                Mercado Pago Vinculado
+              </Button>
+            )}
+          </div>
         </Card>
 
         <Card className="bg-gray-800 border-gray-700 mb-8">
