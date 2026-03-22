@@ -18,7 +18,7 @@ import LoadingSpinner from '@/components/ui/loadingspinner.jsx';
 import AuthContext from '@/context/AuthContext.jsx';
 // API
 import { getEvent, updateEvent, deleteEvent } from '@/api/eventApi.jsx';
-import { ArrowLeftIcon, Edit2, HelpCircle, X, Repeat, Store } from 'lucide-react';
+import { ArrowLeftIcon, Edit2, HelpCircle, X, Repeat, Store, ImagePlus } from 'lucide-react';
 
 const DAYS_OF_WEEK = [
   { id: 0, label: 'Lun', full: 'Lunes' },
@@ -45,6 +45,8 @@ export default function EditEvent() {
   // Estados del formulario
   const [requireDNI, setRequireDNI] = useState(false);
   const [date, setDate] = useState('');
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   // Estados de Periodicidad (Homólogos a CreateEvent)
   const [isPeriodic, setIsPeriodic] = useState(false);
@@ -72,6 +74,7 @@ export default function EditEvent() {
         setEvent(data);
         setRequireDNI(data.dni_required);
         setDate(data.date);
+        setImagePreview(data.image || null);
         setIsPeriodic(data.is_periodic);
         setRecurrenceEndDate(data.recurrence_end_date);
         setPeriodicity(data.periodicity);
@@ -96,17 +99,15 @@ export default function EditEvent() {
       return;
     }
 
-    // Validaciones de periodicidad (Igual que CreateEvent)
     if (isPeriodic && periodicity === null) {
       setError('Debes seleccionar un día de la semana para el evento periódico.');
       setTimeout(() => setError(''), 3000);
       return;
     }
 
-    const formData = new FormData(e.target);
-    const selectedDate = new Date(formData.get('date') + 'T00:00:00');
+    const htmlForm = new FormData(e.target);
+    const selectedDate = new Date(htmlForm.get('date') + 'T00:00:00');
 
-    // Validación de fecha fin vs inicio
     if (isPeriodic && recurrenceEndDate) {
       const endDateObj = new Date(recurrenceEndDate + 'T00:00:00');
       if (endDateObj < selectedDate) {
@@ -116,32 +117,39 @@ export default function EditEvent() {
       }
     }
 
-    const eventObject = Object.fromEntries(Array.from(formData.entries()).filter(([key, value]) => value !== ''));
-
-    eventObject.dni_required = requireDNI;
-    eventObject.ticket_tags = ticketTags;
-
-    // Lógica periodicidad para guardar
-    eventObject.is_periodic = isPeriodic; // Usamos is_periodic para mantener consistencia
-    if (isPeriodic) {
-      eventObject.periodicity = periodicity; // Valor único
-      if (recurrenceEndDate) {
-        eventObject.recurrence_end_date = recurrenceEndDate;
-      } else {
-        eventObject.recurrence_end_date = null;
+    const formData = new FormData();
+    for (const [key, value] of htmlForm.entries()) {
+      if (value !== '' && !(value instanceof File)) {
+        formData.append(key, value);
       }
-    } else {
-      // Limpiar si desactivaron la periodicidad
-      eventObject.periodicity = null;
-      eventObject.recurrence_end_date = null;
     }
 
-    if (!eventObject.password_employee) {
-      delete eventObject.password_employee;
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+
+    formData.set('dni_required', requireDNI);
+    formData.set('ticket_tags', JSON.stringify(ticketTags));
+
+    formData.set('is_periodic', isPeriodic);
+    if (isPeriodic) {
+      formData.set('periodicity', periodicity);
+      if (recurrenceEndDate) {
+        formData.set('end_date', recurrenceEndDate);
+      } else {
+        formData.set('end_date', '');
+      }
+    } else {
+      formData.set('periodicity', '');
+      formData.set('end_date', '');
+    }
+
+    if (!htmlForm.get('password_employee')) {
+      formData.delete('password_employee');
     }
 
     try {
-      await updateEvent(eventObject, id, authToken.access);
+      await updateEvent(formData, id, authToken.access);
       navigate(`/event/${id}/details`);
     } catch (error) {
       setError(error.message || 'Error al editar el evento');
@@ -379,13 +387,32 @@ export default function EditEvent() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="image_address" className="text-gray-200 flex items-center">
-                  Logo (URL)
-                  <Tooltip content="ℹ️ URL de la imagen del evento">
+                <Label htmlFor="image" className="text-gray-200 flex items-center">
+                  Imagen del Evento
+                  <Tooltip content="ℹ️ Subí una imagen o logo para tu evento">
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
-                <Input id="image_address" name="image_address" defaultValue={event.image_address} maxLength="500" className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+                {imagePreview && (
+                  <img src={imagePreview} alt="Preview" className="h-24 w-24 object-cover rounded-lg border border-gray-600" />
+                )}
+                <label className="flex items-center gap-2 cursor-pointer bg-gray-700 border border-gray-600 rounded-md px-3 py-2 hover:bg-gray-600 transition-colors">
+                  <ImagePlus className="w-4 h-4 text-blue-400" />
+                  <span className="text-sm text-gray-300">{imageFile ? imageFile.name : 'Cambiar imagen'}</span>
+                  <input
+                    type="file"
+                    id="image"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        setImageFile(file);
+                        setImagePreview(URL.createObjectURL(file));
+                      }
+                    }}
+                  />
+                </label>
               </div>
 
               <div className="space-y-2">

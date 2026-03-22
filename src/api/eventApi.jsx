@@ -55,28 +55,26 @@ export const getEvents = async (authToken) => {
 };
 
 
-export const createEvent = async (eventData, authToken) => {
+export const createEvent = async (formData, authToken) => {
   return apiRequest(`${apiUrl}/api/v1/main/event/`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
       'Authorization': `Bearer ${authToken}`,
     },
-    body: JSON.stringify(eventData),
+    body: formData,
   }, 'Error al crear el evento');
 };
 
 
 
 // Actualización de un evento
-export const updateEvent = async (eventData, eventId, token) => {
+export const updateEvent = async (formData, eventId, token) => {
   return apiRequest(`${apiUrl}/api/v1/main/event/${eventId}/`, {
     method: 'PUT',
     headers: {
-      'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`,
     },
-    body: JSON.stringify(eventData),
+    body: formData,
   }, 'Error al actualizar el evento');
 };
 

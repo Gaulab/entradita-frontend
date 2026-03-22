@@ -149,7 +149,7 @@ export default function PurchaseForm() {
         {/* Header del Evento (Resumen) */}
         <div className="bg-[#1a2433] rounded-xl p-6 mb-6 border border-gray-800 flex flex-col sm:flex-row gap-6 shadow-lg">
           <img
-            src={eventData.image_address || "/placeholder.svg"}
+            src={eventData.image || "/placeholder.svg"}
             alt={eventData.name}
             className="w-full sm:w-32 h-32 object-cover rounded-lg"
           />

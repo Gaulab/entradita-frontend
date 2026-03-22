@@ -105,7 +105,7 @@ function EventPage() {
       <div className="relative h-[52vh] sm:h-[56vh] overflow-hidden">
         <img
           className="absolute inset-0 w-full h-full object-cover"
-          src={eventData.image_address || "/placeholder.svg"}
+          src={eventData.image || "/placeholder.svg"}
           alt={eventData.name}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1a] via-[#0a0f1a]/50 to-black/20" />
