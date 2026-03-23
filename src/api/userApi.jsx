@@ -23,3 +23,16 @@ export const refreshToken = async (authToken) => {
         body: JSON.stringify({ 'refresh': authToken?.refresh })
     }, 'Error al actualizar el token');
 }
+
+// Firebase auth (Google or email+password) → app JWT
+export const firebaseLogin = async (idToken, username) => {
+    const payload = { id_token: idToken };
+    if (username) payload.username = username;
+    return apiRequest(`${apiUrl}/auth/google/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    }, 'Error al iniciar sesión');
+}

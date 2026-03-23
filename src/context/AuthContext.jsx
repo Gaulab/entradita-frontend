@@ -1,10 +1,10 @@
-import PropTypes from 'prop-types'; // Importa PropTypes
+import PropTypes from 'prop-types';
 import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-// API
-import { login } from "../api/userApi";
-import { refreshToken } from '../api/userApi';
+import { signInWithPopup, createUserWithEmailAndPassword } from "firebase/auth";
+import { auth as firebaseAuth, googleProvider } from "../config/firebaseConfig";
+import { login, refreshToken, firebaseLogin } from "../api/userApi";
 
 const AuthContext = createContext();
 export default AuthContext;
@@ -16,15 +16,45 @@ export const AuthProvider = ({ children }) => {
 
     const navigate = useNavigate();
 
+    const _setSession = (data) => {
+        const decoded = jwtDecode(data.access);
+        setAuthToken(data);
+        setUser(decoded);
+        localStorage.setItem('authTokens', JSON.stringify(data));
+        return decoded;
+    };
+
     const loginUser = async (e) => {
         e.preventDefault();
-        try{
+        try {
             const data = await login(e);
-            const decoded = jwtDecode(data.access);
-            setAuthToken(data);
-            setUser(decoded);
-            localStorage.setItem('authTokens', JSON.stringify(data));
+            const decoded = _setSession(data);
             return { success: true, user: decoded };
+        } catch (error) {
+            return { success: false, error: error.message };
+        }
+    };
+
+    const _loginWithFirebaseToken = async (firebaseUser, username) => {
+        const idToken = await firebaseUser.getIdToken();
+        const data = await firebaseLogin(idToken, username);
+        const decoded = _setSession(data);
+        return { success: true, user: decoded };
+    };
+
+    const loginWithGoogle = async () => {
+        try {
+            const result = await signInWithPopup(firebaseAuth, googleProvider);
+            return await _loginWithFirebaseToken(result.user);
+        } catch (error) {
+            return { success: false, error: error.message };
+        }
+    };
+
+    const registerWithEmail = async (email, password, username) => {
+        try {
+            const result = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+            return await _loginWithFirebaseToken(result.user, username);
         } catch (error) {
             return { success: false, error: error.message };
         }
@@ -40,9 +70,7 @@ export const AuthProvider = ({ children }) => {
     const updateToken = async () => {
         try {
             const data = await refreshToken(authToken)
-            setAuthToken(data)
-            setUser(jwtDecode(data.access))
-            localStorage.setItem('authTokens', JSON.stringify(data))
+            _setSession(data);
         } catch (error) {
             console.error(error)
             logoutUser()
@@ -54,10 +82,12 @@ export const AuthProvider = ({ children }) => {
     }
 
     const contextData = {
-        user: user,
-        authToken: authToken,
-        loginUser: loginUser,
-        logoutUser: logoutUser
+        user,
+        authToken,
+        loginUser,
+        loginWithGoogle,
+        registerWithEmail,
+        logoutUser,
     }
 
     useEffect(() => {
@@ -69,20 +99,18 @@ export const AuthProvider = ({ children }) => {
             if (authToken) {
                 updateToken()
             }
-        }, 240000) // 4 minutos
+        }, 240000)
         return () => clearInterval(interval)
 
     }, [authToken, loading])
 
     return (
         <AuthContext.Provider value={contextData}>
-            {/* {loading ? null : children} */}
             {loading ? null : children}
         </AuthContext.Provider>
     )
 }
 
-// Agrega la validación de PropTypes
 AuthProvider.propTypes = {
     children: PropTypes.node.isRequired
 };
