@@ -33,6 +33,7 @@ import EventDetail from './pages/EventDetail/EventDetail';
 import CreateEvent from './pages/User/CreateEvent';
 import EditEvent from './pages/User/EditEvent.jsx';
 import EventPage from './pages/EventPage/EventPage';
+import WebEventsPage from './pages/EventPage/WebEventsPage';
 import PurchaseForm from './pages/EventPage/PurchaseForm.jsx';
 import Economy from './pages/User/Economy.jsx';
 // Trial pages
@@ -97,6 +98,7 @@ function App() {
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/buy-page" element={<BuyPage />} />
           <Route path="/event-page-guide" element={<EventPageGuide />} />
+          <Route path="/events" element={<WebEventsPage />} />
           <Route path="/event-page/:id" element={<EventPage />} />
           <Route path="/event-page/:id/purchase" element={<PurchaseForm />} />
           <Route path="/payment/success" element={<PaymentSuccess />} />
