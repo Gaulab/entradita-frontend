@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
-import { MapPin, Calendar, Search, Ticket, ChevronRight, Sparkles } from "lucide-react"
+import { MapPin, Calendar, Search, Ticket, ChevronRight, Sparkles, Loader2 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { getWebEvents } from "../../api/eventApi"
 import { formatDate } from "../../utils/dateUtils"
 import PropTypes from "prop-types"
 
+const PAGE_SIZE = 9
 const MONTH_NAMES = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"]
 
 function parseEventDate(raw) {
@@ -31,29 +32,39 @@ function isPast(raw) {
 
 export default function WebEventsPage() {
   const [events, setEvents] = useState([])
+  const [page, setPage] = useState(1)
+  const [hasNext, setHasNext] = useState(false)
+  const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
   const [error, setError] = useState(null)
   const [search, setSearch] = useState("")
   const navigate = useNavigate()
 
-  useEffect(() => {
-    document.title = "Eventos | entradita.com"
-    const fetchEvents = async () => {
-      try {
-        setLoading(true)
-        const data = await getWebEvents()
-        setEvents(data)
-        setError(null)
-      } catch (err) {
-        setError("No pudimos cargar los eventos. Intentá de nuevo más tarde.")
-        console.error("Error fetching web events:", err)
-      } finally {
-        setLoading(false)
-      }
+  const fetchPage = useCallback(async (pageNum, append = false) => {
+    try {
+      append ? setLoadingMore(true) : setLoading(true)
+      const data = await getWebEvents({ page: pageNum, pageSize: PAGE_SIZE })
+      setEvents(prev => append ? [...prev, ...data.results] : data.results)
+      setHasNext(data.has_next)
+      setTotal(data.total)
+      setPage(pageNum)
+      setError(null)
+    } catch (err) {
+      setError("No pudimos cargar los eventos. Intentá de nuevo más tarde.")
+      console.error("Error fetching web events:", err)
+    } finally {
+      setLoading(false)
+      setLoadingMore(false)
     }
-    fetchEvents()
   }, [])
 
+  useEffect(() => {
+    document.title = "Eventos | entradita.com"
+    fetchPage(1)
+  }, [fetchPage])
+
+  // Al buscar, filtrar sobre los ya cargados (búsqueda local sobre los cargados)
   const filtered = events.filter(
     (e) =>
       e.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -88,7 +99,7 @@ export default function WebEventsPage() {
           <h2 className="text-lg font-semibold text-white mb-2">Algo salió mal</h2>
           <p className="text-slate-400 text-sm mb-6">{error}</p>
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => fetchPage(1)}
             className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-medium rounded-xl hover:from-blue-500 hover:to-blue-600 transition-all"
           >
             Reintentar
@@ -103,7 +114,7 @@ export default function WebEventsPage() {
 
       {/* Header */}
       <header className="backdrop-blur-md bg-slate-900/80 border-b border-slate-700/50 sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 py-3 sm:py-4 flex items-center">
           <div className="flex items-center gap-2 sm:gap-3">
             <img src="/isotipoWhite.png" alt="Entradita" className="h-8 w-auto sm:h-9" />
             <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
@@ -126,7 +137,6 @@ export default function WebEventsPage() {
             <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-blue-400" />
             <span className="text-xs sm:text-sm text-blue-200">Entradas disponibles online</span>
           </div>
-
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight mb-3 sm:mb-4">
             <span className="bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent">
               Eventos con venta online
@@ -137,21 +147,29 @@ export default function WebEventsPage() {
           </p>
         </motion.section>
 
-        {/* Search */}
+        {/* Search + contador */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className="max-w-lg mx-auto mb-8 sm:mb-10 relative"
+          className="max-w-lg mx-auto mb-8 sm:mb-10"
         >
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
-          <input
-            type="text"
-            placeholder="Buscar evento o lugar..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-11 pr-4 py-3 backdrop-blur-md bg-slate-800/40 border border-slate-700/50 rounded-xl text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/30 transition-all"
-          />
+          <div className="relative mb-3">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Buscar evento o lugar..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-11 pr-4 py-3 backdrop-blur-md bg-slate-800/40 border border-slate-700/50 rounded-xl text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/30 transition-all"
+            />
+          </div>
+          {!search && total > 0 && (
+            <p className="text-center text-xs text-slate-500">
+              Mostrando <span className="text-slate-400 font-medium">{events.length}</span> de{" "}
+              <span className="text-slate-400 font-medium">{total}</span> eventos
+            </p>
+          )}
         </motion.div>
 
         {/* Grid */}
@@ -192,10 +210,45 @@ export default function WebEventsPage() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Cargar más */}
+        {hasNext && !search && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="flex justify-center mt-10"
+          >
+            <button
+              onClick={() => fetchPage(page + 1, true)}
+              disabled={loadingMore}
+              className="flex items-center gap-2 px-7 py-3 backdrop-blur-md bg-slate-800/40 border border-slate-700/50 hover:border-blue-500/40 hover:bg-slate-800/60 text-slate-300 hover:text-white text-sm font-medium rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loadingMore ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Cargando...
+                </>
+              ) : (
+                <>
+                  Cargar más eventos
+                  <ChevronRight className="w-4 h-4" />
+                </>
+              )}
+            </button>
+          </motion.div>
+        )}
+
+        {/* Mensaje fin de lista */}
+        {!hasNext && events.length > 0 && !search && (
+          <p className="text-center text-xs text-slate-600 mt-10">
+            Mostraste todos los eventos disponibles.
+          </p>
+        )}
       </main>
 
       {/* Footer */}
-      <footer className="backdrop-blur-md bg-slate-900/80 border-t border-slate-700/50 py-6">
+      <footer className="backdrop-blur-md bg-slate-900/80 border-t border-slate-700/50 py-6 mt-8">
         <p className="text-center text-slate-500 text-sm">
           © {new Date().getFullYear()}{" "}
           <span className="text-slate-400 font-medium">entradita.com</span>
@@ -213,7 +266,7 @@ function EventCard({ event, index, onClick }) {
     <motion.div
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.05 + index * 0.07, type: "spring", stiffness: 260, damping: 22 }}
+      transition={{ delay: 0.04 + (index % PAGE_SIZE) * 0.06, type: "spring", stiffness: 260, damping: 22 }}
     >
       <Card
         onClick={onClick}
@@ -241,7 +294,6 @@ function EventCard({ event, index, onClick }) {
             </div>
           )}
 
-          {/* Date badge */}
           {eventDate && (
             <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-md border border-white/10 rounded-xl px-3 py-2 text-center">
               <div className="text-xl font-black text-white leading-none">{eventDate.getDate()}</div>
@@ -251,14 +303,12 @@ function EventCard({ event, index, onClick }) {
             </div>
           )}
 
-          {/* Past badge */}
           {past && (
             <div className="absolute top-3 left-3 bg-slate-900/70 backdrop-blur-md border border-slate-600/50 rounded-lg px-2.5 py-1">
               <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Pasado</span>
             </div>
           )}
 
-          {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
         </div>
 
