@@ -95,6 +95,16 @@ export const getSeller = async (uuid) => {
     }, 'Error al cargar los datos del vendedor');
 }
 
+export const getSellerTickets = async ({ uuid, page = 1, limit = 10, search = '' }) => {
+    return apiRequest(`${apiUrl}/api/v1/main/employee/seller/${uuid}/tickets/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ page, limit, search }),
+    }, 'Error al cargar los tickets del vendedor');
+}
+
 // Check password
 export const checkPassword = async (uuid, password) => {
     return apiRequest(`${apiUrl}/api/v1/main/event/${uuid}/check-password/`, {

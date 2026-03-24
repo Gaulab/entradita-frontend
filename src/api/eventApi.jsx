@@ -144,4 +144,13 @@ export const getEventPurchaseInfo = async (eventId) => {
   }, 'Error al cargar los datos de compra del evento');
 }
 
+// Devuelve una página de eventos con venta web habilitada
+export const getWebEvents = async ({ page = 1, pageSize = 9 } = {}) => {
+  return apiRequest(
+    `${apiUrl}/api/v1/main/events/web/?page=${page}&page_size=${pageSize}`,
+    { method: 'GET', headers: { 'Content-Type': 'application/json' } },
+    'Error al cargar los eventos disponibles'
+  );
+}
+
 
