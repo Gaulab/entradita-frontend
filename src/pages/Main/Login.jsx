@@ -215,13 +215,13 @@ export default function ModernLogin() {
       <div className="fixed inset-0 bg-gradient-to-b from-transparent via-slate-900/20 to-slate-900/40 z-[1]" />
 
       <div className="relative z-10 w-full max-w-md">
-          <Link
-            to="/"
-            className="inline-flex items-center fixed top-8 left-8 text-slate-300 hover:text-white transition-colors group z-10"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-            <span className="text-sm sm:text-base">Volver al inicio</span>
-          </Link>
+        <Link
+          to="/"
+          className="inline-flex items-center mb-6 text-slate-300 hover:text-white transition-colors group"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+          <span className="text-sm">Volver al inicio</span>
+        </Link>
 
         <div className="text-center mb-6 sm:mb-8">
           <div className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 mb-4 backdrop-blur-sm">
@@ -314,7 +314,7 @@ export default function ModernLogin() {
                       name="password"
                       required
                       placeholder="Ingrese su contraseña"
-                      className="pl-10 sm:pl-12 pr-10 sm:pr-12 bg-slate-500/50 border-slate-600/50 text-white placeholder-slate-400 focus:border-blue-500/50 focus:ring-blue-500/20 backdrop-blur-sm h-10 sm:h-12 text-sm sm:text-base"
+                      className="pl-10 sm:pl-12 pr-10 sm:pr-12 bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400 focus:border-blue-500/50 focus:ring-blue-500/20 backdrop-blur-sm h-10 sm:h-12 text-sm sm:text-base"
                     />
                     <button
                       type="button"
@@ -406,7 +406,7 @@ export default function ModernLogin() {
                       onChange={(e) => setEmailForm({ ...emailForm, password: e.target.value })}
                       required
                       placeholder="Mínimo 6 caracteres"
-                      className="pl-10 sm:pl-12 pr-10 sm:pr-12 bg-slate-500/50 border-slate-600/50 text-white placeholder-slate-400 focus:border-blue-500/50 focus:ring-blue-500/20 backdrop-blur-sm h-10 sm:h-12 text-sm sm:text-base"
+                      className="pl-10 sm:pl-12 pr-10 sm:pr-12 bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400 focus:border-blue-500/50 focus:ring-blue-500/20 backdrop-blur-sm h-10 sm:h-12 text-sm sm:text-base"
                     />
                     <button
                       type="button"
@@ -435,8 +435,19 @@ export default function ModernLogin() {
                       onChange={(e) => setEmailForm({ ...emailForm, confirmPassword: e.target.value })}
                       required
                       placeholder="Repita la contraseña"
-                      className="pl-10 sm:pl-12 bg-slate-500/50 border-slate-600/50 text-white placeholder-slate-400 focus:border-blue-500/50 focus:ring-blue-500/20 backdrop-blur-sm h-10 sm:h-12 text-sm sm:text-base"
+                      className="pl-10 sm:pl-12 pr-10 sm:pr-12 bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400 focus:border-blue-500/50 focus:ring-blue-500/20 backdrop-blur-sm h-10 sm:h-12 text-sm sm:text-base"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="p-2 absolute right-3 top-1/2 transform -translate-y-1/2 bg-slate-700/60 text-slate-200 hover:text-white hover:bg-slate-600/60 rounded transition-colors"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4 sm:h-5 sm:w-5" />
+                      ) : (
+                        <Eye className="h-4 w-4 sm:h-5 sm:w-5" />
+                      )}
+                    </button>
                   </div>
                 </div>
 
@@ -464,32 +475,32 @@ export default function ModernLogin() {
             )}
           </CardContent>
 
-          <CardFooter className="flex flex-col items-center gap-3 pt-4 sm:pt-6">
+          <CardFooter className="flex flex-col items-center gap-3 pt-2 pb-6">
             {mode === 'credentials' && (
-              <>
-                <div className="flex flex-row items-center gap-2">
-                  <p className="text-xs sm:text-sm text-slate-400">¿Olvidaste tu contraseña?</p>
-                  <Link
-                    to="/forgot-password"
-                    className="text-sm text-blue-400 hover:text-blue-300 transition-colors font-medium"
-                  >
-                    Recuperar contraseña
-                  </Link>
-                </div>
-                <div className="flex gap-1 text-sm items-center">
-                  <span className="text-slate-400 mr-2">¿No tenés cuenta?</span>
-                  <button onClick={() => switchMode('register')} className="text-blue-400 hover:text-blue-300 transition-colors font-medium">
-                    Registrate
-                  </button>
-                </div>
-              </>
+              <div className="flex flex-col items-center gap-2 w-full px-2">
+                <Link
+                  to="/forgot-password"
+                  className="w-full text-center py-2.5 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200"
+                >
+                  ¿Olvidaste tu contraseña? <span className="text-blue-400 font-semibold">Recuperar</span>
+                </Link>
+                <div className="w-full h-px bg-slate-700/50" />
+                <button
+                  onClick={() => switchMode('register')}
+                  className="w-full text-center py-2.5 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200"
+                >
+                  ¿No tenés cuenta? <span className="text-blue-400 font-semibold">Registrate</span>
+                </button>
+              </div>
             )}
 
             {mode === 'register' && (
-              <div className="flex gap-1 text-sm items-center">
-                <span className="text-slate-400">¿Ya tenés cuenta?</span>
-                <button onClick={() => switchMode('credentials')} className="text-blue-400 hover:text-blue-300 transition-colors font-medium">
-                  Iniciá sesión
+              <div className="flex flex-col items-center gap-2 w-full px-2">
+                <button
+                  onClick={() => switchMode('credentials')}
+                  className="w-full text-center py-2.5 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200"
+                >
+                  ¿Ya tenés cuenta? <span className="text-blue-400 font-semibold">Iniciá sesión</span>
                 </button>
               </div>
             )}

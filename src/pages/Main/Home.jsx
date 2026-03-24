@@ -1,11 +1,13 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, lazy, Suspense } from "react"
 import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { QrCode, Zap, Users, MessageSquareText, Menu, X, Star, Shield, DollarSign, BookOpen, LogIn, HeartHandshake, Link2, ArrowRight, ChevronDown, Rocket } from 'lucide-react'
+import { QrCode, Zap, Users, MessageSquareText, Menu, X, Star, Shield, DollarSign, BookOpen, HeartHandshake, Link2, ArrowRight, ChevronDown } from 'lucide-react'
 import { FaWhatsapp } from "react-icons/fa"
+
+const Logo3D = lazy(() => import("../../components/Logo3D"))
 
 export default function ModernHome() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -121,65 +123,65 @@ export default function ModernHome() {
         <header className="backdrop-blur-md bg-slate-900/80 border-b border-slate-700/50 sticky top-0 z-50">
           <div className="container mx-auto px-4 py-2">
             <div className="flex justify-between items-center">
+              {/* Logo */}
               <div className="flex items-center group">
-                <div className="relative">
-                  <img
-                    src="/isotipoWhite.png"
-                    alt="Logo de Entradita"
-                    className="h-12 w-auto mr-2 sm:h-16 sm:mr-3 transition-transform group-hover:scale-105"
-                  />
-                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full opacity-0 group-hover:opacity-20 transition-opacity blur" />
-                </div>
-                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+                <img
+                  src="/isotipoWhite.png"
+                  alt="Logo de Entradita"
+                  className="h-10 w-auto mr-2 sm:h-14 sm:mr-3 transition-transform group-hover:scale-105"
+                />
+                <h1 className="text-base sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
                   entradita.com
                 </h1>
               </div>
 
-              <nav className="hidden lg:flex items-center space-x-2">
-                <Link to="/contact">
-                  <Button variant="ghost" className="bg-slate-800/70 text-slate-200 hover:text-white hover:bg-slate-700/70 text-sm border-0">
-                    Contacto
-                  </Button>
+              {/* Desktop nav */}
+              <nav className="hidden lg:flex items-center space-x-1">
+                <Link to="/pricing" className="px-3 py-2 text-sm text-slate-300 hover:text-white transition-colors">
+                  Precios
                 </Link>
-                <Link to="/documentacion">
-                  <Button variant="ghost" className="bg-slate-800/70 text-slate-200 hover:text-white hover:bg-slate-700/70 text-sm border-0">
-                    <BookOpen className="h-4 w-4 mr-2" />
-                    Documentación
-                  </Button>
+                <Link to="/documentacion" className="px-3 py-2 text-sm text-slate-300 hover:text-white transition-colors">
+                  Documentación
+                </Link>
+                <Link to="/contact" className="px-3 py-2 text-sm text-slate-300 hover:text-white transition-colors">
+                  Contacto
+                </Link>
+                <div className="w-px h-5 bg-slate-700 mx-2" />
+                <Link to="/login" className="px-3 py-2 text-sm text-white font-medium hover:text-blue-300 transition-colors">
+                  Iniciar sesión
                 </Link>
                 <Link to="/login">
-                  <Button className="bg-gradient-to-r from-blue-600 to-blue-700 text-white border-0 text-sm">
-                    <LogIn className="h-4 w-4 mr-2" />
-                    Iniciar Sesión
+                  <Button className="bg-gradient-to-r from-blue-600 to-blue-700 text-white border-0 text-sm font-semibold ml-1">
+                    Crear cuenta
                   </Button>
                 </Link>
               </nav>
 
-              <Button variant="ghost" className="lg:hidden bg-slate-800/70 text-slate-200 hover:text-white hover:bg-slate-700/70 p-2 border-0" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              {/* Mobile: solo hamburguesa */}
+              <Button variant="ghost" className="lg:hidden text-slate-200 hover:text-white hover:bg-slate-700/70 p-2 border-0" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                 {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </Button>
             </div>
 
             {/* Mobile Menu */}
             {isMenuOpen && (
-              <div className="lg:hidden mt-3 p-3 backdrop-blur-md bg-slate-800/90 rounded-xl border border-slate-700/50">
-                <div className="flex flex-col space-y-2">
-                  <Link to="/contact" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start bg-slate-700/50 text-slate-200 hover:text-white hover:bg-slate-600/50 text-sm py-2 border-0">
-                      Contacto
-                    </Button>
+              <div className="lg:hidden mt-2 p-2 backdrop-blur-md bg-slate-800/90 rounded-xl border border-slate-700/50">
+                <div className="flex flex-col">
+                  <Link to="/login" onClick={() => setIsMenuOpen(false)} className="px-3 py-3 text-base text-white font-semibold hover:bg-slate-700/50 rounded-lg transition-colors">
+                    Iniciar sesión
                   </Link>
-                  <Link to="/documentacion" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start bg-slate-700/50 text-slate-200 hover:text-white hover:bg-slate-600/50 text-sm py-2 border-0">
-                      <BookOpen className="h-4 w-4 mr-2" />
-                      Documentación
-                    </Button>
+                  <Link to="/login" onClick={() => setIsMenuOpen(false)} className="px-3 py-3 text-base text-blue-400 font-semibold hover:bg-slate-700/50 rounded-lg transition-colors">
+                    Crear cuenta
                   </Link>
-                  <Link to="/login" onClick={() => setIsMenuOpen(false)}>
-                    <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white border-0 text-sm py-2">
-                      <LogIn className="h-4 w-4 mr-2" />
-                      Iniciar Sesión
-                    </Button>
+                  <div className="h-px bg-slate-700/50 my-1 mx-2" />
+                  <Link to="/pricing" onClick={() => setIsMenuOpen(false)} className="px-3 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors">
+                    Precios
+                  </Link>
+                  <Link to="/documentacion" onClick={() => setIsMenuOpen(false)} className="px-3 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors">
+                    Documentación
+                  </Link>
+                  <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="px-3 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors">
+                    Contacto
                   </Link>
                 </div>
               </div>
@@ -188,12 +190,13 @@ export default function ModernHome() {
         </header>
 
         <main className="container mx-auto px-4">
-          {/* Hero Section - Reduced height for mobile */}
+          {/* Hero Section */}
           <section className="min-h-[80vh] sm:min-h-screen flex items-center justify-center relative py-8 sm:py-0">
             <div className="text-center max-w-5xl mx-auto" style={{ transform: `translateY(${scrollY * 0.05}px)` }}>
-              <div className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 mb-4 sm:mb-8 backdrop-blur-sm">
-                <Rocket className="h-3 w-3 sm:h-4 sm:w-4 text-blue-400 mr-2" />
-                <span className="text-xs sm:text-sm text-blue-200">Next gen of events</span>
+              <div className="w-48 h-48 sm:w-64 sm:h-64 mx-auto mb-2 sm:mb-6">
+                <Suspense fallback={<div className="w-full h-full" />}>
+                  <Logo3D />
+                </Suspense>
               </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight mb-3 sm:mb-6">
@@ -210,27 +213,26 @@ export default function ModernHome() {
               </h2>
 
               <p className="text-base sm:text-lg lg:text-xl text-slate-400 max-w-2xl mx-auto mb-6 sm:mb-12 leading-relaxed px-4 sm:px-0">
-                Simplifica la venta y verificación de tickets con nuestra plataforma intuitiva y segura. Potencia tus
-                eventos con tecnología de vanguardia.
+                Simplifica la venta y verificación de tickets con nuestra plataforma intuitiva y segura.
               </p>
 
               <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 mb-8 sm:mb-16 px-4 sm:px-0">
-                <Link to="/contact" className="w-full sm:w-auto">
+                <Link to="/login" className="w-full sm:w-auto">
                   <Button
                     size="lg"
-                    className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 text-white border-0 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold group"
+                    className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 text-white border-0 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold"
                   >
-                    Empezar ahora
-                    <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
+                    Crear cuenta gratis
+                    <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                   </Button>
                 </Link>
-                <Link to="/pricing" className="w-full sm:w-auto">
+                <Link to="/login" className="w-full sm:w-auto">
                   <Button
                     variant="entraditaTertiary"
                     size="lg"
-                    className="w-full sm:w-auto border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg backdrop-blur-sm"
+                    className="w-full sm:w-auto border-slate-500 text-white hover:bg-slate-800/50 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg backdrop-blur-sm font-medium"
                   >
-                    Ver precios
+                    Iniciar sesión
                   </Button>
                 </Link>
               </div>
