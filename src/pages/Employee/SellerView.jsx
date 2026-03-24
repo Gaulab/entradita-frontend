@@ -1,70 +1,76 @@
 'use client';
 
-// react imports
 import { useState, useEffect, useCallback, useRef } from 'react';
-// react-router imports
 import { useNavigate } from 'react-router-dom';
-// lucide-react icons imports
-import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon, Printer, ChevronLeft, ChevronRight, ChevronRight as ChevronRightRow } from 'lucide-react';
-// prop-types imports
+import { PlusIcon, SearchIcon, EyeIcon, LinkIcon, Printer, ChevronLeft, ChevronRight, ChevronRight as ChevronRightRow } from 'lucide-react';
 import PropTypes from 'prop-types';
-// custom components
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-// apis imports
-import { deleteTicketBySeller } from '@/api/ticketApi';
-import { checkPassword } from '@/api/employeeApi';
-import { getSeller } from '@/api/employeeApi';
-// custom components
+import { checkPassword, getSeller, getSellerTickets } from '@/api/employeeApi';
 import MobileActionDialog from '@/components/seller/MobileActionDialog';
 import PasswordForm from '@/components/seller/PasswordForm';
+import { notifyInfo, notifyError } from '@/utils/notify';
 
 import { QRCodeSVG } from 'qrcode.react';
 import html2canvas from 'html2canvas';
 
+const TICKETS_PER_PAGE = 10;
+const SEARCH_DEBOUNCE_MS = 300;
+
 export default function VendedorView({ uuid }) {
-  // main states
-  const [tickets, setTickets] = useState([]);
   const [vendedor, setVendedor] = useState(null);
   const [dniRequired, setDniRequired] = useState(false);
   const [ticketsSalesEnabled, setTicketsSalesEnabled] = useState(true);
   const [organizerHasCapacity, setOrganizerHasCapacity] = useState(true);
-  // password states
+
   const [password, setPassword] = useState('');
   const [isPasswordCorrect, setIsPasswordCorrect] = useState(false);
   const [passwordError, setPasswordError] = useState('');
 
-  // search states
-  const [filteredTickets, setFilteredTickets] = useState([]);
+  const [tickets, setTickets] = useState([]);
+  const [totalTickets, setTotalTickets] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+
   const [vendedorNotFound] = useState(false);
-  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
-  const [ticketToDelete, setTicketToDelete] = useState(null);
   const [copyMessage, setCopyMessage] = useState('');
   const [ticketTags, setTicketTags] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-  const pageCount = Math.ceil(filteredTickets.length / itemsPerPage);
-  const paginatedTickets = filteredTickets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  // Print states
   const [printPayload, setPrintPayload] = useState(null);
-
-  // Ref al div oculto que tendrá el <QRCodeSVG> para "foto" con html2canvas
   const hiddenQrRef = useRef(null);
+  const searchTimerRef = useRef(null);
+
+  const pageCount = Math.ceil(totalTickets / TICKETS_PER_PAGE);
 
   const navigate = useNavigate();
+
+  const fetchTickets = useCallback(async (page, search) => {
+    try {
+      const data = await getSellerTickets({
+        uuid,
+        page,
+        limit: TICKETS_PER_PAGE,
+        search,
+      });
+      setTickets(data.results);
+      setTotalTickets(data.total_tickets);
+      setHasMore(data.has_more);
+    } catch (error) {
+      notifyError(error.message || 'No se pudieron cargar los tickets.');
+    }
+  }, [uuid]);
 
   const copyToClipboard = useCallback((text) => {
     navigator.clipboard
       .writeText(text)
       .then(() => {
         setCopyMessage('Copiado');
-        setTimeout(() => setCopyMessage(''), 2000); // El mensaje desaparece después de 2 segundos
+        setTimeout(() => setCopyMessage(''), 2000);
       })
       .catch((err) => {
         console.error('Error al copiar: ', err);
@@ -81,9 +87,6 @@ export default function VendedorView({ uuid }) {
             title: 'Compartir Ticket',
             text: 'Aquí está el enlace de tu ticket QR:',
             url: link,
-          })
-          .then(() => {
-            console.log('Compartido exitosamente');
           })
           .catch((err) => {
             console.error('Error al intentar compartir:', err);
@@ -110,24 +113,29 @@ export default function VendedorView({ uuid }) {
     if (storedPasswordStatus) {
       setIsPasswordCorrect(JSON.parse(storedPasswordStatus));
     }
-    const fetchTickets = async () => {
+  }, []);
+
+  useEffect(() => {
+    if (!isPasswordCorrect) return;
+    const fetchSellerInfo = async () => {
       try {
         const data = await getSeller(uuid);
         setVendedor(data.seller);
-        setTickets(data.tickets.sort((a, b) => b.id - a.id));
-        setFilteredTickets(data.tickets);
         setTicketsSalesEnabled(data.sales_enabled);
         setDniRequired(data.dni_required);
         setOrganizerHasCapacity(data.organizer_has_capacity);
         setTicketTags(data.seller.ticket_tags);
       } catch (error) {
-        console.error(error.message);
+        notifyError(error.message || 'No se pudieron cargar los datos del vendedor.');
       }
     };
-    if (isPasswordCorrect) {
-      fetchTickets();
-    }
+    fetchSellerInfo();
   }, [uuid, isPasswordCorrect]);
+
+  useEffect(() => {
+    if (!isPasswordCorrect) return;
+    fetchTickets(currentPage, debouncedSearch);
+  }, [currentPage, debouncedSearch, isPasswordCorrect, fetchTickets]);
 
   const verifyPassword = async () => {
     try {
@@ -145,17 +153,16 @@ export default function VendedorView({ uuid }) {
   };
 
   const handleSearch = (event) => {
-    const term = event.target.value.toLowerCase();
+    const term = event.target.value;
     setSearchTerm(term);
-    if (term) {
-      const filtered = tickets.filter((ticket) =>
-        `${ticket.owner_name} ${ticket.owner_lastname}`.toLowerCase().includes(term) ||
-        (ticket.owner_dni && ticket.owner_dni.toLowerCase().includes(term))
-      );
-      setFilteredTickets(filtered);
-    } else {
-      setFilteredTickets(tickets);
+
+    if (searchTimerRef.current) {
+      clearTimeout(searchTimerRef.current);
     }
+    searchTimerRef.current = setTimeout(() => {
+      setCurrentPage(1);
+      setDebouncedSearch(term);
+    }, SEARCH_DEBOUNCE_MS);
   };
 
   const handleShare = (ticket) => {
@@ -174,7 +181,7 @@ export default function VendedorView({ uuid }) {
         });
     } else {
       // Fallback for browsers that don't support the Web Share API
-      alert(`Comparte este enlace: ${window.location.origin}/ticket/${ticket.uuid}`);
+      notifyInfo(`Comparte este enlace: ${window.location.origin}/ticket/${ticket.uuid}`);
       navigator.clipboard
         .writeText(ticket.uuid)
         .then(() => {
@@ -193,26 +200,6 @@ export default function VendedorView({ uuid }) {
   const handleViewTicket = useCallback((ticketId) => {
     window.open(`/ticket/${ticketId}`, '_blank');
   }, []);
-
-  const confirmDeleteTicket = async () => {
-    if (!ticketToDelete) return;
-    try {
-      await deleteTicketBySeller(uuid, ticketToDelete.id);
-      const remainingTickets = tickets.filter((t) => t.id !== ticketToDelete.id);
-      setTickets(remainingTickets);
-      setFilteredTickets(remainingTickets);
-
-      // Actualizar el contador de tickets del vendedor
-      setVendedor((prevVendedor) => ({
-        ...prevVendedor,
-        ticket_counter: prevVendedor.ticket_counter - 1,
-      }));
-    } catch (error) {
-      console.error(error.message);
-    }
-    setIsDeleteConfirmOpen(false);
-    setTicketToDelete(null);
-  };
 
   const handlePrintTicketQR = async (ticket) => {
     if (!ticket) return;
@@ -658,7 +645,7 @@ export default function VendedorView({ uuid }) {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {paginatedTickets.map((ticket) => (
+                    {tickets.map((ticket) => (
                       <TableRow
                         key={ticket.id}
                         className="border-gray-700 cursor-pointer sm:cursor-default hover:bg-gray-700/50 transition-colors"
@@ -704,14 +691,6 @@ export default function VendedorView({ uuid }) {
                             >
                               <Printer className="h-3.5 w-3.5" />
                             </Button>
-                            <Button
-                              variant="ghost"
-                              className="h-8 w-8 p-0 text-gray-400 hover:text-red-400 hover:bg-gray-700"
-                              onClick={(e) => { e.stopPropagation(); setTicketToDelete(ticket); setIsDeleteConfirmOpen(true); }}
-                              title="Eliminar"
-                            >
-                              <Trash2Icon className="h-3.5 w-3.5" />
-                            </Button>
                           </div>
                         </TableCell>
                         <TableCell className="sm:hidden w-6 p-0 pr-3">
@@ -730,7 +709,7 @@ export default function VendedorView({ uuid }) {
                     size="sm"
                     className="text-gray-400 hover:text-white"
                     disabled={currentPage === 1}
-                    onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                    onClick={() => setCurrentPage((p) => p - 1)}
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
@@ -739,8 +718,8 @@ export default function VendedorView({ uuid }) {
                     variant="ghost"
                     size="sm"
                     className="text-gray-400 hover:text-white"
-                    disabled={currentPage === pageCount}
-                    onClick={() => setCurrentPage((p) => Math.min(p + 1, pageCount))}
+                    disabled={!hasMore}
+                    onClick={() => setCurrentPage((p) => p + 1)}
                   >
                     <ChevronRight className="h-4 w-4" />
                   </Button>
@@ -754,7 +733,6 @@ export default function VendedorView({ uuid }) {
               copyToClipboard={copyToClipboard}
               handleShare={handleShare}
               handleViewTicket={handleViewTicket}
-              handleDeleteTicket={(ticket) => { setTicketToDelete(ticket); setIsDeleteConfirmOpen(true); }}
               handlePrintTicket={handlePrintTicketQR}
             />
           </Card>
@@ -770,24 +748,6 @@ export default function VendedorView({ uuid }) {
           </div>
         )}
 
-        <Dialog open={isDeleteConfirmOpen} onOpenChange={setIsDeleteConfirmOpen}>
-          <DialogContent className="bg-gray-800 text-white border-gray-700">
-            <DialogHeader>
-              <DialogTitle className="text-white">Eliminar ticket</DialogTitle>
-              <DialogDescription className="text-gray-300">
-                ¿Estás seguro? Esta acción no se puede deshacer.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter className="gap-2 sm:gap-0">
-              <Button onClick={() => setIsDeleteConfirmOpen(false)} variant="ghost" className="text-gray-300 hover:text-white hover:bg-gray-700">
-                Cancelar
-              </Button>
-              <Button onClick={confirmDeleteTicket} className="bg-red-600 hover:bg-red-700 text-white border-0">
-                Eliminar
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </div>
     </>
   );

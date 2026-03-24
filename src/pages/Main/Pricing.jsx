@@ -8,33 +8,15 @@ import { Button } from '@/components/ui/button';
 import Badge from '@/components/ui/badge';
 import { Slider } from '@/components/ui/slider';
 
-const pricingTiers = [
-  {
-    name: 'Eventos Pequeños',
-    range: [1, 499],
-    price: 160,
-    color: 'bg-blue-400',
-    icon: <Star className="w-5 h-5 sm:w-6 sm:h-6" />,
-    description: 'Perfecto para eventos íntimos y exclusivos',
-  },
-  {
-    name: 'Eventos Medianos',
-    range: [500, 1000],
-    price: 130,
-    color: 'bg-green-400',
-    icon: <Zap className="w-5 h-5 sm:w-6 sm:h-6" />,
-    description: 'Ideal para eventos corporativos y festivales',
-    popular: true,
-  },
-  {
-    name: 'Eventos Grandes',
-    range: [1001, 5000],
-    price: 119.99,
-    color: 'bg-purple-400',
-    icon: <Globe className="w-5 h-5 sm:w-6 sm:h-6" />,
-    description: 'Para grandes producciones y conciertos',
-  },
-];
+import { pricingTiers as baseTiers, getTierForCount } from '../../config/pricingConfig.js';
+
+const TIER_DECORATION = {
+  small:  { color: 'bg-blue-400',   icon: <Star className="w-5 h-5 sm:w-6 sm:h-6" />, description: 'Perfecto para eventos íntimos y exclusivos' },
+  medium: { color: 'bg-green-400',  icon: <Zap  className="w-5 h-5 sm:w-6 sm:h-6" />, description: 'Ideal para eventos corporativos y festivales' },
+  large:  { color: 'bg-purple-400', icon: <Globe className="w-5 h-5 sm:w-6 sm:h-6" />, description: 'Para grandes producciones y conciertos' },
+};
+
+const pricingTiers = baseTiers.map((t) => ({ ...t, ...TIER_DECORATION[t.id] }));
 
 const allFeatures = [
   'Generación de códigos QR únicos',
@@ -59,22 +41,10 @@ export default function ModernPricing() {
 
   useEffect(() => {
     const tickets = ticketCount[0];
-    let tier = pricingTiers.find((t) => tickets >= t.range[0] && tickets <= t.range[1]);
-
-    if (!tier && tickets > 1000) {
-      tier = pricingTiers[2]; // Eventos Grandes
-    }
-
-    if (tier) {
-      setCurrentTier(tier);
-      const cost = tickets * tier.price;
-      setTotalCost(cost);
-
-      // Calculate savings compared to highest tier
-      const highestPrice = pricingTiers[0].price;
-      const potentialCost = tickets * highestPrice;
-      setSavings(potentialCost - cost);
-    }
+    const tier = getTierForCount(tickets);
+    setCurrentTier(tier);
+    setTotalCost(tickets * tier.price);
+    setSavings(tickets * pricingTiers[0].price - tickets * tier.price);
   }, [ticketCount]);
 
   const handleChoosePlan = (tier) => {

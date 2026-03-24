@@ -1,67 +1,172 @@
 // utils/apiUtils.js
 
-/**
- * Procesa la respuesta de un fetch. Si no es OK, decodifica el error y lanza una excepción.
- * @param {Response} response - El objeto response del fetch.
- * @param {string} defaultMessage - El mensaje a mostrar si no se puede decodificar el error.
- */
-export const handleApiError = async (response, defaultMessage = 'Ocurrió un error inesperado') => {
-  if (!response.ok) {
-    let errorData;
-    try {
-      errorData = await response.json();
-    } catch (e) {
-      // Si el backend devuelve HTML (ej: 500 Server Error) o texto plano
-      throw new Error(defaultMessage);
-    }
+export class ApiClientError extends Error {
+  constructor({ message, status, code, details, data }) {
+    super(message);
+    this.name = 'ApiClientError';
+    this.status = status;
+    this.code = code;
+    this.details = details;
+    this.data = data;
+    this.response = {
+      status,
+      data,
+    };
+  }
+}
 
-    let errorMessage = defaultMessage;
+const getFirstMessage = (value) => {
+  if (Array.isArray(value)) {
+    for (let index = 0; index < value.length; index += 1) {
+      const item = value[index];
 
-    if (errorData.error) {
-      // 1. Backend manda explícitamente { error: "..." }
-      errorMessage = errorData.error;
-    } else if (errorData.detail) {
-      // 2. Errores genéricos de DRF (ej: "No autenticado")
-      errorMessage = errorData.detail;
-    } else if (typeof errorData === 'object' && errorData !== null) {
-      // 3. Errores de validación de campos (Serializer)
-      const keys = Object.keys(errorData);
-      if (keys.length > 0) {
-        const fieldName = keys[0]; // ej: "attendees"
-        const fieldError = errorData[fieldName]; // El array de errores
-        // A. Si es un array (Caso many=True o listas de strings)
-        if (Array.isArray(fieldError)) {
-          // Caso A.1: Lista de strings simples ["Este campo es obligatorio"]
-          if (typeof fieldError[0] === 'string') {
-             errorMessage = fieldError[0];
-          } 
-          // Caso A.2: Lista de OBJETOS (many=True) [ {}, {name: ["Error"]}, {} ]
-          else if (typeof fieldError[0] === 'object') {
-             // Buscamos el primer objeto que NO esté vacío
-             for (let i = 0; i < fieldError.length; i++) {
-                const itemError = fieldError[i];
-                const itemKeys = Object.keys(itemError);
-                if (itemKeys.length > 0) {
-                   // Encontramos el error en la fila 'i'
-                   const subField = itemKeys[0]; // ej: "name"
-                   const msg = itemError[subField][0]; // ej: "Longitud mayor a 50"
-                   
-                   // Construimos un mensaje útil indicando la fila
-                   errorMessage = `Error en el asistente #${i + 1} (${subField}): ${msg}`;
-                   break; // Dejamos de buscar
-                }
-             }
-          }
-        } 
-        // B. Si es un string directo (raro en DRF pero posible)
-        else {
-          errorMessage = String(fieldError);
+      if (typeof item === 'string') {
+        return item;
+      }
+
+      if (item && typeof item === 'object') {
+        const nestedMessage = getFirstMessage(item);
+        if (nestedMessage) {
+          return `Error en el item #${index + 1}: ${nestedMessage}`;
         }
       }
     }
-    throw new Error(errorMessage);
+    return null;
   }
-  
-  // Si la respuesta es OK, volvemos al flujo original
-  return;
+
+  if (value && typeof value === 'object') {
+    const entries = Object.entries(value);
+    for (const [key, nestedValue] of entries) {
+      const nestedMessage = getFirstMessage(nestedValue);
+      if (nestedMessage) {
+        return Array.isArray(nestedValue) ? `${key}: ${nestedMessage}` : nestedMessage;
+      }
+    }
+    return null;
+  }
+
+  if (value == null) {
+    return null;
+  }
+
+  return String(value);
+};
+
+const normalizeApiError = (errorData, defaultMessage, status) => {
+  if (errorData?.error && typeof errorData.error === 'object') {
+    return {
+      message: errorData.error.message || defaultMessage,
+      code: errorData.error.code || 'api_error',
+      details: errorData.error.details || null,
+      data: errorData,
+      status,
+    };
+  }
+
+  if (typeof errorData?.error === 'string') {
+    return {
+      message: errorData.error,
+      code: 'api_error',
+      details: errorData.details || null,
+      data: errorData,
+      status,
+    };
+  }
+
+  if (typeof errorData?.detail === 'string') {
+    return {
+      message: errorData.detail,
+      code: 'api_error',
+      details: null,
+      data: errorData,
+      status,
+    };
+  }
+
+  const derivedMessage = getFirstMessage(errorData);
+
+  return {
+    message: derivedMessage || defaultMessage,
+    code: 'validation_error',
+    details: errorData && typeof errorData === 'object' ? errorData : null,
+    data: errorData,
+    status,
+  };
+};
+
+const parseResponseBody = async (response) => {
+  if (response.status === 204) {
+    return null;
+  }
+
+  const contentType = response.headers.get('content-type') || '';
+
+  if (contentType.includes('application/json')) {
+    return response.json();
+  }
+
+  const text = await response.text();
+  return text ? { detail: text } : null;
+};
+
+export const handleApiError = async (response, defaultMessage = 'Ocurrió un error inesperado') => {
+  if (response.ok) {
+    return null;
+  }
+
+  let errorData = null;
+
+  try {
+    errorData = await parseResponseBody(response);
+  } catch {
+    throw new ApiClientError({
+      message: defaultMessage,
+      status: response.status,
+      code: 'response_parse_error',
+      details: null,
+      data: null,
+    });
+  }
+
+  const normalized = normalizeApiError(errorData, defaultMessage, response.status);
+
+  throw new ApiClientError(normalized);
+};
+
+const injectBypassHeader = (options) => {
+  const token = localStorage.getItem('maintenance_token');
+  if (!token) return options;
+
+  return {
+    ...options,
+    headers: {
+      ...options.headers,
+      'X-Maintenance-Bypass': token,
+    },
+  };
+};
+
+export const MAINTENANCE_EVENT = 'maintenance-mode-detected';
+
+export const apiRequest = async (url, options = {}, defaultMessage = 'Ocurrió un error inesperado') => {
+  const response = await fetch(url, injectBypassHeader(options));
+
+  if (response.status === 503) {
+    let body = null;
+    try { body = await response.clone().json(); } catch {}
+    if (body?.detail === 'maintenance_mode') {
+      window.dispatchEvent(new CustomEvent(MAINTENANCE_EVENT));
+      throw new ApiClientError({
+        message: 'El sitio se encuentra en mantenimiento.',
+        status: 503,
+        code: 'maintenance_mode',
+        details: null,
+        data: body,
+      });
+    }
+  }
+
+  await handleApiError(response, defaultMessage);
+
+  return parseResponseBody(response);
 };

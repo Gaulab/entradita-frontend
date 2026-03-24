@@ -14,6 +14,7 @@ import ReportPrintView from "@/components/reports/ReportPrintView.jsx"
 import SellerAnalytics from "@/components/reports/SellerAnalytics.jsx"
 import TicketAnalytics from "@/components/reports/TicketAnalytics.jsx"
 import SellerPerformanceChart from "@/components/reports/SellerPerformanceChart.jsx"
+import { apiRequest } from "../../utils/apiUtils.js"
 
 const COLORS = [
   "#0088FE",
@@ -44,19 +45,13 @@ const EconomicReport = () => {
     const fetchEconomicReport = async () => {
       try {
         const token = typeof authToken === "string" ? authToken.trim() : authToken.access.trim()
-        const response = await fetch(`${apiUrl}/api/v1/main/event/${id}/economic-report/`, {
+        const result = await apiRequest(`${apiUrl}/api/v1/main/event/${id}/economic-report/`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        })
-
-        if (!response.ok) {
-          throw new Error("Error al obtener los datos.")
-        }
-
-        const result = await response.json()
+        }, "Error al obtener los datos.")
         setData(result)
 
         // CAMBIO: Inicializamos las comisiones basándonos en los tags recibidos
@@ -91,7 +86,7 @@ const EconomicReport = () => {
         const token = typeof authToken === "string" ? authToken.trim() : authToken.access.trim()
         
         // NOTA: Tu backend debe estar preparado para recibir un objeto o array de comisiones
-        const response = await fetch(`${apiUrl}/api/v1/main/event/${id}/economic-report/`, {
+        await apiRequest(`${apiUrl}/api/v1/main/event/${id}/economic-report/`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -99,11 +94,7 @@ const EconomicReport = () => {
           },
           // Enviamos el objeto de comisiones completo
           body: JSON.stringify({ commissions_per_tag: commissions }),
-        })
-
-        if (!response.ok) {
-          throw new Error("Error al actualizar las comisiones.")
-        }
+        }, "Error al actualizar las comisiones.")
         console.log("Comisiones actualizadas")
       } catch (error) {
         setErrorMsg(error.message)

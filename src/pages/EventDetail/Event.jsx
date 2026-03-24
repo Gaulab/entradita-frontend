@@ -56,7 +56,7 @@ export default function Event({ event }) {
       <CardHeader className="pb-0">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden border border-gray-600 shrink-0">
-            <img src={event.image_address} alt="Event Logo" className="w-full h-full object-cover" />
+            <img src={event.image || "/isotipoWhite.png"} alt="Event Logo" className="w-full h-full object-cover" />
           </div>
           <div className="min-w-0">
             <CardTitle className="text-lg sm:text-xl font-bold text-white truncate">{event.name}</CardTitle>
@@ -141,7 +141,7 @@ Event.propTypes = {
     name: PropTypes.string.isRequired,
     date: PropTypes.string.isRequired,
     place: PropTypes.string.isRequired,
-    image_address: PropTypes.string,
+    image: PropTypes.string,
     capacity: PropTypes.number,
     tickets_counter: PropTypes.number,
     tickets_scanned: PropTypes.number,

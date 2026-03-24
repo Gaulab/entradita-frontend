@@ -16,7 +16,7 @@ import AuthContext from '../../context/AuthContext';
 // API
 import { createEvent } from '../../api/eventApi';
 // ICONS
-import { ArrowLeftIcon, HelpCircle, X, CalendarDays, Repeat, Store } from 'lucide-react';
+import { ArrowLeftIcon, HelpCircle, X, CalendarDays, Repeat, Store, ImagePlus } from 'lucide-react';
 
 const DAYS_OF_WEEK = [
   { id: 0, label: 'Lun', full: 'Lunes' },
@@ -38,12 +38,42 @@ export default function CreateEvent() {
   const [tagWebSale, setTagWebSale] = useState(false);
   const { authToken } = useContext(AuthContext);
   const [error, setError] = useState('');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState(() => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  });
   const navigate = useNavigate();
+
+  // Estado para imagen
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [imageCompressing, setImageCompressing] = useState(false);
+
+  const compressImage = (file) =>
+    new Promise((resolve) => {
+      const QUALITY = 0.7;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          canvas.getContext('2d').drawImage(img, 0, 0);
+          canvas.toBlob(
+            (blob) => resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' })),
+            'image/jpeg',
+            QUALITY
+          );
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
 
   // Nuevos estados para periodicidad
   const [isPeriodic, setIsPeriodic] = useState(false);
-  const [periodicity, setPeriodicity] = useState(null); // Array de IDs de días
+  const [periodicity, setPeriodicity] = useState(null);
   const [recurrenceEndDate, setRecurrenceEndDate] = useState('');
 
   const handleSubmit = async (event) => {
@@ -55,16 +85,17 @@ export default function CreateEvent() {
       return;
     }
 
-    // Validaciones extra para eventos periódicos
     if (isPeriodic && periodicity === null) {
       setError('Debes seleccionar un día de la semana para el evento periódico.');
       setTimeout(() => setError(''), 3000);
       return;
     }
 
-    const formData = new FormData(event.target);
-    const selectedDate = new Date(formData.get('date') + 'T00:00:00');
-    const currentDate = new Date(new Date().toISOString().split('T')[0] + 'T00:00:00');
+    const htmlForm = new FormData(event.target);
+    const selectedDate = new Date(htmlForm.get('date') + 'T00:00:00');
+    const now = new Date();
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    const currentDate = new Date(todayStr + 'T00:00:00');
 
     if (selectedDate < currentDate) {
       setError('La fecha de inicio no puede ser menor a la fecha actual.');
@@ -72,7 +103,6 @@ export default function CreateEvent() {
       return;
     }
 
-    // Si hay fecha de fin, validamos que sea mayor a la de inicio
     if (isPeriodic && recurrenceEndDate) {
       const endDateObj = new Date(recurrenceEndDate + 'T00:00:00');
       if (endDateObj < selectedDate) {
@@ -82,29 +112,31 @@ export default function CreateEvent() {
       }
     }
 
-    const eventObject = Object.fromEntries(Array.from(formData.entries()).filter(([key, value]) => value !== ''));
-
-    // Agregamos campos booleanos y arrays
-    eventObject.dni_required = requireDNI;
-    eventObject.ticket_tags = ticketTags;
-
-    // Lógica de periodicidad para el backend
-    eventObject.is_periodic = isPeriodic;
-    if (isPeriodic) {
-      // Convertimos el array [0, 2] a string "0,2"
-      eventObject.periodicity = periodicity;
-      if (recurrenceEndDate) {
-        eventObject.recurrence_end_date = recurrenceEndDate;
+    const formData = new FormData();
+    for (const [key, value] of htmlForm.entries()) {
+      if (value !== '' && !(value instanceof File)) {
+        formData.append(key, value);
       }
     }
 
-    console.log('Evento a crear:', eventObject);
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+
+    formData.set('dni_required', requireDNI);
+    formData.set('ticket_tags', JSON.stringify(ticketTags));
+    formData.set('is_periodic', isPeriodic);
+    if (isPeriodic) {
+      formData.set('periodicity', periodicity);
+      if (recurrenceEndDate) {
+        formData.set('end_date', recurrenceEndDate);
+      }
+    }
 
     try {
-      await createEvent(eventObject, authToken.access);
+      await createEvent(formData, authToken.access);
       navigate('/dashboard');
     } catch (error) {
-      console.error('Error al crear el evento:', error.message);
       setError(error.message);
     }
   };
@@ -130,10 +162,7 @@ export default function CreateEvent() {
   };
 
   const handleDateChange = (event) => {
-    const inputDate = new Date(event.target.value);
-    // Ajuste simple para evitar problemas de zona horaria al visualizar
-    const offsetDate = new Date(inputDate.getTime() - 3 * 60 * 60 * 1000);
-    setDate(offsetDate.toISOString().split('T')[0]);
+    setDate(event.target.value);
   };
 
   const toggleDay = (dayId) => {
@@ -277,13 +306,37 @@ export default function CreateEvent() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="image_address" className="text-gray-200 flex items-center">
-                  Dirección de la Imagen (Logo)
-                  <Tooltip content="ℹ️ URL del logo del evento">
+                <Label htmlFor="image" className="text-gray-200 flex items-center">
+                  Imagen del Evento
+                  <Tooltip content="ℹ️ Subí una imagen o logo para tu evento">
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
-                <Input id="image_address" name="image_address" maxLength="500" className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+                {imagePreview && (
+                  <img src={imagePreview} alt="Preview" className="h-24 w-24 object-cover rounded-lg border border-gray-600" />
+                )}
+                <label className="flex items-center gap-2 cursor-pointer bg-gray-700 border border-gray-600 rounded-md px-3 py-2 hover:bg-gray-600 transition-colors">
+                  <ImagePlus className="w-4 h-4 text-blue-400" />
+                  <span className="text-sm text-gray-300">
+                    {imageCompressing ? 'Comprimiendo...' : imageFile ? imageFile.name : 'Seleccionar imagen'}
+                  </span>
+                  <input
+                    type="file"
+                    id="image"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        setImageCompressing(true);
+                        const compressed = await compressImage(file);
+                        setImageFile(compressed);
+                        setImagePreview(URL.createObjectURL(compressed));
+                        setImageCompressing(false);
+                      }
+                    }}
+                  />
+                </label>
               </div>
 
               <div className="space-y-2">

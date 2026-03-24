@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Loader2, Ticket, User, CreditCard, ChevronRight, Calendar, MapPin, AlertCircle, X } from "lucide-react";
+import { Loader2, Ticket, User, CreditCard, ChevronRight, Calendar, MapPin } from "lucide-react";
 import { getEventPurchaseInfo } from "../../api/eventApi";
 import { createPaymentPreference } from "../../api/paymentApi";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../../components/ui/dialog";
 import { Button } from "../../components/ui/button";
 import { formatDate } from "../../utils/dateUtils";
+import { notifyError } from "../../utils/notify";
 
 const mp_commission = import.meta.env.VITE_MP_COMMISSION_PERCENTAGE
 
@@ -16,8 +16,6 @@ export default function PurchaseForm() {
   const [eventData, setEventData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [processingPayment, setProcessingPayment] = useState(false);
-  const [error, setError] = useState(null);
-  const [showErrorDialog, setShowErrorDialog] = useState(false);
 
   // Estados del Formulario
   const [step, setStep] = useState(1);
@@ -42,10 +40,8 @@ export default function PurchaseForm() {
         setLoading(true);
         const purchaseInfo = await getEventPurchaseInfo(id);
         setEventData(purchaseInfo);
-        setError(null);
       } catch (err) {
-        setError("No se pudo cargar la información del evento.");
-        setShowErrorDialog(true);
+        notifyError("No se pudo cargar la información del evento.");
       } finally {
         setLoading(false);
       }
@@ -124,8 +120,7 @@ export default function PurchaseForm() {
       window.location.href = response.init_point;
 
     } catch (err) {
-      setError(err.message || "Error al procesar el pago. Por favor revisa los datos e intenta nuevamente.");
-      setShowErrorDialog(true);
+      notifyError(err.message || "Error al procesar el pago. Por favor revisa los datos e intenta nuevamente.");
       setProcessingPayment(false);
     }
   };
@@ -154,7 +149,7 @@ export default function PurchaseForm() {
         {/* Header del Evento (Resumen) */}
         <div className="bg-[#1a2433] rounded-xl p-6 mb-6 border border-gray-800 flex flex-col sm:flex-row gap-6 shadow-lg">
           <img
-            src={eventData.image_address || "/placeholder.svg"}
+            src={eventData.image || "/placeholder.svg"}
             alt={eventData.name}
             className="w-full sm:w-32 h-32 object-cover rounded-lg"
           />
@@ -319,26 +314,6 @@ export default function PurchaseForm() {
         )}
 
       </div>
-
-      {/* Error Dialog */}
-      <Dialog open={showErrorDialog} onOpenChange={setShowErrorDialog}>
-        <DialogContent className="bg-gray-800 text-white border-gray-700">
-          <DialogHeader>
-            <div className="flex items-center gap-3">
-              <DialogTitle className="text-red-500">Error al generar el pago</DialogTitle>
-            </div>
-          </DialogHeader>
-          <p className="text-gray-200">{error}</p>
-          <DialogFooter>
-            <Button
-              onClick={() => setShowErrorDialog(false)}
-              className="bg-gray-700 hover:bg-gray-600"
-            >
-              Aceptar
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
     </div>
   );

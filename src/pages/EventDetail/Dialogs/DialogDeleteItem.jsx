@@ -9,6 +9,7 @@ import EventDetailsContext from '@/context/EventDetailsContext';
 // api
 import { deleteEmployee } from '@/api/employeeApi';
 import { deleteTicket } from '@/api/ticketApi';
+import { notifyError } from '@/utils/notify';
 
 export default function DialogDeleteItem({}) {
   const { authToken } = useContext(AuthContext);
@@ -67,7 +68,7 @@ export default function DialogDeleteItem({}) {
       }
     } catch (error) {
       console.error('Error in delete operation:', error.message);
-      alert(error.message);
+      notifyError(error.message);
     }
 
     setIsDeleteConfirmDialogOpen(false);

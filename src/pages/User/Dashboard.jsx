@@ -11,15 +11,16 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../..
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table.jsx';
 import LoadingSpinner from '../../components/ui/loadingspinner.jsx';
 // Icons
-import { LogOutIcon, PlusIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LogOutIcon, PlusIcon, ChevronLeft, ChevronRight, ShoppingCart } from 'lucide-react';
 
 // API
 import { getEvents } from '../../api/eventApi.jsx';
 import { getAuthorizationUrl } from '../../api/paymentApi.js';
 import { formatDate } from '../../utils/dateUtils.js';
+import { notifyError, notifySuccess } from '../../utils/notify.js';
 
 export default function Dashboard() {
-  const { logoutUser, authToken } = useContext(AuthContext);
+  const { logoutUser, authToken, user } = useContext(AuthContext);
 
   // Hooks para leer la URL
   const [searchParams, setSearchParams] = useSearchParams();
@@ -34,9 +35,7 @@ export default function Dashboard() {
 
   // Estados para MP
   const [mpSync, setMpSync] = useState(false);
-  const [showMpDialog, setShowMpDialog] = useState(false);
-  const [mpDialogType, setMpDialogType] = useState(''); // 'success' | 'error'
-  const [mpDialogMessage, setMpDialogMessage] = useState('');
+  const [mpRefreshKey, setMpRefreshKey] = useState(0);
 
   // 1. Efecto para detectar el retorno de Mercado Pago
   useEffect(() => {
@@ -44,41 +43,35 @@ export default function Dashboard() {
     const details = searchParams.get('details');
 
     if (status) {
-      setShowMpDialog(true);
-
       if (status === 'success') {
-        setMpDialogType('success');
-        setMpDialogMessage('¡Tu cuenta de Mercado Pago se vinculó correctamente!');
+        notifySuccess('¡Tu cuenta de Mercado Pago se vinculó correctamente!');
       } else {
-        setMpDialogType('error');
-        // Limpiamos un poco el mensaje de error si viene en formato JSON string
-        setMpDialogMessage(details || 'Hubo un error al intentar conectar con Mercado Pago.');
+        notifyError(details || 'Hubo un error al intentar conectar con Mercado Pago.');
       }
-
-      // Limpiamos la URL para que si recarga la página no vuelva a procesar la alerta
+      setMpRefreshKey((k) => k + 1);
       navigate('/dashboard', { replace: true });
     }
-
-    setTimeout(() => {
-      setShowMpDialog(false);
-    }, 4000);
-    
   }, [searchParams, navigate]);
 
   // 2. Efecto para cargar eventos
   useEffect(() => {
     const fetchEvents = async () => {
-      const data = await getEvents(authToken.access);
-      setEvents(data.events);
-      setTicketLimit(data.ticket_limit);
-      setMpSync(data.mp_sync);
-      setIsLoading(false);
+      try {
+        const data = await getEvents(authToken.access);
+        setEvents(data.events);
+        setTicketLimit(data.ticket_limit);
+        setMpSync(data.mp_sync);
+      } catch (err) {
+        notifyError(err.message || 'No se pudieron cargar los eventos.');
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     if (authToken.access) {
       fetchEvents();
     }
-  }, [authToken.access, showMpDialog]);
+  }, [authToken.access, mpRefreshKey]);
 
   const handleGetAuthorizationUrl = async () => {
     try {
@@ -86,7 +79,7 @@ export default function Dashboard() {
       window.location.href = data.url;
     } catch (error) {
       console.error('Error al obtener la URL de autorización:', error.message);
-      alert('No se pudo obtener la URL de autorización. Por favor, intenta nuevamente.');
+      notifyError('No se pudo obtener la URL de autorización. Por favor, intenta nuevamente.');
     }
   };
 
@@ -94,7 +87,6 @@ export default function Dashboard() {
     return <LoadingSpinner />;
   }
 
-  const dialogColor = mpDialogType === 'success' ? 'green' : 'red';
 
   const sortedEvents = [...events].sort((a, b) => new Date(b.date) - new Date(a.date));
   const totalPages = Math.max(1, Math.ceil(sortedEvents.length / EVENTS_PER_PAGE));
@@ -110,47 +102,58 @@ export default function Dashboard() {
           <Button onClick={logoutUser} variant="entraditaTertiary" className="w-full sm:w-auto">
             <LogOutIcon className="mr-2 h-4 w-4" /> Cerrar Sesión
           </Button>
-        </div>
-
-        {/* --- DIALOGO DE FEEDBACK MERCADO PAGO --- */}
-        {showMpDialog && (
-          <div className={`mb-6 p-4 rounded-lg ${dialogColor === 'green' ? 'bg-green-600' : 'bg-red-600'} text-black transition-all duration-300`}>
-            {mpDialogType === 'success' ? (
-              <>
-                <p className="text-black font-bold">¡Conexión Exitosa!</p>
-                <p className="text-black">{mpDialogMessage}</p>
-                <p className="text-black text-sm mt-1">Ya puedes recibir pagos de tus eventos.</p>
-              </>
-            ) : (
-              <>
-                <p className="text-black font-bold">Error de Conexión</p>
-                <p className="text-black">{mpDialogMessage}</p>
-              </>
-            )}
-          </div>
-        )}
-        {/* ---------------------------------------- */}
-
-        <Card className="bg-gray-800 border-gray-700 mb-4 p-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-          <div className='flex flex-row items-center'>
-            <img src='/isotipoWhite.png' alt="Ticket" className="w-10 sm:w-16 mr-2 p-0" />
-            <CardTitle className="text-white text-xl sm:text-2xl text-left mr-2">Tickets disponibles </CardTitle>
-            <CardContent className="items-center p-0">
-              <p className="text-2xl sm:text-3xl text-blue-200 font-bold">{ticket_limit}</p>
-            </CardContent>
-          </div>
-          {!mpSync ? (
-            <Button className="w-full sm:w-auto" variant="entraditaPrimary" onClick={() => handleGetAuthorizationUrl()}>
-              <img src="/mercadopago.png" alt="Mercado Pago" className="h-5 w-auto mr-2 shrink-0" />
-              Vincular Mercado Pago
-            </Button>
-          ) : (
-            <Button className="w-full sm:w-auto pointer-events-none" variant="entraditaSuccess" tabIndex={-1}>
-              <img src="/mercadopago.png" alt="Mercado Pago" className="h-5 w-auto mr-2 shrink-0" />
-              Mercado Pago Vinculado
+          {user?.is_staff && (
+            <Button onClick={() => navigate('/admin')} variant="entraditaTertiary" className="w-full sm:w-auto">
+              Panel de administración →
             </Button>
           )}
-        </Card>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+          {/* Bloque: Tickets disponibles */}
+          <Card className="bg-gray-800 border-gray-700 px-4 py-3 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="bg-blue-500/10 rounded-lg p-2 shrink-0">
+                <img src='/isotipoWhite.png' alt="Ticket" className="w-6 h-6 object-contain" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-wider font-medium leading-none mb-0.5">Tickets disponibles</p>
+                <p className="text-2xl font-bold text-blue-300 leading-tight">{ticket_limit}</p>
+              </div>
+            </div>
+            <Button className="shrink-0" variant="entraditaPrimary" onClick={() => navigate('/buy-tickets')}>
+              <ShoppingCart className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Comprar</span>
+            </Button>
+          </Card>
+
+          {/* Bloque: Mercado Pago */}
+          <Card className={`border px-4 py-3 flex items-center justify-between gap-3 ${mpSync ? 'bg-emerald-950/40 border-emerald-700/50' : 'bg-gray-800 border-gray-700'}`}>
+            <div className="flex items-center gap-3">
+              <div className={`rounded-lg p-2 shrink-0 ${mpSync ? 'bg-emerald-500/10' : 'bg-gray-700/60'}`}>
+                <img src="/mercadopago.png" alt="Mercado Pago" className="h-6 w-auto object-contain" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-wider font-medium leading-none mb-0.5">Mercado Pago</p>
+                <div className="flex items-center gap-1.5">
+                  <span className={`inline-block w-2 h-2 rounded-full shrink-0 ${mpSync ? 'bg-emerald-400' : 'bg-gray-500'}`} />
+                  <p className={`text-sm font-semibold ${mpSync ? 'text-emerald-400' : 'text-gray-400'}`}>
+                    {mpSync ? 'Vinculado' : 'Sin vincular'}
+                  </p>
+                </div>
+              </div>
+            </div>
+            {!mpSync ? (
+              <Button className="shrink-0" variant="entraditaPrimary" onClick={() => handleGetAuthorizationUrl()}>
+                Vincular
+              </Button>
+            ) : (
+              <Button className="shrink-0 pointer-events-none" variant="entraditaSuccess" tabIndex={-1}>
+                Activo
+              </Button>
+            )}
+          </Card>
+        </div>
 
         <Card className="bg-gray-800 border-gray-700 mb-8">
           <CardHeader>

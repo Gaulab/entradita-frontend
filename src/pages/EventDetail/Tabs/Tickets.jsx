@@ -16,6 +16,7 @@ import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon, Share2, ChevronLef
 // API
 import { updateTicketSales } from '../../../api/eventApi';
 import PropTypes from 'prop-types';
+import { notifyInfo } from '../../../utils/notify';
 
 export default function Tickets() {
   const { authToken } = useContext(AuthContext);
@@ -278,7 +279,7 @@ function MobileActionDialog({ ticket, onClose }) {
                   })
                   .catch(console.error);
               } else {
-                alert(`Comparte este enlace: ${window.location.origin}/ticket/${ticket.uuid}`);
+                notifyInfo(`Comparte este enlace: ${window.location.origin}/ticket/${ticket.uuid}`);
                 navigator.clipboard.writeText(`${window.location.origin}/ticket/${ticket.uuid}`);
               }
               onClose();

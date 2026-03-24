@@ -13,6 +13,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '../../../components/ui
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../../../components/ui/dialog';
 // Icons
 import { EyeIcon, PlusIcon, Trash2Icon, PencilIcon, TicketX, LinkIcon, TicketCheck, Share2 } from 'lucide-react';
+import { notifyError, notifyInfo } from '../../../utils/notify';
 // api
 import { changeEmployeeStatus } from '@/api/employeeApi';
 
@@ -54,7 +55,7 @@ export default function Sellers({}) {
         setReloadEmployees(!reloadEmployees);
       } catch (error) {
         console.error('Error updating empleado status:', error.message);
-        alert(error.message);
+        notifyError(error.message);
       }
     },
     [authToken.access, sellers, scanners, reloadEmployees]
@@ -101,7 +102,7 @@ export default function Sellers({}) {
         });
     } else {
       // Fallback for browsers that don't support the Web Share API
-      alert(`Comparte este enlace: ${window.location.origin}/ticket/${seller.uuid}`);
+      notifyInfo(`Comparte este enlace: ${window.location.origin}/ticket/${seller.uuid}`);
       navigator.clipboard
         .writeText(shareText)
         .then(() => {

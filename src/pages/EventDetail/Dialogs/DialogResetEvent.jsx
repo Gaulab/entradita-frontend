@@ -8,6 +8,7 @@ import AuthContext from '@/context/AuthContext';
 import EventDetailsContext from '@/context/EventDetailsContext';
 // api
 import { resetEvent } from '@/api/eventApi'; // Asumo que crearás esta función en tu API
+import { notifyError } from '@/utils/notify';
 
 export default function DialogResetEvent({ currentDate, newDate, soldTicketsCount }) {
   const { authToken } = useContext(AuthContext);
@@ -47,7 +48,7 @@ export default function DialogResetEvent({ currentDate, newDate, soldTicketsCoun
       
     } catch (error) {
       console.error('Error in reset operation:', error.message);
-      alert('Error al reiniciar el evento: ' + error.message);
+      notifyError('Error al reiniciar el evento: ' + error.message);
     } finally {
       setIsResetting(false);
     }
