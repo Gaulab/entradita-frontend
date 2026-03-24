@@ -36,3 +36,21 @@ export const firebaseLogin = async (idToken, username) => {
         body: JSON.stringify(payload)
     }, 'Error al iniciar sesión');
 }
+
+// Request password reset email
+export const requestPasswordReset = async (email) => {
+    return apiRequest(`${apiUrl}/auth/password-reset/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+    }, 'Error al solicitar el recupero de contraseña');
+}
+
+// Confirm password reset with token + new password
+export const confirmPasswordReset = async (token, new_password) => {
+    return apiRequest(`${apiUrl}/auth/password-reset/confirm/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, new_password }),
+    }, 'Error al restablecer la contraseña');
+}
