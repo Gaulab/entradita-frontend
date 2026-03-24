@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import AuthContext from "./AuthContext";
 // API functions
 import { getEventDetails } from "../api/eventApi";
+import { notifyError } from "../utils/notify";
 import { getEmployees } from "../api/employeeApi";
 import { loadMoreTicketsApi } from "../api/eventApi";
 
@@ -25,9 +26,11 @@ export const EventDetailsProvider = ({ children }) => {
   const [scanners, setScanners] = useState([]);
   const [ticketTags, setTicketTags] = useState([]);
   const [ticketSalesEnabled, setTicketSalesEnabled] = useState(false);
+  const [webSalesEnabled, setWebSalesEnabled] = useState(false);
   // Dialogs 
   const [isCreateEmployeeDialogOpen, setIsCreateEmployeeDialogOpen] = useState(false);
   const [isCreateTicketDialogOpen, setIsCreateTicketDialogOpen] = useState(false);
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
   const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
   const [isEditEmployeeDialogOpen, setIsEditEmployeeDialogOpen] = useState(false);
   // Reloads
@@ -62,9 +65,10 @@ export const EventDetailsProvider = ({ children }) => {
         setEvent(data.event);
         setSellers(data.sellers);
         setScanners(data.scanners);
-        setTotalTickets(data.total_tickets);
+        setTotalTickets(data.event.tickets_counter);
         setTickets(data.tickets.sort((a, b) => b.id - a.id));
         setTicketSalesEnabled(data.event.ticket_sales_enabled);
+        setWebSalesEnabled(data.event.web_sale);
         setAllTickets(data.tickets.sort((a, b) => b.id - a.id));
         setTicketTags(data.event.ticket_tags);
       } catch (error) {
@@ -173,7 +177,7 @@ export const EventDetailsProvider = ({ children }) => {
     };
     getEventEmployees().catch(error => {
       console.error("Error fetching empleados data:", error.message);
-      alert(error.message);
+      notifyError(error.message);
     });
   }, [reloadEmployees, id, authToken]);
 
@@ -182,6 +186,7 @@ export const EventDetailsProvider = ({ children }) => {
       const data = await getEventDetails(id, authToken.access);
       setTickets(data.tickets.sort((a, b) => b.id - a.id));
       setAllTickets(data.tickets.sort((a, b) => b.id - a.id));
+      setEvent(data.event);
     }
     fetchTickets().catch(error => {
       console.error("Error fetching tickets:", error.message);
@@ -216,10 +221,12 @@ export const EventDetailsProvider = ({ children }) => {
         scanners, setScanners,
         ticketTags, setTicketTags,
         ticketSalesEnabled, setTicketSalesEnabled,
+        webSalesEnabled, setWebSalesEnabled,
         // Dialogs
         isCreateEmployeeDialogOpen, setIsCreateEmployeeDialogOpen,
         isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen,
         isCreateTicketDialogOpen, setIsCreateTicketDialogOpen,
+        isResetDialogOpen, setIsResetDialogOpen,
         isEditEmployeeDialogOpen, setIsEditEmployeeDialogOpen,
         // Reloads
         reloadTickets, setReloadTickets,

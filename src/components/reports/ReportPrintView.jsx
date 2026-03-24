@@ -5,7 +5,8 @@ import PropTypes from "prop-types"
 import { Button } from "@/components/ui/button"
 import { X } from "lucide-react"
 
-export default function ReportPrintView({ data, analytics, commissionAmount, totalCommission, netRevenue, onClose }) {
+// CAMBIO: Recibimos commissions (objeto) en lugar de commissionAmount (numero)
+export default function ReportPrintView({ data, analytics, commissions, totalCommission, netRevenue, onClose }) {
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
@@ -114,7 +115,7 @@ export default function ReportPrintView({ data, analytics, commissionAmount, tot
                   <th className="border border-gray-300 p-3 text-left">Vendedor</th>
                   <th className="border border-gray-300 p-3 text-center">Tickets Vendidos</th>
                   <th className="border border-gray-300 p-3 text-center">Total Vendido</th>
-                  <th className="border border-gray-300 p-3 text-center">Comisión</th>
+                  <th className="border border-gray-300 p-3 text-center">Comisión Total</th>
                   <th className="border border-gray-300 p-3 text-center">Promedio/Ticket</th>
                 </tr>
               </thead>
@@ -133,17 +134,17 @@ export default function ReportPrintView({ data, analytics, commissionAmount, tot
           </div>
         </div>
 
-        {/* Desglose por tipo de ticket */}
+        {/* Desglose por tipo de ticket y Comisiones */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-4 border-b border-gray-200 pb-2">Desglose por Tipo de Ticket</h2>
+          <h2 className="text-2xl font-bold mb-4 border-b border-gray-200 pb-2">Desglose por Ticket y Comisiones</h2>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse border border-gray-300">
               <thead>
                 <tr className="bg-gray-100">
                   <th className="border border-gray-300 p-3 text-left">Tipo de Ticket</th>
                   <th className="border border-gray-300 p-3 text-center">Precio</th>
+                  <th className="border border-gray-300 p-3 text-center">Comisión Configurada</th>
                   <th className="border border-gray-300 p-3 text-center">Cantidad Vendida</th>
-                  <th className="border border-gray-300 p-3 text-center">% del Total</th>
                   <th className="border border-gray-300 p-3 text-center">Total Recaudado</th>
                 </tr>
               </thead>
@@ -152,8 +153,11 @@ export default function ReportPrintView({ data, analytics, commissionAmount, tot
                   <tr key={ticket.id}>
                     <td className="border border-gray-300 p-3 font-medium">{ticket.name}</td>
                     <td className="border border-gray-300 p-3 text-center">${ticket.price.toFixed(2)}</td>
+                    {/* CAMBIO: Mostramos la comisión específica de este ticket */}
+                    <td className="border border-gray-300 p-3 text-center text-orange-600">
+                        ${(commissions && commissions[ticket.id] ? commissions[ticket.id] : 0).toFixed(2)}
+                    </td>
                     <td className="border border-gray-300 p-3 text-center">{ticket.quantitySold}</td>
-                    <td className="border border-gray-300 p-3 text-center">{ticket.percentage.toFixed(1)}%</td>
                     <td className="border border-gray-300 p-3 text-center">${ticket.revenue.toFixed(2)}</td>
                   </tr>
                 ))}
@@ -168,7 +172,7 @@ export default function ReportPrintView({ data, analytics, commissionAmount, tot
             Reporte generado automáticamente por entradita.com - Plataforma de gestión de eventos
           </p>
           <p className="text-xs mt-2">
-            Comisión configurada: ${commissionAmount} por ticket | Total en comisiones: ${totalCommission.toFixed(2)}
+            Comisiones variables por tipo de ticket | Total en comisiones: ${totalCommission.toFixed(2)}
           </p>
         </div>
       </div>
@@ -194,7 +198,7 @@ export default function ReportPrintView({ data, analytics, commissionAmount, tot
 ReportPrintView.propTypes = {
   data: PropTypes.object.isRequired,
   analytics: PropTypes.object,
-  commissionAmount: PropTypes.number.isRequired,
+  commissions: PropTypes.object,
   totalCommission: PropTypes.number.isRequired,
   netRevenue: PropTypes.number.isRequired,
   onClose: PropTypes.func.isRequired,

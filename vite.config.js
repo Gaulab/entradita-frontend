@@ -22,7 +22,7 @@ export default defineConfig({
   },
 
   build: {
-    sourcemap: true, 
+    sourcemap: false, 
     rollupOptions: {
       external: [],
     },
@@ -34,6 +34,5 @@ export default defineConfig({
   optimizeDeps: {
     include: ['@radix-ui/react-select'],
   },
-
 
 });

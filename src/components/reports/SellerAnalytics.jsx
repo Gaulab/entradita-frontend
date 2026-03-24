@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { TrendingUp, TrendingDown, Minus, ChevronDown, ChevronUp } from "lucide-react"
 
-export default function SellerAnalytics({ data, analytics, commissionAmount }) {
+// Se eliminó 'commissionAmount' ya que el cálculo viene hecho dentro de 'analytics'
+export default function SellerAnalytics({ data, analytics }) {
   const displayLimit = 8
   const [showAll, setShowAll] = useState(false)
   const sellersToShow = showAll
@@ -67,7 +68,7 @@ export default function SellerAnalytics({ data, analytics, commissionAmount }) {
                 <TableHead className="text-gray-300 max-sm:hidden">Desglose de Ventas</TableHead>
                 <TableHead className="text-gray-300">Total Vendido</TableHead>
                 <TableHead className="text-gray-300">Promedio/Ticket</TableHead>
-                <TableHead className="text-gray-300">Comisión a Pagar</TableHead>
+                <TableHead className="text-gray-300">Comisión Total</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody className="text-center">
@@ -92,7 +93,8 @@ export default function SellerAnalytics({ data, analytics, commissionAmount }) {
                   </TableCell>
                   <TableCell>${seller.totalRevenue.toFixed(2)}</TableCell>
                   <TableCell>${seller.avgTicketPrice.toFixed(2)}</TableCell>
-                  <TableCell className="font-bold">${seller.commission.toFixed(2)}</TableCell>
+                  {/* Este valor ya viene calculado correctamente desde el padre */}
+                  <TableCell className="font-bold text-orange-400">${seller.commission.toFixed(2)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -104,7 +106,7 @@ export default function SellerAnalytics({ data, analytics, commissionAmount }) {
               <Button
                 variant="outline"
                 onClick={() => setShowAll(!showAll)}
-                className="flex items-center gap-2 mx-auto"
+                className="flex items-center gap-2 mx-auto bg-gray-700 hover:bg-gray-600 border-gray-600 text-white"
               >
                 {showAll ? (
                   <>
@@ -144,6 +146,7 @@ export default function SellerAnalytics({ data, analytics, commissionAmount }) {
           <div className="bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold text-gray-300 mb-2">Total en Comisiones</h4>
             <p className="text-2xl font-bold text-orange-400">
+              {/* Suma de las comisiones individuales ya calculadas */}
               ${analytics.sellersWithStats.reduce((total, seller) => total + seller.commission, 0).toFixed(2)}
             </p>
           </div>
@@ -156,5 +159,4 @@ export default function SellerAnalytics({ data, analytics, commissionAmount }) {
 SellerAnalytics.propTypes = {
   data: PropTypes.object.isRequired,
   analytics: PropTypes.object,
-  commissionAmount: PropTypes.number.isRequired,
 }

@@ -8,33 +8,15 @@ import { Button } from '@/components/ui/button';
 import Badge from '@/components/ui/badge';
 import { Slider } from '@/components/ui/slider';
 
-const pricingTiers = [
-  {
-    name: 'Eventos Pequeños',
-    range: [1, 499],
-    price: 140,
-    color: 'bg-blue-400',
-    icon: <Star className="w-5 h-5 sm:w-6 sm:h-6" />,
-    description: 'Perfecto para eventos íntimos y exclusivos',
-  },
-  {
-    name: 'Eventos Medianos',
-    range: [500, 1000],
-    price: 110,
-    color: 'bg-green-400',
-    icon: <Zap className="w-5 h-5 sm:w-6 sm:h-6" />,
-    description: 'Ideal para eventos corporativos y festivales',
-    popular: true,
-  },
-  {
-    name: 'Eventos Grandes',
-    range: [1001, 5000],
-    price: 99.99,
-    color: 'bg-purple-400',
-    icon: <Globe className="w-5 h-5 sm:w-6 sm:h-6" />,
-    description: 'Para grandes producciones y conciertos',
-  },
-];
+import { pricingTiers as baseTiers, getTierForCount } from '../../config/pricingConfig.js';
+
+const TIER_DECORATION = {
+  small:  { color: 'bg-blue-400',   icon: <Star className="w-5 h-5 sm:w-6 sm:h-6" />, description: 'Perfecto para eventos íntimos y exclusivos' },
+  medium: { color: 'bg-green-400',  icon: <Zap  className="w-5 h-5 sm:w-6 sm:h-6" />, description: 'Ideal para eventos corporativos y festivales' },
+  large:  { color: 'bg-purple-400', icon: <Globe className="w-5 h-5 sm:w-6 sm:h-6" />, description: 'Para grandes producciones y conciertos' },
+};
+
+const pricingTiers = baseTiers.map((t) => ({ ...t, ...TIER_DECORATION[t.id] }));
 
 const allFeatures = [
   'Generación de códigos QR únicos',
@@ -59,22 +41,10 @@ export default function ModernPricing() {
 
   useEffect(() => {
     const tickets = ticketCount[0];
-    let tier = pricingTiers.find((t) => tickets >= t.range[0] && tickets <= t.range[1]);
-
-    if (!tier && tickets > 1000) {
-      tier = pricingTiers[2]; // Eventos Grandes
-    }
-
-    if (tier) {
-      setCurrentTier(tier);
-      const cost = tickets * tier.price;
-      setTotalCost(cost);
-
-      // Calculate savings compared to highest tier
-      const highestPrice = pricingTiers[0].price;
-      const potentialCost = tickets * highestPrice;
-      setSavings(potentialCost - cost);
-    }
+    const tier = getTierForCount(tickets);
+    setCurrentTier(tier);
+    setTotalCost(tickets * tier.price);
+    setSavings(tickets * pricingTiers[0].price - tickets * tier.price);
   }, [ticketCount]);
 
   const handleChoosePlan = (tier) => {
@@ -117,13 +87,11 @@ export default function ModernPricing() {
           </div>
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-4 sm:mb-6">
-            <span className="bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent">Potencia tu Evento con </span>
-            <span className="bg-gradient-to-r from-blue-400 to-green-500 bg-clip-text text-transparent">Precios Flexibles</span>
+            <span className="bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent">Potencia tu Evento </span>
           </h1>
-
-          <p className="text-base sm:text-lg lg:text-xl text-slate-300 max-w-3xl mx-auto mb-6 sm:mb-8 leading-relaxed px-4 sm:px-0">
-            Disfruta de todas nuestras características premium sin importar el tamaño de tu evento. Nuestros precios se adaptan a tu éxito, disminuyendo a medida que vendes más entradas.
-          </p>
+          <h2 className='text-xl sm:text-3xl font-bold text-slate-200'>
+            con <span className="bg-gradient-to-r from-blue-400 to-green-500 bg-clip-text text-transparent">Precios Flexibles</span>
+          </h2>
         </section>
 
         {/* Interactive Pricing Calculator - Reduced padding */}
@@ -185,7 +153,7 @@ export default function ModernPricing() {
                     onClick={() => handleChoosePlan(currentTier)}
                     className="mt-4 sm:mt-6 w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 text-white border-0 px-6 sm:px-8 py-2 sm:py-3"
                   >
-                    Elegir este plan
+                    Elegir plan
                     <ChevronRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
@@ -335,7 +303,7 @@ export default function ModernPricing() {
       <footer className="backdrop-blur-md bg-slate-900/80 border-t border-slate-700/50 py-8 sm:py-12">
         <div className="container mx-auto px-4">
           <div className="text-center text-slate-400 mb-4 sm:mb-6">
-            <p className="text-base sm:text-lg mb-3 sm:mb-4">© 2025 entradita.com - Transformando la gestión de eventos</p>
+            <p className="text-base sm:text-lg mb-3 sm:mb-4">© 2026 entradita.com - Transformando la gestión de eventos</p>
             <div className="flex justify-center space-x-4 sm:space-x-6">
               <Link to="/terms-and-conditions" className="hover:text-white transition-colors text-sm sm:text-base">
                 Términos de Servicio

@@ -1,24 +1,35 @@
-// entraditaFront/src/pages/ScannerView.jsx
-
-// react imports
 import { useState, useEffect, useCallback } from 'react';
-// react-router imports
-import { useParams } from 'react-router-dom';
-// Custom components
-import { Button } from '../../components/ui/button';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/card';
 import { Scanner } from '@yudiel/react-qr-scanner';
-import { Input } from '../../components/ui/input';
-// API
-import { getScanner } from '../../api/employeeApi';
-import { checkPassword } from '../../api/employeeApi';
-import { checkTicketByPayload } from '../../api/ticketApi';
-import { checkTicketByDni } from '../../api/ticketApi';
-// PropTypes
+import { CheckCircle, AlertTriangle, XCircle, Search, ScanLine } from 'lucide-react';
 import PropTypes from 'prop-types';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { getScanner, checkPassword } from '../../api/employeeApi';
+import { checkTicketByPayload, checkTicketByDni } from '../../api/ticketApi';
+import PasswordForm from '../../components/seller/PasswordForm';
+
+const RESULT_STYLES = {
+  green: {
+    bg: 'bg-green-500/10 border-green-500/30',
+    icon: CheckCircle,
+    iconColor: 'text-green-400',
+    title: 'Ticket válido',
+  },
+  yellow: {
+    bg: 'bg-yellow-500/10 border-yellow-500/30',
+    icon: AlertTriangle,
+    iconColor: 'text-yellow-400',
+    title: 'Ya escaneado',
+  },
+  red: {
+    bg: 'bg-red-500/10 border-red-500/30',
+    icon: XCircle,
+    iconColor: 'text-red-400',
+    title: 'Ticket inválido',
+  },
+};
+
 const ScannerView = ({ uuid }) => {
-  // main states
-  const { id } = useParams();
   const [error, setError] = useState('');
   const [dni, setDni] = useState('');
   const [ticketData, setTicketData] = useState(null);
@@ -26,22 +37,15 @@ const ScannerView = ({ uuid }) => {
   const [eventId, setEventId] = useState(null);
   const [dniRequired, setDniRequired] = useState(false);
   const [isScannerActive, setIsScannerActive] = useState(true);
-  // password states
   const [password, setPassword] = useState('');
   const [isPasswordCorrect, setIsPasswordCorrect] = useState(false);
   const [passwordError, setPasswordError] = useState('');
-  // employee status
-  const [scannerNotFound, setScannerNotFound] = useState(false);
   const [showTicketInfo, setShowTicketInfo] = useState(false);
 
   useEffect(() => {
-    const handleBeforeUnload = () => {
-      localStorage.removeItem('isPasswordCorrect');
-    };
+    const handleBeforeUnload = () => localStorage.removeItem('isPasswordCorrect');
     window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, []);
 
   useEffect(() => {
@@ -52,12 +56,10 @@ const ScannerView = ({ uuid }) => {
     const fetchScanner = async () => {
       try {
         const data = await getScanner(uuid);
-        // console.log(data);
         setEventId(data.scanner.event);
         setDniRequired(data.dni_required);
-      } catch (error) {
-        console.error('Error fetching scanner:', error.message);
-        setScannerNotFound(false);
+      } catch (err) {
+        console.error('Error fetching scanner:', err.message);
       }
     };
     if (isPasswordCorrect) {
@@ -76,33 +78,32 @@ const ScannerView = ({ uuid }) => {
     async (result) => {
       try {
         const data = await checkTicketByPayload(result[0].rawValue, uuid, eventId);
-        console.log('data', data);
         handleTicketValidation(data.ticket, data.old_scanned);
-      } catch (error) {
+      } catch (err) {
         setDialogColor('red');
-        setError(error.message);
+        setError(err.message);
         setTicketData(null);
         setShowTicketInfo(true);
         setIsScannerActive(false);
       }
     },
-    [eventId, handleTicketValidation]
+    [eventId, uuid, handleTicketValidation]
   );
 
   const validarTicketDni = useCallback(
-    async (dni) => {
+    async (dniValue) => {
       setError('');
       try {
-        const data = await checkTicketByDni(dni, uuid, eventId);
+        const data = await checkTicketByDni(dniValue, uuid, eventId);
         handleTicketValidation(data.ticket, data.old_scanned);
-      } catch (error) {
+      } catch (err) {
         setTicketData(null);
         setDialogColor('red');
-        setError(error.message || 'Ticket no encontrado.');
+        setError(err.message || 'Ticket no encontrado.');
         setShowTicketInfo(true);
       }
     },
-    [eventId, handleTicketValidation]
+    [eventId, uuid, handleTicketValidation]
   );
 
   const verifyPassword = async () => {
@@ -110,111 +111,153 @@ const ScannerView = ({ uuid }) => {
       await checkPassword(uuid, password);
       setIsPasswordCorrect(true);
       localStorage.setItem('isPasswordCorrect', 'true');
-    } catch (error) {
-      setPasswordError(error.message);
+    } catch (err) {
+      setPasswordError(err.message);
     }
   };
 
-  if (scannerNotFound) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
-        <h1 className="text-2xl">Escaner no encontrado</h1>
-      </div>
-    );
-  }
+  const resetScanner = () => {
+    setShowTicketInfo(false);
+    setTicketData(null);
+    setError('');
+    setIsScannerActive(true);
+  };
 
   if (!isPasswordCorrect) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-900 text-white w-screen">
-        <Card className="bg-gray-800 border-gray-700 p-6 max-w-md w-full">
-          <CardHeader>
-            <CardTitle className="text-white text-xl">Ingrese la contraseña del evento</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Input
-              type="password"
-              placeholder="Contraseña"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mb-4 bg-gray-700 border-gray-600 text-white placeholder-gray-400"
-            />
-            {passwordError && <p className="text-red-500 mb-2">{passwordError}</p>}
-            <Button onClick={verifyPassword} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
-              Verificar
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      <PasswordForm
+        password={password}
+        setPassword={setPassword}
+        verifyPassword={verifyPassword}
+        passwordError={passwordError}
+        subtitle="Panel de scanner"
+      />
     );
   }
 
+  const resultStyle = RESULT_STYLES[dialogColor] || RESULT_STYLES.red;
+  const ResultIcon = resultStyle.icon;
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900 p-4 w-screen">
-      <Card className="w-full max-w-md bg-gray-800 border-gray-700">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center text-white">Scan Ticket</CardTitle>
-          <CardDescription className="text-center text-gray-400">Scanee el código QR del ticket para el evento ID: {id}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4 ">
+    <div className="h-dvh bg-gradient-to-b from-gray-900 to-gray-950 text-white overflow-hidden flex flex-col justify-center">
+      <div className="max-w-md mx-auto px-4 py-5 space-y-4 w-full">
+
+        {/* Branding */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <img src="/isotipoWhite.png" alt="Entradita" className="w-7 h-7" />
+            <span className="font-bold text-white/90 text-sm tracking-wide">entradita.com</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-gray-400">
+            <ScanLine className="w-4 h-4" />
+            <span className="text-xs font-medium">Scanner</span>
+          </div>
+        </div>
+
+        {/* Scanner */}
         {isScannerActive && (
-          <div className="aspect-square">
-            <Scanner
-              components={{
-                torch: false, // Habilita la linterna
-                zoom: false, // Habilita el zoom
-                finder: false,
-              }}
-              styles={{
-                container: { borderRadius: '10px', width: '100%', height: '100%', backgroundColor: 'black', padding: '0' },
-                video: { borderRadius: '10px', height: '100%', width: '100%', backgroundColor: 'black' },
-                finderBorder: 0,
-              }}
-              onScan={validarTicketPayload}
-              allowMultiple={true}
-              scanDelay={6000}
-              onError={(error) => console.error(error)}
-            />
-            </div>
-          )}  
-
-          {dniRequired && isScannerActive && (
-            <div className="flex flex-col space-y-4">
-            <Input type="text" placeholder="Ingrese DNI del ticket" value={dni} onChange={(e) => setDni(e.target.value)} className="w-full bg-gray-700 text-white" />
-            <Button onClick={() => validarTicketDni(dni)} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
-            Buscar por DNI
-            </Button>
-            </div>
-          )}
-
-          {showTicketInfo && (
-            <div className={`p-4 rounded-lg ${dialogColor === 'green' ? 'bg-green-600' : dialogColor === 'yellow' ? 'bg-yellow-500' : 'bg-red-600'} text-black`}>
-              {ticketData ? (
-                <>
-                  <p className="text-black font-bold">Ticket encontrado!</p>
-                  {dialogColor === 'yellow' && <p>Este ticket ya fue escaneado</p>}
-                  <p className="text-black">Nombre: {ticketData.owner_name}</p>
-                  <p className="text-black">Apellido: {ticketData.owner_lastname}</p>
-                  {ticketData.owner_dni && <p className="text-black">DNI: {ticketData.owner_dni}</p>}
-                  <p className="text-black">Tipo: {ticketData.ticket_tag_name}</p>
-                </>
-              ) : (
-                <p className="text-black font-bold">{error}</p>
-              )}
-              <Button
-                onClick={() => {
-                  setShowTicketInfo(false);
-                  setTicketData(null);
-                  setError('');
-                  setIsScannerActive(true);
+          <div className="bg-gray-800/80 border border-gray-700/50 rounded-2xl overflow-hidden shadow-xl shrink-0">
+            <div className="aspect-square relative">
+              <Scanner
+                components={{ torch: false, zoom: false, finder: false }}
+                styles={{
+                  container: { borderRadius: '0', width: '100%', height: '100%', backgroundColor: 'black', padding: '0' },
+                  video: { borderRadius: '0', height: '100%', width: '100%', backgroundColor: 'black' },
+                  finderBorder: 0,
                 }}
-                className="w-full mt-4 bg-gray-600 hover:bg-blue-800 text-white"
+                onScan={validarTicketPayload}
+                allowMultiple={true}
+                scanDelay={6000}
+                onError={(err) => console.error(err)}
+              />
+              <div className="absolute inset-0 pointer-events-none border-[3px] border-blue-400/20 rounded-none" />
+            </div>
+            <div className="px-4 py-2.5 text-center shrink-0">
+              <p className="text-sm text-gray-400">Apuntá la cámara al código QR del ticket</p>
+            </div>
+          </div>
+        )}
+
+        {/* DNI Search */}
+        {dniRequired && isScannerActive && (
+          <div className="bg-gray-800/80 border border-gray-700/50 rounded-2xl p-4 shadow-xl">
+            <p className="text-sm text-gray-400 mb-3">O buscá por DNI</p>
+            <div className="flex gap-2">
+              <Input
+                type="text"
+                placeholder="Número de DNI"
+                value={dni}
+                onChange={(e) => setDni(e.target.value)}
+                className="bg-gray-700/50 border-gray-600 text-white placeholder-gray-500 h-11 rounded-xl"
+                onKeyDown={(e) => { if (e.key === 'Enter') validarTicketDni(dni); }}
+              />
+              <Button
+                onClick={() => validarTicketDni(dni)}
+                className="h-11 px-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl shrink-0"
               >
-                Volver a escanear
+                <Search className="w-4 h-4" />
               </Button>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </div>
+        )}
+
+        {/* Result */}
+        {showTicketInfo && (
+          <div className={`border rounded-2xl overflow-hidden shadow-xl ${resultStyle.bg}`}>
+            <div className="p-5">
+              <div className="flex items-center gap-3 mb-4">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                  dialogColor === 'green' ? 'bg-green-500/20' :
+                  dialogColor === 'yellow' ? 'bg-yellow-500/20' : 'bg-red-500/20'
+                }`}>
+                  <ResultIcon className={`w-5 h-5 ${resultStyle.iconColor}`} />
+                </div>
+                <div>
+                  <h3 className={`font-semibold text-lg ${resultStyle.iconColor}`}>
+                    {resultStyle.title}
+                  </h3>
+                  {dialogColor === 'yellow' && (
+                    <p className="text-yellow-400/70 text-xs">Este ticket ya fue escaneado previamente</p>
+                  )}
+                </div>
+              </div>
+
+              {ticketData ? (
+                <div className="space-y-2 mb-5">
+                  <div className="flex justify-between items-center py-2 border-b border-white/5">
+                    <span className="text-sm text-gray-400">Nombre</span>
+                    <span className="text-sm text-white font-medium">{ticketData.owner_name} {ticketData.owner_lastname}</span>
+                  </div>
+                  {ticketData.owner_dni && (
+                    <div className="flex justify-between items-center py-2 border-b border-white/5">
+                      <span className="text-sm text-gray-400">DNI</span>
+                      <span className="text-sm text-white font-medium">{ticketData.owner_dni}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center py-2">
+                    <span className="text-sm text-gray-400">Tipo</span>
+                    <span className="text-sm text-white font-medium">{ticketData.ticket_tag_name}</span>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-red-300 text-sm mb-5">{error}</p>
+              )}
+
+              <Button
+                onClick={resetScanner}
+                className="w-full h-11 bg-white/10 hover:bg-white/15 text-white font-semibold rounded-xl border-0 transition-all"
+              >
+                Escanear otro ticket
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Footer */}
+        <p className="text-center text-xs text-gray-600 shrink-0">
+          Powered by <span className="font-semibold text-gray-500">entradita.com</span>
+        </p>
+      </div>
     </div>
   );
 };

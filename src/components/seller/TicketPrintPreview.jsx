@@ -7,6 +7,7 @@ import { Button } from "../../../components/ui/button"
 import { Scissors } from "lucide-react"
 import html2canvas from "html2canvas"
 import { formatDate } from "../../utils/dateUtils"
+import { notifyError } from "../../utils/notify"
 
 export default function TicketPrintPreview({ ticket, qrRef, dniRequired, onClose, vendedor }) {
   const [qrImageUrl, setQrImageUrl] = useState("")
@@ -36,7 +37,7 @@ export default function TicketPrintPreview({ ticket, qrRef, dniRequired, onClose
   const handlePrint = () => {
     const printWindow = window.open("", "_blank", "width=800,height=600")
     if (!printWindow) {
-      alert("Por favor, permite las ventanas emergentes para imprimir el ticket.")
+      notifyError("Por favor, permite las ventanas emergentes para imprimir el ticket.")
       return
     }
 

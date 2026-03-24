@@ -2,15 +2,22 @@
 
 // React imports
 import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom';
+// Notifications
+import { Toaster } from 'sonner';
 // Context imports
 import { AuthProvider } from './context/AuthContext';
-import { EventDetailsProvider } from './context/EventDetailsContext'; // Importa el contexto de EventDetails
-import { PurchaseProvider } from './context/PurchaseContext'; // Importa el contexto de Purchase
+import { EventDetailsProvider } from './context/EventDetailsContext';
+import { MaintenanceProvider, useMaintenance } from './context/MaintenanceContext';
 // Utils imports
 import PrivateRoute from './utils/PrivateRoute';
+import PropTypes from 'prop-types';
+// Pages
+import MaintenancePage from './pages/Main/MaintenancePage';
 // Public pages
 import Home from './pages/Main/Home';
 import Login from './pages/Main/Login';
+import ForgotPassword from './pages/Main/ForgotPassword';
+import ResetPassword from './pages/Main/ResetPassword';
 import Contact from './pages/Main/Contact';
 import TermsAndConditions from './pages/Main/TermsAndConditions';
 import TicketPage from './pages/TicketPage';
@@ -20,7 +27,6 @@ import ScannerView from './pages/Employee/ScannerView';
 import CreateTicketBySeller from './pages/Employee/CreateTicektBySeller';
 import Pricing from './pages/Main/Pricing';
 import PrivacyPolicy from './pages/Main/PrivacyPolicy';
-import TicketPurchasePage from './pages/EventPage/TicketPurchasePage';
 import EventPageGuide from './pages/EventPage/EventPageGuide';
 import BuyPage from './pages/EventPage/BuyPage';
 // Private pages
@@ -29,19 +35,20 @@ import EventDetail from './pages/EventDetail/EventDetail';
 import CreateEvent from './pages/User/CreateEvent';
 import EditEvent from './pages/User/EditEvent.jsx';
 import EventPage from './pages/EventPage/EventPage';
+import WebEventsPage from './pages/EventPage/WebEventsPage';
+import PurchaseForm from './pages/EventPage/PurchaseForm.jsx';
 import Economy from './pages/User/Economy.jsx';
-import TicketPurchaseConfig from './pages/EventPage/TicketPurchaseConfig';
-import PurchaseSummaryPage from './pages/EventPage/PurchaseSummaryPage';
 // Trial pages
-import DashboardTrial from './pages/Trial/DashboardTrial';
-import ScannerPageTrial from './pages/Trial/ScannerPageTrial';
-import TicketPageTrial from './pages/Trial/TicketPageTrial';
 import LinkGenerator from './pages/Trial/LinkGenerator';
 // Guides pages
 import SellerGuide from './pages/Employee/SellerGuide';
 // Invite pages
 import NewClient from './pages/Trial/NewClient';
 import Documentacion from './pages/Trial/Documentacion';
+import PaymentSuccess from './pages/EventPage/PaymentSuccess.jsx';
+import PaymentFailure from './pages/EventPage/PaymentFailure.jsx';
+import AdminPanel from './pages/Admin/AdminPanel.jsx';
+import BuyTickets from './pages/User/BuyTickets.jsx';
 // SellerWrapper is a functional component that extracts the UUID from the URL using the useParams hook and passes it as a prop to the VendorView component.
 const SellerWrapper = () => {
   const { uuid } = useParams(); // Obtén el UUID de la URL
@@ -49,126 +56,140 @@ const SellerWrapper = () => {
 };
 // ScannerWrapper is a functional component that extracts the UUID from the URL using the useParams hook and passes it as a prop to the ScannerView component.
 const ScannerWrapper = () => {
-  const { uuid } = useParams(); // Obtén el UUID de la URL
-  return <ScannerView uuid={uuid} />; // Pasa el UUID al componente VendorView
+  const { uuid } = useParams();
+  return <ScannerView uuid={uuid} />;
+};
+
+const MaintenanceGate = ({ children }) => {
+  const { isMaintenance } = useMaintenance();
+  if (isMaintenance) return <MaintenancePage />;
+  return children;
+};
+
+MaintenanceGate.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Rutas públicas */}
-        <Route path="/" element={<Home />} />
-        <Route
-          path="/login"
-          element={
-            <AuthProvider>
-              <Login />
-            </AuthProvider>
-          }
-        />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+    <>
+      <Toaster richColors position="top-right" />
+      <Router>
+        <MaintenanceProvider>
+        <MaintenanceGate>
+        <Routes>
+          {/* Rutas públicas */}
+          <Route path="/" element={<Home />} />
+          <Route
+            path="/login"
+            element={
+              <AuthProvider>
+                <Login />
+              </AuthProvider>
+            }
+          />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
-        <Route path="/ticket/:ticket_uuid" element={<TicketPage />} />
-        <Route path="/ticket-share/:uuid" element={<TicketShare />} />
-        <Route path="/seller/:uuid" element={<SellerWrapper />} />
-        <Route path="/scanner/:uuid" element={<ScannerWrapper />} />
-        <Route path="/seller/:uuid/create-ticket" element={<CreateTicketBySeller />} />
-        <Route path="/pricing" element={<Pricing />} />
-        <Route path="/dashboard-trial" element={<DashboardTrial />} />
-        <Route path="/ticket-page-trial" element={<TicketPageTrial />} />
-        <Route path="/scanner-page-trial" element={<ScannerPageTrial />} />
-        <Route path="/buy-page" element={<BuyPage />} />
-        <Route
-          path="/ticket-purchase/:event_id"
-          element={
-            <PurchaseProvider>
-              <TicketPurchasePage />
-            </PurchaseProvider>
-          }
-        />
-        <Route
-          path="/purchase-summary"
-          element={
-            <PurchaseProvider>
-              <PurchaseSummaryPage />
-            </PurchaseProvider>
-          }
-        />
-        <Route path="/event-page-guide" element={<EventPageGuide />} />
-        <Route path="/event-page/:id" element={<EventPage />} />
-        <Route path="/seller-guide" element={<SellerGuide />} />
-        <Route path="/new-client/*" element={<NewClient />} />
-        <Route path="/link-generator" element={<LinkGenerator />} />
-        <Route path="/documentacion" element={<Documentacion />} />
+          <Route path="/ticket/:ticket_uuid" element={<TicketPage />} />
+          <Route path="/ticket-share/:uuid" element={<TicketShare />} />
+          <Route path="/seller/:uuid" element={<SellerWrapper />} />
+          <Route path="/scanner/:uuid" element={<ScannerWrapper />} />
+          <Route path="/seller/:uuid/create-ticket" element={<CreateTicketBySeller />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/buy-page" element={<BuyPage />} />
+          <Route path="/event-page-guide" element={<EventPageGuide />} />
+          <Route path="/events" element={<WebEventsPage />} />
+          <Route path="/event-page/:id" element={<EventPage />} />
+          <Route path="/event-page/:id/purchase" element={<PurchaseForm />} />
+          <Route path="/payment/success" element={<PaymentSuccess />} />
+          <Route path="/payment/failure" element={<PaymentFailure />} />
+          <Route path="/seller-guide" element={<SellerGuide />} />
+          <Route path="/new-client/*" element={<NewClient />} />
+          <Route path="/link-generator" element={<LinkGenerator />} />
+          <Route path="/documentacion" element={<Documentacion />} />
 
-        {/* Rutas protegidas */}
-        <Route
-          path="/event/:event_id/purchase-config"
-          element={
-            <AuthProvider>
-              <PrivateRoute>
-                <TicketPurchaseConfig />
-              </PrivateRoute>
-            </AuthProvider>
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <AuthProvider>
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            </AuthProvider>
-          }
-        />
-        <Route
-          path="/event/:id/details"
-          element={
-            <AuthProvider>
-              <EventDetailsProvider>
+          {/* Rutas protegidas */}
+          <Route
+            path="/admin"
+            element={
+              <AuthProvider>
                 <PrivateRoute>
-                  <EventDetail />
+                  <AdminPanel />
                 </PrivateRoute>
-              </EventDetailsProvider>
-            </AuthProvider>
-          }
-        />
-        <Route
-          path="/create-event"
-          element={
-            <AuthProvider>
-              <PrivateRoute>
-                <CreateEvent />
-              </PrivateRoute>
-            </AuthProvider>
-          }
-        />
-        <Route
-          path="/edit-event/:id"
-          element={
-            <AuthProvider>
-              <PrivateRoute>
-                <EditEvent />
-              </PrivateRoute>
-            </AuthProvider>
-          }
-        />
-        <Route
-          path="event/:id/economy"
-          element={
-            <AuthProvider>
-              <PrivateRoute>
-                <Economy />
-              </PrivateRoute>
-            </AuthProvider>
-          }
-        />
-      </Routes>
-    </Router>
+              </AuthProvider>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <AuthProvider>
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              </AuthProvider>
+            }
+          />
+          <Route
+            path="/event/:id/details"
+            element={
+              <AuthProvider>
+                <EventDetailsProvider>
+                  <PrivateRoute>
+                    <EventDetail />
+                  </PrivateRoute>
+                </EventDetailsProvider>
+              </AuthProvider>
+            }
+          />
+          <Route
+            path="/create-event"
+            element={
+              <AuthProvider>
+                <PrivateRoute>
+                  <CreateEvent />
+                </PrivateRoute>
+              </AuthProvider>
+            }
+          />
+          <Route
+            path="/edit-event/:id"
+            element={
+              <AuthProvider>
+                <PrivateRoute>
+                  <EditEvent />
+                </PrivateRoute>
+              </AuthProvider>
+            }
+          />
+          <Route
+            path="/buy-tickets"
+            element={
+              <AuthProvider>
+                <PrivateRoute>
+                  <BuyTickets />
+                </PrivateRoute>
+              </AuthProvider>
+            }
+          />
+          <Route
+            path="event/:id/economy"
+            element={
+              <AuthProvider>
+                <PrivateRoute>
+                  <Economy />
+                </PrivateRoute>
+              </AuthProvider>
+            }
+          />
+        </Routes>
+        </MaintenanceGate>
+        </MaintenanceProvider>
+      </Router>
+    </>
   );
 }
 export default App;

@@ -1,71 +1,76 @@
 'use client';
 
-// react imports
 import { useState, useEffect, useCallback, useRef } from 'react';
-// react-router imports
 import { useNavigate } from 'react-router-dom';
-// lucide-react icons imports
-import { PlusIcon, SearchIcon, EyeIcon, Trash2Icon, LinkIcon, ShoppingCart, Printer } from 'lucide-react';
-// prop-types imports
+import { PlusIcon, SearchIcon, EyeIcon, LinkIcon, Printer, ChevronLeft, ChevronRight, ChevronRight as ChevronRightRow } from 'lucide-react';
 import PropTypes from 'prop-types';
-// custom components
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-// apis imports
-import { deleteTicketBySeller } from '@/api/ticketApi';
-import { checkPassword } from '@/api/employeeApi';
-import { getSeller } from '@/api/employeeApi';
-// custom components
+import { checkPassword, getSeller, getSellerTickets } from '@/api/employeeApi';
 import MobileActionDialog from '@/components/seller/MobileActionDialog';
 import PasswordForm from '@/components/seller/PasswordForm';
+import { notifyInfo, notifyError } from '@/utils/notify';
 
 import { QRCodeSVG } from 'qrcode.react';
 import html2canvas from 'html2canvas';
 
+const TICKETS_PER_PAGE = 10;
+const SEARCH_DEBOUNCE_MS = 300;
+
 export default function VendedorView({ uuid }) {
-  // main states
-  const [tickets, setTickets] = useState([]);
   const [vendedor, setVendedor] = useState(null);
   const [dniRequired, setDniRequired] = useState(false);
   const [ticketsSalesEnabled, setTicketsSalesEnabled] = useState(true);
   const [organizerHasCapacity, setOrganizerHasCapacity] = useState(true);
-  // password states
+
   const [password, setPassword] = useState('');
   const [isPasswordCorrect, setIsPasswordCorrect] = useState(false);
   const [passwordError, setPasswordError] = useState('');
 
-  // search states
-  const [filteredTickets, setFilteredTickets] = useState([]);
+  const [tickets, setTickets] = useState([]);
+  const [totalTickets, setTotalTickets] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [vendedorNotFound, setVendedorNotFound] = useState(false);
-  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
-  const [ticketToDelete, setTicketToDelete] = useState(null);
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+
+  const [vendedorNotFound] = useState(false);
   const [copyMessage, setCopyMessage] = useState('');
   const [ticketTags, setTicketTags] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-  const pageCount = Math.ceil(filteredTickets.length / itemsPerPage);
-  const paginatedTickets = filteredTickets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  // Print states
   const [printPayload, setPrintPayload] = useState(null);
-  const [ticketToPrint, setTicketToPrint] = useState(null);
-
-  // Ref al div oculto que tendrá el <QRCodeSVG> para "foto" con html2canvas
   const hiddenQrRef = useRef(null);
+  const searchTimerRef = useRef(null);
+
+  const pageCount = Math.ceil(totalTickets / TICKETS_PER_PAGE);
 
   const navigate = useNavigate();
+
+  const fetchTickets = useCallback(async (page, search) => {
+    try {
+      const data = await getSellerTickets({
+        uuid,
+        page,
+        limit: TICKETS_PER_PAGE,
+        search,
+      });
+      setTickets(data.results);
+      setTotalTickets(data.total_tickets);
+      setHasMore(data.has_more);
+    } catch (error) {
+      notifyError(error.message || 'No se pudieron cargar los tickets.');
+    }
+  }, [uuid]);
 
   const copyToClipboard = useCallback((text) => {
     navigator.clipboard
       .writeText(text)
       .then(() => {
         setCopyMessage('Copiado');
-        setTimeout(() => setCopyMessage(''), 2000); // El mensaje desaparece después de 2 segundos
+        setTimeout(() => setCopyMessage(''), 2000);
       })
       .catch((err) => {
         console.error('Error al copiar: ', err);
@@ -82,9 +87,6 @@ export default function VendedorView({ uuid }) {
             title: 'Compartir Ticket',
             text: 'Aquí está el enlace de tu ticket QR:',
             url: link,
-          })
-          .then(() => {
-            console.log('Compartido exitosamente');
           })
           .catch((err) => {
             console.error('Error al intentar compartir:', err);
@@ -111,24 +113,29 @@ export default function VendedorView({ uuid }) {
     if (storedPasswordStatus) {
       setIsPasswordCorrect(JSON.parse(storedPasswordStatus));
     }
-    const fetchTickets = async () => {
+  }, []);
+
+  useEffect(() => {
+    if (!isPasswordCorrect) return;
+    const fetchSellerInfo = async () => {
       try {
         const data = await getSeller(uuid);
         setVendedor(data.seller);
-        setTickets(data.tickets.sort((a, b) => b.id - a.id));
-        setFilteredTickets(data.tickets);
         setTicketsSalesEnabled(data.sales_enabled);
         setDniRequired(data.dni_required);
         setOrganizerHasCapacity(data.organizer_has_capacity);
         setTicketTags(data.seller.ticket_tags);
       } catch (error) {
-        console.error(error.message);
+        notifyError(error.message || 'No se pudieron cargar los datos del vendedor.');
       }
     };
-    if (isPasswordCorrect) {
-      fetchTickets();
-    }
+    fetchSellerInfo();
   }, [uuid, isPasswordCorrect]);
+
+  useEffect(() => {
+    if (!isPasswordCorrect) return;
+    fetchTickets(currentPage, debouncedSearch);
+  }, [currentPage, debouncedSearch, isPasswordCorrect, fetchTickets]);
 
   const verifyPassword = async () => {
     try {
@@ -146,14 +153,16 @@ export default function VendedorView({ uuid }) {
   };
 
   const handleSearch = (event) => {
-    const term = event.target.value.toLowerCase();
+    const term = event.target.value;
     setSearchTerm(term);
-    if (term) {
-      const filtered = tickets.filter((ticket) => ticket.owner_name.toLowerCase().includes(term) || ticket.owner_dni.toLowerCase().includes(term));
-      setFilteredTickets(filtered);
-    } else {
-      setFilteredTickets(tickets);
+
+    if (searchTimerRef.current) {
+      clearTimeout(searchTimerRef.current);
     }
+    searchTimerRef.current = setTimeout(() => {
+      setCurrentPage(1);
+      setDebouncedSearch(term);
+    }, SEARCH_DEBOUNCE_MS);
   };
 
   const handleShare = (ticket) => {
@@ -172,7 +181,7 @@ export default function VendedorView({ uuid }) {
         });
     } else {
       // Fallback for browsers that don't support the Web Share API
-      alert(`Comparte este enlace: ${window.location.origin}/ticket/${ticket.uuid}`);
+      notifyInfo(`Comparte este enlace: ${window.location.origin}/ticket/${ticket.uuid}`);
       navigator.clipboard
         .writeText(ticket.uuid)
         .then(() => {
@@ -191,31 +200,6 @@ export default function VendedorView({ uuid }) {
   const handleViewTicket = useCallback((ticketId) => {
     window.open(`/ticket/${ticketId}`, '_blank');
   }, []);
-
-  const handleDeleteTicket = (ticket) => {
-    setTicketToDelete(ticket);
-    setIsDeleteConfirmOpen(true);
-  };
-
-  const confirmDeleteTicket = async () => {
-    if (!ticketToDelete) return;
-    try {
-      await deleteTicketBySeller(uuid, ticketToDelete.id);
-      const remainingTickets = tickets.filter((t) => t.id !== ticketToDelete.id);
-      setTickets(remainingTickets);
-      setFilteredTickets(remainingTickets);
-
-      // Actualizar el contador de tickets del vendedor
-      setVendedor((prevVendedor) => ({
-        ...prevVendedor,
-        ticket_counter: prevVendedor.ticket_counter - 1,
-      }));
-    } catch (error) {
-      console.error(error.message);
-    }
-    setIsDeleteConfirmOpen(false);
-    setTicketToDelete(null);
-  };
 
   const handlePrintTicketQR = async (ticket) => {
     if (!ticket) return;
@@ -563,49 +547,59 @@ export default function VendedorView({ uuid }) {
       </div>
 
       {/* UI principal */}
-      <div className="flex justify-center pb-8 bg-gradient-to-b from-gray-900 to-gray-950 text-white pt-4 min-h-screen w-screen">
-        <div className="max-w-6xl w-full mx-2">
-          <Card className="bg-gray-800 border-gray-700 mb-2">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-white flex flex-row ">
-                <ShoppingCart className="mr-2" />
-                Vendedor page
-              </CardTitle>
-              <CardDescription className="text-gray-400">Estas vendiendo para el evento {vendedor?.event_name}</CardDescription>
+      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 text-white">
+        <div className="max-w-4xl mx-auto px-3 py-4 space-y-3">
+
+          {/* Branding */}
+          <div className="flex items-center gap-2 px-1">
+            <img src="/isotipoWhite.png" alt="Entradita" className="w-7 h-7" />
+            <span className="font-bold text-white/90 text-sm tracking-wide">entradita.com</span>
+          </div>
+
+          {/* Header con info del vendedor */}
+          <Card className="bg-gray-800 border-gray-700 overflow-hidden">
+            <div className="h-1 bg-gradient-to-r from-blue-500 via-blue-400 to-cyan-400" />
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <div className="min-w-0">
+                  <CardTitle className="text-white text-lg sm:text-xl truncate">
+                    {vendedor?.assigned_name}
+                  </CardTitle>
+                  <p className="text-sm text-gray-400 mt-0.5 truncate">{vendedor?.event_name}</p>
+                </div>
+                {vendedor?.status === false && (
+                  <span className="shrink-0 text-xs font-semibold bg-red-500/15 text-red-400 px-2.5 py-1 rounded-full">
+                    Deshabilitado
+                  </span>
+                )}
+              </div>
             </CardHeader>
-            <CardContent>
-              {vendedor && (
-                <div className="mb-2 p-0">
-                  <h3 className="text-gray-200">
-                    Nombre: <a className="text-blue-400 ">{vendedor.assigned_name}</a>
-                  </h3>
-                  {vendedor.status === false ? (
-                    <p className="text-gray-200">
-                      El organizador te <a className="text-red-400 ">deshabilito</a>
-                    </p>
-                  ) : (
-                    <p className="text-gray-200">
-                      Tickets disponibles: <a className="text-blue-400 ">{vendedor.seller_capacity !== null ? vendedor.seller_capacity - vendedor.ticket_counter : 'ilimitados'} tickets</a>
-                    </p>
-                  )}
-                  <p className="text-gray-200">
-                    Tickets vendidos: <a className="text-blue-400 ">{vendedor.ticket_counter} </a>
+            <CardContent className="pt-0">
+              <div className="grid grid-cols-2 gap-2">
+                <div className="bg-blue-500/10 border border-blue-500/15 rounded-md py-2 px-3 text-center">
+                  <p className="text-xs text-gray-400">Vendidos</p>
+                  <p className="text-xl font-bold text-blue-300">{vendedor?.ticket_counter ?? 0}</p>
+                </div>
+                <div className="bg-cyan-500/10 border border-cyan-500/15 rounded-md py-2 px-3 text-center">
+                  <p className="text-xs text-gray-400">Disponibles</p>
+                  <p className="text-xl font-bold text-cyan-300">
+                    {vendedor?.seller_capacity != null
+                      ? vendedor.seller_capacity - vendedor.ticket_counter
+                      : '∞'}
                   </p>
                 </div>
-              )}
+              </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gray-800 border-gray-700 ">
-            <CardHeader>
-              <CardTitle className="text-white ">Tickets</CardTitle>
-              <CardDescription className="text-gray-400">
-                Gestiona los tickets para el evento <br /> {window.innerWidth < 640 && 'Haz click en una fila para ver más acciones'}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col sm:flex-row justify-between items-center mb-2 gap-4">
+          {/* Tickets */}
+          <Card className="bg-gray-800 border-gray-700 overflow-hidden">
+            <div className="h-1 bg-gradient-to-r from-blue-500/50 to-transparent" />
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-white text-lg">Tickets</CardTitle>
                 <Button
+                  size="sm"
                   disabled={
                     (vendedor && vendedor.status === false) ||
                     !ticketsSalesEnabled ||
@@ -613,113 +607,147 @@ export default function VendedorView({ uuid }) {
                     (vendedor && organizerHasCapacity === false)
                   }
                   onClick={() => handleCreateTicket(dniRequired, ticketTags)}
-                  className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
                 >
-                  <PlusIcon className="mr-2 h-4 w-4" /> Nuevo Ticket
+                  <PlusIcon className="h-4 w-4 mr-1.5" />
+                  <span className="hidden sm:inline">Nuevo Ticket</span>
+                  <span className="sm:hidden">Nuevo</span>
                 </Button>
-                <div className="relative w-full sm:w-auto">
-                  <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                  <Input
-                    type="text"
-                    placeholder="Buscar por Nombre o DNI"
-                    value={searchTerm}
-                    onChange={handleSearch}
-                    className="pl-8 w-full bg-gray-700 border-gray-600 text-white placeholder-gray-400"
-                  />
-                </div>
               </div>
-              {(!ticketsSalesEnabled || !organizerHasCapacity) && <CardDescription className="text-red-400 mb-3">El organizador deshabilitó la venta de tickets</CardDescription>}
+            </CardHeader>
+            <CardContent className="pt-0 space-y-3">
+              {(!ticketsSalesEnabled || !organizerHasCapacity) && (
+                <div className="bg-red-500/10 text-red-400 text-sm px-3 py-2 rounded-md">
+                  El organizador deshabilitó la venta de tickets
+                </div>
+              )}
+
+              <div className="relative">
+                <SearchIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  type="text"
+                  placeholder="Buscar por nombre o DNI..."
+                  value={searchTerm}
+                  onChange={handleSearch}
+                  className="pl-8 bg-gray-700 border-gray-600 text-white placeholder-gray-500 max-w-sm"
+                />
+              </div>
+
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow className="border-gray-700 text-left">
-                      <TableHead className="text-gray-300">Nombre</TableHead>
-                      {dniRequired && <TableHead className="text-gray-300">DNI</TableHead>}
-                      <TableHead className="text-gray-300 ">Tipo</TableHead>
-                      <TableHead className="text-gray-300 text-right hidden sm:table-cell">Acciones</TableHead>
+                    <TableRow className="border-gray-700">
+                      <TableHead className="text-gray-400">Nombre</TableHead>
+                      {dniRequired && <TableHead className="text-gray-400 hidden sm:table-cell">DNI</TableHead>}
+                      <TableHead className="text-gray-400 hidden sm:table-cell">Tipo</TableHead>
+                      <TableHead className="text-gray-400 text-right hidden sm:table-cell">Acciones</TableHead>
+                      <TableHead className="text-gray-400 w-6 p-0 sm:hidden" />
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {paginatedTickets.map((ticket) => (
+                    {tickets.map((ticket) => (
                       <TableRow
                         key={ticket.id}
-                        className="border-gray-700 cursor-pointer sm:cursor-default h-16"
+                        className="border-gray-700 cursor-pointer sm:cursor-default hover:bg-gray-700/50 transition-colors"
                         onClick={() => {
                           if (window.innerWidth < 640) {
                             setSelectedTicket(ticket);
                           }
                         }}
                       >
-                        <TableCell className="text-gray-300 truncate overflow-hidden whitespace-nowrap max-w-28">
-                          {ticket.owner_name} {ticket.owner_lastname}
+                        <TableCell className="text-gray-200">
+                          <span className="block truncate">{ticket.owner_name} {ticket.owner_lastname}</span>
+                          <span className="block sm:hidden text-xs text-gray-400 mt-0.5">{ticket.ticket_tag.name}</span>
                         </TableCell>
-                        {dniRequired && <TableCell className="text-gray-300 truncate overflow-hidden whitespace-nowrap max-w-15">{ticket.owner_dni ? ticket.owner_dni : 'No disponible'}</TableCell>}
-                        <TableCell className="text-gray-300 ">{ticket.ticket_tag.name}</TableCell>
-                        <TableCell className="text-right space-x-1 space-y-1 min-w-40 hidden sm:table-cell">
-                          <Button variant="outline" onClick={() => shareTicketLink(`${window.location.origin}/ticket/${ticket.uuid}`)} size="sm" title="Compartir enlace de ticket">
-                            <LinkIcon className="h-4 w-4" />
-                            <span className="sr-only">Compartir enlace de ticket</span>
-                          </Button>
-
-                          <Button variant="outline" onClick={() => handleViewTicket(ticket.uuid)} size="sm" title="Ver ticket">
-                            <EyeIcon className="h-4 w-4" />
-                            <span className="sr-only">Ver ticket</span>
-                          </Button>
-                          <Button variant="outline" onClick={() => handlePrintTicketQR(ticket)} size="sm" title="Imprimir QR">
-                            <Printer className="h-4 w-4" />
-                            <span className="sr-only">Imprimir</span>
-                          </Button>
-                          <Button variant="destructive" onClick={() => handleDeleteTicket(ticket)} size="sm" title="Eliminar ticket">
-                            <Trash2Icon className="h-4 w-4" />
-                            <span className="sr-only">Eliminar ticket</span>
-                          </Button> 
+                        {dniRequired && (
+                          <TableCell className="text-gray-300 hidden sm:table-cell">
+                            {ticket.owner_dni || '—'}
+                          </TableCell>
+                        )}
+                        <TableCell className="text-gray-300 hidden sm:table-cell">{ticket.ticket_tag.name}</TableCell>
+                        <TableCell className="text-right hidden sm:table-cell">
+                          <div className="flex items-center justify-end gap-1">
+                            <Button
+                              variant="ghost"
+                              className="h-8 w-8 p-0 text-gray-400 hover:text-white hover:bg-gray-700"
+                              onClick={(e) => { e.stopPropagation(); shareTicketLink(`${window.location.origin}/ticket/${ticket.uuid}`); }}
+                              title="Compartir"
+                            >
+                              <LinkIcon className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              className="h-8 w-8 p-0 text-gray-400 hover:text-white hover:bg-gray-700"
+                              onClick={(e) => { e.stopPropagation(); handleViewTicket(ticket.uuid); }}
+                              title="Ver ticket"
+                            >
+                              <EyeIcon className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              className="h-8 w-8 p-0 text-gray-400 hover:text-white hover:bg-gray-700"
+                              onClick={(e) => { e.stopPropagation(); handlePrintTicketQR(ticket); }}
+                              title="Imprimir QR"
+                            >
+                              <Printer className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                        <TableCell className="sm:hidden w-6 p-0 pr-3">
+                          <ChevronRightRow className="h-4 w-4 text-gray-500" />
                         </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </div>
-              <div className="flex justify-between items-center mt-4">
-                <Button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))} disabled={currentPage === 1} className="bg-gray-700 text-white">
-                  Anterior
-                </Button>
-                <span className="text-gray-400">
-                  Página {currentPage} de {pageCount}
-                </span>
-                <Button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, pageCount))} disabled={currentPage === pageCount} className="bg-gray-700 text-white">
-                  Siguiente
-                </Button>
-              </div>
+
+              {pageCount > 1 && (
+                <div className="flex items-center justify-center gap-3 pt-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-gray-400 hover:text-white"
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage((p) => p - 1)}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <span className="text-sm text-gray-400">{currentPage}/{pageCount}</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-gray-400 hover:text-white"
+                    disabled={!hasMore}
+                    onClick={() => setCurrentPage((p) => p + 1)}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
             </CardContent>
+
             <MobileActionDialog
               ticket={selectedTicket}
               onClose={() => setSelectedTicket(null)}
               copyToClipboard={copyToClipboard}
               handleShare={handleShare}
               handleViewTicket={handleViewTicket}
-              handleDeleteTicket={handleDeleteTicket}
+              handlePrintTicket={handlePrintTicketQR}
             />
           </Card>
+          {/* Footer */}
+          <p className="text-center text-xs text-gray-600 pt-2 pb-4">
+            Powered by <span className="font-semibold text-gray-500">entradita.com</span>
+          </p>
         </div>
-        {/* Mensaje de copiado simple */}
-        {copyMessage && <div className="fixed bottom-4 right-4 bg-green-400 text-black px-4 py-2 rounded-md shadow-lg">{copyMessage}</div>}
 
-        <Dialog open={isDeleteConfirmOpen} onOpenChange={setIsDeleteConfirmOpen} className="">
-          <DialogContent className="bg-gray-800 text-white ">
-            <DialogHeader>
-              <DialogTitle>Confirmar eliminación de ticket</DialogTitle>
-              <DialogDescription>¿Estás seguro de que deseas eliminar este ticket? Esta acción no se puede deshacer.</DialogDescription>
-            </DialogHeader>
-            <DialogFooter className=" space-y-2">
-              <Button onClick={() => setIsDeleteConfirmOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600 mt-2">
-                Cancelar
-              </Button>
-              <Button onClick={confirmDeleteTicket} variant="destructive">
-                Eliminar
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        {copyMessage && (
+          <div className="fixed bottom-4 right-4 bg-green-500/90 text-white text-sm px-4 py-2 rounded-lg shadow-lg">
+            {copyMessage}
+          </div>
+        )}
+
       </div>
     </>
   );

@@ -3,6 +3,7 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/card';
 import { Share2, CheckCircle, ArrowLeft } from 'lucide-react';
+import { notifyInfo } from '../utils/notify';
 
 export default function TicketShare({ }) {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export default function TicketShare({ }) {
         });
     } else {
       // Fallback for browsers that don't support the Web Share API
-      alert(`Comparte este enlace: ${ticketUrl}`);
+      notifyInfo(`Comparte este enlace: ${ticketUrl}`);
       navigator.clipboard
         .writeText(ticketUrl)
         .then(() => {

@@ -1,230 +1,156 @@
+import { apiRequest } from "../utils/apiUtils";
+
 // entraditaFront/src/api/eventApi.jsx
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export const loadMoreTicketsApi = async ({ eventId, page = 1, limit = 10, search = "", token }) => {
-  try {
-    const response = await fetch(`${apiUrl}/api/v1/main/events/${eventId}/tickets/`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        page,  // Enviar número de página
-        limit, // Cantidad de tickets por página
-        search, // Término de búsqueda
-      }),
-    });
-
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error("Respuesta inesperada:", errText);
-      throw new Error("Error al cargar más tickets");
-    }
-
-    return await response.json();
-  } catch (error) {
-    throw new Error(error.message || "Error al cargar más tickets");
-  }
-};
-
-export const putPurchaseInfo = async (eventId, purchaseInfo, authToken) => {
-  try {
-    const response = await fetch(`${apiUrl}/api/v1/main/event/${eventId}/purchase-info/`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}`
-      },
-      body: JSON.stringify(purchaseInfo),
-        });
-      } catch (error) {
-        throw new Error(error.message || 'Error al actualizar la información de compra');
-      }
-    };
-
-
-export const getPurchaseInfo = async (eventId) => {
-  try {
-    const response = await fetch(`${apiUrl}/api/v1/main/event/${eventId}/purchase-info/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error('Error al cargar los detalles del evento');
-    }
-  } catch (error) {
-    throw new Error(error.message || 'Error al cargar los detalles del evento');
-  }
+  return apiRequest(`${apiUrl}/api/v1/main/events/${eventId}/tickets/`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      page,
+      limit,
+      search,
+    }),
+  }, 'Error al cargar más tickets');
 };
 
 
 // Devuelve los detalles de un evento
 export const getEvent = async (id, authToken) => {
-  try {
-    const response = await fetch(`${apiUrl}/api/v1/main/event/${id}/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}`
-      },
-    });
-
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error('Error al cargar el evento');
-    }
-    
-  } catch (error) {
-    throw new Error(error.message || 'Error al cargar el evento');
-  }
+  return apiRequest(`${apiUrl}/api/v1/main/event/${id}/`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${authToken}`
+    },
+  }, 'Error al cargar el evento');
 }
 
 // Devuelve los detalles de un evento
 export const getEventDetails = async (id, authToken) => {
-  try {
-    const response = await fetch(`${apiUrl}/api/v1/main/event/${id}/details`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}`
-      },
-    });
-
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error('Error al cargar los detalles del evento');
-    }
-    
-  } catch (error) {
-    throw new Error(error.message || 'Error al cargar los detalles del evento');
-  }
+  return apiRequest(`${apiUrl}/api/v1/main/event/${id}/details`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${authToken}`
+    },
+  }, 'Error al cargar los detalles del evento');
 }
 
 
 
 // Devuelve todos los eventos de un usuario
 export const getEvents = async (authToken) => {
-  try {
-    const response = await fetch(`${apiUrl}/api/v1/main/events/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}`,
-      },
-    });
-    
-
-    if (response.ok) {
-      return await response.json(); // Devuelve los datos de los eventos
-    } else {
-      throw new Error('Error al obtener eventos');
-    }
-  } catch (error) {
-    throw new Error(error.message || 'Error desconocido al obtener eventos');
-  }
+  return apiRequest(`${apiUrl}/api/v1/main/events/`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${authToken}`,
+    },
+  }, 'Error al cargar los eventos');
 };
 
 
-export const createEvent = async (eventData, authToken) => {
-  try {
-    const response = await fetch(`${apiUrl}/api/v1/main/event/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}`,
-      },
-      body: JSON.stringify(eventData),
-    });
-
-    if (response.ok) {
-      return await response.json();
-    } else {
-      const errorData = await response.json();
-      console.error("Error al crear el evento:", errorData); // Muestra el error detallado
-      throw new Error(errorData.detail || 'Error al crear el evento');
-    }
-  } catch (error) {
-    console.error("Error en createEvent:", error.message);
-    throw error;
-  }
+export const createEvent = async (formData, authToken) => {
+  return apiRequest(`${apiUrl}/api/v1/main/event/`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${authToken}`,
+    },
+    body: formData,
+  }, 'Error al crear el evento');
 };
 
 
 
 // Actualización de un evento
-export const updateEvent = async (eventData, eventId, token) => {
-  // console.log("asd" + JSON.stringify(eventData))
-  try {
-    const response = await fetch(`${apiUrl}/api/v1/main/event/${eventId}/`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(eventData),
-    });
-
-    if (!response.ok) {
-      throw new Error('Error al actualizar el evento');
-    }
-
-    return await response.json();
-  } catch (error) {
-    throw error;
-  }
+export const updateEvent = async (formData, eventId, token) => {
+  return apiRequest(`${apiUrl}/api/v1/main/event/${eventId}/`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+    body: formData,
+  }, 'Error al actualizar el evento');
 };
 
 
 // Deshabilitacion / Habilitacion venta de tickets
 export const updateTicketSales = async (id, authToken) => {
-  try {
-    const response = await fetch(`${apiUrl}/api/v1/main/event/${id}/ticket-sales/`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}`
-      },
-    });
+  return apiRequest(`${apiUrl}/api/v1/main/event/${id}/ticket-sales/`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${authToken}`
+    },
+  }, 'Error al actualizar la venta de tickets del evento');
+};
 
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error('Error al editar el evento');
-    }
+// Deshabilitacion / Habilitacion venta web del evento
+export const updateWebSale = async (id, authToken) => {
+  return apiRequest(`${apiUrl}/api/v1/main/event/${id}/web-sale/`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${authToken}`
+    },
+  }, 'Error al actualizar la venta web del evento');
+};
 
-  } catch (error) {
-    throw new Error(error.message || 'Error desconocido al editar el evento');
-  }
+// Reseteo de un evento periódico
+export const resetEvent = async (id, authToken) => {
+  return apiRequest(`${apiUrl}/api/v1/main/event/${id}/reset/`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${authToken}`
+    },
+  }, 'Error al reiniciar el evento');
 };
 
 // Eliminación de un evento
 export const deleteEvent = async (id, authToken) => {
-  try {
-    const response = await fetch(`${apiUrl}/api/v1/main/event/${id}/`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}`
-      },
-    });
-
-    if (response.ok) {
-      return true;
-    } else {
-      throw new Error('Error al eliminar el evento');
-    }
-
-  } catch (error) {
-    throw new Error(error.message || 'Error desconocido al eliminar el evento');
-  }
+  await apiRequest(`${apiUrl}/api/v1/main/event/${id}/`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${authToken}`
+    },
+  }, 'Error al eliminar el evento');
+  return true;
 };
+
+// Devuelve los detalles de la pagina web de un evento
+export const getEventPage = async (eventId) => {
+  return apiRequest(`${apiUrl}/api/v1/main/event/${eventId}/info-for-web/`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }, 'Error al cargar los datos del evento para la web');
+}
+
+// Devuelve la información de compra de un evento
+export const getEventPurchaseInfo = async (eventId) => {
+  return apiRequest(`${apiUrl}/api/v1/main/event/${eventId}/purchase-info/`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }, 'Error al cargar los datos de compra del evento');
+}
+
+// Devuelve una página de eventos con venta web habilitada
+export const getWebEvents = async ({ page = 1, pageSize = 9 } = {}) => {
+  return apiRequest(
+    `${apiUrl}/api/v1/main/events/web/?page=${page}&page_size=${pageSize}`,
+    { method: 'GET', headers: { 'Content-Type': 'application/json' } },
+    'Error al cargar los eventos disponibles'
+  );
+}
 
 

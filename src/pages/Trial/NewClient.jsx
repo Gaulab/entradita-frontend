@@ -3,8 +3,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle, ChevronRight, BookOpen, Tag, Copy, Check, HelpCircle, ArrowRight, FileText, Info, LogIn, DollarSign } from 'lucide-react';
-import { FaMoneyBill, FaWhatsapp } from 'react-icons/fa';
-import Login from '../Main/Login';
 import { Button } from '../../components/ui/button';
 
 function NewClient() {
@@ -304,7 +302,7 @@ function NewClient() {
           </div>
 
           <div className="border-t border-gray-800 mt-6 pt-6 text-center text-gray-400">
-            <p className="text-sm">© 2025 entradita.com todos los derechos reservados.</p>
+            <p className="text-sm">© 2026 entradita.com todos los derechos reservados.</p>
           </div>
         </div>
       </footer>
