@@ -468,15 +468,13 @@ export default function ModernLogin() {
             {mode === 'credentials' && (
               <>
                 <div className="flex flex-row items-center gap-2">
-                  <p className="text-xs sm:text-sm text-slate-400">¿Olvidó su contraseña?</p>
-                  <a
-                    href="https://wa.me/543482586525?text=Olvidé%20mi%20contraseña"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center text-sm text-blue-400 hover:text-blue-300 transition-colors group"
+                  <p className="text-xs sm:text-sm text-slate-400">¿Olvidaste tu contraseña?</p>
+                  <Link
+                    to="/forgot-password"
+                    className="text-sm text-blue-400 hover:text-blue-300 transition-colors font-medium"
                   >
-                    Contacte al administrador
-                  </a>
+                    Recuperar contraseña
+                  </Link>
                 </div>
                 <div className="flex gap-1 text-sm items-center">
                   <span className="text-slate-400 mr-2">¿No tenés cuenta?</span>

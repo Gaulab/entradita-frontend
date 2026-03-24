@@ -16,6 +16,8 @@ import MaintenancePage from './pages/Main/MaintenancePage';
 // Public pages
 import Home from './pages/Main/Home';
 import Login from './pages/Main/Login';
+import ForgotPassword from './pages/Main/ForgotPassword';
+import ResetPassword from './pages/Main/ResetPassword';
 import Contact from './pages/Main/Contact';
 import TermsAndConditions from './pages/Main/TermsAndConditions';
 import TicketPage from './pages/TicketPage';
@@ -85,6 +87,8 @@ function App() {
               </AuthProvider>
             }
           />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
