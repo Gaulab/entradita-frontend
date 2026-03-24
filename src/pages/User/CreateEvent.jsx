@@ -38,12 +38,38 @@ export default function CreateEvent() {
   const [tagWebSale, setTagWebSale] = useState(false);
   const { authToken } = useContext(AuthContext);
   const [error, setError] = useState('');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState(() => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  });
   const navigate = useNavigate();
 
   // Estado para imagen
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [imageCompressing, setImageCompressing] = useState(false);
+
+  const compressImage = (file) =>
+    new Promise((resolve) => {
+      const QUALITY = 0.7;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          canvas.getContext('2d').drawImage(img, 0, 0);
+          canvas.toBlob(
+            (blob) => resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' })),
+            'image/jpeg',
+            QUALITY
+          );
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
 
   // Nuevos estados para periodicidad
   const [isPeriodic, setIsPeriodic] = useState(false);
@@ -67,7 +93,9 @@ export default function CreateEvent() {
 
     const htmlForm = new FormData(event.target);
     const selectedDate = new Date(htmlForm.get('date') + 'T00:00:00');
-    const currentDate = new Date(new Date().toISOString().split('T')[0] + 'T00:00:00');
+    const now = new Date();
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    const currentDate = new Date(todayStr + 'T00:00:00');
 
     if (selectedDate < currentDate) {
       setError('La fecha de inicio no puede ser menor a la fecha actual.');
@@ -134,10 +162,7 @@ export default function CreateEvent() {
   };
 
   const handleDateChange = (event) => {
-    const inputDate = new Date(event.target.value);
-    // Ajuste simple para evitar problemas de zona horaria al visualizar
-    const offsetDate = new Date(inputDate.getTime() - 3 * 60 * 60 * 1000);
-    setDate(offsetDate.toISOString().split('T')[0]);
+    setDate(event.target.value);
   };
 
   const toggleDay = (dayId) => {
@@ -292,17 +317,22 @@ export default function CreateEvent() {
                 )}
                 <label className="flex items-center gap-2 cursor-pointer bg-gray-700 border border-gray-600 rounded-md px-3 py-2 hover:bg-gray-600 transition-colors">
                   <ImagePlus className="w-4 h-4 text-blue-400" />
-                  <span className="text-sm text-gray-300">{imageFile ? imageFile.name : 'Seleccionar imagen'}</span>
+                  <span className="text-sm text-gray-300">
+                    {imageCompressing ? 'Comprimiendo...' : imageFile ? imageFile.name : 'Seleccionar imagen'}
+                  </span>
                   <input
                     type="file"
                     id="image"
                     accept="image/*"
                     className="hidden"
-                    onChange={(e) => {
+                    onChange={async (e) => {
                       const file = e.target.files[0];
                       if (file) {
-                        setImageFile(file);
-                        setImagePreview(URL.createObjectURL(file));
+                        setImageCompressing(true);
+                        const compressed = await compressImage(file);
+                        setImageFile(compressed);
+                        setImagePreview(URL.createObjectURL(compressed));
+                        setImageCompressing(false);
                       }
                     }}
                   />

@@ -109,36 +109,51 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* --- DIALOGO DE FEEDBACK MERCADO PAGO --- */}
-        {/* ---------------------------------------- */}
-
-        <Card className="bg-gray-800 border-gray-700 mb-4 p-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-          <div className='flex flex-row items-center'>
-            <img src='/isotipoWhite.png' alt="Ticket" className="w-10 sm:w-16 mr-2 p-0" />
-            <CardTitle className="text-white text-xl sm:text-2xl text-left mr-2">Tickets disponibles </CardTitle>
-            <CardContent className="items-center p-0">
-              <p className="text-2xl sm:text-3xl text-blue-200 font-bold">{ticket_limit}</p>
-            </CardContent>
-          </div>
-          <div className='flex lg:flex-row flex-col items-center gap-2'>
-            <Button className="w-full lg:w-auto" variant="entraditaPrimary" onClick={() => navigate('/buy-tickets')}>
-              <ShoppingCart className="h-4 w-4 mr-2" />
-              Comprar Tickets
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+          {/* Bloque: Tickets disponibles */}
+          <Card className="bg-gray-800 border-gray-700 px-4 py-3 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="bg-blue-500/10 rounded-lg p-2 shrink-0">
+                <img src='/isotipoWhite.png' alt="Ticket" className="w-6 h-6 object-contain" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-wider font-medium leading-none mb-0.5">Tickets disponibles</p>
+                <p className="text-2xl font-bold text-blue-300 leading-tight">{ticket_limit}</p>
+              </div>
+            </div>
+            <Button className="shrink-0" variant="entraditaPrimary" onClick={() => navigate('/buy-tickets')}>
+              <ShoppingCart className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Comprar</span>
             </Button>
+          </Card>
 
+          {/* Bloque: Mercado Pago */}
+          <Card className={`border px-4 py-3 flex items-center justify-between gap-3 ${mpSync ? 'bg-emerald-950/40 border-emerald-700/50' : 'bg-gray-800 border-gray-700'}`}>
+            <div className="flex items-center gap-3">
+              <div className={`rounded-lg p-2 shrink-0 ${mpSync ? 'bg-emerald-500/10' : 'bg-gray-700/60'}`}>
+                <img src="/mercadopago.png" alt="Mercado Pago" className="h-6 w-auto object-contain" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-wider font-medium leading-none mb-0.5">Mercado Pago</p>
+                <div className="flex items-center gap-1.5">
+                  <span className={`inline-block w-2 h-2 rounded-full shrink-0 ${mpSync ? 'bg-emerald-400' : 'bg-gray-500'}`} />
+                  <p className={`text-sm font-semibold ${mpSync ? 'text-emerald-400' : 'text-gray-400'}`}>
+                    {mpSync ? 'Vinculado' : 'Sin vincular'}
+                  </p>
+                </div>
+              </div>
+            </div>
             {!mpSync ? (
-              <Button className="w-full lg:w-auto" variant="entraditaPrimary" onClick={() => handleGetAuthorizationUrl()}>
-                <img src="/mercadopago.png" alt="Mercado Pago" className="h-5 w-auto mr-2 shrink-0" />
-                Vincular Mercado Pago
+              <Button className="shrink-0" variant="entraditaPrimary" onClick={() => handleGetAuthorizationUrl()}>
+                Vincular
               </Button>
             ) : (
-              <Button className="w-full lg:w-auto pointer-events-none justify-center" variant="entraditaSuccess" tabIndex={-1}>
-                <img src="/mercadopago.png" alt="Mercado Pago" className="h-5 w-auto mr-2 shrink-0" />
-                Mercado Pago Vinculado
+              <Button className="shrink-0 pointer-events-none" variant="entraditaSuccess" tabIndex={-1}>
+                Activo
               </Button>
             )}
-          </div>
-        </Card>
+          </Card>
+        </div>
 
         <Card className="bg-gray-800 border-gray-700 mb-8">
           <CardHeader>
