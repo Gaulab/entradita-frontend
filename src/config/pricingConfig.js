@@ -1,6 +1,6 @@
-const PRICE_SMALL  = parseFloat(import.meta.env.VITE_PRICE_TIER_SMALL)  || 160;
-const PRICE_MEDIUM = parseFloat(import.meta.env.VITE_PRICE_TIER_MEDIUM) || 130;
-const PRICE_LARGE  = parseFloat(import.meta.env.VITE_PRICE_TIER_LARGE)  || 119.99;
+const PRICE_SMALL  = parseFloat(import.meta.env.VITE_PRICE_TIER_SMALL)  || 180;
+const PRICE_MEDIUM = parseFloat(import.meta.env.VITE_PRICE_TIER_MEDIUM) || 160;
+const PRICE_LARGE  = parseFloat(import.meta.env.VITE_PRICE_TIER_LARGE)  || 140;
 
 export const pricingTiers = [
   {
