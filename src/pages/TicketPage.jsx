@@ -136,8 +136,13 @@ export default function TicketPage() {
                   className="w-full max-w-[240px]"
                   style={{ backgroundColor: '#FFFFFF' }} />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-[68px] h-[68px] rounded-full overflow-hidden border-[3px] border-gray-200 shadow-md" style={{ backgroundColor: '#FFFFFF' }}>
-                    <img src={data.event_image || "/isotipoWhite.png"} alt="Event Logo" className="w-full h-full object-cover" crossOrigin="anonymous" />
+                  <div className="w-[68px] h-[68px] rounded-full overflow-hidden border-[3px] border-gray-800 shadow-md bg-gray-900">
+                    <img
+                      src={data.event_image || '/isotipoWhite.png'}
+                      alt="Event Logo"
+                      className="w-full h-full object-cover"
+                      crossOrigin="anonymous"
+                    />
                   </div>
                 </div>
               </div>
