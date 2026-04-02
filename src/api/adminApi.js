@@ -55,16 +55,6 @@ export const getAdminEvents = async (token, params = {}) => {
   }, 'Error al cargar los eventos');
 };
 
-export const chargeEvent = async (eventId, token) => {
-  return apiRequest(mainAdminUrl(`/api/v1/main/admin/events/${eventId}/charge/`), {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  }, 'Error al actualizar el estado de cobro');
-};
-
 export const getTicketHistory = async (token) => {
   return apiRequest(mainAdminUrl('/api/v1/main/admin/ticket-history/'), {
     method: 'GET',

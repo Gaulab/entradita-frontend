@@ -23,7 +23,7 @@ import {
 
 import PropTypes from 'prop-types';
 
-import { getLogs, getAdminEvents, chargeEvent, getTicketHistory, getAdminTicketRequests, approveTicketRequest, rejectTicketRequest } from '../../api/adminApi.js';
+import { getLogs, getAdminEvents, getTicketHistory, getAdminTicketRequests, approveTicketRequest, rejectTicketRequest } from '../../api/adminApi.js';
 import { getTierForCount } from '../../config/pricingConfig.js';
 import { Eye, CheckCircle2, XCircle, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -55,6 +55,12 @@ function useEventsCardLayout() {
 
 const TABS = { LOGS: 'logs', EVENTS: 'events', HISTORY: 'history', TICKET_REQUESTS: 'ticket_requests' };
 const SORT_KEYS = { organizer: 'organizer_name', name: 'name', date: 'date', tickets: 'tickets_sold', total: 'price_total' };
+const TAB_ITEMS = [
+  { key: TABS.EVENTS, icon: '🗓', label: 'Eventos' },
+  { key: TABS.TICKET_REQUESTS, icon: '🎫', label: 'Solicitudes' },
+  { key: TABS.HISTORY, icon: '📊', label: 'Histórico' },
+  { key: TABS.LOGS, icon: '📋', label: 'Logs de pagos' },
+];
 
 const LOG_LEVEL_STYLE = {
   ERROR: 'text-red-400 bg-red-500/5',
@@ -454,7 +460,6 @@ function EventsTab({ token }) {
   const [loading, setLoading] = useState(false);
   const [sortKey, setSortKey] = useState('organizer');
   const [sortAsc, setSortAsc] = useState(true);
-  const [toggling, setToggling] = useState(null);
   const useCards = useEventsCardLayout();
 
   const fetchEvents = useCallback(async () => {
@@ -480,26 +485,6 @@ function EventsTab({ token }) {
   }, [token, page]);
 
   useEffect(() => { fetchEvents(); }, [fetchEvents]);
-
-  const handlePaidEvent = async (eventId) => {
-    setToggling(eventId);
-    try {
-      const data = await chargeEvent(eventId, token);
-      setGroups((prev) => {
-        const updated = { ...prev };
-        for (const org of Object.keys(updated)) {
-          updated[org] = updated[org].map((ev) =>
-            ev.id === eventId ? { ...ev, paid_event: data.paid_event } : ev
-          );
-        }
-        return updated;
-      });
-    } catch {
-      /* silently ignore */
-    } finally {
-      setToggling(null);
-    }
-  };
 
   // Group events by organizer (as received from backend)
   const sortedGroups = Object.entries(groups)
@@ -551,7 +536,7 @@ function EventsTab({ token }) {
                         <span className={past ? 'text-gray-500' : 'text-gray-300'}>{ev.date}</span>
                         {past && <span className="rounded-full bg-gray-800 px-2 py-0.5 text-[10px] uppercase tracking-wide text-gray-500">Finalizado</span>}
                       </div>
-                      <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                      <div className="mt-3 grid grid-cols-2 gap-3">
                         <div className="rounded-lg bg-gray-800/60 border border-gray-700/50 px-3 py-2">
                           <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-1">Vendidos</p>
                           <Badge variant={ev.tickets_sold > 0 ? 'secondary' : 'default'} className="text-xs">
@@ -568,20 +553,6 @@ function EventsTab({ token }) {
                           ) : (
                             <span className="text-sm text-gray-600">—</span>
                           )}
-                        </div>
-                        <div className="col-span-2 sm:col-span-1 rounded-lg bg-gray-800/60 border border-gray-700/50 px-3 py-2 flex flex-row sm:flex-col items-center sm:items-stretch justify-between gap-2">
-                          <p className="text-[10px] uppercase tracking-wider text-gray-500 shrink-0">Pagado</p>
-                          <label className="flex items-center gap-2 cursor-pointer min-h-[44px] sm:min-h-0">
-                            <input
-                              type="checkbox"
-                              checked={ev.paid_event}
-                              disabled={toggling === ev.id}
-                              onChange={() => handlePaidEvent(ev.id)}
-                              className="h-5 w-5 cursor-pointer accent-emerald-500 shrink-0"
-                              aria-label={`Marcar pagado: ${ev.name}`}
-                            />
-                            <span className="text-xs text-gray-300 sm:hidden">{ev.paid_event ? 'Sí' : 'No'}</span>
-                          </label>
                         </div>
                       </div>
                     </li>
@@ -680,20 +651,15 @@ function EventsTab({ token }) {
                 ['date', 'Fecha'],
                 ['tickets', 'Tickets vendidos'],
                 ['total', 'Precio total'],
-                ['pagado', 'Pagado'],
               ].map(([key, label]) => {
                 const alignClass = (key === 'name' || key === 'date') ? 'text-left' : 'text-center';
-                return key !== 'pagado' ? (
+                return (
                   <TableHead
                     key={key}
                     onClick={() => handleSort(key)}
                     className={`cursor-pointer select-none text-gray-500 bg-gray-950 whitespace-nowrap ${alignClass}`}
                   >
                     {label}{arrow(key)}
-                  </TableHead>
-                ) : (
-                  <TableHead key={key} className={`text-gray-500 bg-gray-950 ${alignClass}`}>
-                    {label}
                   </TableHead>
                 );
               })}
@@ -702,7 +668,7 @@ function EventsTab({ token }) {
           <TableBody>
             {sorted.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-gray-500 py-6 border-b border-gray-800">
+                <TableCell colSpan={5} className="text-center text-gray-500 py-6 border-b border-gray-800">
                   Sin eventos
                 </TableCell>
               </TableRow>
@@ -740,15 +706,6 @@ function EventsTab({ token }) {
                       ) : (
                         <span className="text-gray-600 text-xs">—</span>
                       )}
-                    </td>
-                    <td className="text-center border-b border-gray-800 px-4 py-2 align-middle">
-                      <input
-                        type="checkbox"
-                        checked={ev.paid_event}
-                        disabled={toggling === ev.id}
-                        onChange={() => handlePaidEvent(ev.id)}
-                        className="w-4 h-4 cursor-pointer accent-green-400 mx-auto block"
-                      />
                     </td>
                   </tr>
                 );
@@ -1221,56 +1178,55 @@ export default function AdminPanel() {
   const token = authToken?.access;
 
   return (
-    <div className="min-h-dvh w-full max-w-[100vw] overflow-x-hidden bg-gray-900 text-gray-100 pb-[env(safe-area-inset-bottom,0px)]">
-      <header className="px-4 sm:px-6 lg:px-8 pt-[max(1rem,env(safe-area-inset-top,0px))] pb-4 sm:pb-6 border-b border-gray-800/90 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-        <div className="min-w-0">
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-100 tracking-tight">Administración</h1>
-          <p className="text-xs text-gray-500 mt-1 hidden sm:block">Operaciones, cobros e historial</p>
-        </div>
-        <Button
-          variant="entraditaTertiary"
-          size="sm"
-          onClick={() => navigate('/dashboard')}
-          className="w-full sm:w-auto shrink-0 min-h-[44px] sm:min-h-0"
-        >
-          ← Volver al dashboard
-        </Button>
-      </header>
+    <div className="min-h-screen w-screen p-4 bg-gray-900 text-gray-100 pb-[env(safe-area-inset-bottom,0px)] overflow-x-hidden">
+      <div className="max-w-6xl mx-auto w-full">
+        <header className="pt-[max(1rem,env(safe-area-inset-top,0px))] pb-4 sm:pb-6 border-b border-gray-800/90 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-100 tracking-tight">Administración</h1>
+            <p className="text-xs text-gray-500 mt-1 hidden sm:block">Operaciones, cobros e historial</p>
+          </div>
+          <Button
+            variant="entraditaTertiary"
+            size="sm"
+            onClick={() => navigate('/dashboard')}
+            className="w-full sm:w-auto shrink-0 min-h-[44px] sm:min-h-0"
+          >
+            ← Volver al dashboard
+          </Button>
+        </header>
 
-      <nav className="sticky top-0 z-20 border-b border-gray-800/90 bg-gray-900/95 backdrop-blur-md supports-[backdrop-filter]:bg-gray-900/80">
-        <div className="flex gap-1 px-4 sm:px-6 lg:px-8 py-2 overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch]">
-          {[
-            [TABS.EVENTS, '🗓 Eventos'],
-            [TABS.TICKET_REQUESTS, '🎫 Solicitudes'],
-            [TABS.HISTORY, '📊 Histórico'],
-            [TABS.LOGS, '📋 Logs de pagos'],
-          ].map(([key, label]) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => setTab(key)}
-              className={`shrink-0 rounded-lg px-3.5 py-2.5 sm:px-4 text-sm font-medium transition-colors cursor-pointer border-0 min-h-[44px] flex items-center whitespace-nowrap ${
-                tab === key
-                  ? 'bg-gray-800 text-gray-100 ring-1 ring-gray-600/50 shadow-sm'
-                  : 'bg-transparent text-gray-400 hover:text-gray-200 active:bg-gray-800/50'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </nav>
+        <nav className="sticky top-0 z-20 border-b border-gray-800/90 bg-gray-900/95 backdrop-blur-md supports-[backdrop-filter]:bg-gray-900/80">
+          <div className="flex gap-1 py-2 overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch]">
+            {TAB_ITEMS.map(({ key, icon, label }) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setTab(key)}
+                aria-label={label}
+                className={`shrink-0 rounded-lg px-3 py-2.5 md:px-4 text-sm font-medium transition-colors cursor-pointer border-0 min-h-[44px] flex items-center whitespace-nowrap gap-1.5 ${
+                  tab === key
+                    ? 'bg-gray-800 text-gray-100 ring-1 ring-gray-600/50 shadow-sm'
+                    : 'bg-transparent text-gray-400 hover:text-gray-200 active:bg-gray-800/50'
+                }`}
+              >
+                <span aria-hidden="true">{icon}</span>
+                <span className="hidden md:inline">{label}</span>
+              </button>
+            ))}
+          </div>
+        </nav>
 
-      <main className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 w-full max-w-7xl mx-auto">
-        <Card className="bg-gray-800/90 border-gray-700/80 shadow-lg rounded-xl">
-          <CardContent className="p-4 sm:p-6 pt-4 sm:pt-6">
-            {tab === TABS.LOGS && <LogsTab token={token} />}
-            {tab === TABS.EVENTS && <EventsTab token={token} />}
-            {tab === TABS.TICKET_REQUESTS && <TicketRequestsTab token={token} />}
-            {tab === TABS.HISTORY && <HistoricoTab token={token} />}
-          </CardContent>
-        </Card>
-      </main>
+        <main className="py-4 sm:py-6 w-full">
+          <Card className="bg-gray-800/90 border-gray-700/80 shadow-lg rounded-xl">
+            <CardContent className="p-4 sm:p-6 pt-4 sm:pt-6">
+              {tab === TABS.LOGS && <LogsTab token={token} />}
+              {tab === TABS.EVENTS && <EventsTab token={token} />}
+              {tab === TABS.TICKET_REQUESTS && <TicketRequestsTab token={token} />}
+              {tab === TABS.HISTORY && <HistoricoTab token={token} />}
+            </CardContent>
+          </Card>
+        </main>
+      </div>
     </div>
   );
 }
