@@ -52,14 +52,16 @@ export default function CreateEvent() {
   const compressImage = (file) =>
     new Promise((resolve) => {
       const QUALITY = 0.7;
+      const MAX_DIMENSION = 800;
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
+          const scale = Math.min(1, MAX_DIMENSION / Math.max(img.width, img.height));
           const canvas = document.createElement('canvas');
-          canvas.width = img.width;
-          canvas.height = img.height;
-          canvas.getContext('2d').drawImage(img, 0, 0);
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
           canvas.toBlob(
             (blob) => resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' })),
             'image/jpeg',
