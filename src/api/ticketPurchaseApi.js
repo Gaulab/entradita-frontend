@@ -12,21 +12,24 @@ export const getTicketPurchaseConfig = async (token) => {
   }, 'Error al cargar la configuración de precios');
 };
 
-export const getMyTicketRequests = async (token) => {
-  return apiRequest(`${apiUrl}/api/v1/main/ticket-requests/`, {
+// Crea la preferencia de MercadoPago para recargar créditos y devuelve el init_point.
+export const createTopUpPreference = async (quantity, token) => {
+  return apiRequest(`${apiUrl}/api/v1/payments/topup/create-preference/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ quantity }),
+  }, 'Error al iniciar el pago');
+};
+
+// Historial de recargas del organizador.
+export const getTopUpHistory = async (token) => {
+  return apiRequest(`${apiUrl}/api/v1/payments/topup/history/`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  }, 'Error al cargar las solicitudes');
-};
-
-export const createTicketRequest = async (formData, token) => {
-  return apiRequest(`${apiUrl}/api/v1/main/ticket-requests/`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    body: formData,
-  }, 'Error al crear la solicitud');
+  }, 'Error al cargar el historial de recargas');
 };
