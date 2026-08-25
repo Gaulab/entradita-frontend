@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { signInWithPopup, createUserWithEmailAndPassword } from "firebase/auth";
+import { signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, updateProfile, signOut } from "firebase/auth";
 import { auth as firebaseAuth, googleProvider } from "../config/firebaseConfig";
 import { login, refreshToken, firebaseLogin } from "../api/userApi";
 
@@ -54,7 +54,34 @@ export const AuthProvider = ({ children }) => {
     const registerWithEmail = async (email, password, username) => {
         try {
             const result = await createUserWithEmailAndPassword(firebaseAuth, email, password);
-            return await _loginWithFirebaseToken(result.user, username);
+            // Guardamos el usuario elegido para reusarlo en el primer login verificado
+            // (la cuenta en el backend recien se crea cuando el email esta verificado).
+            if (username) {
+                try { await updateProfile(result.user, { displayName: username }); } catch { /* noop */ }
+            }
+            // Verificacion de email OBLIGATORIA: enviamos el mail y NO logueamos.
+            await sendEmailVerification(result.user);
+            await signOut(firebaseAuth);
+            return { success: true, pendingVerification: true };
+        } catch (error) {
+            return { success: false, error: error.message };
+        }
+    };
+
+    const loginWithEmail = async (email, password) => {
+        try {
+            const result = await signInWithEmailAndPassword(firebaseAuth, email, password);
+            if (!result.user.emailVerified) {
+                // Reenviamos el mail de verificacion y no dejamos entrar.
+                try { await sendEmailVerification(result.user); } catch { /* noop */ }
+                await signOut(firebaseAuth);
+                return {
+                    success: false,
+                    needsVerification: true,
+                    error: 'Tenés que verificar tu correo antes de ingresar. Te reenviamos el email de verificación.',
+                };
+            }
+            return await _loginWithFirebaseToken(result.user, result.user.displayName || undefined);
         } catch (error) {
             return { success: false, error: error.message };
         }
@@ -87,6 +114,7 @@ export const AuthProvider = ({ children }) => {
         loginUser,
         loginWithGoogle,
         registerWithEmail,
+        loginWithEmail,
         logoutUser,
     }
 
