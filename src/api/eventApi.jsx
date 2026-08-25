@@ -112,6 +112,17 @@ export const resetEvent = async (id, authToken) => {
   }, 'Error al reiniciar el evento');
 };
 
+// Genera el flyer publicitario del evento para Instagram y devuelve { flyer_url }
+export const generateEventFlyer = async (id, authToken) => {
+  return apiRequest(`${apiUrl}/api/v1/main/event/${id}/flyer/`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${authToken}`
+    },
+  }, 'Error al generar el flyer del evento');
+};
+
 // Eliminación de un evento
 export const deleteEvent = async (id, authToken) => {
   await apiRequest(`${apiUrl}/api/v1/main/event/${id}/`, {

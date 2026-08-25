@@ -1,12 +1,12 @@
 // entradaFront/src/pages/EventDetail/Event.jsx
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
-import { CalendarDaysIcon, DollarSign, MapPin, Monitor, RotateCcw } from 'lucide-react';
+import { CalendarDaysIcon, DollarSign, MapPin, Monitor, RotateCcw, Instagram, Download } from 'lucide-react';
 import { useCallback, useContext, useState } from 'react';
 import EventDetailsContext from '../../context/EventDetailsContext';
 import { Switch } from '../../components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../../components/ui/dialog';
-import { updateWebSale } from '../../api/eventApi';
+import { updateWebSale, generateEventFlyer } from '../../api/eventApi';
 import AuthContext from '../../context/AuthContext';
 import { formatDate } from '../../utils/dateUtils';
 import PropTypes from 'prop-types';
@@ -23,6 +23,39 @@ export default function Event({ event }) {
     isOpen: false,
     message: ''
   });
+
+  const [flyerDialog, setFlyerDialog] = useState({ isOpen: false, url: null });
+  const [flyerLoading, setFlyerLoading] = useState(false);
+
+  const handleGenerateFlyer = useCallback(async () => {
+    setFlyerLoading(true);
+    try {
+      const { flyer_url } = await generateEventFlyer(event.id, authToken.access);
+      // Cache-bust para ver siempre la ultima version generada.
+      setFlyerDialog({ isOpen: true, url: `${flyer_url}?t=${Date.now()}` });
+    } catch (error) {
+      setErrorDialog({ isOpen: true, message: error.message });
+    } finally {
+      setFlyerLoading(false);
+    }
+  }, [event.id, authToken]);
+
+  const handleDownloadFlyer = useCallback(async () => {
+    if (!flyerDialog.url) return;
+    try {
+      const res = await fetch(flyerDialog.url);
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = objectUrl;
+      a.download = `flyer-${event.name}.png`;
+      a.click();
+      URL.revokeObjectURL(objectUrl);
+    } catch {
+      // Fallback: abrir en nueva pestaña
+      window.open(flyerDialog.url, '_blank');
+    }
+  }, [flyerDialog.url, event.name]);
 
   const percentage = event.tickets_sold > 0 ? (event.tickets_scanned / event.tickets_sold) * 100 : 0;
 
@@ -109,11 +142,33 @@ export default function Event({ event }) {
             </Button>
           )}
         </div>
+        <div className="mt-2">
+          <Button size="sm" onClick={handleGenerateFlyer} disabled={flyerLoading} className="w-full font-semibold bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white border-0">
+            <Instagram className="h-4 w-4 mr-1.5" /> {flyerLoading ? 'Generando flyer...' : 'Generar flyer para Instagram'}
+          </Button>
+        </div>
         <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-700/50">
           <span className="text-sm text-gray-300">Venta web del evento</span>
           <Switch checked={webSalesEnabled} onChange={() => handleUpdateWebSale()} />
         </div>
       </CardContent>
+
+      <Dialog open={flyerDialog.isOpen} onOpenChange={(isOpen) => setFlyerDialog({ ...flyerDialog, isOpen })}>
+        <DialogContent className="bg-gray-800 text-white border-gray-700 max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Flyer para Instagram</DialogTitle>
+          </DialogHeader>
+          {flyerDialog.url && (
+            <img src={flyerDialog.url} alt="Flyer del evento" className="w-full rounded-lg border border-gray-700" />
+          )}
+          <p className="text-xs text-gray-400 text-center">Descargalo y subilo a la historia o feed de Instagram.</p>
+          <DialogFooter>
+            <Button onClick={handleDownloadFlyer} className="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white">
+              <Download className="h-4 w-4 mr-1.5" /> Descargar flyer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={errorDialog.isOpen} onOpenChange={(isOpen) => setErrorDialog({ ...errorDialog, isOpen })}>
         <DialogContent className="bg-gray-800 text-white border-gray-700">
