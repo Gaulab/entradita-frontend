@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
-import { QRCodeCanvas } from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
 import { getTicket } from '../api/ticketApi';
@@ -13,7 +13,6 @@ export default function TicketPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isDownloading, setIsDownloading] = useState(false);
-  const [logoError, setLogoError] = useState(false);
   const ticketRef = useRef(null);
 
   useEffect(() => {
@@ -56,16 +55,14 @@ export default function TicketPage() {
       const canvas = await html2canvas(ticketRef.current, {
         scale: 4,
         useCORS: true,
-        // allowTaint:false => si una imagen remota no tiene CORS, html2canvas la
-        // omite en vez de "tintar" el canvas y romper el toDataURL de la descarga.
-        allowTaint: false,
+        allowTaint: true,
         backgroundColor: null,
       });
 
       const image = canvas.toDataURL('image/png');
       const link = document.createElement('a');
       link.href = image;
-      link.download = `ticket-${data.event_name}-${data.owner_name}.png`;
+      link.download = `ticket-${data.event_name}-${data.owner_name}.jpeg`;
       link.click();
     } catch (error) {
       console.error('Error generating ticket image:', error);
@@ -133,27 +130,18 @@ export default function TicketPage() {
               <p className="text-[10px] text-gray-400 tracking-[0.2em] uppercase mb-3 font-medium">Presentá este QR en la entrada</p>
 
               <div className="relative" style={{ backgroundColor: '#FFFFFF' }}>
-                {/* QR en canvas (raster): los navegadores excluyen canvas del modo
-                    oscuro forzado (Samsung Internet, Auto Dark), a diferencia del SVG
-                    inline que se invertia y quedaba gris/no escaneable. */}
-                <QRCodeCanvas
-                  id="qr-code"
-                  value={data.qr_payload}
-                  size={480}
-                  level="H"
+                <QRCodeSVG id="qr-code" value={data.qr_payload} size={240} level="H"
                   fgColor="#000000"
                   bgColor="#FFFFFF"
-                  marginSize={0}
-                  style={{ width: 240, height: 240, backgroundColor: '#FFFFFF' }}
-                />
+                  className="w-full max-w-[240px]"
+                  style={{ backgroundColor: '#FFFFFF' }} />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-[68px] h-[68px] rounded-full overflow-hidden border-[3px] border-gray-800 shadow-md bg-gray-900">
                     <img
-                      src={(!logoError && data.event_image) ? data.event_image : '/isotipoWhite.png'}
+                      src={data.event_image || '/isotipoWhite.png'}
                       alt="Event Logo"
                       className="w-full h-full object-cover"
                       crossOrigin="anonymous"
-                      onError={() => setLogoError(true)}
                     />
                   </div>
                 </div>

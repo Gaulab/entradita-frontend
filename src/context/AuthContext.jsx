@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, updateProfile, signOut } from "firebase/auth";
+import { signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, signOut } from "firebase/auth";
 import { auth as firebaseAuth, googleProvider } from "../config/firebaseConfig";
-import { login, refreshToken, firebaseLogin } from "../api/userApi";
+import { login, refreshToken, firebaseLogin, sendVerificationEmail } from "../api/userApi";
 
 const AuthContext = createContext();
 export default AuthContext;
@@ -59,11 +59,43 @@ export const AuthProvider = ({ children }) => {
             if (username) {
                 try { await updateProfile(result.user, { displayName: username }); } catch { /* noop */ }
             }
-            // Verificacion de email OBLIGATORIA: enviamos el mail y NO logueamos.
-            await sendEmailVerification(result.user);
+            // Verificacion de email OBLIGATORIA: el mail branded lo manda el backend
+            // (Resend) generando el link con firebase-admin. NO logueamos.
+            try {
+                await sendVerificationEmail(await result.user.getIdToken());
+            } catch (e) {
+                console.error('[registerWithEmail] sendVerificationEmail fallo:', e);
+            }
             await signOut(firebaseAuth);
             return { success: true, pendingVerification: true };
         } catch (error) {
+            // El usuario ya existe en Firebase (ej: intento previo que quedo sin verificar).
+            // Registro idempotente: si las credenciales coinciden y falta verificar,
+            // reenviamos el mail; si ya verifico, lo dejamos iniciar sesion.
+            if (error.code === 'auth/email-already-in-use') {
+                try {
+                    const signIn = await signInWithEmailAndPassword(firebaseAuth, email, password);
+                    if (!signIn.user.emailVerified) {
+                        if (username && !signIn.user.displayName) {
+                            try { await updateProfile(signIn.user, { displayName: username }); } catch { /* noop */ }
+                        }
+                        try {
+                            await sendVerificationEmail(await signIn.user.getIdToken());
+                        } catch (e) {
+                            console.error('[registerWithEmail] sendVerificationEmail (reenvio) fallo:', e);
+                        }
+                        await signOut(firebaseAuth);
+                        return { success: true, pendingVerification: true, resent: true };
+                    }
+                    // Ya estaba verificado: completamos el login normalmente.
+                    return await _loginWithFirebaseToken(signIn.user, signIn.user.displayName || username || undefined);
+                } catch {
+                    return {
+                        success: false,
+                        error: 'Este email ya está registrado. Iniciá sesión con tu contraseña o recuperala si la olvidaste.',
+                    };
+                }
+            }
             return { success: false, error: error.message };
         }
     };
@@ -72,8 +104,12 @@ export const AuthProvider = ({ children }) => {
         try {
             const result = await signInWithEmailAndPassword(firebaseAuth, email, password);
             if (!result.user.emailVerified) {
-                // Reenviamos el mail de verificacion y no dejamos entrar.
-                try { await sendEmailVerification(result.user); } catch { /* noop */ }
+                // Reenviamos el mail de verificacion (branded, backend/Resend) y no dejamos entrar.
+                try {
+                    await sendVerificationEmail(await result.user.getIdToken());
+                } catch (e) {
+                    console.error('[loginWithEmail] sendVerificationEmail fallo:', e);
+                }
                 await signOut(firebaseAuth);
                 return {
                     success: false,

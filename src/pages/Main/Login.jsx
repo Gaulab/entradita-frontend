@@ -116,7 +116,11 @@ export default function ModernLogin() {
       // La cuenta se crea recien cuando verifica el email. Volvemos al login.
       setMode('credentials')
       setEmailForm({ username: '', email: '', password: '', confirmPassword: '' })
-      setSuccessMessage("¡Casi listo! Te enviamos un correo para verificar tu email. Verificalo y luego iniciá sesión con tu email y contraseña.")
+      setSuccessMessage(
+        response.resent
+          ? "Ya te habías registrado con este email pero faltaba verificarlo. Te reenviamos el correo de verificación: revisalo y luego iniciá sesión."
+          : "¡Casi listo! Te enviamos un correo para verificar tu email. Verificalo y luego iniciá sesión con tu email y contraseña."
+      )
     } else {
       navigate(response.user?.is_staff ? "/admin" : "/dashboard")
     }
