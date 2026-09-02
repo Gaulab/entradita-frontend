@@ -37,6 +37,17 @@ export const firebaseLogin = async (idToken, username) => {
     }, 'Error al iniciar sesión');
 }
 
+// Envía el correo de verificación branded (Resend) generando el link en el backend
+export const sendVerificationEmail = async (idToken) => {
+    return apiRequest(`${apiUrl}/auth/send-verification/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id_token: idToken })
+    }, 'Error al enviar el correo de verificación');
+}
+
 // Request password reset email
 export const requestPasswordReset = async (email) => {
     return apiRequest(`${apiUrl}/auth/password-reset/`, {

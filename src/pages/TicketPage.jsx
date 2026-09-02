@@ -13,6 +13,7 @@ export default function TicketPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [logoLoaded, setLogoLoaded] = useState(false);
   const ticketRef = useRef(null);
 
   useEffect(() => {
@@ -136,12 +137,13 @@ export default function TicketPage() {
                   className="w-full max-w-[240px]"
                   style={{ backgroundColor: '#FFFFFF' }} />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-[68px] h-[68px] rounded-full overflow-hidden border-[3px] border-gray-800 shadow-md bg-gray-900">
+                  <div className={`w-[68px] h-[68px] rounded-full overflow-hidden border-[3px] border-gray-800 shadow-md bg-gray-900 transition-opacity duration-300 ${logoLoaded ? 'opacity-100' : 'opacity-0'}`}>
                     <img
                       src={data.event_image || '/isotipoWhite.png'}
                       alt="Event Logo"
                       className="w-full h-full object-cover"
                       crossOrigin="anonymous"
+                      onLoad={() => setLogoLoaded(true)}
                     />
                   </div>
                 </div>

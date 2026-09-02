@@ -20,8 +20,9 @@ const GoogleIcon = () => (
 )
 
 export default function ModernLogin() {
-  const { loginUser, loginWithGoogle, registerWithEmail, user } = useContext(AuthContext)
+  const { loginUser, loginWithGoogle, registerWithEmail, loginWithEmail, user } = useContext(AuthContext)
   const [errorMessage, setErrorMessage] = useState(null)
+  const [successMessage, setSuccessMessage] = useState(null)
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
@@ -44,11 +45,24 @@ export default function ModernLogin() {
     e.preventDefault()
     setIsLoading(true)
     setErrorMessage(null)
+    setSuccessMessage(null)
 
-    const response = await loginUser(e)
+    // Si el identificador es un email, autenticamos por Firebase (con verificacion
+    // de email); si es un usuario, va por el login clasico de Django.
+    const identifier = (e.target.username.value || "").trim()
+    const isEmail = identifier.includes("@")
+    const response = isEmail
+      ? await loginWithEmail(identifier, e.target.password.value)
+      : await loginUser(e)
 
     if (!response.success) {
-      setErrorMessage("Credenciales incorrectas, intente nuevamente.")
+      if (response.needsVerification) {
+        setErrorMessage(response.error)
+      } else if (isEmail) {
+        setErrorMessage(response.error || "No pudimos iniciar sesión. Revisá el email y la contraseña.")
+      } else {
+        setErrorMessage("Credenciales incorrectas, intente nuevamente.")
+      }
     } else {
       navigate(response.user?.is_staff ? "/admin" : "/dashboard")
     }
@@ -98,6 +112,15 @@ export default function ModernLogin() {
 
     if (!response.success) {
       setErrorMessage(response.error || "Error al crear la cuenta. Es posible que el email o usuario ya estén registrados.")
+    } else if (response.pendingVerification) {
+      // La cuenta se crea recien cuando verifica el email. Volvemos al login.
+      setMode('credentials')
+      setEmailForm({ username: '', email: '', password: '', confirmPassword: '' })
+      setSuccessMessage(
+        response.resent
+          ? "Ya te habías registrado con este email pero faltaba verificarlo. Te reenviamos el correo de verificación: revisalo y luego iniciá sesión."
+          : "¡Casi listo! Te enviamos un correo para verificar tu email. Verificalo y luego iniciá sesión con tu email y contraseña."
+      )
     } else {
       navigate(response.user?.is_staff ? "/admin" : "/dashboard")
     }
@@ -108,6 +131,7 @@ export default function ModernLogin() {
   const switchMode = (newMode) => {
     setMode(newMode)
     setErrorMessage(null)
+    setSuccessMessage(null)
     setEmailForm({ username: '', email: '', password: '', confirmPassword: '' })
   }
 
@@ -279,12 +303,19 @@ export default function ModernLogin() {
               </div>
             </div>
 
+            {/* Success / info message (ej: verificacion de email enviada) */}
+            {successMessage && (
+              <div className="p-3 sm:p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20 backdrop-blur-sm">
+                <p className="text-sm text-emerald-300 text-center">{successMessage}</p>
+              </div>
+            )}
+
             {/* ── Credentials form (existing Django login) ── */}
             {mode === 'credentials' && (
               <form onSubmit={handleLogin} className="space-y-4 sm:space-y-5">
                 <div className="space-y-2">
                   <Label htmlFor="username" className="text-slate-200 text-sm sm:text-base font-medium">
-                    Usuario
+                    Usuario o email
                   </Label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
@@ -294,9 +325,9 @@ export default function ModernLogin() {
                       name="username"
                       value={formData.username}
                       onChange={handleUsernameChange}
-                      maxLength={25}
+                      maxLength={50}
                       required
-                      placeholder="Ingrese su usuario"
+                      placeholder="Usuario o tu@email.com"
                       className="pl-10 sm:pl-12 bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400 focus:border-blue-500/50 focus:ring-blue-500/20 backdrop-blur-sm h-10 sm:h-12 text-sm sm:text-base"
                     />
                   </div>
