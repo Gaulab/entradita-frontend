@@ -1,11 +1,32 @@
 import { apiRequest } from '../utils/apiUtils';
 
-const apiUrl = import.meta.env.VITE_API_URL;
+const apiRoot = String(import.meta.env.VITE_API_URL ?? '').trim().replace(/\/+$/, '');
 
-export const getLogs = async (token, errorOnly = false) => {
-  const url = errorOnly
-    ? `${apiUrl}/api/v1/main/admin/logs/?level=error`
-    : `${apiUrl}/api/v1/main/admin/logs/`;
+function mainAdminUrl(suffixWithLeadingSlash, searchParams) {
+  const q = searchParams && searchParams.toString();
+  const base = `${apiRoot}${suffixWithLeadingSlash}`;
+  return q ? `${base}?${q}` : base;
+}
+
+/**
+ * @param {string} token
+ * @param {object} [params]
+ * @param {number} [params.page]
+ * @param {number} [params.page_size]
+ * @param {string} [params.payment_id] substring en línea / payment_id parseado
+ * @param {string} [params.order_id]
+ * @param {string} [params.type] INFO | WARNING | ERROR
+ * @param {string} [params.reason] coincidencia exacta con razón parseada
+ */
+export const getLogs = async (token, params = {}) => {
+  const search = new URLSearchParams();
+  if (params.page != null) search.set('page', String(params.page));
+  if (params.page_size != null) search.set('page_size', String(params.page_size));
+  if (params.payment_id) search.set('payment_id', params.payment_id);
+  if (params.order_id) search.set('order_id', params.order_id);
+  if (params.type) search.set('type', params.type);
+  if (params.reason) search.set('reason', params.reason);
+  const url = mainAdminUrl('/api/v1/main/admin/logs/', search);
   return apiRequest(url, {
     method: 'GET',
     headers: {
@@ -15,8 +36,17 @@ export const getLogs = async (token, errorOnly = false) => {
   }, 'Error al cargar los logs');
 };
 
-export const getAdminEvents = async (token) => {
-  return apiRequest(`${apiUrl}/api/v1/main/admin/events/`, {
+/**
+ * @param {string} token
+ * @param {object} [params]
+ * @param {number} [params.page] 1-based
+ * @param {number} [params.page_size]
+ */
+export const getAdminEvents = async (token, params = {}) => {
+  const search = new URLSearchParams();
+  if (params.page != null) search.set('page', String(params.page));
+  if (params.page_size != null) search.set('page_size', String(params.page_size));
+  return apiRequest(mainAdminUrl('/api/v1/main/admin/events/', search), {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -25,18 +55,8 @@ export const getAdminEvents = async (token) => {
   }, 'Error al cargar los eventos');
 };
 
-export const chargeEvent = async (eventId, token) => {
-  return apiRequest(`${apiUrl}/api/v1/main/admin/events/${eventId}/charge/`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  }, 'Error al actualizar el estado de cobro');
-};
-
 export const getTicketHistory = async (token) => {
-  return apiRequest(`${apiUrl}/api/v1/main/admin/ticket-history/`, {
+  return apiRequest(mainAdminUrl('/api/v1/main/admin/ticket-history/'), {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -45,8 +65,18 @@ export const getTicketHistory = async (token) => {
   }, 'Error al cargar el histórico de tickets');
 };
 
-export const getAdminTicketRequests = async (token) => {
-  return apiRequest(`${apiUrl}/api/v1/main/admin/ticket-requests/`, {
+/**
+ * @param {string} token
+ * @param {object} [params]
+ * @param {number} [params.page] 1-based
+ * @param {number} [params.page_size] default 10 en backend
+ */
+export const getAdminTicketRequests = async (token, params = {}) => {
+  const search = new URLSearchParams();
+  if (params.page != null) search.set('page', String(params.page));
+  if (params.page_size != null) search.set('page_size', String(params.page_size));
+  const url = mainAdminUrl('/api/v1/main/admin/ticket-requests/', search);
+  return apiRequest(url, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -56,7 +86,7 @@ export const getAdminTicketRequests = async (token) => {
 };
 
 export const approveTicketRequest = async (id, token) => {
-  return apiRequest(`${apiUrl}/api/v1/main/admin/ticket-requests/${id}/approve/`, {
+  return apiRequest(mainAdminUrl(`/api/v1/main/admin/ticket-requests/${id}/approve/`), {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -66,7 +96,7 @@ export const approveTicketRequest = async (id, token) => {
 };
 
 export const rejectTicketRequest = async (id, reason, token) => {
-  return apiRequest(`${apiUrl}/api/v1/main/admin/ticket-requests/${id}/reject/`, {
+  return apiRequest(mainAdminUrl(`/api/v1/main/admin/ticket-requests/${id}/reject/`), {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
