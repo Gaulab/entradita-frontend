@@ -30,9 +30,9 @@ const MultiSelectDropdown = ({ options, selectedValues, onChange, placeholder = 
       <div
         onClick={() => !disabled && setIsOpen(!isOpen)}
         className={`w-full h-15 px-3 py-2 text-left rounded-lg flex items-center justify-between
-          bg-gray-700 border border-gray-600
-          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
-          hover:bg-gray-600 transition-colors duration-200
+          bg-secondary border border-border
+          focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent
+          hover:bg-secondary transition-colors duration-200
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           ${className}`}
         role="button"
@@ -45,25 +45,25 @@ const MultiSelectDropdown = ({ options, selectedValues, onChange, placeholder = 
         }}
         {...props}
       >
-        <span className={`block truncate ${selectedValues.length === 0 ? 'text-gray-400' : 'text-gray-200'}`} style={{ whiteSpace: 'wrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        <span className={`block truncate ${selectedValues.length === 0 ? 'text-muted-foreground' : 'text-gray-200'}`} style={{ whiteSpace: 'wrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {selectedValues.length === 0 ? placeholder : selectedValues.map((v) => v.name).join(', ')}
         </span>
-        <ChevronDown className={`ml-2 h-4 w-4 text-gray-400 transition-transform ${isOpen ? 'transform rotate-180' : ''}`} />
+        <ChevronDown className={`ml-2 h-4 w-4 text-muted-foreground transition-transform ${isOpen ? 'transform rotate-180' : ''}`} />
       </div>
 
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-gray-700 rounded-lg shadow-lg border border-gray-600 max-h-44 overflow-auto">
+        <div className="absolute z-10 w-full mt-1 bg-secondary rounded-lg shadow-lg border border-border max-h-44 overflow-auto">
           <ul className="py-1">
             {options.map((option, index) => (
               <li
                 key={option.id}
                 onClick={() => toggleOption(option)}
                 className={`px-4 py-2 cursor-pointer flex justify-between items-center text-gray-200 
-                  hover:bg-gray-600 transition-colors ${selectedValues.some((value) => value.id === option.id) ? 'bg-gray-600' : ''}
+                  hover:bg-secondary transition-colors ${selectedValues.some((value) => value.id === option.id) ? 'bg-secondary' : ''}
                   `}
               >
                 {option.name}
-                {selectedValues.some((value) => value.id === option.id) && <Check className="h-4 w-4 text-blue-500" />}
+                {selectedValues.some((value) => value.id === option.id) && <Check className="h-4 w-4 text-primary" />}
               </li>
             ))}
           </ul>

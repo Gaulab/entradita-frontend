@@ -41,28 +41,28 @@ export default function TicketShare({ }) {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900 p-4 w-screen">
-      <Card className="w-full max-w-md bg-gray-800 border-gray-700">
+    <div className="flex items-center justify-center min-h-screen bg-background p-4 w-screen">
+      <Card className="w-full max-w-md bg-card border-border">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center text-white flex items-center justify-center">
             <CheckCircle className="mr-2 text-green-500" />
             Ticket Creado con Éxito
           </CardTitle>
-          <CardDescription className="text-center text-gray-400">
+          <CardDescription className="text-center text-muted-foreground">
             El ticket ha sido generado correctamente
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Button 
             onClick={handleShare} 
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center"
+            className="w-full bg-primary hover:bg-primary/90 text-white flex items-center justify-center"
           >
             <Share2 className="mr-2" />
             Compartir Ticket
           </Button>
           <Button 
             onClick={() => navigate(`/seller/${uuid}`)} 
-            className="w-full bg-gray-700 hover:bg-gray-600 text-white flex items-center justify-center"
+            className="w-full bg-secondary hover:bg-secondary text-white flex items-center justify-center"
           >
             <ArrowLeft className="mr-2" />
             Volver a la Página Principal

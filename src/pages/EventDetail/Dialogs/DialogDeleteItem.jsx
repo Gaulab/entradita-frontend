@@ -78,11 +78,11 @@ export default function DialogDeleteItem({}) {
 
   return (
     <Dialog open={isDeleteConfirmDialogOpen} onOpenChange={setIsDeleteConfirmDialogOpen} className="">
-      <DialogContent className="bg-gray-800 text-white">
+      <DialogContent className="bg-card text-white">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center">Eliminar {itemToDelete?.type}</DialogTitle>
           {itemToDelete?.type === 'vendedor' ? (
-            <DialogDescription className=" text-gray-400">
+            <DialogDescription className=" text-muted-foreground">
               ¿Estás seguro de que deseas eliminar este {itemToDelete?.type}? Esta acción eliminará la información del empleado y <a className="text-red-500 ">todos los tickets asociados</a>.
               <br />
               Si queres que solamente no pueda vender mas, podes deshabilitarlo desde el menu.
@@ -90,15 +90,15 @@ export default function DialogDeleteItem({}) {
           ) : (
             <DialogDescription>¿Estás seguro de que deseas eliminar este {itemToDelete?.type}?</DialogDescription>
           )}
-          <div className=" text-gray-400 flex items-center ">
+          <div className=" text-muted-foreground flex items-center ">
             <input type="checkbox" id="confirm-delete" checked={isChecked} onChange={handleCheckboxChange} className=" mr-2  h-5 w-5" />
-            <label htmlFor="confirm-delete" className=" text-gray-400">
+            <label htmlFor="confirm-delete" className=" text-muted-foreground">
               Quiero eliminar al {itemToDelete?.type} {itemToDelete?.type === 'vendedor' ? 'junto con los ticket que creo.' : ''}
             </label>
           </div>
         </DialogHeader>
         <DialogFooter>
-          <Button onClick={() => setIsDeleteConfirmDialogOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600">
+          <Button onClick={() => setIsDeleteConfirmDialogOpen(false)} variant="outline" className="bg-secondary text-white hover:bg-secondary">
             Cancelar
           </Button>
           <Button onClick={handleConfirmDelete} disabled={!isChecked} className="bg-red-700 hover:bg-red-800 text-white">

@@ -250,17 +250,17 @@ export default function EditEvent() {
   }
 
   return (
-    <div className="min-h-screen mx-auto p-4 bg-gray-900 text-gray-100">
+    <div className="min-h-screen mx-auto p-4 bg-background text-gray-100">
       <div className="max-w-6xl mx-auto w-full md:w-3/4 flex flex-col items-center">
 
         <Button onClick={() => navigate(`/event/${id}/details`)} variant="entraditaTertiary" className="w-full mb-4">
           <ArrowLeftIcon className="mr-2 h-4 w-4" /> Volver al evento
         </Button>
 
-        <Card className="w-full bg-gray-800 border-gray-700">
+        <Card className="w-full bg-card border-border">
           <CardHeader>
             <CardTitle className="text-white">Editar Evento</CardTitle>
-            <CardDescription className="text-gray-400">Modifica los detalles de tu evento</CardDescription>
+            <CardDescription className="text-muted-foreground">Modifica los detalles de tu evento</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-4">
@@ -273,17 +273,17 @@ export default function EditEvent() {
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
-                <Input id="name" name="name" defaultValue={event.name} required maxLength="25" className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+                <Input id="name" name="name" defaultValue={event.name} required maxLength="25" className="bg-secondary border-border text-white placeholder-gray-400" />
               </div>
 
               {/* --- Sección Tipo de Evento (Switch) --- */}
               <div className="space-y-2 flex flex-col justify-end">
-                <div className="flex items-center justify-between bg-gray-700 p-2 rounded-lg border border-gray-600">
+                <div className="flex items-center justify-between bg-secondary p-2 rounded-lg border border-border">
                   <Label htmlFor="is_periodic" className="text-gray-200 flex items-center cursor-pointer">
-                    <Repeat className="w-4 h-4 mr-2 text-blue-400" />
+                    <Repeat className="w-4 h-4 mr-2 text-primary" />
                     ¿Es un evento periódico?
                     <Tooltip content="Activa esto si el evento se repite semanalmente (ej: todos los sábados)">
-                      <HelpCircle className="w-4 h-4 ml-1 text-gray-400" />
+                      <HelpCircle className="w-4 h-4 ml-1 text-muted-foreground" />
                     </Tooltip>
                   </Label>
                   <Switch
@@ -302,7 +302,7 @@ export default function EditEvent() {
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
-                <Input type="date" id="date" name="date" value={date} onChange={handleDateChange} required className="bg-gray-700 border-gray-600 text-white" />
+                <Input type="date" id="date" name="date" value={date} onChange={handleDateChange} required className="bg-secondary border-border text-white" />
               </div>
 
               {/* Si es periódico, mostramos la fecha de fin y selector de días */}
@@ -320,11 +320,11 @@ export default function EditEvent() {
                       id="recurrence_end_date"
                       value={recurrenceEndDate}
                       onChange={(e) => setRecurrenceEndDate(e.target.value)}
-                      className="bg-gray-700 border-gray-600 text-white"
+                      className="bg-secondary border-border text-white"
                     />
                   </div>
 
-                  <div className="md:col-span-2 space-y-2 bg-gray-700/30 p-3 rounded-lg border border-gray-600 border-dashed">
+                  <div className="md:col-span-2 space-y-2 bg-secondary/30 p-3 rounded-lg border border-border border-dashed">
                     <Label className="text-gray-200 flex items-center mb-2">
                       Días de repetición
                       <Tooltip content="Selecciona el día de la semana que ocurre el evento.">
@@ -340,8 +340,8 @@ export default function EditEvent() {
                           className={`
                             px-3 py-2 rounded-md text-sm font-medium transition-all
                             ${periodicity === day.id
-                              ? 'bg-blue-600 text-white border-blue-500 shadow-lg scale-105'
-                              : 'bg-gray-700 text-gray-300 border border-gray-600 hover:bg-gray-600'}
+                              ? 'bg-primary text-white border-primary shadow-lg scale-105'
+                              : 'bg-secondary text-muted-foreground border border-border hover:bg-secondary'}
                           `}
                         >
                           {day.label}
@@ -363,7 +363,7 @@ export default function EditEvent() {
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
-                <Input id="place" name="place" defaultValue={event.place} required maxLength="25" className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+                <Input id="place" name="place" defaultValue={event.place} required maxLength="25" className="bg-secondary border-border text-white placeholder-gray-400" />
               </div>
 
               <div className="space-y-2">
@@ -373,7 +373,7 @@ export default function EditEvent() {
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
-                <Input id="capacity" name="capacity" type="number" defaultValue={event.capacity} min="0" className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+                <Input id="capacity" name="capacity" type="number" defaultValue={event.capacity} min="0" className="bg-secondary border-border text-white placeholder-gray-400" />
               </div>
 
               <div className="space-y-2">
@@ -383,7 +383,7 @@ export default function EditEvent() {
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
-                <Input id="contact" name="contact" defaultValue={event.contact} type="number" maxLength="11" className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+                <Input id="contact" name="contact" defaultValue={event.contact} type="number" maxLength="11" className="bg-secondary border-border text-white placeholder-gray-400" />
               </div>
 
               <div className="space-y-2">
@@ -394,11 +394,11 @@ export default function EditEvent() {
                   </Tooltip>
                 </Label>
                 {imagePreview && (
-                  <img src={imagePreview} alt="Preview" className="h-24 w-24 object-cover rounded-lg border border-gray-600" />
+                  <img src={imagePreview} alt="Preview" className="h-24 w-24 object-cover rounded-lg border border-border" />
                 )}
-                <label className="flex items-center gap-2 cursor-pointer bg-gray-700 border border-gray-600 rounded-md px-3 py-2 hover:bg-gray-600 transition-colors">
-                  <ImagePlus className="w-4 h-4 text-blue-400" />
-                  <span className="text-sm text-gray-300">{imageFile ? imageFile.name : 'Cambiar imagen'}</span>
+                <label className="flex items-center gap-2 cursor-pointer bg-secondary border border-border rounded-md px-3 py-2 hover:bg-secondary transition-colors">
+                  <ImagePlus className="w-4 h-4 text-primary" />
+                  <span className="text-sm text-muted-foreground">{imageFile ? imageFile.name : 'Cambiar imagen'}</span>
                   <input
                     type="file"
                     id="image"
@@ -422,13 +422,13 @@ export default function EditEvent() {
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
-                <Input id="password_employee" name="password_employee" placeholder="Nueva contraseña (opcional)" maxLength="25" className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+                <Input id="password_employee" name="password_employee" placeholder="Nueva contraseña (opcional)" maxLength="25" className="bg-secondary border-border text-white placeholder-gray-400" />
               </div>
 
               <div className="space-y-2 flex flex-col justify-end">
-                <div className="flex items-center justify-between bg-gray-700 p-2 rounded-lg border border-gray-600">
+                <div className="flex items-center justify-between bg-secondary p-2 rounded-lg border border-border">
                   <Label htmlFor="dni_required" className="text-gray-200 flex items-center cursor-pointer">
-                    <Repeat className="w-4 h-4 mr-2 text-blue-400" />
+                    <Repeat className="w-4 h-4 mr-2 text-primary" />
                     ¿Requerir DNI?
                     <Tooltip content="ℹ️ Obligatorio para los compradores">
                       <HelpCircle className="w-4 h-4 ml-1" />
@@ -444,7 +444,7 @@ export default function EditEvent() {
               </div>
 
               {/* --- Sección Ticket Tags --- */}
-              <div className="space-y-2 md:col-span-2 mt-4 pt-4 border-t border-gray-700">
+              <div className="space-y-2 md:col-span-2 mt-4 pt-4 border-t border-border">
                 <Label className="text-gray-200 flex items-center text-lg font-semibold">
                   Ticket Tags
                   <Tooltip content="Gestiona los tipos de entradas, precios y comisiones.">
@@ -459,7 +459,7 @@ export default function EditEvent() {
                       onChange={(e) => setTagName(e.target.value)}
                       placeholder="Nombre"
                       maxLength="25"
-                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 text-sm"
+                      className="bg-secondary border-border text-white placeholder-gray-400 text-sm"
                     />
                     <Input
                       value={tagPrice}
@@ -468,7 +468,7 @@ export default function EditEvent() {
                       type="number"
                       step="100"
                       max="99999999"
-                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 text-sm"
+                      className="bg-secondary border-border text-white placeholder-gray-400 text-sm"
                     />
                     <Input
                       value={tagCommission}
@@ -476,11 +476,11 @@ export default function EditEvent() {
                       placeholder="Comisión ($)"
                       type="number"
                       step="0.01"
-                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 text-sm"
+                      className="bg-secondary border-border text-white placeholder-gray-400 text-sm"
                     />
-                    <div className="flex items-center justify-between bg-gray-700 p-2 rounded-lg border border-gray-600">
+                    <div className="flex items-center justify-between bg-secondary p-2 rounded-lg border border-border">
                       <label className="text-gray-200 flex items-center cursor-pointer flex-1 gap-2">
-                        <Store className="w-4 h-4 text-blue-400" />
+                        <Store className="w-4 h-4 text-primary" />
                         <span className="text-xs sm:text-sm font-medium">Venta Web</span>
                       </label>
                       <Switch
@@ -491,7 +491,7 @@ export default function EditEvent() {
                     <Button
                       type="button"
                       onClick={addTicketTag}
-                      className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:col-span-1 col-span-1"
+                      className="bg-primary hover:bg-primary/90 text-white w-full sm:col-span-1 col-span-1"
                     >
                       <span className="hidden sm:inline">Agregar</span>
                       <span className="sm:hidden">+</span>
@@ -502,40 +502,40 @@ export default function EditEvent() {
                     {ticketTags.map((tag, index) => (
                       <div
                         key={index}
-                        className="bg-gray-700 text-white p-3 rounded-lg border border-gray-600 hover:border-gray-500 transition-all flex flex-col justify-between"
+                        className="bg-secondary text-white p-3 rounded-lg border border-border hover:border-border transition-all flex flex-col justify-between"
                       >
                         <div className="space-y-1 flex-1">
                           <div className="font-semibold text-white text-sm sm:text-base break-words">
                             {tag.name}
                           </div>
-                          <div className="text-gray-300 text-xs sm:text-sm">
+                          <div className="text-muted-foreground text-xs sm:text-sm">
                             Precio: <span className="text-green-400 font-semibold">${parseFloat(tag.price).toFixed(2)}</span>
                           </div>
-                          <div className="text-gray-300 text-xs sm:text-sm">
+                          <div className="text-muted-foreground text-xs sm:text-sm">
                             Comisión: <span className="text-yellow-400 font-semibold">
                               ${tag.commission_per_ticket ? parseFloat(tag.commission_per_ticket).toFixed(2) : "0.00"}
                             </span>
                           </div>
                           {tag.web_sale && (
-                            <div className="flex items-center gap-1 mt-2 pt-2 border-t border-gray-600">
-                              <Store className="w-3 h-3 text-blue-400" />
-                              <span className="text-xs text-blue-400 font-semibold">Venta Web Habilitada</span>
+                            <div className="flex items-center gap-1 mt-2 pt-2 border-t border-border">
+                              <Store className="w-3 h-3 text-primary" />
+                              <span className="text-xs text-primary font-semibold">Venta Web Habilitada</span>
                             </div>
                           )}
                         </div>
 
-                        <div className="flex space-x-2 mt-3 pt-2 border-t border-gray-600">
+                        <div className="flex space-x-2 mt-3 pt-2 border-t border-border">
                           <button
                             type="button"
                             onClick={() => openEditTagDialog(index)}
-                            className="flex-1 text-gray-400 hover:text-blue-400 p-1 flex justify-center rounded hover:bg-gray-600 transition-colors"
+                            className="flex-1 text-muted-foreground hover:text-primary p-1 flex justify-center rounded hover:bg-secondary transition-colors"
                           >
                             <Edit2 size={16} />
                           </button>
                           <button
                             type="button"
                             onClick={() => openDeleteTagDialog(index)}
-                            className="flex-1 text-gray-400 hover:text-red-400 p-1 flex justify-center rounded hover:bg-gray-600 transition-colors"
+                            className="flex-1 text-muted-foreground hover:text-red-400 p-1 flex justify-center rounded hover:bg-secondary transition-colors"
                           >
                             <X size={16} />
                           </button>
@@ -552,13 +552,13 @@ export default function EditEvent() {
                 </Alert>
               )}
 
-              <Button type="submit" className="w-full md:col-span-2 bg-blue-600 hover:bg-blue-700 text-white mt-4">
+              <Button type="submit" className="w-full md:col-span-2 bg-primary hover:bg-primary/90 text-white mt-4">
                 Guardar Cambios
               </Button>
             </form>
           </CardContent>
 
-          <CardFooter className="flex flex-col items-stretch border-t border-gray-700 pt-6 mt-2">
+          <CardFooter className="flex flex-col items-stretch border-t border-border pt-6 mt-2">
             <Label className="text-red-400 mb-2 text-center">Zona de Peligro</Label>
             <Button onClick={() => setIsDeleteDialogOpen(true)} className="w-full bg-red-600 hover:bg-red-700 text-white border-0">
               Eliminar Evento
@@ -571,7 +571,7 @@ export default function EditEvent() {
 
       {/* Diálogo Eliminar Evento */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent className="bg-gray-800 text-white border-gray-700">
+        <DialogContent className="bg-card text-white border-border">
           <DialogHeader>
             <DialogTitle>Confirmar Eliminación del Evento</DialogTitle>
             <DialogDescription>
@@ -583,7 +583,7 @@ export default function EditEvent() {
             value={userInputCode}
             onChange={(e) => setUserInputCode(e.target.value)}
             placeholder="Ingrese el código de confirmación"
-            className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+            className="bg-secondary border-border text-white placeholder-gray-400"
           />
           <DialogFooter>
             <Button
@@ -592,7 +592,7 @@ export default function EditEvent() {
                 setUserInputCode('');
               }}
               variant="outline"
-              className="bg-gray-700 text-white hover:bg-gray-600"
+              className="bg-secondary text-white hover:bg-secondary"
             >
               Cancelar
             </Button>
@@ -605,17 +605,17 @@ export default function EditEvent() {
 
       {/* Diálogo Eliminar Tag */}
       <Dialog open={isDeleteTagDialogOpen} onOpenChange={setIsDeleteTagDialogOpen}>
-        <DialogContent className="bg-gray-800 text-white border-gray-700">
+        <DialogContent className="bg-card text-white border-border">
           <DialogHeader>
             <DialogTitle>Advertencia</DialogTitle>
-            <DialogDescription className="text-gray-400">
+            <DialogDescription className="text-muted-foreground">
               Los tickets vendidos con esta etiqueta <strong>no serán borrados</strong>.
               <br className="mb-2" />
               Sin embargo, los vendedores ya no podrán generar nuevos tickets de esta categoría.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button onClick={() => setIsDeleteTagDialogOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600">
+            <Button onClick={() => setIsDeleteTagDialogOpen(false)} variant="outline" className="bg-secondary text-white hover:bg-secondary">
               Cancelar
             </Button>
             <Button onClick={removeTicketTag} variant="destructive">
@@ -628,21 +628,21 @@ export default function EditEvent() {
       {/* Diálogo Editar Tag */}
       {ticketTags.length > 0 && ticketTags[tagToEdit] && (
         <Dialog open={isEditTagDialogOpen} onOpenChange={setIsEditTagDialogOpen}>
-          <DialogContent className="bg-gray-800 text-white border-gray-700">
+          <DialogContent className="bg-card text-white border-border">
             <DialogHeader>
               <DialogTitle>Editar Ticket Tag</DialogTitle>
-              <DialogDescription className="text-gray-400">
+              <DialogDescription className="text-muted-foreground">
                 Modifica los detalles. Los cambios afectarán a futuras ventas.
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleEditTag} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-name" className="text-gray-200">Nombre</Label>
-                <Input id="edit-name" name="name" defaultValue={ticketTags[tagToEdit].name} required maxLength="25" className="bg-gray-700 border-gray-600 text-white" />
+                <Input id="edit-name" name="name" defaultValue={ticketTags[tagToEdit].name} required maxLength="25" className="bg-secondary border-border text-white" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="edit-price" className="text-gray-200">Precio ($)</Label>
-                <Input id="edit-price" name="price" defaultValue={ticketTags[tagToEdit].price} type="number" step="0.01" required className="bg-gray-700 border-gray-600 text-white" />
+                <Input id="edit-price" name="price" defaultValue={ticketTags[tagToEdit].price} type="number" step="0.01" required className="bg-secondary border-border text-white" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="edit-commission" className="text-gray-200">Comisión ($)</Label>
@@ -652,12 +652,12 @@ export default function EditEvent() {
                   defaultValue={ticketTags[tagToEdit].commission_per_ticket || 0}
                   type="number"
                   step="0.01"
-                  className="bg-gray-700 border-gray-600 text-white"
+                  className="bg-secondary border-border text-white"
                 />
               </div>
-              <div className="flex items-center justify-between bg-gray-700 p-2 rounded-lg border border-gray-600">
+              <div className="flex items-center justify-between bg-secondary p-2 rounded-lg border border-border">
                 <label className="text-gray-200 flex items-center cursor-pointer flex-1 gap-2">
-                  <Store className="w-4 h-4 text-blue-400" />
+                  <Store className="w-4 h-4 text-primary" />
                   <span className="text-xs sm:text-sm font-medium">Venta Web</span>
                 </label>
                 <Switch
@@ -672,10 +672,10 @@ export default function EditEvent() {
                 />
               </div>
               <DialogFooter>
-                <Button type="button" onClick={() => setIsEditTagDialogOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600">
+                <Button type="button" onClick={() => setIsEditTagDialogOpen(false)} variant="outline" className="bg-secondary text-white hover:bg-secondary">
                   Cancelar
                 </Button>
-                <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+                <Button type="submit" className="bg-primary hover:bg-primary/90">
                   Guardar Cambios
                 </Button>
               </DialogFooter>

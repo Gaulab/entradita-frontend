@@ -41,7 +41,7 @@ export default function EventDetails() {
     }
   
   return (
-    <div className="flex justify-center space-y-6 pb-8 bg-gradient-to-b from-gray-900 to-gray-950 text-white p-4 min-h-screen">
+    <div className="flex justify-center space-y-6 pb-8 bg-background text-white p-4 min-h-screen">
       <div className="max-w-6xl mx-auto w-full">
         <div className="flex flex-row sm:flex-row justify-between sm:justify-normal items-center mb-4 gap-4">
           <Button onClick={() => navigate('/dashboard')} variant="entraditaTertiary" className="w-full sm:w-auto">
@@ -58,18 +58,18 @@ export default function EventDetails() {
           <TabsList className="grid w-full grid-cols-3 mb-4 gap-0  p-0">
             <TabsTrigger
               value="tickets"
-              className="text-base sm:text-lg max-sm:m-0 max-sm:rounded-none max-sm:rounded-l-md max-sm:mr-0.5 bg-gradient-to-br to-gray-800 from-green-950 text-gray-100 border-gray-600"
+              className="text-base sm:text-lg max-sm:m-0 max-sm:rounded-none max-sm:rounded-l-md max-sm:mr-0.5 bg-gradient-to-br to-gray-800 from-green-950 text-gray-100 border-border"
             >
               <Ticket className="mr-2 h-4 hidden sm:block sm:h-6 sm:w-6" /> Tickets
             </TabsTrigger>
             <TabsTrigger
               value="sellers"
-              className="text-base sm:text-lg max-sm:m-0 max-sm:rounded-none max-sm:mx-0.5  bg-gradient-to-br to-gray-800 from-purple-950 text-gray-100 border-gray-600">
+              className="text-base sm:text-lg max-sm:m-0 max-sm:rounded-none max-sm:mx-0.5  bg-gradient-to-br to-gray-800 from-purple-950 text-gray-100 border-border">
               <Users className="mr-2 hidden sm:block sm:h-6 sm:w-6" /> Vendedores
             </TabsTrigger>
             <TabsTrigger
               value="scanners"
-              className="text-base sm:text-lg max-sm:m-0 max-sm:rounded-none max-sm:rounded-r-md max-sm:ml-0.5  bg-gradient-to-br  from-sky-950 to-gray-800 text-gray-100 border-gray-600"
+              className="text-base sm:text-lg max-sm:m-0 max-sm:rounded-none max-sm:rounded-r-md max-sm:ml-0.5  bg-gradient-to-br  from-sky-950 to-gray-800 text-gray-100 border-border"
             >
               <ScanIcon className="mr-2 hidden sm:block  sm:h-6 sm:w-6" /> Scanners
             </TabsTrigger>

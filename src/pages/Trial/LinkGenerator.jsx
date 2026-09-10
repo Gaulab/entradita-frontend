@@ -67,9 +67,9 @@ export default function LinkGenerator() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 text-white flex flex-col">
+    <div className="min-h-screen bg-background text-white flex flex-col">
       {/* Header */}
-      <header className="bg-gray-800 shadow-md">
+      <header className="bg-card shadow-md">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center">
             <img src="/isotipoWhite.png" alt="entradita.com logo" className="h-8 w-auto mr-2 sm:h-12 sm:mr-4" />
@@ -88,17 +88,17 @@ export default function LinkGenerator() {
       <main className="flex-grow container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl sm:text-4xl font-bold text-center mb-8">Generador de Enlaces</h1>
-          <p className="text-lg text-gray-300 text-center mb-10 max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground text-center mb-10 max-w-2xl mx-auto">
             Crea enlaces personalizados para compartir con tus clientes. Estos enlaces dirigirán a una página de
             bienvenida con la información que proporciones.
           </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
             {/* Formulario */}
-            <Card className="bg-gray-800 border-gray-700 lg:col-span-3">
+            <Card className="bg-card border-border lg:col-span-3">
               <CardHeader>
                 <CardTitle className="text-xl font-bold flex items-center">
-                  <Link2 className="h-5 w-5 mr-2 text-blue-400" />
+                  <Link2 className="h-5 w-5 mr-2 text-primary" />
                   Datos del cliente
                 </CardTitle>
               </CardHeader>
@@ -112,7 +112,7 @@ export default function LinkGenerator() {
                       value={formData.nombre}
                       onChange={handleChange}
                       placeholder="Ej: Nicolás"
-                      className="bg-gray-700 border-gray-600 text-white"
+                      className="bg-secondary border-border text-white"
                       required
                     />
                   </div>
@@ -124,7 +124,7 @@ export default function LinkGenerator() {
                       value={formData.usuario}
                       onChange={handleChange}
                       placeholder="Ej: nicomuzzin"
-                      className="bg-gray-700 border-gray-600 text-white"
+                      className="bg-secondary border-border text-white"
                       required
                     />
                   </div>
@@ -138,7 +138,7 @@ export default function LinkGenerator() {
                       value={formData.contrasenia}
                       onChange={handleChange}
                       placeholder="Ej: nicom123"
-                      className="bg-gray-700 border-gray-600 text-white"
+                      className="bg-secondary border-border text-white"
                       required
                     />
                   </div>
@@ -150,7 +150,7 @@ export default function LinkGenerator() {
                       value={formData.evento}
                       onChange={handleChange}
                       placeholder="Ej: Fiesta 13 abril"
-                      className="bg-gray-700 border-gray-600 text-white"
+                      className="bg-secondary border-border text-white"
                     />
                   </div>
                 </div>
@@ -161,7 +161,7 @@ export default function LinkGenerator() {
                       <Switch id="includeBaseUrl" checked={includeBaseUrl} onCheckedChange={setIncludeBaseUrl} />
                       <Label htmlFor="includeBaseUrl">Incluir URL base</Label>
                     </div>
-                    <Button variant="outline" size="sm" onClick={resetForm} className="text-gray-300 border-gray-600">
+                    <Button variant="outline" size="sm" onClick={resetForm} className="text-muted-foreground border-border">
                       <RefreshCw className="h-4 w-4 mr-2" />
                       Limpiar
                     </Button>
@@ -174,19 +174,19 @@ export default function LinkGenerator() {
                         id="baseUrl"
                         value={baseUrl}
                         onChange={(e) => setBaseUrl(e.target.value)}
-                        className="bg-gray-700 border-gray-600 text-white mt-1"
+                        className="bg-secondary border-border text-white mt-1"
                       />
                     </div>
                   )}
                 </div>
               </CardContent>
-              <CardFooter className="text-sm text-gray-400 border-t border-gray-700 mt-4 pt-4">
+              <CardFooter className="text-sm text-muted-foreground border-t border-border mt-4 pt-4">
                 * Campos obligatorios para generar el enlace
               </CardFooter>
             </Card>
 
             {/* Enlace generado */}
-            <Card className="bg-gray-800 border-gray-700 lg:col-span-2">
+            <Card className="bg-card border-border lg:col-span-2">
               <CardHeader>
                 <CardTitle className="text-xl font-bold flex items-center">
                   <ExternalLink className="h-5 w-5 mr-2 text-green-400" />
@@ -194,8 +194,8 @@ export default function LinkGenerator() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="bg-gray-900 p-4 rounded-lg break-all">
-                  <p className="font-mono text-sm text-blue-400 overflow-x-auto">
+                <div className="bg-background p-4 rounded-lg break-all">
+                  <p className="font-mono text-sm text-primary overflow-x-auto">
                     {generatedLink || "El enlace se generará automáticamente"}
                   </p>
                 </div>
@@ -203,7 +203,7 @@ export default function LinkGenerator() {
                 <div className="flex flex-col space-y-3">
                   <Button
                     onClick={copyToClipboard}
-                    className="bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-300"
+                    className="bg-primary hover:bg-primary/90 text-white transition-colors duration-300"
                     disabled={!generatedLink}
                   >
                     {copied ? (
@@ -219,7 +219,7 @@ export default function LinkGenerator() {
                     )}
                   </Button>
 
-                  <Button variant="outline" className="border-gray-600 text-gray-300" disabled={!generatedLink}>
+                  <Button variant="outline" className="border-border text-muted-foreground" disabled={!generatedLink}>
                     <a
                       href={generatedLink}
                       target="_blank"
@@ -232,9 +232,9 @@ export default function LinkGenerator() {
                   </Button>
                 </div>
               </CardContent>
-              <CardFooter className="text-sm text-gray-400 border-t border-gray-700 mt-4 pt-4 flex flex-col items-start">
+              <CardFooter className="text-sm text-muted-foreground border-t border-border mt-4 pt-4 flex flex-col items-start">
                 <p className="mb-2">Este enlace dirigirá a una página personalizada con:</p>
-                <ul className="list-disc list-inside text-xs space-y-1 text-gray-400">
+                <ul className="list-disc list-inside text-xs space-y-1 text-muted-foreground">
                   <li>Mensaje de bienvenida personalizado</li>
                   <li>Credenciales de acceso</li>
                   <li>Información sobre entradita.com</li>
@@ -249,7 +249,7 @@ export default function LinkGenerator() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-900 border-t border-gray-800 py-4">
+      <footer className="bg-background border-t border-border py-4">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             
@@ -257,21 +257,21 @@ export default function LinkGenerator() {
               <img src="/isotipoWhite.png" alt="entradita.com logo" className="h-8 w-auto mr-2 hidden sm:block" />
               <div>
                 <h3 className="font-bold text-center sm:text-left">entradita.com</h3>
-                <p className="text-xs text-gray-400 ">Transformando la gestión de eventos</p>
+                <p className="text-xs text-muted-foreground ">Transformando la gestión de eventos</p>
               </div>
             </div>
 
             <div className="flex flex-col md:flex-row items-center space-y-1 md:space-y-0 md:space-x-6">
-              <Link to="/documentacion" className="text-gray-300 hover:text-white text-sm">
+              <Link to="/documentacion" className="text-muted-foreground hover:text-white text-sm">
                 Documentación
               </Link>
-              <Link to="/contact" className="text-gray-300 hover:text-white text-sm">
+              <Link to="/contact" className="text-muted-foreground hover:text-white text-sm">
                 Contacto
               </Link>
             </div>
           </div>
 
-          <div className="border-t border-gray-800 mt-6 pt-6 text-center text-gray-400">
+          <div className="border-t border-border mt-6 pt-6 text-center text-muted-foreground">
             <p className="text-sm">© 2026 entradita.com todos los derechos reservados.</p>
           </div>
         </div>

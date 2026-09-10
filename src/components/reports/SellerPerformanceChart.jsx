@@ -12,12 +12,12 @@ export default function SellerPerformanceChart({ data, analytics }) {
 
   if (!analytics || analytics.realSellersCount === 0) {
     return (
-      <Card className="bg-gray-800 border-gray-700">
+      <Card className="bg-card border-border">
         <CardHeader>
           <CardTitle className="text-xl font-bold">Rendimiento por Vendedor</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 text-gray-400">
+          <div className="text-center py-8 text-muted-foreground">
             <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
             <p>No hay vendedores registrados en este evento</p>
           </div>
@@ -35,9 +35,9 @@ export default function SellerPerformanceChart({ data, analytics }) {
 
   const getPerformanceColor = (seller, index) => {
     if (index === 0) return "text-yellow-400 bg-yellow-400/10 border-yellow-400/20"
-    if (index === 1) return "text-gray-300 bg-gray-300/10 border-gray-300/20"
+    if (index === 1) return "text-muted-foreground bg-gray-300/10 border-gray-300/20"
     if (index === 2) return "text-orange-400 bg-orange-400/10 border-orange-400/20"
-    return "text-blue-400 bg-blue-400/10 border-blue-400/20"
+    return "text-primary bg-primary/10 border-primary/40/20"
   }
 
   const getRankingIcon = (index) => {
@@ -60,21 +60,21 @@ export default function SellerPerformanceChart({ data, analytics }) {
           </div>
           <div className="space-y-2">
             <div className="flex justify-between text-xs">
-              <span className="text-gray-400">Tickets:</span>
+              <span className="text-muted-foreground">Tickets:</span>
               <span className="font-bold">{seller.ticketsSold}</span>
             </div>
             <div className="flex justify-between text-xs">
-              <span className="text-gray-400">Ingresos:</span>
+              <span className="text-muted-foreground">Ingresos:</span>
               <span className="font-bold">${seller.totalRevenue.toFixed(0)}</span>
             </div>
             <div className="flex justify-between text-xs">
-              <span className="text-gray-400">Promedio:</span>
+              <span className="text-muted-foreground">Promedio:</span>
               <span className="font-bold">${seller.avgTicketPrice.toFixed(0)}</span>
             </div>
           </div>
           {/* Barra de progreso */}
           <div className="mt-3">
-            <div className="w-full bg-gray-700 rounded-full h-2">
+            <div className="w-full bg-secondary rounded-full h-2">
               <div
                 className="h-2 rounded-full bg-current opacity-60"
                 style={{
@@ -99,14 +99,14 @@ export default function SellerPerformanceChart({ data, analytics }) {
             <span className="text-2xl font-bold w-12 text-center">{getRankingIcon(index)}</span>
             <div>
               <h3 className="font-semibold">{seller.assigned_name}</h3>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-muted-foreground">
                 {seller.ticketsSold} tickets • ${seller.totalRevenue.toFixed(2)} ingresos
               </p>
             </div>
           </div>
           <div className="text-right">
             <div className="text-lg font-bold">{seller.ticketsSold}</div>
-            <div className="text-xs text-gray-400">tickets</div>
+            <div className="text-xs text-muted-foreground">tickets</div>
           </div>
         </div>
       ))}
@@ -123,7 +123,7 @@ export default function SellerPerformanceChart({ data, analytics }) {
           <div key={seller.id} className="space-y-2">
             <div className="flex justify-between items-center">
               <span className="font-medium text-sm">{seller.assigned_name}</span>
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-muted-foreground">
                 {seller.ticketsSold} tickets • ${seller.totalRevenue.toFixed(0)}
               </span>
             </div>
@@ -131,12 +131,12 @@ export default function SellerPerformanceChart({ data, analytics }) {
             {/* Barra de tickets */}
             <div className="space-y-1">
               <div className="flex justify-between text-xs">
-                <span className="text-gray-400">Tickets vendidos</span>
+                <span className="text-muted-foreground">Tickets vendidos</span>
                 <span>{seller.ticketsSold}</span>
               </div>
-              <div className="w-full bg-gray-700 rounded-full h-2">
+              <div className="w-full bg-secondary rounded-full h-2">
                 <div
-                  className="h-2 rounded-full bg-blue-400"
+                  className="h-2 rounded-full bg-primary"
                   style={{ width: `${(seller.ticketsSold / maxTickets) * 100}%` }}
                 ></div>
               </div>
@@ -145,10 +145,10 @@ export default function SellerPerformanceChart({ data, analytics }) {
             {/* Barra de ingresos */}
             <div className="space-y-1">
               <div className="flex justify-between text-xs">
-                <span className="text-gray-400">Ingresos generados</span>
+                <span className="text-muted-foreground">Ingresos generados</span>
                 <span>${seller.totalRevenue.toFixed(0)}</span>
               </div>
-              <div className="w-full bg-gray-700 rounded-full h-2">
+              <div className="w-full bg-secondary rounded-full h-2">
                 <div
                   className="h-2 rounded-full bg-green-400"
                   style={{ width: `${(seller.totalRevenue / maxRevenue) * 100}%` }}
@@ -162,7 +162,7 @@ export default function SellerPerformanceChart({ data, analytics }) {
   }
 
   return (
-    <Card className="bg-gray-800 border-gray-700">
+    <Card className="bg-card border-border">
       <CardHeader>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <CardTitle className="text-xl font-bold">
@@ -224,11 +224,11 @@ export default function SellerPerformanceChart({ data, analytics }) {
         )}
 
         {/* Estadísticas resumidas */}
-        <div className="mt-6 pt-4 border-t border-gray-700">
+        <div className="mt-6 pt-4 border-t border-border">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             <div>
-              <div className="text-2xl font-bold text-blue-400">{analytics.realSellersCount}</div>
-              <div className="text-xs text-gray-400">Vendedores</div>
+              <div className="text-2xl font-bold text-primary">{analytics.realSellersCount}</div>
+              <div className="text-xs text-muted-foreground">Vendedores</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-green-400">
@@ -238,11 +238,11 @@ export default function SellerPerformanceChart({ data, analytics }) {
                     ).toFixed(1)
                   : "0.0"}
               </div>
-              <div className="text-xs text-gray-400">Promedio tickets</div>
+              <div className="text-xs text-muted-foreground">Promedio tickets</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-yellow-400">{sortedSellers[0]?.ticketsSold || 0}</div>
-              <div className="text-xs text-gray-400">Máximo vendido</div>
+              <div className="text-xs text-muted-foreground">Máximo vendido</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-purple-400">
@@ -254,7 +254,7 @@ export default function SellerPerformanceChart({ data, analytics }) {
                     ).toFixed(0)
                   : "0"}
               </div>
-              <div className="text-xs text-gray-400">Promedio ingresos</div>
+              <div className="text-xs text-muted-foreground">Promedio ingresos</div>
             </div>
           </div>
         </div>

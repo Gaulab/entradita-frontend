@@ -6,7 +6,7 @@ const Checkbox = React.forwardRef(({ className, ...props }, ref) => (
     <input
       type="checkbox"
       ref={ref}
-      className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
+      className="form-checkbox h-4 w-4 text-primary transition duration-150 ease-in-out"
       {...props}
     />
     <div className="absolute pointer-events-none">

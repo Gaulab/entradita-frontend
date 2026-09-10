@@ -292,18 +292,18 @@ export default function TicketPrintPreview({ ticket, qrRef, dniRequired, onClose
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[700px] bg-gray-800 text-white max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[700px] bg-card text-white max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Vista previa de impresión</DialogTitle>
         </DialogHeader>
 
         {isLoading ? (
           <div className="flex justify-center items-center py-10">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
           </div>
         ) : (
           <div className="bg-white text-black p-4 rounded-md">
-            <div className="bg-gray-900 text-white p-4 rounded-t-md">
+            <div className="bg-background text-white p-4 rounded-t-md">
               <h2 className="text-xl font-bold text-center">{vendedor?.event_name || "Evento"}</h2>
               <p className="text-center text-sm opacity-80">Ticket oficial</p>
             </div>
@@ -335,10 +335,10 @@ export default function TicketPrintPreview({ ticket, qrRef, dniRequired, onClose
               <div className="flex items-center mt-6 relative">
                 <div className="border-l-2 border-dashed border-gray-400 h-full absolute left-0 top-0"></div>
                 <div className="absolute -left-3 -top-3">
-                  <Scissors className="h-6 w-6 text-gray-500" />
+                  <Scissors className="h-6 w-6 text-muted-foreground" />
                 </div>
                 <div className="absolute -left-3 -bottom-3">
-                  <Scissors className="h-6 w-6 text-gray-500" />
+                  <Scissors className="h-6 w-6 text-muted-foreground" />
                 </div>
 
                 <div className="pl-8 flex items-center gap-4">
@@ -353,17 +353,17 @@ export default function TicketPrintPreview({ ticket, qrRef, dniRequired, onClose
               </div>
             </div>
 
-            <div className="bg-gray-100 p-3 text-center text-xs text-gray-500 rounded-b-md">
+            <div className="bg-gray-100 p-3 text-center text-xs text-muted-foreground rounded-b-md">
               <p>Este ticket es personal e intransferible.</p>
             </div>
           </div>
         )}
 
         <DialogFooter className="flex flex-col sm:flex-row gap-2 mt-4">
-          <Button variant="outline" onClick={onClose} className="bg-gray-700 text-white hover:bg-gray-600">
+          <Button variant="outline" onClick={onClose} className="bg-secondary text-white hover:bg-secondary">
             Cancelar
           </Button>
-          <Button onClick={handlePrint} disabled={isLoading} className="bg-blue-600 hover:bg-blue-700 text-white">
+          <Button onClick={handlePrint} disabled={isLoading} className="bg-primary hover:bg-primary/90 text-white">
             Imprimir
           </Button>
         </DialogFooter>

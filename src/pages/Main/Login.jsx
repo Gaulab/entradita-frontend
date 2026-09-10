@@ -233,7 +233,7 @@ export default function ModernLogin() {
   }, [])
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-4 w-screen overflow-hidden">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 w-screen overflow-hidden">
       <canvas ref={canvasRef} className="fixed inset-0 z-0" />
 
       <div className="fixed inset-0 bg-gradient-to-b from-transparent via-slate-900/20 to-slate-900/40 z-[1]" />
@@ -241,16 +241,16 @@ export default function ModernLogin() {
       <div className="relative z-10 w-full max-w-md">
         <Link
           to="/"
-          className="inline-flex items-center mb-6 text-slate-300 hover:text-white transition-colors group"
+          className="inline-flex items-center mb-6 text-muted-foreground hover:text-white transition-colors group"
         >
           <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
           <span className="text-sm">Volver al inicio</span>
         </Link>
 
         <div className="text-center mb-6 sm:mb-8">
-          <div className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 mb-4 backdrop-blur-sm">
-            <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-blue-400 mr-2" />
-            <span className="text-xs sm:text-sm text-blue-200">Next gen of events</span>
+          <div className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-primary/20 mb-4 backdrop-blur-sm">
+            <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-primary mr-2" />
+            <span className="text-xs sm:text-sm text-primary">Next gen of events</span>
           </div>
 
           <Link to="/" className="group">
@@ -260,12 +260,12 @@ export default function ModernLogin() {
           </Link>
         </div>
 
-        <Card className="backdrop-blur-md bg-slate-800/60 border-slate-700/50 shadow-2xl shadow-blue-500/10">
+        <Card className="backdrop-blur-md bg-card/60 border-border/50 shadow-2xl shadow-blue-500/10">
           <CardHeader className="space-y-1 text-center pb-4 sm:pb-6">
             <CardTitle className="text-2xl sm:text-3xl font-bold text-white">
               {mode === 'register' ? 'Crear Cuenta' : 'Iniciar Sesión'}
             </CardTitle>
-            <CardDescription className="text-slate-300 text-sm sm:text-base">
+            <CardDescription className="text-muted-foreground text-sm sm:text-base">
               {mode === 'register'
                 ? 'Registrate para acceder a la plataforma'
                 : 'Ingrese sus credenciales para acceder a la cuenta'}
@@ -296,10 +296,10 @@ export default function ModernLogin() {
             {/* Divider */}
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-slate-600/50" />
+                <span className="w-full border-t border-border/50" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-slate-800/60 backdrop-blur-sm px-3 text-slate-400">o</span>
+                <span className="bg-card/60 backdrop-blur-sm px-3 text-muted-foreground">o</span>
               </div>
             </div>
 
@@ -318,7 +318,7 @@ export default function ModernLogin() {
                     Usuario o email
                   </Label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                     <Input
                       id="username"
                       type="text"
@@ -328,7 +328,7 @@ export default function ModernLogin() {
                       maxLength={50}
                       required
                       placeholder="Usuario o tu@email.com"
-                      className="pl-10 sm:pl-12 bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400 focus:border-blue-500/50 focus:ring-blue-500/20 backdrop-blur-sm h-10 sm:h-12 text-sm sm:text-base"
+                      className="pl-10 sm:pl-12 bg-secondary/50 border-border/50 text-white placeholder-slate-400 focus:border-primary/50 focus:ring-ring/20 backdrop-blur-sm h-10 sm:h-12 text-sm sm:text-base"
                     />
                   </div>
                 </div>
@@ -338,19 +338,19 @@ export default function ModernLogin() {
                     Contraseña
                   </Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
                       name="password"
                       required
                       placeholder="Ingrese su contraseña"
-                      className="pl-10 sm:pl-12 pr-10 sm:pr-12 bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400 focus:border-blue-500/50 focus:ring-blue-500/20 backdrop-blur-sm h-10 sm:h-12 text-sm sm:text-base"
+                      className="pl-10 sm:pl-12 pr-10 sm:pr-12 bg-secondary/50 border-border/50 text-white placeholder-slate-400 focus:border-primary/50 focus:ring-ring/20 backdrop-blur-sm h-10 sm:h-12 text-sm sm:text-base"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="p-2 absolute right-3 top-1/2 transform -translate-y-1/2 bg-slate-700/60 text-slate-200 hover:text-white hover:bg-slate-600/60 rounded transition-colors"
+                      className="p-2 absolute right-3 top-1/2 transform -translate-y-1/2 bg-secondary/60 text-slate-200 hover:text-white hover:bg-secondary/60 rounded transition-colors"
                     >
                       {showPassword ? (
                         <EyeOff className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -370,7 +370,7 @@ export default function ModernLogin() {
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-600 disabled:from-slate-600 disabled:to-slate-700 text-white border-0 h-10 sm:h-12 text-sm sm:text-base font-semibold transition-all duration-300 transform hover:scale-[1.02] disabled:scale-100"
+                  className="w-full bg-primary disabled:from-slate-600 disabled:to-slate-700 text-white border-0 h-10 sm:h-12 text-sm sm:text-base font-semibold transition-all duration-300 transform hover:scale-[1.02] disabled:scale-100"
                 >
                   {isLoading ? (
                     <div className="flex items-center justify-center">
@@ -392,7 +392,7 @@ export default function ModernLogin() {
                     Usuario
                   </Label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                     <Input
                       id="reg-username"
                       type="text"
@@ -401,7 +401,7 @@ export default function ModernLogin() {
                       maxLength={25}
                       required
                       placeholder="Elegí tu nombre de usuario"
-                      className="pl-10 sm:pl-12 bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400 focus:border-blue-500/50 focus:ring-blue-500/20 backdrop-blur-sm h-10 sm:h-12 text-sm sm:text-base"
+                      className="pl-10 sm:pl-12 bg-secondary/50 border-border/50 text-white placeholder-slate-400 focus:border-primary/50 focus:ring-ring/20 backdrop-blur-sm h-10 sm:h-12 text-sm sm:text-base"
                     />
                   </div>
                 </div>
@@ -411,7 +411,7 @@ export default function ModernLogin() {
                     Email
                   </Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                     <Input
                       id="reg-email"
                       type="email"
@@ -419,7 +419,7 @@ export default function ModernLogin() {
                       onChange={(e) => setEmailForm({ ...emailForm, email: e.target.value })}
                       required
                       placeholder="tu@email.com"
-                      className="pl-10 sm:pl-12 bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400 focus:border-blue-500/50 focus:ring-blue-500/20 backdrop-blur-sm h-10 sm:h-12 text-sm sm:text-base"
+                      className="pl-10 sm:pl-12 bg-secondary/50 border-border/50 text-white placeholder-slate-400 focus:border-primary/50 focus:ring-ring/20 backdrop-blur-sm h-10 sm:h-12 text-sm sm:text-base"
                     />
                   </div>
                 </div>
@@ -429,7 +429,7 @@ export default function ModernLogin() {
                     Contraseña
                   </Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                     <Input
                       id="reg-password"
                       type={showPassword ? "text" : "password"}
@@ -437,12 +437,12 @@ export default function ModernLogin() {
                       onChange={(e) => setEmailForm({ ...emailForm, password: e.target.value })}
                       required
                       placeholder="Mínimo 6 caracteres"
-                      className="pl-10 sm:pl-12 pr-10 sm:pr-12 bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400 focus:border-blue-500/50 focus:ring-blue-500/20 backdrop-blur-sm h-10 sm:h-12 text-sm sm:text-base"
+                      className="pl-10 sm:pl-12 pr-10 sm:pr-12 bg-secondary/50 border-border/50 text-white placeholder-slate-400 focus:border-primary/50 focus:ring-ring/20 backdrop-blur-sm h-10 sm:h-12 text-sm sm:text-base"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="p-2 absolute right-3 top-1/2 transform -translate-y-1/2 bg-slate-700/60 text-slate-200 hover:text-white hover:bg-slate-600/60 rounded transition-colors"
+                      className="p-2 absolute right-3 top-1/2 transform -translate-y-1/2 bg-secondary/60 text-slate-200 hover:text-white hover:bg-secondary/60 rounded transition-colors"
                     >
                       {showPassword ? (
                         <EyeOff className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -458,7 +458,7 @@ export default function ModernLogin() {
                     Confirmar Contraseña
                   </Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                     <Input
                       id="reg-confirm"
                       type={showPassword ? "text" : "password"}
@@ -466,12 +466,12 @@ export default function ModernLogin() {
                       onChange={(e) => setEmailForm({ ...emailForm, confirmPassword: e.target.value })}
                       required
                       placeholder="Repita la contraseña"
-                      className="pl-10 sm:pl-12 pr-10 sm:pr-12 bg-slate-700/50 border-slate-600/50 text-white placeholder-slate-400 focus:border-blue-500/50 focus:ring-blue-500/20 backdrop-blur-sm h-10 sm:h-12 text-sm sm:text-base"
+                      className="pl-10 sm:pl-12 pr-10 sm:pr-12 bg-secondary/50 border-border/50 text-white placeholder-slate-400 focus:border-primary/50 focus:ring-ring/20 backdrop-blur-sm h-10 sm:h-12 text-sm sm:text-base"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="p-2 absolute right-3 top-1/2 transform -translate-y-1/2 bg-slate-700/60 text-slate-200 hover:text-white hover:bg-slate-600/60 rounded transition-colors"
+                      className="p-2 absolute right-3 top-1/2 transform -translate-y-1/2 bg-secondary/60 text-slate-200 hover:text-white hover:bg-secondary/60 rounded transition-colors"
                     >
                       {showPassword ? (
                         <EyeOff className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -491,7 +491,7 @@ export default function ModernLogin() {
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-600 disabled:from-slate-600 disabled:to-slate-700 text-white border-0 h-10 sm:h-12 text-sm sm:text-base font-semibold transition-all duration-300 transform hover:scale-[1.02] disabled:scale-100"
+                  className="w-full bg-primary disabled:from-slate-600 disabled:to-slate-700 text-white border-0 h-10 sm:h-12 text-sm sm:text-base font-semibold transition-all duration-300 transform hover:scale-[1.02] disabled:scale-100"
                 >
                   {isLoading ? (
                     <div className="flex items-center justify-center">
@@ -511,16 +511,16 @@ export default function ModernLogin() {
               <div className="flex flex-col items-center gap-2 w-full px-2">
                 <Link
                   to="/forgot-password"
-                  className="w-full text-center py-2.5 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200"
+                  className="w-full text-center py-2.5 rounded-lg text-sm text-muted-foreground hover:text-white hover:bg-secondary/50 transition-all duration-200"
                 >
-                  ¿Olvidaste tu contraseña? <span className="text-blue-400 font-semibold">Recuperar</span>
+                  ¿Olvidaste tu contraseña? <span className="text-primary font-semibold">Recuperar</span>
                 </Link>
-                <div className="w-full h-px bg-slate-700/50" />
+                <div className="w-full h-px bg-secondary/50" />
                 <button
                   onClick={() => switchMode('register')}
-                  className="w-full text-center py-2.5 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200"
+                  className="w-full text-center py-2.5 rounded-lg text-sm text-muted-foreground hover:text-white hover:bg-secondary/50 transition-all duration-200"
                 >
-                  ¿No tenés cuenta? <span className="text-blue-400 font-semibold">Registrate</span>
+                  ¿No tenés cuenta? <span className="text-primary font-semibold">Registrate</span>
                 </button>
               </div>
             )}
@@ -529,9 +529,9 @@ export default function ModernLogin() {
               <div className="flex flex-col items-center gap-2 w-full px-2">
                 <button
                   onClick={() => switchMode('credentials')}
-                  className="w-full text-center py-2.5 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200"
+                  className="w-full text-center py-2.5 rounded-lg text-sm text-muted-foreground hover:text-white hover:bg-secondary/50 transition-all duration-200"
                 >
-                  ¿Ya tenés cuenta? <span className="text-blue-400 font-semibold">Iniciá sesión</span>
+                  ¿Ya tenés cuenta? <span className="text-primary font-semibold">Iniciá sesión</span>
                 </button>
               </div>
             )}
@@ -539,13 +539,13 @@ export default function ModernLogin() {
         </Card>
 
         <div className="text-center mt-6 sm:mt-8">
-          <p className="text-xs sm:text-sm text-slate-400">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             Al iniciar sesión, acepta nuestros{" "}
-            <Link to="/terms-and-conditions" className="text-blue-400 hover:text-blue-300 transition-colors">
+            <Link to="/terms-and-conditions" className="text-primary hover:text-primary transition-colors">
               términos de servicio
             </Link>{" "}
             y{" "}
-            <Link to="/privacy-policy" className="text-blue-400 hover:text-blue-300 transition-colors">
+            <Link to="/privacy-policy" className="text-primary hover:text-primary transition-colors">
               política de privacidad
             </Link>
           </p>

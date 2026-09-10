@@ -174,15 +174,15 @@ export default function CreateEvent() {
   };
 
   return (
-    <div className="min-h-screen md:w-3/4 mx-auto p-4 bg-gray-900 text-gray-100 ">
+    <div className="min-h-screen md:w-3/4 mx-auto p-4 bg-background text-gray-100 ">
       <div className="max-w-6xl mx-auto w-full flex flex-col items-center w-3/4">
         <Button onClick={() => navigate(`/dashboard`)} variant="entraditaTertiary" className="w-full mb-4">
           <ArrowLeftIcon className="mr-2 h-4 w-4" /> Volver al dashboard
         </Button>
-        <Card className="w-full bg-gray-800 border-gray-700">
+        <Card className="w-full bg-card border-border">
           <CardHeader>
             <CardTitle className="text-white">Crear Nuevo Evento</CardTitle>
-            <CardDescription className="text-gray-400">Ingresa los detalles de tu nuevo evento</CardDescription>
+            <CardDescription className="text-muted-foreground">Ingresa los detalles de tu nuevo evento</CardDescription>
           </CardHeader>
           <CardContent className="">
             <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-4">
@@ -195,17 +195,17 @@ export default function CreateEvent() {
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
-                <Input id="name" name="name" maxLength="25" required className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+                <Input id="name" name="name" maxLength="25" required className="bg-secondary border-border text-white placeholder-gray-400" />
               </div>
 
               {/* --- Sección Tipo de Evento (Switch) --- */}
               <div className="space-y-2 flex flex-col justify-end">
-                <div className="flex items-center justify-between bg-gray-700 p-2 rounded-lg border border-gray-600">
+                <div className="flex items-center justify-between bg-secondary p-2 rounded-lg border border-border">
                   <Label htmlFor="is_periodic" className="text-gray-200 flex items-center cursor-pointer">
-                    <Repeat className="w-4 h-4 mr-2 text-blue-400" />
+                    <Repeat className="w-4 h-4 mr-2 text-primary" />
                     ¿Es un evento periódico?
                     <Tooltip content="Activa esto si el evento se repite semanalmente (ej: todos los sábados)">
-                      <HelpCircle className="w-4 h-4 ml-1 text-gray-400" />
+                      <HelpCircle className="w-4 h-4 ml-1 text-muted-foreground" />
                     </Tooltip>
                   </Label>
                   <Switch
@@ -224,7 +224,7 @@ export default function CreateEvent() {
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
-                <Input type="date" id="date" name="date" required className="bg-gray-700 border-gray-600 text-white" onChange={handleDateChange} />
+                <Input type="date" id="date" name="date" required className="bg-secondary border-border text-white" onChange={handleDateChange} />
               </div>
 
               {/* Si es periódico, mostramos la fecha de fin y selector de días */}
@@ -242,11 +242,11 @@ export default function CreateEvent() {
                       id="recurrence_end_date"
                       value={recurrenceEndDate}
                       onChange={(e) => setRecurrenceEndDate(e.target.value)}
-                      className="bg-gray-700 border-gray-600 text-white"
+                      className="bg-secondary border-border text-white"
                     />
                   </div>
 
-                  <div className="md:col-span-2 space-y-2 bg-gray-700/30 p-3 rounded-lg border border-gray-600 border-dashed">
+                  <div className="md:col-span-2 space-y-2 bg-secondary/30 p-3 rounded-lg border border-border border-dashed">
                     <Label className="text-gray-200 flex items-center mb-2">
                       Días de repetición
                       <Tooltip content="Selecciona qué días de la semana ocurre el evento.">
@@ -261,8 +261,8 @@ export default function CreateEvent() {
                           onClick={() => toggleDay(day.id)}
                           className={`px-3 py-2 rounded-md text-sm font-medium transition-all
                             ${periodicity === day.id
-                              ? 'bg-blue-600 text-white border-blue-500 shadow-lg scale-105'
-                              : 'bg-gray-700 text-gray-300 border border-gray-600 hover:bg-gray-600'}`}
+                              ? 'bg-primary text-white border-primary shadow-lg scale-105'
+                              : 'bg-secondary text-muted-foreground border border-border hover:bg-secondary'}`}
                         >
                           {day.label}
                         </button>
@@ -282,7 +282,7 @@ export default function CreateEvent() {
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
-                <Input id="place" name="place" maxLength="25" required className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+                <Input id="place" name="place" maxLength="25" required className="bg-secondary border-border text-white placeholder-gray-400" />
               </div>
 
               <div className="space-y-2">
@@ -292,7 +292,7 @@ export default function CreateEvent() {
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
-                <Input id="capacity" name="capacity" type="number" min="0" className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+                <Input id="capacity" name="capacity" type="number" min="0" className="bg-secondary border-border text-white placeholder-gray-400" />
               </div>
 
               <div className="space-y-2">
@@ -302,7 +302,7 @@ export default function CreateEvent() {
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
-                <Input id="contact" name="contact" type="number" maxLength="11" className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+                <Input id="contact" name="contact" type="number" maxLength="11" className="bg-secondary border-border text-white placeholder-gray-400" />
               </div>
 
               <div className="space-y-2">
@@ -313,11 +313,11 @@ export default function CreateEvent() {
                   </Tooltip>
                 </Label>
                 {imagePreview && (
-                  <img src={imagePreview} alt="Preview" className="h-24 w-24 object-cover rounded-lg border border-gray-600" />
+                  <img src={imagePreview} alt="Preview" className="h-24 w-24 object-cover rounded-lg border border-border" />
                 )}
-                <label className="flex items-center gap-2 cursor-pointer bg-gray-700 border border-gray-600 rounded-md px-3 py-2 hover:bg-gray-600 transition-colors">
-                  <ImagePlus className="w-4 h-4 text-blue-400" />
-                  <span className="text-sm text-gray-300">
+                <label className="flex items-center gap-2 cursor-pointer bg-secondary border border-border rounded-md px-3 py-2 hover:bg-secondary transition-colors">
+                  <ImagePlus className="w-4 h-4 text-primary" />
+                  <span className="text-sm text-muted-foreground">
                     {imageCompressing ? 'Comprimiendo...' : imageFile ? imageFile.name : 'Seleccionar imagen'}
                   </span>
                   <input
@@ -346,13 +346,13 @@ export default function CreateEvent() {
                     <HelpCircle className="w-4 h-4 ml-1" />
                   </Tooltip>
                 </Label>
-                <Input id="password_employee" name="password_employee" required maxLength="25" className="bg-gray-700 border-gray-600 text-white placeholder-gray-400" />
+                <Input id="password_employee" name="password_employee" required maxLength="25" className="bg-secondary border-border text-white placeholder-gray-400" />
               </div>
 
               <div className="space-y-2 flex flex-col justify-end">
-                <div className="flex items-center justify-between bg-gray-700 p-2 rounded-lg border border-gray-600">
+                <div className="flex items-center justify-between bg-secondary p-2 rounded-lg border border-border">
                   <Label htmlFor="is_periodic" className="text-gray-200 flex items-center cursor-pointer">
-                    <Repeat className="w-4 h-4 mr-2 text-blue-400" />
+                    <Repeat className="w-4 h-4 mr-2 text-primary" />
                     ¿Requerir DNI?
                     <Tooltip content="ℹ️ Hacer que el DNI sea obligatorio para comprar tickets.">
                       <HelpCircle className="w-4 h-4 ml-1" />
@@ -367,7 +367,7 @@ export default function CreateEvent() {
               </div>
 
               {/* --- Sección Ticket Tags --- */}
-              <div className="space-y-2 md:col-span-2 pt-4 border-t border-gray-700">
+              <div className="space-y-2 md:col-span-2 pt-4 border-t border-border">
                 <Label className="text-gray-200 flex items-center text-lg font-semibold">
                   Ticket Tags
                   <Tooltip content={`ℹ️ Categorías de tickets (VIP, General, etc).`}>
@@ -381,7 +381,7 @@ export default function CreateEvent() {
                       onChange={(e) => setTagName(e.target.value)}
                       placeholder="Nombre"
                       maxLength="25"
-                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 text-sm"
+                      className="bg-secondary border-border text-white placeholder-gray-400 text-sm"
                     />
                     <Input
                       value={tagPrice}
@@ -390,7 +390,7 @@ export default function CreateEvent() {
                       type="number"
                       step="100"
                       max="99999999"
-                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 text-sm"
+                      className="bg-secondary border-border text-white placeholder-gray-400 text-sm"
                     />
                     <Input
                       value={tagCommission}
@@ -398,11 +398,11 @@ export default function CreateEvent() {
                       placeholder="Comisión ($)"
                       type="number"
                       step="0.01"
-                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 text-sm"
+                      className="bg-secondary border-border text-white placeholder-gray-400 text-sm"
                     />
-                    <div className="flex items-center justify-between bg-gray-700 p-2 rounded-lg border border-gray-600">
+                    <div className="flex items-center justify-between bg-secondary p-2 rounded-lg border border-border">
                       <label className="text-gray-200 flex items-center cursor-pointer flex-1 gap-2">
-                        <Store className="w-4 h-4 text-blue-400" />
+                        <Store className="w-4 h-4 text-primary" />
                         <span className="text-xs sm:text-sm font-medium">Venta Web</span>
                       </label>
                       <Switch
@@ -413,7 +413,7 @@ export default function CreateEvent() {
                     <Button
                       type="button"
                       onClick={() => addTicketTag()}
-                      className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:col-span-1 col-span-1"
+                      className="bg-primary hover:bg-primary/90 text-white w-full sm:col-span-1 col-span-1"
                     >
                       <span className="hidden sm:inline">Agregar</span>
                       <span className="sm:hidden">+</span>
@@ -423,31 +423,31 @@ export default function CreateEvent() {
                     {ticketTags.map((tag, index) => (
                       <div
                         key={index}
-                        className="bg-gray-700 text-white p-3 rounded-lg border border-gray-600 hover:border-gray-500 transition-all flex flex-col justify-between"
+                        className="bg-secondary text-white p-3 rounded-lg border border-border hover:border-border transition-all flex flex-col justify-between"
                       >
                         <div className="space-y-1 flex-1">
                           <div className="font-semibold text-white text-sm sm:text-base break-words">
                             {tag.name}
                           </div>
-                          <div className="text-gray-300 text-xs sm:text-sm">
+                          <div className="text-muted-foreground text-xs sm:text-sm">
                             Precio: <span className="text-green-400 font-semibold">${tag.price.toFixed(2)}</span>
                           </div>
                           {tag.commission_per_ticket > 0 && (
-                            <div className="text-gray-300 text-xs sm:text-sm">
+                            <div className="text-muted-foreground text-xs sm:text-sm">
                               Comisión: <span className="text-yellow-400 font-semibold">${tag.commission_per_ticket.toFixed(2)}</span>
                             </div>
                           )}
                           {tag.web_sale && (
-                            <div className="flex items-center gap-1 mt-2 pt-2 border-t border-gray-600">
-                              <Store className="w-3 h-3 text-blue-400" />
-                              <span className="text-xs text-blue-400 font-semibold">Venta Web Habilitada</span>
+                            <div className="flex items-center gap-1 mt-2 pt-2 border-t border-border">
+                              <Store className="w-3 h-3 text-primary" />
+                              <span className="text-xs text-primary font-semibold">Venta Web Habilitada</span>
                             </div>
                           )}
                         </div>
                         <button
                           type="button"
                           onClick={() => removeTicketTag(index)}
-                          className="mt-2 text-gray-400 hover:text-red-400 p-1 w-full flex justify-center rounded hover:bg-gray-600 transition-colors"
+                          className="mt-2 text-muted-foreground hover:text-red-400 p-1 w-full flex justify-center rounded hover:bg-secondary transition-colors"
                         >
                           <X size={16} className="sm:w-5 sm:h-5" />
                         </button>
@@ -462,7 +462,7 @@ export default function CreateEvent() {
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
-              <Button type="submit" className="w-full md:col-span-2 bg-blue-600 hover:bg-blue-700 text-white mt-4">
+              <Button type="submit" className="w-full md:col-span-2 bg-primary hover:bg-primary/90 text-white mt-4">
                 Crear Evento
               </Button>
             </form>

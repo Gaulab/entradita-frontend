@@ -48,7 +48,7 @@ function BuyPage() {
               </p>
 
               <Link to="/seleccionar-tickets" className="block w-fit">
-                <Button className="bg-blue-600/40 text-white text-lg md:text-xl px-8 py-6 rounded-xl transition-transform hover:scale-105">
+                <Button className="bg-primary/40 text-white text-lg md:text-xl px-8 py-6 rounded-xl transition-transform hover:scale-105">
                   Comprar Entradas
                 </Button>
               </Link>

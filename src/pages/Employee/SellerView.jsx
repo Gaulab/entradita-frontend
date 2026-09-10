@@ -518,7 +518,7 @@ export default function VendedorView({ uuid }) {
 
   if (vendedorNotFound) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
+      <div className="flex items-center justify-center h-screen bg-background text-white">
         <h1 className="text-2xl">Vendedor no encontrado</h1>
       </div>
     );
@@ -547,7 +547,7 @@ export default function VendedorView({ uuid }) {
       </div>
 
       {/* UI principal */}
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 text-white">
+      <div className="min-h-screen bg-background text-white">
         <div className="max-w-4xl mx-auto px-3 py-4 space-y-3">
 
           {/* Branding */}
@@ -557,7 +557,7 @@ export default function VendedorView({ uuid }) {
           </div>
 
           {/* Header con info del vendedor */}
-          <Card className="bg-gray-800 border-gray-700 overflow-hidden">
+          <Card className="bg-card border-border overflow-hidden">
             <div className="h-1 bg-gradient-to-r from-blue-500 via-blue-400 to-cyan-400" />
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
@@ -565,7 +565,7 @@ export default function VendedorView({ uuid }) {
                   <CardTitle className="text-white text-lg sm:text-xl truncate">
                     {vendedor?.assigned_name}
                   </CardTitle>
-                  <p className="text-sm text-gray-400 mt-0.5 truncate">{vendedor?.event_name}</p>
+                  <p className="text-sm text-muted-foreground mt-0.5 truncate">{vendedor?.event_name}</p>
                 </div>
                 {vendedor?.status === false && (
                   <span className="shrink-0 text-xs font-semibold bg-red-500/15 text-red-400 px-2.5 py-1 rounded-full">
@@ -576,12 +576,12 @@ export default function VendedorView({ uuid }) {
             </CardHeader>
             <CardContent className="pt-0">
               <div className="grid grid-cols-2 gap-2">
-                <div className="bg-blue-500/10 border border-blue-500/15 rounded-md py-2 px-3 text-center">
-                  <p className="text-xs text-gray-400">Vendidos</p>
-                  <p className="text-xl font-bold text-blue-300">{vendedor?.ticket_counter ?? 0}</p>
+                <div className="bg-primary/10 border border-primary/15 rounded-md py-2 px-3 text-center">
+                  <p className="text-xs text-muted-foreground">Vendidos</p>
+                  <p className="text-xl font-bold text-primary">{vendedor?.ticket_counter ?? 0}</p>
                 </div>
                 <div className="bg-cyan-500/10 border border-cyan-500/15 rounded-md py-2 px-3 text-center">
-                  <p className="text-xs text-gray-400">Disponibles</p>
+                  <p className="text-xs text-muted-foreground">Disponibles</p>
                   <p className="text-xl font-bold text-cyan-300">
                     {vendedor?.seller_capacity != null
                       ? vendedor.seller_capacity - vendedor.ticket_counter
@@ -593,7 +593,7 @@ export default function VendedorView({ uuid }) {
           </Card>
 
           {/* Tickets */}
-          <Card className="bg-gray-800 border-gray-700 overflow-hidden">
+          <Card className="bg-card border-border overflow-hidden">
             <div className="h-1 bg-gradient-to-r from-blue-500/50 to-transparent" />
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
@@ -607,7 +607,7 @@ export default function VendedorView({ uuid }) {
                     (vendedor && organizerHasCapacity === false)
                   }
                   onClick={() => handleCreateTicket(dniRequired, ticketTags)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  className="bg-primary hover:bg-primary/90 text-white"
                 >
                   <PlusIcon className="h-4 w-4 mr-1.5" />
                   <span className="hidden sm:inline">Nuevo Ticket</span>
@@ -623,32 +623,32 @@ export default function VendedorView({ uuid }) {
               )}
 
               <div className="relative">
-                <SearchIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <SearchIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
                   type="text"
                   placeholder="Buscar por nombre o DNI..."
                   value={searchTerm}
                   onChange={handleSearch}
-                  className="pl-8 bg-gray-700 border-gray-600 text-white placeholder-gray-500 max-w-sm"
+                  className="pl-8 bg-secondary border-border text-white placeholder-gray-500 max-w-sm"
                 />
               </div>
 
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow className="border-gray-700">
-                      <TableHead className="text-gray-400">Nombre</TableHead>
-                      {dniRequired && <TableHead className="text-gray-400 hidden sm:table-cell">DNI</TableHead>}
-                      <TableHead className="text-gray-400 hidden sm:table-cell">Tipo</TableHead>
-                      <TableHead className="text-gray-400 text-right hidden sm:table-cell">Acciones</TableHead>
-                      <TableHead className="text-gray-400 w-6 p-0 sm:hidden" />
+                    <TableRow className="border-border">
+                      <TableHead className="text-muted-foreground">Nombre</TableHead>
+                      {dniRequired && <TableHead className="text-muted-foreground hidden sm:table-cell">DNI</TableHead>}
+                      <TableHead className="text-muted-foreground hidden sm:table-cell">Tipo</TableHead>
+                      <TableHead className="text-muted-foreground text-right hidden sm:table-cell">Acciones</TableHead>
+                      <TableHead className="text-muted-foreground w-6 p-0 sm:hidden" />
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {tickets.map((ticket) => (
                       <TableRow
                         key={ticket.id}
-                        className="border-gray-700 cursor-pointer sm:cursor-default hover:bg-gray-700/50 transition-colors"
+                        className="border-border cursor-pointer sm:cursor-default hover:bg-secondary/50 transition-colors"
                         onClick={() => {
                           if (window.innerWidth < 640) {
                             setSelectedTicket(ticket);
@@ -657,19 +657,19 @@ export default function VendedorView({ uuid }) {
                       >
                         <TableCell className="text-gray-200">
                           <span className="block truncate">{ticket.owner_name} {ticket.owner_lastname}</span>
-                          <span className="block sm:hidden text-xs text-gray-400 mt-0.5">{ticket.ticket_tag.name}</span>
+                          <span className="block sm:hidden text-xs text-muted-foreground mt-0.5">{ticket.ticket_tag.name}</span>
                         </TableCell>
                         {dniRequired && (
-                          <TableCell className="text-gray-300 hidden sm:table-cell">
+                          <TableCell className="text-muted-foreground hidden sm:table-cell">
                             {ticket.owner_dni || '—'}
                           </TableCell>
                         )}
-                        <TableCell className="text-gray-300 hidden sm:table-cell">{ticket.ticket_tag.name}</TableCell>
+                        <TableCell className="text-muted-foreground hidden sm:table-cell">{ticket.ticket_tag.name}</TableCell>
                         <TableCell className="text-right hidden sm:table-cell">
                           <div className="flex items-center justify-end gap-1">
                             <Button
                               variant="ghost"
-                              className="h-8 w-8 p-0 text-gray-400 hover:text-white hover:bg-gray-700"
+                              className="h-8 w-8 p-0 text-muted-foreground hover:text-white hover:bg-secondary"
                               onClick={(e) => { e.stopPropagation(); shareTicketLink(`${window.location.origin}/ticket/${ticket.uuid}`); }}
                               title="Compartir"
                             >
@@ -677,7 +677,7 @@ export default function VendedorView({ uuid }) {
                             </Button>
                             <Button
                               variant="ghost"
-                              className="h-8 w-8 p-0 text-gray-400 hover:text-white hover:bg-gray-700"
+                              className="h-8 w-8 p-0 text-muted-foreground hover:text-white hover:bg-secondary"
                               onClick={(e) => { e.stopPropagation(); handleViewTicket(ticket.uuid); }}
                               title="Ver ticket"
                             >
@@ -685,7 +685,7 @@ export default function VendedorView({ uuid }) {
                             </Button>
                             <Button
                               variant="ghost"
-                              className="h-8 w-8 p-0 text-gray-400 hover:text-white hover:bg-gray-700"
+                              className="h-8 w-8 p-0 text-muted-foreground hover:text-white hover:bg-secondary"
                               onClick={(e) => { e.stopPropagation(); handlePrintTicketQR(ticket); }}
                               title="Imprimir QR"
                             >
@@ -694,7 +694,7 @@ export default function VendedorView({ uuid }) {
                           </div>
                         </TableCell>
                         <TableCell className="sm:hidden w-6 p-0 pr-3">
-                          <ChevronRightRow className="h-4 w-4 text-gray-500" />
+                          <ChevronRightRow className="h-4 w-4 text-muted-foreground" />
                         </TableCell>
                       </TableRow>
                     ))}
@@ -707,17 +707,17 @@ export default function VendedorView({ uuid }) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-gray-400 hover:text-white"
+                    className="text-muted-foreground hover:text-white"
                     disabled={currentPage === 1}
                     onClick={() => setCurrentPage((p) => p - 1)}
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
-                  <span className="text-sm text-gray-400">{currentPage}/{pageCount}</span>
+                  <span className="text-sm text-muted-foreground">{currentPage}/{pageCount}</span>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-gray-400 hover:text-white"
+                    className="text-muted-foreground hover:text-white"
                     disabled={!hasMore}
                     onClick={() => setCurrentPage((p) => p + 1)}
                   >
@@ -738,7 +738,7 @@ export default function VendedorView({ uuid }) {
           </Card>
           {/* Footer */}
           <p className="text-center text-xs text-gray-600 pt-2 pb-4">
-            Powered by <span className="font-semibold text-gray-500">entradita.com</span>
+            Powered by <span className="font-semibold text-muted-foreground">entradita.com</span>
           </p>
         </div>
 

@@ -85,7 +85,7 @@ export default function TicketPage() {
             <div className="mb-4">
               <Logo />
             </div>
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary/40 mx-auto"></div>
             <p className="mt-4 text-gray-200">Cargando información del ticket...</p>
           </div>
         </div>
@@ -102,7 +102,7 @@ export default function TicketPage() {
   }
 
   return (
-    <div className="flex justify-center items-center min-h-dvh bg-gradient-to-b from-gray-900 to-gray-950 p-4">
+    <div className="flex justify-center items-center min-h-dvh bg-background p-4">
       <div className="w-full max-w-md ticket-appear">
 
         <div ref={ticketRef} className="flex flex-col h-min items-center rounded-3xl overflow-hidden shadow-2xl" style={{ backgroundColor: '#FFFFFF', colorScheme: 'light' }}>
@@ -116,7 +116,7 @@ export default function TicketPage() {
                 {[...Array(2)].map((_, i) => (
                   <div key={i} className="flex items-center shrink-0">
                     {[...Array(8)].map((_, j) => (
-                      <span key={j} className="text-[10px] font-bold tracking-wider mx-3 whitespace-nowrap text-gray-400">
+                      <span key={j} className="text-[10px] font-bold tracking-wider mx-3 whitespace-nowrap text-muted-foreground">
                         entradita.com
                       </span>
                     ))}
@@ -127,7 +127,7 @@ export default function TicketPage() {
 
             {/* QR Section */}
             <div className="w-full px-8 pb-4 flex flex-col items-center" style={{ backgroundColor: '#FFFFFF' }}>
-              <p className="text-[10px] text-gray-400 tracking-[0.2em] uppercase mb-3 font-medium">Presentá este QR en la entrada</p>
+              <p className="text-[10px] text-muted-foreground tracking-[0.2em] uppercase mb-3 font-medium">Presentá este QR en la entrada</p>
 
               <div className="relative" style={{ backgroundColor: '#FFFFFF' }}>
                 <QRCodeSVG id="qr-code" value={data.qr_payload} size={240} level="H"
@@ -136,7 +136,7 @@ export default function TicketPage() {
                   className="w-full max-w-[240px]"
                   style={{ backgroundColor: '#FFFFFF' }} />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-[68px] h-[68px] rounded-full overflow-hidden border-[3px] border-gray-800 shadow-md bg-gray-900">
+                  <div className="w-[68px] h-[68px] rounded-full overflow-hidden border-[3px] border-border shadow-md bg-background">
                     <img
                       src={data.event_image || '/isotipoWhite.png'}
                       alt="Event Logo"
@@ -150,8 +150,8 @@ export default function TicketPage() {
 
             {/* Tear line (troquelado) */}
             <div className="relative w-full px-8">
-              <div className="absolute -left-4 top-1/2 w-8 h-8 bg-gray-950 rounded-full transform -translate-y-1/2 z-10" />
-              <div className="absolute -right-4 top-1/2 w-8 h-8 bg-gray-950 rounded-full transform -translate-y-1/2 z-10" />
+              <div className="absolute -left-4 top-1/2 w-8 h-8 bg-background rounded-full transform -translate-y-1/2 z-10" />
+              <div className="absolute -right-4 top-1/2 w-8 h-8 bg-background rounded-full transform -translate-y-1/2 z-10" />
               <div className="border-t-2 border-dashed border-gray-300 my-1" />
             </div>
 
@@ -168,31 +168,31 @@ export default function TicketPage() {
               {/* Details grid */}
               <div className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
                 <div>
-                  <p className="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Nombre</p>
+                  <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-medium">Nombre</p>
                   <p className="font-semibold text-gray-800 mt-0.5">{data.owner_name} {data.owner_lastname}</p>
                 </div>
 
                 {data.owner_dni ? (
                   <div>
-                    <p className="text-[11px] text-gray-400 uppercase tracking-wider font-medium">DNI</p>
+                    <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-medium">DNI</p>
                     <p className="font-semibold text-gray-800 mt-0.5">{data.owner_dni}</p>
                   </div>
                 ) : <div />}
 
                 <div>
-                  <p className="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Fecha</p>
+                  <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-medium">Fecha</p>
                   <p className="font-semibold text-gray-800 mt-0.5">{data.event_date}</p>
                 </div>
 
                 <div>
-                  <p className="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Lugar</p>
+                  <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-medium">Lugar</p>
                   <p className="font-semibold text-gray-800 mt-0.5">{data.event_place}</p>
                 </div>
               </div>
 
               {/* Warning + Download */}
               <p className="mt-2 text-[11px] text-red-400 text-center">⚠ No compartas esta entrada. Es única y personal.</p>
-              <Button onClick={handleDownload} disabled={isDownloading} className="w-full bg-gray-100 hover:bg-gray-200 text-gray-500 transition-colors rounded-xl h-9 text-xs font-medium border-0 mt-2">
+              <Button onClick={handleDownload} disabled={isDownloading} className="w-full bg-gray-100 hover:bg-gray-200 text-muted-foreground transition-colors rounded-xl h-9 text-xs font-medium border-0 mt-2">
                 <Download className="mr-1.5 h-3.5 w-3.5" />
                 {isDownloading ? 'Generando...' : 'Descargar entrada'}
               </Button>
@@ -204,7 +204,7 @@ export default function TicketPage() {
                 {[...Array(2)].map((_, i) => (
                   <div key={i} className="flex items-center shrink-0">
                     {[...Array(8)].map((_, j) => (
-                      <span key={j} className="text-[10px] font-bold tracking-wider mx-3 whitespace-nowrap text-gray-400">
+                      <span key={j} className="text-[10px] font-bold tracking-wider mx-3 whitespace-nowrap text-muted-foreground">
                         entradita.com
                       </span>
                     ))}

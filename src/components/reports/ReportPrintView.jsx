@@ -34,7 +34,7 @@ export default function ReportPrintView({ data, analytics, commissions, totalCom
     <div className="min-h-screen bg-white text-black">
       {/* Botones de control - no se imprimen */}
       <div className="fixed top-4 right-4 z-50 flex gap-2 print:hidden">
-        <Button onClick={handlePrint} className="bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={handlePrint} className="bg-primary hover:bg-primary/90 text-white">
           Imprimir
         </Button>
         <Button onClick={onClose} variant="outline" className="bg-gray-100 hover:bg-gray-200">
@@ -63,7 +63,7 @@ export default function ReportPrintView({ data, analytics, commissions, totalCom
             </div>
             <div className="bg-gray-50 p-4 rounded-lg">
               <h3 className="font-semibold text-gray-600">Total Tickets</h3>
-              <p className="text-2xl font-bold text-blue-600">{data.total_tickets}</p>
+              <p className="text-2xl font-bold text-primary">{data.total_tickets}</p>
             </div>
             <div className="bg-gray-50 p-4 rounded-lg">
               <h3 className="font-semibold text-gray-600">Comisión Total</h3>
@@ -93,7 +93,7 @@ export default function ReportPrintView({ data, analytics, commissions, totalCom
                   ${analytics.topRevenueSeller?.totalRevenue.toFixed(2) || "0.00"}
                 </p>
               </div>
-              <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
+              <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-primary/40">
                 <h3 className="font-semibold text-gray-700">Ticket Más Popular</h3>
                 <p className="text-lg font-bold">{analytics.mostPopularTicket?.name || "N/A"}</p>
                 <p className="text-sm text-gray-600">
