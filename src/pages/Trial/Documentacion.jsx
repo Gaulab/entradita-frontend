@@ -2,762 +2,447 @@
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { motion } from 'framer-motion';
+import { QRCodeCanvas } from 'qrcode.react';
 import {
-  ChevronDown,
-  ArrowLeft,
-  LogIn,
-  LayoutDashboard,
-  Calendar,
-  Ticket,
-  Users,
-  Settings,
-  HelpCircle,
-  Copy,
-  Trash,
-  Edit,
-  PauseCircle,
-  ExternalLink,
-  Share2,
-  Tag,
-  MapPin,
-  UserCheck,
-  ImageIcon,
-  AlertCircle,
-  Scan,
-  Store,
-  TagIcon,
-  Repeat,
-  AlertCircleIcon,
-  LockIcon,
-  Monitor,
-  DollarSign,
-  RotateCcw,
+  ArrowLeft, ArrowRight, ChevronDown, Rocket, Sparkles,
+  CalendarPlus, Ticket, ScanLine, UserCog, Handshake, Smartphone, DoorOpen,
+  LogIn, LayoutDashboard, SlidersHorizontal, Users,
+  MapPin, Repeat, Lock, Image as ImageIcon, Fingerprint, Tag, KeyRound,
+  Globe, DollarSign, Activity, RotateCcw, ShieldCheck,
+  Copy, Share2, Trash2, Pause, Pencil, ExternalLink, Store,
+  Mail, MessageCircle, CheckCircle2, CreditCard,
 } from 'lucide-react';
 import { Button } from '../../components/ui/button';
+import { Callout } from '../../components/ui/callout';
+
+const WA = 'https://wa.me/5493482275737';
+
+/* ── helpers de animación / layout ──────────────────────────────────────── */
+
+function Reveal({ children, delay = 0, className }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.5, delay, ease: [0.16, 1, 0.3, 1] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+Reveal.propTypes = { children: PropTypes.node, delay: PropTypes.number, className: PropTypes.string };
+
+function SurfaceCard({ children, className }) {
+  return <div className={`rounded-2xl border border-border bg-card/60 p-5 ${className || ''}`}>{children}</div>;
+}
+SurfaceCard.propTypes = { children: PropTypes.node, className: PropTypes.string };
+
+/* ── secciones ──────────────────────────────────────────────────────────── */
+
+const NAV = [
+  { id: 'acceso', label: 'Acceso', icon: LogIn },
+  { id: 'panel', label: 'Tu panel', icon: LayoutDashboard },
+  { id: 'crear', label: 'Crear evento', icon: CalendarPlus },
+  { id: 'gestion', label: 'Gestionar', icon: SlidersHorizontal },
+  { id: 'entradas', label: 'Entradas', icon: Ticket },
+  { id: 'vendedores', label: 'Vendedores', icon: Users },
+  { id: 'puerta', label: 'Control de acceso', icon: ScanLine },
+];
 
 function Documentacion() {
-  const [openSection, setOpenSection] = useState('inicio');
-
-  const toggleSection = (section) => {
-    setOpenSection(openSection === section ? null : section);
-  };
-
   return (
-    <div className="min-h-screen bg-background text-white">
+    <div className="min-h-screen scroll-smooth bg-background text-foreground">
+      {/* Glow de fondo */}
+      <div className="pointer-events-none fixed inset-0 z-0">
+        <div className="absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full bg-brand-from/15 blur-[130px]" />
+      </div>
+
       {/* Header */}
-      <header className="bg-card shadow-md">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center">
-            <img src="/isotipoWhite.png" alt="entradita.com logo" className="h-8 w-auto mr-2 sm:h-12 sm:mr-4" />
-            <h1 className="text-xl sm:text-2xl font-bold">entradita.com</h1>
-          </div>
-          <Link className="text-white hover:text-white flex items-center" to="/">
-            <Button variant="entraditaSecondary" className="text-white w-full">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Volver
+      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/70 backdrop-blur-xl">
+        <div className="container flex h-16 items-center justify-between">
+          <Link to="/" className="flex items-center gap-2">
+            <img src="/isotipoWhite.png" alt="entradita" className="h-8 w-auto" />
+            <span className="font-semibold tracking-tight">entradita</span>
+            <span className="ml-1 rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground">docs</span>
+          </Link>
+          <Link to="/">
+            <Button variant="outline" size="sm">
+              <ArrowLeft className="mr-2 h-4 w-4" /> Volver
             </Button>
           </Link>
-
         </div>
       </header>
 
-      {/* Contenido principal */}
-      <main className="max-w-5xl mx-auto px-4 py-6">
-        <div className="flex items-center gap-2 mb-6">
-          <Settings className="h-6 w-6 text-primary" />
-          <h1 className="text-2xl font-bold">Documentación completa</h1>
-        </div>
-
-        {/* Índice de contenidos */}
-        <div className="bg-card/50 p-4 rounded-lg mb-8">
-          <h2 className="font-bold mb-3">Índice de contenidos</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-            <button onClick={() => toggleSection('login')} className="text-left flex items-center gap-2 text-primary hover:text-primary">
-              <LogIn className="h-4 w-4" />
-              <span>Inicio de sesión</span>
-            </button>
-            <button onClick={() => toggleSection('dashboard')} className="text-left flex items-center gap-2 text-primary hover:text-primary">
-              <LayoutDashboard className="h-4 w-4" />
-              <span>Dashboard</span>
-            </button>
-            <button onClick={() => toggleSection('crear-evento')} className="text-left flex items-center gap-2 text-primary hover:text-primary">
-              <Calendar className="h-4 w-4" />
-              <span>Crear evento</span>
-            </button>
-            <button onClick={() => toggleSection('pagina-evento')} className="text-left flex items-center gap-2 text-primary hover:text-primary">
-              <Settings className="h-4 w-4" />
-              <span>Página del evento</span>
-            </button>
-            <button onClick={() => toggleSection('tickets')} className="text-left flex items-center gap-2 text-primary hover:text-primary">
-              <Ticket className="h-4 w-4" />
-              <span>Tickets</span>
-            </button>
-            <button onClick={() => toggleSection('vendedores')} className="text-left flex items-center gap-2 text-primary hover:text-primary">
-              <Users className="h-4 w-4" />
-              <span>Vendedores</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Secciones colapsables */}
-        <div className="space-y-6">
-          {/* Login */}
-          <div className="border border-border rounded-lg overflow-hidden">
-            <button className="w-full p-4 flex items-center justify-between bg-card hover:bg-secondary transition-colors" onClick={() => toggleSection('login')}>
-              <div className="flex items-center gap-2">
-                <LogIn className="h-5 w-5 text-primary" />
-                <span className="font-bold">Inicio de sesión</span>
-              </div>
-              <ChevronDown className={`h-5 w-5 transition-transform ${openSection === 'login' ? 'transform rotate-180' : ''}`} />
-            </button>
-
-            {openSection === 'login' && (
-              <div className="p-6 bg-card/50">
-                <div className="mb-6">
-                  <h3 className="text-xl font-bold mb-3">Acceso a la plataforma</h3>
-                  <p className="mb-4">
-                    Podés crear tu cuenta vos mismo desde{' '}
-                    <a href="https://entradita.com/login" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                      entradita.com/login
-                    </a>
-                    . Hay tres formas de acceder:
-                  </p>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-                    <div className="bg-secondary/50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-1 text-sm">Con Google</h4>
-                      <p className="text-xs text-muted-foreground">La opción más rápida: entrás con tu cuenta de Google y ya queda verificada.</p>
-                    </div>
-                    <div className="bg-secondary/50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-1 text-sm">Con email y contraseña</h4>
-                      <p className="text-xs text-muted-foreground">Registrás usuario, email y contraseña. Te llega un correo de verificación que debés confirmar antes de poder iniciar sesión.</p>
-                    </div>
-                    <div className="bg-secondary/50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-1 text-sm">Con usuario y contraseña</h4>
-                      <p className="text-xs text-muted-foreground">Si ya tenías una cuenta clásica, seguí ingresando con tu nombre de usuario.</p>
-                    </div>
-                  </div>
-
-                  <div className="bg-secondary/50 p-4 rounded-lg mb-4">
-                    <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <AlertCircle className="h-4 w-4 text-yellow-400" />
-                      Verificación de email obligatoria
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      Si te registrás con email y contraseña, tu cuenta se activa recién cuando hacés clic en el enlace del correo de verificación que te enviamos. Revisá también la carpeta de spam.
-                    </p>
-                  </div>
-
-                  <h4 className="font-semibold mb-2">Pasos para iniciar sesión:</h4>
-                  <ol className="list-decimal list-inside space-y-2 ml-2">
-                    <li className="text-muted-foreground">
-                      Accedé a{' '}
-                      <a href="https://entradita.com/login" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                        https://entradita.com/login
-                      </a>
-                    </li>
-                    <li className="text-muted-foreground">Ingresá tu <strong>usuario o email</strong> en el primer campo</li>
-                    <li className="text-muted-foreground">Ingresá tu contraseña (o usá "Continuar con Google")</li>
-                    <li className="text-muted-foreground">Hacé clic en el botón "Iniciar sesión"</li>
-                  </ol>
-                </div>
-
-                <div className="bg-primary/10 p-4 rounded-lg">
-                  <h4 className="font-semibold mb-2 flex items-center gap-2">
-                    <HelpCircle className="h-4 w-4 text-primary" />
-                    ¿Olvidaste tu contraseña?
-                  </h4>
-                  <p className="text-sm text-muted-foreground">
-                    Usá la opción "¿Olvidaste tu contraseña?" en la pantalla de inicio de sesión. Te enviaremos un correo con un enlace para restablecerla. (Aplica a las cuentas creadas con email; si entrás con Google, gestionás la contraseña desde tu cuenta de Google.)
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Dashboard */}
-          <div className="border border-border rounded-lg overflow-hidden">
-            <button className="w-full p-4 flex items-center justify-between bg-card hover:bg-secondary transition-colors" onClick={() => toggleSection('dashboard')}>
-              <div className="flex items-center gap-2">
-                <LayoutDashboard className="h-5 w-5 text-primary" />
-                <span className="font-bold">Dashboard</span>
-              </div>
-              <ChevronDown className={`h-5 w-5 transition-transform ${openSection === 'dashboard' ? 'transform rotate-180' : ''}`} />
-            </button>
-
-            {openSection === 'dashboard' && (
-              <div className="p-6 bg-card/50">
-                <h3 className="text-xl font-bold mb-3">Panel principal</h3>
-                <p className="mb-4">
-                  El dashboard es la pantalla principal que verás al iniciar sesión. Desde aquí podrás acceder a todas las funcionalidades de la plataforma y visualizar información importante sobre
-                  tus eventos.
-                </p>
-
-                <div className="space-y-6">
-                  <div className="bg-secondary/50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <Ticket className="h-4 w-4 text-green-400" />
-                      Tickets disponibles
-                    </h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      En la parte superior izquierda del dashboard podrás ver la cantidad de tickets que tienes disponibles para usar en tus eventos. Estos tickets son otorgados por la administración al
-                      realizar la compra de un paquete.
-                    </p>
-                    <div className="bg-card/70 p-3 rounded text-xs text-muted-foreground">
-                      <strong>Nota:</strong> Cada vez que creas un ticket para cualquiera de tus eventos, se consume un ticket de tu disponibilidad total. Los tickets no utilizados quedan guardados
-                      para futuros eventos.
-                    </div>
-                  </div>
-
-                  <div className="bg-secondary/50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <Store className="h-4 w-4 text-primary" />
-                      Vincular Mercado Pago
-                    </h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      En la parte superior derecha del dashboard podrás ver el botón "Vincular Mercado Pago". Al hacerlo, podrás asociar tu cuenta de Mercado Pago con la plataforma para poder vender tickets de tus eventos a través de ella.
-                    </p>
-                  </div>
-
-                  <div className="bg-secondary/50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-purple-400" />
-                      Crear nuevo evento
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      El botón "Crear nuevo evento" te permitirá iniciar el proceso de configuración de un nuevo evento. Al hacer clic en él, serás redirigido a un formulario donde podrás completar
-                      todos los detalles necesarios.
-                    </p>
-                  </div>
-
-                  <div className="bg-secondary/50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <Settings className="h-4 w-4 text-orange-400" />
-                      Lista de eventos
-                    </h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      En la parte principal del dashboard encontrarás una lista de todos tus eventos, tanto activos como pasados. Para cada evento podrás ver información básica como:
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 ml-2 text-muted-foreground text-sm">
-                      <li>Nombre del evento</li>
-                      <li>Fecha</li>
-                      <li>Cantidad de tickets vendidos</li>
-                      <li>Estado (activo/finalizado)</li>
-                    </ul>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Cada evento tiene un botón "Ver" que te llevará a la página de gestión específica de ese evento, donde podrás acceder a todas sus funcionalidades.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Crear Evento */}
-          <div className="border border-border rounded-lg overflow-hidden">
-            <button className="w-full p-4 flex items-center justify-between bg-card hover:bg-secondary transition-colors" onClick={() => toggleSection('crear-evento')}>
-              <div className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-primary" />
-                <span className="font-bold">Crear evento</span>
-              </div>
-              <ChevronDown className={`h-5 w-5 transition-transform ${openSection === 'crear-evento' ? 'transform rotate-180' : ''}`} />
-            </button>
-
-            {openSection === 'crear-evento' && (
-              <div className="p-6 bg-card/50">
-                <h3 className="text-xl font-bold mb-3">Configuración de un nuevo evento</h3>
-                <p className="mb-4">
-                  El formulario de creación te permite configurar eventos únicos o repetitivos, definir la seguridad de acceso y estructurar tu esquema de precios con comisiones personalizadas.
-                </p>
-
-                <div className="space-y-5">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div className="bg-secondary/50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-2 flex items-center gap-2">
-                        <Tag className="h-4 w-4 text-primary" />
-                        Nombre del evento
-                      </h4>
-                      <p className="text-sm text-muted-foreground">Elige un nombre distintivo. Este aparecerá en los tickets digitales y en el panel de control.</p>
-                    </div>
-
-                    <div className="bg-secondary/50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-2 flex items-center gap-2">
-                        <Repeat className="h-4 w-4 text-primary" />
-                        Periodicidad y Fechas
-                      </h4>
-                      <p className="text-sm text-muted-foreground">
-                        Puedes crear un evento de fecha única o activarlo como <strong>periódico</strong>. Si es periódico, deberás seleccionar una fecha de inicio, los días de la semana en que se
-                        repite (ej: Sábados) y opcionalmente una fecha de fin.
-                      </p>
-                    </div>
-
-                    <div className="bg-secondary/50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-2 flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-primary" />
-                        Lugar del evento
-                      </h4>
-                      <p className="text-sm text-muted-foreground">Indica la ubicación física donde se llevará a cabo el evento para informar a los asistentes.</p>
-                    </div>
-
-                    <div className="bg-secondary/50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-2 flex items-center gap-2">
-                        <Users className="h-4 w-4 text-primary" />
-                        Capacidad
-                      </h4>
-                      <p className="text-sm text-muted-foreground">
-                        Define el límite máximo de tickets a vender. En el caso de eventos periódicos, esta capacidad se aplica <strong>por cada fecha</strong> individualmente.
-                      </p>
-                    </div>
-
-                    <div className="bg-secondary/50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-2 flex items-center gap-2">
-                        <HelpCircle className="h-4 w-4 text-primary" />
-                        Contacto
-                      </h4>
-                      <p className="text-sm text-muted-foreground">Número de teléfono para soporte o comunicación directa con la administración.</p>
-                    </div>
-
-                    <div className="bg-secondary/50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-2 flex items-center gap-2">
-                        <ImageIcon className="h-4 w-4 text-primary" />
-                        Imagen del evento
-                      </h4>
-                      <p className="text-sm text-muted-foreground">Subí una imagen representativa del evento desde tu dispositivo. Se muestra en la cabecera de los tickets, en la página pública y en el flyer. Se optimiza automáticamente para que cargue rápido.</p>
-                    </div>
-
-                    <div className="bg-secondary/50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-2 flex items-center gap-2">
-                        <LockIcon className="h-4 w-4 text-primary" />
-                        Contraseña para empleados
-                      </h4>
-                      <p className="text-sm text-muted-foreground">Clave única que utilizarán tus vendedores y el personal de escaneo (puerta) para acceder a sus funciones en la app.</p>
-                    </div>
-
-                    <div className="bg-secondary/50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-2 flex items-center gap-2">
-                        <UserCheck className="h-4 w-4 text-primary" />
-                        Solicitar DNI
-                      </h4>
-                      <p className="text-sm text-muted-foreground">
-                        Al activar esta opción, será obligatorio ingresar el documento de identidad de cada asistente al momento de emitir el ticket, aumentando la seguridad.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="bg-secondary/50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <TagIcon className="h-4 w-4 text-primary" />
-                      Categorías de tickets (Ticket tags)
-                    </h4>
-                    <p className="text-sm text-muted-foreground mb-2">Configura los tipos de entrada (ej: General, VIP). Para cada categoría debes definir:</p>
-                    <ul className="list-disc list-inside text-sm text-muted-foreground ml-2">
-                      <li>
-                        <strong>Nombre y Precio:</strong> Valor base de la entrada.
-                      </li>
-                      <li>
-                        <strong>Comisión:</strong> El monto que recibe el vendedor por cada ticket vendido de este tipo.
-                      </li>
-                      <li>
-                        <strong>Venta Web:</strong> Un interruptor para habilitar o deshabilitar la venta online de esa categoría específica.
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="bg-primary/10 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <AlertCircleIcon className="h-4 w-4 text-primary" />
-                      Recomendaciones
-                    </h4>
-                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                      <li>Verifica si tu evento requiere repetición semanal para configurar correctamente la periodicidad.</li>
-                      <li>Utiliza la opción de "Venta Web" en los Ticket Tags para controlar qué entradas están disponibles al público general y cuáles son exclusivas de venta por WhatsApp.</li>
-                      <li>Si configuras una fecha de fin en eventos periódicos, el sistema dejará de generar fechas automáticamente después de ese día.</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Página del Evento */}
-          <div className="border border-border rounded-lg overflow-hidden">
-            <button className="w-full p-4 flex items-center justify-between bg-card hover:bg-secondary transition-colors" onClick={() => toggleSection('pagina-evento')}>
-              <div className="flex items-center gap-2">
-                <Settings className="h-5 w-5 text-primary" />
-                <span className="font-bold">Página del evento</span>
-              </div>
-              <ChevronDown className={`h-5 w-5 transition-transform ${openSection === 'pagina-evento' ? 'transform rotate-180' : ''}`} />
-            </button>
-
-            {openSection === 'pagina-evento' && (
-              <div className="p-6 bg-card/50">
-                <h3 className="text-xl font-bold mb-3">Gestión del evento</h3>
-                <p className="mb-4">
-                  Una vez creado el evento, accederás a su página de gestión donde podrás controlar todos los aspectos relacionados con él. Esta página está dividida en varias secciones a las que
-                  puedes acceder mediante los botones de navegación.
-                </p>
-
-                <div className="space-y-6">
-                  <div className="bg-secondary/50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2">Información general</h4>
-                    <p className="text-sm text-muted-foreground mb-2">En la parte superior de la página encontrarás la información general del evento:</p>
-                    <ul className="list-disc list-inside space-y-1 ml-2 text-muted-foreground text-sm">
-                      <li>Nombre del evento con imagen representativa</li>
-                      <li>Fecha del evento</li>
-                      <li>Lugar donde se realizará</li>
-                      <li>Capacidad total (o "Ilimitada" si no hay límite)</li>
-                      <li>Cantidad de tickets vendidos</li>
-                    </ul>
-                  </div>
-
-                  <div className="bg-secondary/50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <Monitor className="h-4 w-4 text-indigo-400" />
-                      Página WEB
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      El botón "Página WEB" te permite acceder a la página pública del evento donde los usuarios pueden ver la información y comprar tickets online. Esta es la página que compartirás con tu público.
-                    </p>
-                  </div>
-
-                  <div className="bg-secondary/50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <DollarSign className="h-4 w-4 text-green-400" />
-                      Economía
-                    </h4>
-                    <p className="text-sm text-muted-foreground mb-2">El botón "Economía" te lleva a una sección detallada con datos financieros del evento, donde encontrarás información sobre:</p>
-                    <ul className="list-disc list-inside space-y-1 ml-2 text-muted-foreground text-sm">
-                      <li>Ventas totales por categoría</li>
-                      <li>Comisiones a tarjeteros</li>
-                      <li>Ingresos netos</li>
-                      <li>Estadísticas de venta por día/semana</li>
-                    </ul>
-                  </div>
-
-                  <div className="bg-secondary/50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <RotateCcw className="h-4 w-4 text-red-400" />
-                      Reiniciar Evento (Solo eventos periódicos)
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      Si tu evento está configurado como periódico (por ejemplo, una fiesta semanal), verás el botón "Reiniciar Evento". Esta función te permite resetear las estadísticas del evento para la próxima fecha disponible, manteniendo la configuración base.
-                    </p>
-                  </div>
-
-                  <div className="bg-secondary/50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <Settings className="h-4 w-4 text-primary" />
-                      Control de venta web
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      Encontrarás un interruptor para "Habilitar venta web del evento". Con este control puedes activar o desactivar la posibilidad de que el público compre tickets a través de la página web del evento. Cuando está desactivado, solo se pueden vender tickets de forma manual.
-                    </p>
-                  </div>
-
-                  <div className="bg-secondary/50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <Users className="h-4 w-4 text-purple-400" />
-                      Control de asistencia en tiempo real
-                    </h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      En la página principal del evento verás una barra de progreso que muestra el porcentaje de personas que han ingresado al evento. Esta información incluye:
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 ml-2 text-muted-foreground text-sm">
-                      <li>Porcentaje de asistencia (calculado sobre tickets vendidos)</li>
-                      <li>Cantidad exacta de personas que ingresaron (tickets escaneados)</li>
-                      <li>Visualización gráfica con barra de progreso colorida</li>
-                    </ul>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Este dato se actualiza automáticamente cada vez que se escanea un ticket en la entrada del evento.
-                    </p>
-                  </div>
-
-                  <div className="bg-secondary/50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <Settings className="h-4 w-4 text-orange-400" />
-                      Navegación entre secciones
-                    </h4>
-                    <p className="text-sm text-muted-foreground mb-3">Además de estos controles principales, en otras partes de la interfaz encontrarás botones de navegación para acceder a:</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
-                      <div className="bg-card/70 p-3 rounded text-center">
-                        <Ticket className="h-4 w-4 mx-auto mb-1 text-primary" />
-                        <span className="text-xs">Tickets</span>
-                        <p className="text-xs text-muted-foreground mt-1">Ver todos los tickets del evento</p>
-                      </div>
-                      <div className="bg-card/70 p-3 rounded text-center">
-                        <Users className="h-4 w-4 mx-auto mb-1 text-primary" />
-                        <span className="text-xs">Vendedores</span>
-                        <p className="text-xs text-muted-foreground mt-1">Gestionar tarjeteros</p>
-                      </div>
-                      <div className="bg-card/70 p-3 rounded text-center">
-                        <Scan className="h-4 w-4 mx-auto mb-1 text-primary" />
-                        <span className="text-xs">Scanners</span>
-                        <p className="text-xs text-muted-foreground mt-1">Configurar control de acceso</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-primary/10 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <AlertCircle className="h-4 w-4 text-primary" />
-                      Recomendaciones
-                    </h4>
-                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                      <li>Activa la venta web solo cuando estés seguro de que toda la información del evento es correcta.</li>
-                      <li>Monitorea regularmente la barra de progreso de asistencia durante el evento para controlar el ingreso de personas.</li>
-                      <li>Si tienes un evento periódico, usa la función "Reiniciar Evento" después de cada fecha para comenzar con estadísticas limpias.</li>
-                      <li>Comparte el enlace de la Página WEB en tus redes sociales para facilitar la venta de tickets.</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Tickets */}
-          <div className="border border-border rounded-lg overflow-hidden">
-            <button className="w-full p-4 flex items-center justify-between bg-card hover:bg-secondary transition-colors" onClick={() => toggleSection('tickets')}>
-              <div className="flex items-center gap-2">
-                <Ticket className="h-5 w-5 text-primary" />
-                <span className="font-bold">Tickets</span>
-              </div>
-              <ChevronDown className={`h-5 w-5 transition-transform ${openSection === 'tickets' ? 'transform rotate-180' : ''}`} />
-            </button>
-
-            {openSection === 'tickets' && (
-              <div className="p-6 bg-card/50">
-                <h3 className="text-xl font-bold mb-3">Gestión de tickets</h3>
-                <p className="mb-4">Los tickets son el elemento central de Entradita.com. Cada ticket tiene un código QR único que permite el acceso al evento y evita duplicados o falsificaciones.</p>
-
-                <div className="space-y-6">
-                  <div className="bg-secondary/50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2">Información del ticket</h4>
-                    <p className="text-sm text-muted-foreground mb-2">Al seleccionar un ticket, podrás ver su información detallada:</p>
-                    <ul className="list-disc list-inside space-y-1 ml-2 text-muted-foreground text-sm">
-                      <li>Categoría del ticket</li>
-                      <li>Nombre del comprador</li>
-                      <li>DNI (si se solicitó)</li>
-                      <li>Fecha de creación</li>
-                      <li>Vendedor que lo generó</li>
-                      <li>Estado (usado/no usado)</li>
-                    </ul>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-secondary/50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-2 flex items-center gap-2">
-                        <Copy className="h-4 w-4 text-primary" />
-                        Copiar link del ticket
-                      </h4>
-                      <p className="text-sm text-muted-foreground">
-                        Este botón te permite copiar solamente el enlace del ticket, que podrás compartir con el comprador. Al acceder a este enlace, el comprador podrá ver y descargar su ticket con
-                        el código QR.
-                      </p>
-                    </div>
-
-                    <div className="bg-secondary/50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-2 flex items-center gap-2">
-                        <Share2 className="h-4 w-4 text-green-400" />
-                        Copiar mensaje completo
-                      </h4>
-                      <p className="text-sm text-muted-foreground">
-                        Este botón, además de copiar el link del ticket, copia un mensaje agradable para compartir con el cliente. Es la opción más recomendada para enviar el ticket por WhatsApp u
-                        otro medio de comunicación.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="bg-secondary/50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <Trash className="h-4 w-4 text-red-400" />
-                      Borrar ticket
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      Si es necesario, puedes eliminar un ticket. Ten en cuenta que esta acción es irreversible y el ticket ya no podrá ser utilizado para ingresar al evento.
-                    </p>
-                  </div>
-
-                  <div className="bg-primary/10 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <AlertCircle className="h-4 w-4 text-primary" />
-                      Consideraciones importantes
-                    </h4>
-                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                      <li>Cada ticket consume una unidad de tu disponibilidad total de tickets adquiridos en tu paquete.</li>
-                      <li>Los tickets no pueden ser duplicados. Cada código QR es único y solo permite un ingreso al evento.</li>
-                      <li>Si un ticket ya fue utilizado (escaneado en la entrada), aparecerá marcado como "usado" y no podrá ser utilizado nuevamente.</li>
-                      <li>Es recomendable mantener un registro de a quién le has enviado cada ticket, especialmente si manejas grandes volúmenes.</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Vendedores */}
-          <div className="border border-border rounded-lg overflow-hidden">
-            <button className="w-full p-4 flex items-center justify-between bg-card hover:bg-secondary transition-colors" onClick={() => toggleSection('vendedores')}>
-              <div className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-primary" />
-                <span className="font-bold">Vendedores</span>
-              </div>
-              <ChevronDown className={`h-5 w-5 transition-transform ${openSection === 'vendedores' ? 'transform rotate-180' : ''}`} />
-            </button>
-
-            {openSection === 'vendedores' && (
-              <div className="p-6 bg-card/50">
-                <h3 className="text-xl font-bold mb-3">Gestión de vendedores (tarjeteros)</h3>
-                <p className="mb-4">
-                  Los vendedores o tarjeteros son personas que pueden vender tickets para tu evento. Cada vendedor tiene su propio portal de ventas y puede generar tickets de las categorías que tú le
-                  asignes.
-                </p>
-
-                <div className="space-y-6">
-                  <div className="bg-secondary/50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2">Crear un nuevo vendedor</h4>
-                    <p className="text-sm text-muted-foreground mb-2">Al crear un nuevo vendedor, deberás completar la siguiente información:</p>
-                    <ul className="list-disc list-inside space-y-1 ml-2 text-muted-foreground text-sm mb-3">
-                      <li>
-                        <strong>Categorías de venta:</strong> Selecciona qué categorías de tickets podrá vender este vendedor. Puedes seleccionar varias categorías.
-                      </li>
-                      <li>
-                        <strong>Nombre del vendedor:</strong> Asigna un nombre identificativo. El vendedor podrá ver qué nombre le has asignado.
-                      </li>
-                      <li>
-                        <strong>Capacidad de venta:</strong> Establece cuántos tickets puede vender este vendedor. Este valor puede ser modificado posteriormente.
-                      </li>
-                    </ul>
-                    <p className="text-sm text-muted-foreground">
-                      Una vez creado el vendedor, deberás proporcionarle el enlace a su portal de ventas y la contraseña que estableciste para los empleados al crear el evento.
-                    </p>
-                  </div>
-
-                  <div className="bg-secondary/50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2">Gestión de un vendedor existente</h4>
-                    <p className="text-sm text-muted-foreground mb-3">Al hacer clic sobre un vendedor en la lista, accederás a su información detallada y podrás realizar varias acciones:</p>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                      <div className="bg-card/70 p-3 rounded">
-                        <h5 className="text-sm font-medium mb-1 flex items-center gap-1">
-                          <Copy className="h-3 w-3 text-primary" />
-                          Copiar link del portal
-                        </h5>
-                        <p className="text-xs text-muted-foreground">Copia el enlace del portal de ventas del vendedor, que podrás compartir con él.</p>
-                      </div>
-
-                      <div className="bg-card/70 p-3 rounded">
-                        <h5 className="text-sm font-medium mb-1 flex items-center gap-1">
-                          <ExternalLink className="h-3 w-3 text-green-400" />
-                          Ir al portal del vendedor
-                        </h5>
-                        <p className="text-xs text-muted-foreground">Te redirige al mismo portal de ventas, donde podrás ver exactamente lo que ve el vendedor.</p>
-                      </div>
-
-                      <div className="bg-card/70 p-3 rounded">
-                        <h5 className="text-sm font-medium mb-1 flex items-center gap-1">
-                          <Share2 className="h-3 w-3 text-primary" />
-                          Copiar mensaje para el vendedor
-                        </h5>
-                        <p className="text-xs text-muted-foreground">
-                          Copia el enlace junto con un mensaje amigable para invitar al vendedor a vender tickets para tu evento. Recuerda que debes proporcionarle la contraseña por separado.
-                        </p>
-                      </div>
-
-                      <div className="bg-card/70 p-3 rounded">
-                        <h5 className="text-sm font-medium mb-1 flex items-center gap-1">
-                          <Edit className="h-3 w-3 text-yellow-400" />
-                          Editar datos del vendedor
-                        </h5>
-                        <p className="text-xs text-muted-foreground">Permite modificar la información del vendedor, como su nombre, categorías asignadas o capacidad de venta.</p>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="bg-card/70 p-3 rounded">
-                        <h5 className="text-sm font-medium mb-1 flex items-center gap-1">
-                          <PauseCircle className="h-3 w-3 text-orange-400" />
-                          Pausar vendedor
-                        </h5>
-                        <p className="text-xs text-muted-foreground">Permite pausar temporalmente la capacidad del vendedor para generar tickets. Puedes reanudar su actividad en cualquier momento.</p>
-                      </div>
-
-                      <div className="bg-card/70 p-3 rounded">
-                        <h5 className="text-sm font-medium mb-1 flex items-center gap-1">
-                          <Trash className="h-3 w-3 text-red-400" />
-                          Borrar vendedor
-                        </h5>
-                        <p className="text-xs text-muted-foreground">
-                          Elimina al vendedor del sistema. ¡Atención! Esta acción también eliminará todos los tickets que haya creado y que aún no hayan sido utilizados.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-primary/10 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <AlertCircle className="h-4 w-4 text-primary" />
-                      Recomendaciones para gestionar vendedores
-                    </h4>
-                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                      <li>Asigna nombres claros a tus vendedores para poder identificarlos fácilmente en los reportes.</li>
-                      <li>Establece límites de venta razonables para cada vendedor según su capacidad y confianza.</li>
-                      <li>Monitorea regularmente las ventas de cada vendedor para detectar patrones inusuales o problemas.</li>
-                      <li>Comunica claramente a los vendedores qué categorías pueden vender y a qué precios.</li>
-                      <li>Recuerda que los vendedores necesitarán la contraseña de empleados que estableciste al crear el evento.</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Botón de contacto */}
-        <div className="mt-8 bg-background p-6 rounded-lg text-center">
-          <h3 className="text-xl font-bold mb-3">¿Necesitas más ayuda?</h3>
-          <p className="mb-4">Si tienes dudas adicionales o necesitas asistencia personalizada, no dudes en contactarnos. Estamos aquí para ayudarte a sacar el máximo provecho de Entradita.com.</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="https://wa.me/5493482275737"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block bg-card text-green-600 font-bold py-3 px-6 rounded-lg hover:bg-gray-100 hover:text-green-700 transition-colors"
-            >
-              Contactar por WhatsApp
-            </a>
-          </div>
-        </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="bg-background border-t border-border py-4">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center mb-2 md:mb-0">
-              <img src="/isotipoWhite.png" alt="entradita.com logo" className="h-8 w-auto mr-2 hidden sm:block" />
-              <div>
-                <h3 className="font-bold text-center sm:text-left">entradita.com</h3>
-                <p className="text-xs text-muted-foreground ">Transformando la gestión de eventos</p>
-              </div>
-            </div>
-
-            <div className="flex flex-col md:flex-row items-center space-y-1 md:space-y-0 md:space-x-6">
-              <Link to="/documentacion" className="text-muted-foreground hover:text-white text-sm">
-                Documentación
-              </Link>
-              <Link to="/contact" className="text-muted-foreground hover:text-white text-sm">
-                Contacto
+      <div className="relative z-10">
+        {/* ── HERO ─────────────────────────────────────────────── */}
+        <section className="container grid items-center gap-10 py-16 lg:grid-cols-2 lg:py-24">
+          <Reveal>
+            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-1.5 text-xs font-medium text-muted-foreground">
+              <Sparkles className="h-3.5 w-3.5 text-primary" /> Guía de uso
+            </span>
+            <h1 className="mt-5 text-4xl font-bold tracking-tight sm:text-5xl">
+              Aprendé a usar entradita{' '}
+              <span className="bg-gradient-to-r from-brand-from to-brand-to bg-clip-text text-transparent">
+                en minutos
+              </span>
+            </h1>
+            <p className="mt-5 max-w-lg text-lg text-muted-foreground">
+              Del primer evento hasta la puerta el día del show. Sin manuales
+              eternos: mirá los 3 pasos, entendé el flujo y empezá a vender.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <a href="#quickstart">
+                <Button size="lg" className="w-full font-semibold sm:w-auto">
+                  <Rocket className="mr-2 h-4 w-4" /> Empezar ahora
+                </Button>
+              </a>
+              <Link to="/login">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto">
+                  Crear cuenta gratis
+                </Button>
               </Link>
             </div>
-          </div>
+          </Reveal>
 
-          <div className="border-t border-border mt-6 pt-6 text-center text-muted-foreground">
-            <p className="text-sm">© 2026 entradita.com todos los derechos reservados.</p>
+          {/* Ticket mockup con QR en vivo */}
+          <Reveal delay={0.15} className="flex justify-center lg:justify-end">
+            <div className="w-full max-w-xs overflow-hidden rounded-3xl border border-border bg-card shadow-2xl shadow-primary/10">
+              <div className="bg-gradient-to-r from-brand-from to-brand-to px-6 py-4 text-white">
+                <p className="text-xs opacity-80">entrada digital</p>
+                <p className="mt-1 text-lg font-bold">Fiesta de fin de año</p>
+                <p className="text-xs opacity-80">12 de diciembre · General</p>
+              </div>
+              <div className="flex flex-col items-center gap-3 p-6">
+                <div className="rounded-2xl bg-white p-4">
+                  <QRCodeCanvas value="https://entradita.com" size={148} level="M" />
+                </div>
+                <p className="text-xs text-muted-foreground">Escaneá para validar el acceso</p>
+              </div>
+            </div>
+          </Reveal>
+        </section>
+
+        {/* ── QUICKSTART 3 PASOS ───────────────────────────────── */}
+        <section id="quickstart" className="container scroll-mt-24 py-12">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight">Empezá en 3 pasos</h2>
+            <p className="mt-3 text-muted-foreground">De cero a tu primera entrada vendida.</p>
+          </Reveal>
+
+          <div className="mt-12 grid gap-4 md:grid-cols-3">
+            {[
+              { n: 1, icon: CalendarPlus, t: 'Creá tu evento', d: 'Nombre, fecha, lugar, imagen y los tipos de entrada (General, VIP…). Listo en un formulario.' },
+              { n: 2, icon: Ticket, t: 'Cargá y compartí', d: 'Generá entradas con QR y mandalas por WhatsApp, o activá la venta web con Mercado Pago.' },
+              { n: 3, icon: ScanLine, t: 'Controlá el ingreso', d: 'El día del evento, escaneás los QR en la puerta y ves la asistencia en tiempo real.' },
+            ].map((s, i) => (
+              <Reveal key={s.n} delay={i * 0.1}>
+                <SurfaceCard className="h-full transition-colors hover:border-primary/40">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary ring-1 ring-primary/20">
+                      {s.n}
+                    </span>
+                    <s.icon className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="mt-4 text-lg font-semibold">{s.t}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.d}</p>
+                </SurfaceCard>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+
+        {/* ── CÓMO FUNCIONA (roles) ────────────────────────────── */}
+        <section className="container py-16">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight">¿Cómo funciona?</h2>
+            <p className="mt-3 text-muted-foreground">Cuatro protagonistas, un flujo simple.</p>
+          </Reveal>
+
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { icon: UserCog, t: 'Organizador', d: 'Sos vos. Creás el evento, definís precios y sumás a tu equipo.' },
+              { icon: Handshake, t: 'Vendedores', d: 'Tus tarjeteros venden desde su propio portal con la contraseña del evento.' },
+              { icon: Smartphone, t: 'Asistente', d: 'Recibe su entrada con QR por WhatsApp o la compra online.' },
+              { icon: DoorOpen, t: 'Puerta', d: 'El personal escanea el QR y valida el acceso al instante.' },
+            ].map((r, i) => (
+              <Reveal key={r.t} delay={i * 0.08}>
+                <div className="relative flex h-full flex-col rounded-2xl border border-border bg-card/60 p-5">
+                  <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-from/20 to-brand-to/20 text-primary ring-1 ring-primary/20">
+                    <r.icon className="h-5 w-5" />
+                  </div>
+                  <h3 className="mt-4 font-semibold">{r.t}</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{r.d}</p>
+                  {i < 3 && (
+                    <ArrowRight className="absolute -right-3 top-1/2 hidden h-5 w-5 -translate-y-1/2 text-border lg:block" />
+                  )}
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+
+        {/* ── CONTENIDO + NAV LATERAL ──────────────────────────── */}
+        <div className="container grid gap-10 py-8 lg:grid-cols-[220px_1fr]">
+          {/* Nav pegajosa */}
+          <aside className="hidden lg:block">
+            <nav className="sticky top-24 space-y-1">
+              <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                En detalle
+              </p>
+              {NAV.map((n) => (
+                <a
+                  key={n.id}
+                  href={`#${n.id}`}
+                  className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                >
+                  <n.icon className="h-4 w-4" />
+                  {n.label}
+                </a>
+              ))}
+            </nav>
+          </aside>
+
+          <div className="min-w-0 space-y-16">
+            {/* ACCESO */}
+            <DocSection id="acceso" icon={LogIn} title="Acceso a la plataforma"
+              lead="Creás tu cuenta vos mismo. Hay tres formas de entrar.">
+              <div className="grid gap-3 sm:grid-cols-3">
+                <Feature icon={Globe} title="Con Google" text="Un clic y listo. Queda verificada automáticamente." />
+                <Feature icon={Mail} title="Con email" text="Usuario, email y contraseña. Confirmás con el correo de verificación." />
+                <Feature icon={KeyRound} title="Usuario clásico" text="Si ya tenías cuenta, seguís entrando con tu usuario." />
+              </div>
+              <Callout variant="warn" title="La verificación de email es obligatoria">
+                Si te registrás con email, tu cuenta se activa recién cuando hacés clic
+                en el enlace del correo. Revisá también el spam.
+              </Callout>
+              <Callout variant="tip" title="¿Olvidaste la contraseña?">
+                Usá “¿Olvidaste tu contraseña?” en el login y te llega un enlace para
+                resetearla. Si entrás con Google, la manejás desde tu cuenta de Google.
+              </Callout>
+            </DocSection>
+
+            {/* PANEL */}
+            <DocSection id="panel" icon={LayoutDashboard} title="Tu panel"
+              lead="Es lo primero que ves al entrar. Desde acá manejás todo.">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Feature icon={CreditCard} title="Créditos de entradas"
+                  text="Cada entrada que generás consume un crédito. Los que no usás quedan para el próximo evento." />
+                <Feature icon={Store} title="Vincular Mercado Pago"
+                  text="Conectá tu cuenta de MP para cobrar la venta web de tus entradas." />
+                <Feature icon={CalendarPlus} title="Crear evento"
+                  text="Arranca el formulario de un evento nuevo." />
+                <Feature icon={LayoutDashboard} title="Lista de eventos"
+                  text="Todos tus eventos con nombre, fecha, vendidas y estado. Tocá “Ver” para gestionarlos." />
+              </div>
+            </DocSection>
+
+            {/* CREAR EVENTO */}
+            <DocSection id="crear" icon={CalendarPlus} title="Crear un evento"
+              lead="Un solo formulario define todo: datos, seguridad y precios.">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Feature icon={Tag} title="Nombre" text="Aparece en las entradas y en el panel." />
+                <Feature icon={Repeat} title="Fecha o periodicidad" text="Evento único, o periódico (ej. todos los sábados) con fecha de inicio y fin." />
+                <Feature icon={MapPin} title="Lugar" text="Dónde se hace, para informar a los asistentes." />
+                <Feature icon={Users} title="Capacidad" text="Límite de entradas. En periódicos aplica por cada fecha." />
+                <Feature icon={ImageIcon} title="Imagen" text="Subís una foto; se optimiza sola y aparece en la entrada y la página pública." />
+                <Feature icon={Lock} title="Contraseña de empleados" text="La usan vendedores y personal de puerta para entrar a la app." />
+                <Feature icon={Fingerprint} title="Pedir DNI" text="Opcional: obliga a cargar el documento de cada asistente." />
+                <Feature icon={Ticket} title="Tipos de entrada" text="General, VIP… con precio, comisión al vendedor y venta web on/off." />
+              </div>
+              <Callout variant="tip" title="Tip de venta web">
+                Con el interruptor de venta web en cada tipo de entrada elegís qué se
+                vende online al público y qué queda exclusivo para venta por WhatsApp.
+              </Callout>
+            </DocSection>
+
+            {/* GESTIÓN */}
+            <DocSection id="gestion" icon={SlidersHorizontal} title="Gestionar el evento"
+              lead="Ya creado, controlás cada aspecto desde su página.">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Feature icon={Globe} title="Página WEB" text="La página pública que compartís: info + compra online." />
+                <Feature icon={DollarSign} title="Economía" text="Ventas por categoría, comisiones, neto y estadísticas por día." />
+                <Feature icon={Activity} title="Asistencia en vivo" text="Barra de progreso que sube cada vez que se escanea una entrada." />
+                <Feature icon={RotateCcw} title="Reiniciar (periódicos)" text="Resetea las estadísticas para la próxima fecha, manteniendo la config." />
+              </div>
+              <Callout variant="info" title="Venta web on/off">
+                Un interruptor habilita o corta la compra online del evento. Apagado,
+                solo se venden entradas de forma manual.
+              </Callout>
+            </DocSection>
+
+            {/* ENTRADAS */}
+            <DocSection id="entradas" icon={Ticket} title="Entradas"
+              lead="El corazón de todo: cada una lleva un QR único e irrepetible.">
+              <div className="grid gap-3 sm:grid-cols-3">
+                <Feature icon={Copy} title="Copiar link" text="Copia solo el enlace de la entrada para mandárselo al comprador." />
+                <Feature icon={Share2} title="Copiar mensaje" text="Copia el link + un mensaje listo para WhatsApp. La opción recomendada." />
+                <Feature icon={Trash2} title="Borrar" text="Elimina la entrada. Es irreversible y ya no sirve para ingresar." />
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Callout variant="info" title="Cada QR es único">
+                  No se puede duplicar y permite un solo ingreso. Al escanearse queda
+                  marcado como “usado”.
+                </Callout>
+                <Callout variant="warn" title="Consume un crédito">
+                  Generar una entrada descuenta una unidad de tus créditos disponibles.
+                </Callout>
+              </div>
+            </DocSection>
+
+            {/* VENDEDORES */}
+            <DocSection id="vendedores" icon={Users} title="Vendedores (tarjeteros)"
+              lead="Tu equipo vende desde su propio portal, con lo que vos le habilites.">
+              <SurfaceCard>
+                <p className="font-semibold">Al crear un vendedor definís:</p>
+                <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                  <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 shrink-0 text-primary" /> Qué categorías de entrada puede vender.</li>
+                  <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 shrink-0 text-primary" /> Un nombre identificatorio.</li>
+                  <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 shrink-0 text-primary" /> Su capacidad (cuántas entradas puede vender).</li>
+                </ul>
+              </SurfaceCard>
+              <div className="grid gap-3 sm:grid-cols-3">
+                <Feature icon={Copy} title="Link del portal" text="Se lo compartís para que venda." />
+                <Feature icon={ExternalLink} title="Ir al portal" text="Ves exactamente lo que ve él." />
+                <Feature icon={Share2} title="Mensaje listo" text="Link + invitación para pegar en WhatsApp." />
+                <Feature icon={Pencil} title="Editar" text="Cambiás nombre, categorías o capacidad." />
+                <Feature icon={Pause} title="Pausar" text="Frenás sus ventas y las reanudás cuando quieras." />
+                <Feature icon={Trash2} title="Borrar" text="Lo elimina junto con sus entradas no usadas." />
+              </div>
+              <Callout variant="tip" title="La contraseña va aparte">
+                El vendedor entra a su portal con la <b>contraseña de empleados</b> que
+                pusiste al crear el evento. Se la pasás por separado.
+              </Callout>
+            </DocSection>
+
+            {/* PUERTA */}
+            <DocSection id="puerta" icon={ScanLine} title="Control de acceso"
+              lead="El día del evento, la puerta es puro escaneo.">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Feature icon={ScanLine} title="Escaneo del QR" text="El personal abre el escáner y valida cada entrada en milisegundos." />
+                <Feature icon={ShieldCheck} title="Anti-duplicados" text="Si una entrada ya fue usada, el sistema la rechaza al instante." />
+                <Feature icon={Activity} title="Asistencia en vivo" text="Cada escaneo actualiza el porcentaje de ingreso en tu panel." />
+                <Feature icon={KeyRound} title="Acceso del personal" text="Entran con la contraseña de empleados del evento." />
+              </div>
+            </DocSection>
           </div>
         </div>
-      </footer>
+
+        {/* ── FAQ ──────────────────────────────────────────────── */}
+        <section className="container py-16">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight">Preguntas frecuentes</h2>
+          </Reveal>
+          <div className="mx-auto mt-10 max-w-2xl space-y-3">
+            {[
+              { q: '¿Qué pasa si se me acaban los créditos?', a: 'No podés generar más entradas hasta recargar. Escribinos y coordinamos la recarga de tu cuenta.' },
+              { q: '¿El asistente necesita instalar una app?', a: 'No. Recibe un link con su entrada y QR que abre desde el navegador del celular.' },
+              { q: '¿Puedo vender online y por tarjeteros a la vez?', a: 'Sí. Activás la venta web para algunas categorías y dejás otras exclusivas para tus vendedores.' },
+              { q: '¿Sirve para una fiesta que se repite todas las semanas?', a: 'Sí, con los eventos periódicos: se reprograma la fecha y reiniciás las estadísticas por cada función.' },
+            ].map((f, i) => (
+              <FAQItem key={i} q={f.q} a={f.a} />
+            ))}
+          </div>
+        </section>
+
+        {/* ── CTA ──────────────────────────────────────────────── */}
+        <section className="container pb-20">
+          <Reveal className="rounded-3xl border border-border bg-card/60 p-8 text-center sm:p-12">
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">¿Listo para tu próximo evento?</h2>
+            <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
+              Creá tu cuenta gratis y vendé tu primera entrada hoy. Si te trabás,
+              estamos a un mensaje de distancia.
+            </p>
+            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+              <Link to="/login">
+                <Button size="lg" className="w-full font-semibold sm:w-auto">
+                  Crear cuenta gratis <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+              <a href={WA} target="_blank" rel="noopener noreferrer">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto">
+                  <MessageCircle className="mr-2 h-4 w-4" /> Hablar con nosotros
+                </Button>
+              </a>
+            </div>
+          </Reveal>
+        </section>
+
+        {/* Footer */}
+        <footer className="border-t border-border/60 py-8">
+          <div className="container flex flex-col items-center justify-between gap-3 text-sm text-muted-foreground sm:flex-row">
+            <div className="flex items-center gap-2">
+              <img src="/isotipoWhite.png" alt="entradita" className="h-6 w-auto" />
+              <span>entradita.com · Transformando la gestión de eventos</span>
+            </div>
+            <div className="flex gap-6">
+              <Link to="/contact" className="hover:text-foreground">Contacto</Link>
+              <Link to="/pricing" className="hover:text-foreground">Precios</Link>
+            </div>
+          </div>
+        </footer>
+      </div>
     </div>
   );
 }
+
+/* ── subcomponentes ─────────────────────────────────────────────────────── */
+
+function DocSection({ id, icon: Icon, title, lead, children }) {
+  return (
+    <Reveal>
+      <section id={id} className="scroll-mt-24">
+        <div className="flex items-center gap-3">
+          <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/20">
+            <Icon className="h-5 w-5" />
+          </div>
+          <h2 className="text-2xl font-bold tracking-tight">{title}</h2>
+        </div>
+        {lead && <p className="mt-3 max-w-2xl text-muted-foreground">{lead}</p>}
+        <div className="mt-6 space-y-4">{children}</div>
+      </section>
+    </Reveal>
+  );
+}
+DocSection.propTypes = {
+  id: PropTypes.string.isRequired,
+  icon: PropTypes.elementType.isRequired,
+  title: PropTypes.string.isRequired,
+  lead: PropTypes.string,
+  children: PropTypes.node,
+};
+
+function Feature({ icon: Icon, title, text }) {
+  return (
+    <div className="rounded-xl border border-border bg-card/40 p-4">
+      <div className="flex items-center gap-2">
+        <Icon className="h-4 w-4 text-primary" />
+        <h4 className="text-sm font-semibold">{title}</h4>
+      </div>
+      <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{text}</p>
+    </div>
+  );
+}
+Feature.propTypes = { icon: PropTypes.elementType.isRequired, title: PropTypes.string.isRequired, text: PropTypes.string.isRequired };
+
+function FAQItem({ q, a }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-xl border border-border bg-card/60">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-center justify-between gap-3 p-4 text-left font-medium"
+      >
+        {q}
+        <ChevronDown className={`h-5 w-5 shrink-0 text-muted-foreground transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+      {open && <p className="px-4 pb-4 text-sm leading-relaxed text-muted-foreground">{a}</p>}
+    </div>
+  );
+}
+FAQItem.propTypes = { q: PropTypes.string.isRequired, a: PropTypes.string.isRequired };
 
 export default Documentacion;
