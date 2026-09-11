@@ -53,7 +53,7 @@ export default function SellerAnalytics({ data, analytics }) {
   }
 
   return (
-    <Card className="bg-gray-800 border-gray-700 rounded-lg">
+    <Card className="bg-card border-border rounded-lg">
       <CardHeader>
         <CardTitle className="text-xl font-bold">Análisis Detallado de Vendedores</CardTitle>
       </CardHeader>
@@ -62,13 +62,13 @@ export default function SellerAnalytics({ data, analytics }) {
           <Table>
             <TableHeader>
               <TableRow className="text-center">
-                <TableHead className="text-gray-300">Vendedor</TableHead>
-                <TableHead className="text-gray-300">Rendimiento</TableHead>
-                <TableHead className="text-gray-300">Tickets Vendidos</TableHead>
-                <TableHead className="text-gray-300 max-sm:hidden">Desglose de Ventas</TableHead>
-                <TableHead className="text-gray-300">Total Vendido</TableHead>
-                <TableHead className="text-gray-300">Promedio/Ticket</TableHead>
-                <TableHead className="text-gray-300">Comisión Total</TableHead>
+                <TableHead className="text-muted-foreground">Vendedor</TableHead>
+                <TableHead className="text-muted-foreground">Rendimiento</TableHead>
+                <TableHead className="text-muted-foreground">Tickets Vendidos</TableHead>
+                <TableHead className="text-muted-foreground max-sm:hidden">Desglose de Ventas</TableHead>
+                <TableHead className="text-muted-foreground">Total Vendido</TableHead>
+                <TableHead className="text-muted-foreground">Promedio/Ticket</TableHead>
+                <TableHead className="text-muted-foreground">Comisión Total</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody className="text-center">
@@ -106,7 +106,7 @@ export default function SellerAnalytics({ data, analytics }) {
               <Button
                 variant="outline"
                 onClick={() => setShowAll(!showAll)}
-                className="flex items-center gap-2 mx-auto bg-gray-700 hover:bg-gray-600 border-gray-600 text-white"
+                className="flex items-center gap-2 mx-auto bg-secondary hover:bg-secondary border-border text-white"
               >
                 {showAll ? (
                   <>
@@ -126,9 +126,9 @@ export default function SellerAnalytics({ data, analytics }) {
 
         {/* Estadísticas adicionales */}
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-gray-700 p-4 rounded-lg">
-            <h4 className="font-semibold text-gray-300 mb-2">Promedio de Tickets por Vendedor</h4>
-            <p className="text-2xl font-bold text-blue-400">
+          <div className="bg-secondary p-4 rounded-lg">
+            <h4 className="font-semibold text-muted-foreground mb-2">Promedio de Tickets por Vendedor</h4>
+            <p className="text-2xl font-bold text-primary">
               {analytics.realSellersCount > 0
                 ? (
                     analytics.sellersWithStats.reduce((sum, s) => sum + s.ticketsSold, 0) / analytics.realSellersCount
@@ -136,15 +136,15 @@ export default function SellerAnalytics({ data, analytics }) {
                 : "0.0"}
             </p>
           </div>
-          <div className="bg-gray-700 p-4 rounded-lg">
-            <h4 className="font-semibold text-gray-300 mb-2">Vendedor Más Eficiente</h4>
+          <div className="bg-secondary p-4 rounded-lg">
+            <h4 className="font-semibold text-muted-foreground mb-2">Vendedor Más Eficiente</h4>
             <p className="text-lg font-bold text-green-400">{analytics.topSeller?.assigned_name || "N/A"}</p>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-muted-foreground">
               ${analytics.topSeller?.avgTicketPrice.toFixed(2) || "0.00"} promedio/ticket
             </p>
           </div>
-          <div className="bg-gray-700 p-4 rounded-lg">
-            <h4 className="font-semibold text-gray-300 mb-2">Total en Comisiones</h4>
+          <div className="bg-secondary p-4 rounded-lg">
+            <h4 className="font-semibold text-muted-foreground mb-2">Total en Comisiones</h4>
             <p className="text-2xl font-bold text-orange-400">
               {/* Suma de las comisiones individuales ya calculadas */}
               ${analytics.sellersWithStats.reduce((total, seller) => total + seller.commission, 0).toFixed(2)}

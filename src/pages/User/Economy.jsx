@@ -267,7 +267,7 @@ const EconomicReport = () => {
   }
 
   return (
-    <div className="p-4 bg-gray-900 text-gray-100 min-h-screen justify-center w-screen">
+    <div className="p-4 bg-background text-gray-100 min-h-screen justify-center w-screen">
       <div className="max-w-6xl space-y-4 mx-auto w-full">
         {showError && (
           <Alert className="mb-4 bg-yellow-900 border-yellow-700">
@@ -289,7 +289,7 @@ const EconomicReport = () => {
           <h1 className="text-2xl sm:text-3xl font-bold text-center mb-0">Reporte Económico</h1>
           <Button
             onClick={handlePrint}
-            className="mb-0 flex items-center max-md:w-full w-72 bg-blue-600 hover:bg-blue-700"
+            className="mb-0 flex items-center max-md:w-full w-72 bg-primary hover:bg-primary/90"
           >
             <Printer className="mr-2 h-4 w-4" /> Imprimir Reporte
           </Button>
@@ -298,7 +298,7 @@ const EconomicReport = () => {
         {/* Métricas principales */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Recaudación Total */}
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-card border-border">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Recaudación Total</CardTitle>
               <DollarSign className="h-4 w-4 text-green-400" />
@@ -311,7 +311,7 @@ const EconomicReport = () => {
                   maximumFractionDigits: 2,
                 })}
               </div>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Promedio por ticket: $
                 {(analytics?.avgTicketPrice || 0).toLocaleString('es-AR', {
                   minimumFractionDigits: 2,
@@ -322,16 +322,16 @@ const EconomicReport = () => {
           </Card>
 
           {/* Total de Tickets */}
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-card border-border">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total de Tickets</CardTitle>
-              <Tag className="h-4 w-4 text-blue-400" />
+              <Tag className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-blue-400">
+              <div className="text-2xl font-bold text-primary">
                 {data.total_tickets.toLocaleString('es-AR')}
               </div>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 {analytics?.realSellersCount || 0} vendedor
                 {analytics?.realSellersCount !== 1 ? "es" : ""} activo
                 {analytics?.realSellersCount !== 1 ? "s" : ""}
@@ -340,7 +340,7 @@ const EconomicReport = () => {
           </Card>
 
           {/* Comisión Total */}
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-card border-border">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Comisión Total</CardTitle>
               <Percent className="h-4 w-4 text-orange-400" />
@@ -355,14 +355,14 @@ const EconomicReport = () => {
                       maximumFractionDigits: 2,
                     })}
               </div>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Calculado según tickets vendidos
               </p>
             </CardContent>
           </Card>
 
           {/* Ingreso Neto */}
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-card border-border">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Ingreso Neto</CardTitle>
               <TrendingUp className="h-4 w-4 text-purple-400" />
@@ -377,7 +377,7 @@ const EconomicReport = () => {
                       maximumFractionDigits: 2,
                     })}
               </div>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 {data.total_sales > 0 ? ((netRevenue / data.total_sales) * 100).toFixed(1) : 0}% del total
               </p>
             </CardContent>
@@ -388,18 +388,18 @@ const EconomicReport = () => {
         {analytics && analytics.realSellersCount > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
              {/* ... Tarjetas de Top Vendedor ... */}
-             <Card className="bg-gray-800 border-gray-700">
+             <Card className="bg-card border-border">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Top Vendedor (Cantidad)</CardTitle>
                 <Award className="h-4 w-4 text-yellow-400" />
               </CardHeader>
               <CardContent>
                 <div className="text-lg font-bold text-yellow-400">{analytics.topSeller?.assigned_name || "N/A"}</div>
-                <p className="text-xs text-gray-400 mt-1">{analytics.topSeller?.ticketsSold || 0} tickets vendidos</p>
+                <p className="text-xs text-muted-foreground mt-1">{analytics.topSeller?.ticketsSold || 0} tickets vendidos</p>
               </CardContent>
             </Card>
 
-            <Card className="bg-gray-800 border-gray-700">
+            <Card className="bg-card border-border">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Top Vendedor (Ingresos)</CardTitle>
                 <DollarSign className="h-4 w-4 text-green-400" />
@@ -408,20 +408,20 @@ const EconomicReport = () => {
                 <div className="text-lg font-bold text-green-400">
                   {analytics.topRevenueSeller?.assigned_name || "N/A"}
                 </div>
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   ${analytics.topRevenueSeller?.totalRevenue.toFixed(2) || "0.00"} generados
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-gray-800 border-gray-700">
+            <Card className="bg-card border-border">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Ticket Más Popular</CardTitle>
-                <BarChart3 className="h-4 w-4 text-blue-400" />
+                <BarChart3 className="h-4 w-4 text-primary" />
               </CardHeader>
               <CardContent>
-                <div className="text-lg font-bold text-blue-400">{analytics.mostPopularTicket?.name || "N/A"}</div>
-                <p className="text-xs text-gray-400 mt-1">
+                <div className="text-lg font-bold text-primary">{analytics.mostPopularTicket?.name || "N/A"}</div>
+                <p className="text-xs text-muted-foreground mt-1">
                   {analytics.mostPopularTicket?.quantitySold || 0} vendidos (
                   {analytics.mostPopularTicket?.percentage.toFixed(1) || 0}%)
                 </p>
@@ -432,27 +432,27 @@ const EconomicReport = () => {
 
         {/* ... (Ventas Administrativas se mantiene igual) ... */}
         {analytics && analytics.adminStats.length > 0 && (
-            <Card className="bg-gray-800 border-gray-700">
+            <Card className="bg-card border-border">
                 <CardHeader><CardTitle className="text-xl font-bold">Ventas Administrativas</CardTitle></CardHeader>
                 <CardContent>
                     {analytics.adminStats.map((admin) => (
-                        <div key={admin.id} className="bg-gray-700 p-6 rounded-lg mb-4 last:mb-0">
+                        <div key={admin.id} className="bg-secondary p-6 rounded-lg mb-4 last:mb-0">
                             <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-xl font-semibold text-blue-400">{admin.assigned_name}</h3>
-                                <span className="text-sm text-gray-400 bg-blue-900/30 px-3 py-1 rounded-full">Administrador</span>
+                                <h3 className="text-xl font-semibold text-primary">{admin.assigned_name}</h3>
+                                <span className="text-sm text-muted-foreground bg-primary/10 px-3 py-1 rounded-full">Administrador</span>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div className="text-center">
-                                    <div className="text-2xl font-bold text-blue-400">{admin.ticketsSold}</div>
-                                    <div className="text-sm text-gray-400">Tickets vendidos</div>
+                                    <div className="text-2xl font-bold text-primary">{admin.ticketsSold}</div>
+                                    <div className="text-sm text-muted-foreground">Tickets vendidos</div>
                                 </div>
                                 <div className="text-center">
                                     <div className="text-2xl font-bold text-green-400">${admin.totalRevenue.toFixed(2)}</div>
-                                    <div className="text-sm text-gray-400">Total recaudado</div>
+                                    <div className="text-sm text-muted-foreground">Total recaudado</div>
                                 </div>
                                 <div className="text-center">
                                     <div className="text-2xl font-bold text-purple-400">${admin.avgTicketPrice.toFixed(2)}</div>
-                                    <div className="text-sm text-gray-400">Promedio por ticket</div>
+                                    <div className="text-sm text-muted-foreground">Promedio por ticket</div>
                                 </div>
                             </div>
                         </div>
@@ -469,37 +469,37 @@ const EconomicReport = () => {
         <TicketAnalytics data={data} analytics={analytics} chartData={chartData} colors={COLORS} />
 
         {/* CAMBIO: Configuración de comisiones por Lista de Tickets */}
-        <Card className="bg-gray-800 border-gray-700 rounded-lg">
+        <Card className="bg-card border-border rounded-lg">
           <CardHeader>
             <CardTitle className="text-xl font-bold">Configuración de Comisiones por Ticket</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {data.ticket_tags.map((tag) => (
-                <div key={tag.id} className="bg-gray-700 p-4 rounded-lg flex flex-col space-y-2">
+                <div key={tag.id} className="bg-secondary p-4 rounded-lg flex flex-col space-y-2">
                   <div className="flex justify-between items-center">
                       <Label htmlFor={`comm-${tag.id}`} className="font-semibold text-gray-200">
                         {tag.name}
                       </Label>
-                      <span className="text-xs text-gray-400">Precio: ${tag.price}</span>
+                      <span className="text-xs text-muted-foreground">Precio: ${tag.price}</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className="text-gray-400">$</span>
+                    <span className="text-muted-foreground">$</span>
                     <Input
                       id={`comm-${tag.id}`}
                       type="number"
                       min="0"
                       value={commissions[tag.id] ?? 0}
                       onChange={(e) => handleCommissionChange(tag.id, e.target.value)}
-                      className="bg-gray-600 border-gray-500 text-white"
+                      className="bg-secondary border-border text-white"
                     />
                   </div>
-                  <p className="text-xs text-gray-400">Comisión por venta</p>
+                  <p className="text-xs text-muted-foreground">Comisión por venta</p>
                 </div>
               ))}
             </div>
-            <div className="mt-4 pt-4 border-t border-gray-600 text-right">
-                <div className="text-sm text-gray-300">Total a pagar en comisiones: <span className="text-orange-400 font-bold">${totalCommission.toFixed(2)}</span></div>
+            <div className="mt-4 pt-4 border-t border-border text-right">
+                <div className="text-sm text-muted-foreground">Total a pagar en comisiones: <span className="text-orange-400 font-bold">${totalCommission.toFixed(2)}</span></div>
             </div>
           </CardContent>
         </Card>

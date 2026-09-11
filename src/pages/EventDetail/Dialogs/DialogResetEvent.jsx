@@ -69,7 +69,7 @@ export default function DialogResetEvent({ currentDate, newDate, soldTicketsCoun
 
   return (
     <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
-      <DialogContent className="bg-gray-800 text-white border-gray-700 sm:max-w-lg">
+      <DialogContent className="bg-card text-white border-border sm:max-w-lg">
         <DialogHeader>
           <div className="flex items-center justify-center mb-4">
             <div className="bg-red-500/10 p-3 rounded-full">
@@ -80,12 +80,12 @@ export default function DialogResetEvent({ currentDate, newDate, soldTicketsCoun
             ¿Reiniciar Evento Periódico?
           </DialogTitle>
           
-          <DialogDescription className="text-gray-300 pt-4 space-y-4">
+          <DialogDescription className="text-muted-foreground pt-4 space-y-4">
             <p className="space-y-2">
               <span className="block">Moverás el evento a la próxima fecha programada:</span>
               <div className="flex items-center justify-center gap-3 font-semibold">
-                <span className="text-gray-300 capitalize">{formattedCurrentDate}</span>
-                <span className="text-gray-500">→</span>
+                <span className="text-muted-foreground capitalize">{formattedCurrentDate}</span>
+                <span className="text-muted-foreground">→</span>
                 <span className="text-green-400 text-lg capitalize">{formattedNewDate}</span>
               </div>
             </p>
@@ -108,15 +108,15 @@ export default function DialogResetEvent({ currentDate, newDate, soldTicketsCoun
             </div>
           </DialogDescription>
 
-          <div className="mt-6 flex items-start space-x-3 bg-gray-900/50 p-3 rounded border border-gray-700">
+          <div className="mt-6 flex items-start space-x-3 bg-background/50 p-3 rounded border border-border">
             <input 
                 type="checkbox" 
                 id="confirm-reset" 
                 checked={isChecked} 
                 onChange={handleCheckboxChange} 
-                className="mt-1 h-5 w-5 rounded border-gray-600 bg-gray-700 text-blue-600 focus:ring-blue-500" 
+                className="mt-1 h-5 w-5 rounded border-border bg-secondary text-primary focus:ring-ring" 
             />
-            <label htmlFor="confirm-reset" className="text-sm text-gray-400 cursor-pointer select-none">
+            <label htmlFor="confirm-reset" className="text-sm text-muted-foreground cursor-pointer select-none">
               Entiendo que al reiniciar el evento se actualizará la fecha y se <strong>eliminarán todos los tickets vendidos</strong> de la fecha anterior.
             </label>
           </div>
@@ -126,7 +126,7 @@ export default function DialogResetEvent({ currentDate, newDate, soldTicketsCoun
           <Button 
             onClick={() => setIsResetDialogOpen(false)} 
             variant="outline" 
-            className="bg-gray-700 text-white hover:bg-gray-600 border-gray-600 w-full sm:w-auto"
+            className="bg-secondary text-white hover:bg-secondary border-border w-full sm:w-auto"
             disabled={isResetting}
           >
             Cancelar

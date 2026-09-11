@@ -36,7 +36,7 @@ export default function TicketAnalytics({ data, analytics, chartData, colors }) 
   }
 
   return (
-    <Card className="bg-gray-800 border-gray-700 rounded-lg">
+    <Card className="bg-card border-border rounded-lg">
       <CardHeader>
         <CardTitle className="text-xl font-bold">Análisis Detallado por Tipo de Ticket</CardTitle>
       </CardHeader>
@@ -84,11 +84,11 @@ export default function TicketAnalytics({ data, analytics, chartData, colors }) 
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="text-gray-300 text-left">Tipo</TableHead>
-                    <TableHead className="text-gray-300 text-left">Popularidad</TableHead>
-                    <TableHead className="text-gray-300 text-left">Precio</TableHead>
-                    <TableHead className="text-gray-300 text-left">Vendidos</TableHead>
-                    <TableHead className="text-gray-300 text-left">Total</TableHead>
+                    <TableHead className="text-muted-foreground text-left">Tipo</TableHead>
+                    <TableHead className="text-muted-foreground text-left">Popularidad</TableHead>
+                    <TableHead className="text-muted-foreground text-left">Precio</TableHead>
+                    <TableHead className="text-muted-foreground text-left">Vendidos</TableHead>
+                    <TableHead className="text-muted-foreground text-left">Total</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -113,30 +113,30 @@ export default function TicketAnalytics({ data, analytics, chartData, colors }) 
 
         {/* Insights adicionales */}
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-gray-700 p-4 rounded-lg">
-            <h4 className="font-semibold text-gray-300 mb-2">Ticket Más Caro</h4>
+          <div className="bg-secondary p-4 rounded-lg">
+            <h4 className="font-semibold text-muted-foreground mb-2">Ticket Más Caro</h4>
             <p className="text-lg font-bold text-purple-400">
               {analytics.ticketStats.reduce((max, ticket) => (ticket.price > max.price ? ticket : max)).name}
             </p>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-muted-foreground">
               $
               {analytics.ticketStats
                 .reduce((max, ticket) => (ticket.price > max.price ? ticket : max))
                 .price.toFixed(2)}
             </p>
           </div>
-          <div className="bg-gray-700 p-4 rounded-lg">
-            <h4 className="font-semibold text-gray-300 mb-2">Mayor Recaudación</h4>
+          <div className="bg-secondary p-4 rounded-lg">
+            <h4 className="font-semibold text-muted-foreground mb-2">Mayor Recaudación</h4>
             <p className="text-lg font-bold text-green-400">{analytics.highestRevenueTicket?.name || "N/A"}</p>
-            <p className="text-sm text-gray-400">${analytics.highestRevenueTicket?.revenue.toFixed(2) || "0.00"}</p>
+            <p className="text-sm text-muted-foreground">${analytics.highestRevenueTicket?.revenue.toFixed(2) || "0.00"}</p>
           </div>
-          <div className="bg-gray-700 p-4 rounded-lg">
-            <h4 className="font-semibold text-gray-300 mb-2">Más Vendido</h4>
-            <p className="text-lg font-bold text-blue-400">{analytics.mostPopularTicket?.name || "N/A"}</p>
-            <p className="text-sm text-gray-400">{analytics.mostPopularTicket?.quantitySold || 0} unidades</p>
+          <div className="bg-secondary p-4 rounded-lg">
+            <h4 className="font-semibold text-muted-foreground mb-2">Más Vendido</h4>
+            <p className="text-lg font-bold text-primary">{analytics.mostPopularTicket?.name || "N/A"}</p>
+            <p className="text-sm text-muted-foreground">{analytics.mostPopularTicket?.quantitySold || 0} unidades</p>
           </div>
-          <div className="bg-gray-700 p-4 rounded-lg">
-            <h4 className="font-semibold text-gray-300 mb-2">Precio Promedio</h4>
+          <div className="bg-secondary p-4 rounded-lg">
+            <h4 className="font-semibold text-muted-foreground mb-2">Precio Promedio</h4>
             <p className="text-2xl font-bold text-yellow-400">${analytics.avgTicketPrice.toFixed(2)}</p>
           </div>
         </div>

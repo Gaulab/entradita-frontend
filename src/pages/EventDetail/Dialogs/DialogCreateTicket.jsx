@@ -77,10 +77,10 @@ export default function DialogCreateTicket() {
 
   return (
     <Dialog open={isCreateTicketDialogOpen} onOpenChange={setIsCreateTicketDialogOpen}>
-      <DialogContent className="bg-gray-800 text-white">
+      <DialogContent className="bg-card text-white">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center">Crear Ticket</DialogTitle>
-          <DialogDescription className="text-center text-gray-400">Ingrese los datos del asistente para el evento</DialogDescription>
+          <DialogDescription className="text-center text-muted-foreground">Ingrese los datos del asistente para el evento</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -95,7 +95,7 @@ export default function DialogCreateTicket() {
               onChange={handleDropdownChange}
               value={valueDropdown}
               options={ticketTags}
-              className="bg-gray-700 border-gray-600 text-white"
+              className="bg-secondary border-border text-white"
             />
           </div>
           <div className="space-y-1">
@@ -110,7 +110,7 @@ export default function DialogCreateTicket() {
               placeholder="Nombre del asistente"
               required
               maxLength="25"
-              className="bg-gray-700 border-gray-600 text-white"
+              className="bg-secondary border-border text-white"
             />
           </div>
 
@@ -126,7 +126,7 @@ export default function DialogCreateTicket() {
               onChange={handleInputChange}
               required
               maxLength="25"
-              className="bg-gray-700 border-gray-600 text-white"
+              className="bg-secondary border-border text-white"
             />
           </div>
 
@@ -147,7 +147,7 @@ export default function DialogCreateTicket() {
                 min="0"
                 inputMode="numeric"
                 pattern="[0-9]*"
-                className="bg-gray-700 border-gray-600 text-white"
+                className="bg-secondary border-border text-white"
               />
             </div>
           )}
@@ -159,10 +159,10 @@ export default function DialogCreateTicket() {
           )}
 
           <DialogFooter>
-            <Button onClick={() => setIsCreateTicketDialogOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600">
+            <Button onClick={() => setIsCreateTicketDialogOpen(false)} variant="outline" className="bg-secondary text-white hover:bg-secondary">
               Cancelar
             </Button>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button type="submit" className="bg-primary hover:bg-primary/90 text-white">
               Crear Ticket
             </Button>
           </DialogFooter>

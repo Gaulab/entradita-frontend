@@ -116,12 +116,12 @@ export default function Sellers({}) {
 
   const MobileActionDialog = ({ seller, onClose }) => (
     <Dialog className="" open={!!seller} onOpenChange={() => onClose()}>
-      <DialogContent className="sm:max-w-[425px] bg-gray-800">
+      <DialogContent className="sm:max-w-[425px] bg-card">
         <DialogHeader>
           <DialogTitle className="text-white">Acciones para el vendedor</DialogTitle>
         </DialogHeader>
-        <DialogDescription className="mb-0 m-0 text-gray-300">Selecciona una acción para realizar sobre el vendedor:</DialogDescription>
-        <div className="text-gray-300">
+        <DialogDescription className="mb-0 m-0 text-muted-foreground">Selecciona una acción para realizar sobre el vendedor:</DialogDescription>
+        <div className="text-muted-foreground">
           <p>
             <strong>Nombre:</strong> {seller?.assigned_name}
           </p>
@@ -137,7 +137,7 @@ export default function Sellers({}) {
           <p>
             <strong>Ticket tags:</strong>  
             {seller?.ticket_tags.map((tag) => (
-              <span key={tag.id} className="inline-block font-bold bg-gray-700 text-white m-1 px-1 rounded-full">
+              <span key={tag.id} className="inline-block font-bold bg-secondary text-white m-1 px-1 rounded-full">
                 {tag.name}
               </span>
             ))}
@@ -216,11 +216,11 @@ export default function Sellers({}) {
   );
 
   return (
-    <Card className="bg-gray-800 border-gray-700">
+    <Card className="bg-card border-border">
       <CardHeader className="pb-3 space-y-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-white">Vendedores</CardTitle>
-          <Button onClick={() => handleCreateEmployee(true)} size="sm" className="bg-blue-600 hover:bg-blue-700 text-white shrink-0">
+          <Button onClick={() => handleCreateEmployee(true)} size="sm" className="bg-primary hover:bg-primary/90 text-white shrink-0">
             <PlusIcon className="h-4 w-4 mr-1.5" /> Nuevo
           </Button>
         </div>
@@ -230,18 +230,18 @@ export default function Sellers({}) {
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-gray-700 text-left">
-                <TableHead className="text-gray-300">Nombre</TableHead>
-                <TableHead className="text-gray-300 text-center">Capacidad</TableHead>
-                <TableHead className="text-gray-300 text-center">Ventas</TableHead>
-                <TableHead className="text-gray-300 hidden sm:table-cell text-right">Acciones</TableHead>
+              <TableRow className="border-border text-left">
+                <TableHead className="text-muted-foreground">Nombre</TableHead>
+                <TableHead className="text-muted-foreground text-center">Capacidad</TableHead>
+                <TableHead className="text-muted-foreground text-center">Ventas</TableHead>
+                <TableHead className="text-muted-foreground hidden sm:table-cell text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {sellers?.map((vendedor) => (
                 <TableRow
                   key={vendedor.id}
-                  className="border-gray-700 cursor-pointer sm:cursor-default hover:bg-gray-700/30 transition-colors"
+                  className="border-border cursor-pointer sm:cursor-default hover:bg-secondary/30 transition-colors"
                   onClick={() => {
                     if (window.innerWidth < 640) {
                       setSelectedSeller(vendedor);
@@ -250,18 +250,18 @@ export default function Sellers({}) {
                 >
                   <TableCell>
                     <span className="text-white">{vendedor.assigned_name}</span>
-                    <span className="text-xs text-gray-500 block mt-0.5">
+                    <span className="text-xs text-muted-foreground block mt-0.5">
                       {vendedor.status ? <span className="text-green-400">Habilitado</span> : <span className="text-red-400">Deshabilitado</span>}
                     </span>
                   </TableCell>
-                  <TableCell className="text-gray-300 text-center">{vendedor.seller_capacity ?? '∞'}</TableCell>
-                  <TableCell className="text-gray-300 text-center">{vendedor.ticket_counter}</TableCell>
+                  <TableCell className="text-muted-foreground text-center">{vendedor.seller_capacity ?? '∞'}</TableCell>
+                  <TableCell className="text-muted-foreground text-center">{vendedor.ticket_counter}</TableCell>
                   <TableCell className="hidden sm:table-cell text-right">
                     <div className="flex items-center justify-end gap-1">
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 w-8 p-0 text-gray-400 hover:text-white"
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-white"
                         onClick={() => copyToClipboard(`¡Quiero que vendas para mi evento: ${event.name}! 📅🎟️\n\n🕵️ Puedes unirte en el siguiente enlace, es único para ti (no lo compartas):\n${window.location.origin}/seller/${vendedor.uuid}\n\n🔑 Te pedirá una contraseña para acceder, cuando estés listo pídemela!\n\n📚 Te dejo también un link para que aprendas rápido y fácil cómo vender:\n${window.location.origin}/seller-guide`)}
                         title="Invitar vendedor"
                       >
@@ -270,7 +270,7 @@ export default function Sellers({}) {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 w-8 p-0 text-gray-400 hover:text-white"
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-white"
                         onClick={() => copyToClipboard(`${window.location.origin}/seller/${vendedor.uuid}`)}
                         title="Copiar enlace"
                       >
@@ -279,7 +279,7 @@ export default function Sellers({}) {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 w-8 p-0 text-gray-400 hover:text-white"
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-white"
                         onClick={() => handleEditEmpleado(vendedor)}
                         title="Editar"
                       >
@@ -288,7 +288,7 @@ export default function Sellers({}) {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 w-8 p-0 text-gray-400 hover:text-red-400"
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-red-400"
                         onClick={() => handleDeleteEmployee(vendedor)}
                         title="Eliminar"
                       >

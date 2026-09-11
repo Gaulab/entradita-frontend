@@ -63,12 +63,12 @@ export default function Scanners({}) {
 
   const MobileActionDialog = ({ scanner, onClose }) => (
     <Dialog className="" open={!!scanner} onOpenChange={() => onClose()}>
-      <DialogContent className="sm:max-w-[425px] bg-gray-800">
+      <DialogContent className="sm:max-w-[425px] bg-card">
         <DialogHeader>
           <DialogTitle className="text-white">Acciones para el scanner</DialogTitle>
         </DialogHeader>
-        <DialogDescription className="mb-0 m-0 text-gray-300">Selecciona una acción para realizar sobre el scanner:</DialogDescription>
-        <div className="text-gray-300">
+        <DialogDescription className="mb-0 m-0 text-muted-foreground">Selecciona una acción para realizar sobre el scanner:</DialogDescription>
+        <div className="text-muted-foreground">
           <p>
             <strong>Nombre:</strong> {scanner?.assigned_name}
           </p>
@@ -124,11 +124,11 @@ export default function Scanners({}) {
     </Dialog>
   );
   return (
-    <Card className="bg-gray-800 border-gray-700">
+    <Card className="bg-card border-border">
       <CardHeader className="pb-3 space-y-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-white">Scanners</CardTitle>
-          <Button onClick={() => handleCreateEmployee(false)} size="sm" className="bg-blue-600 hover:bg-blue-700 text-white shrink-0">
+          <Button onClick={() => handleCreateEmployee(false)} size="sm" className="bg-primary hover:bg-primary/90 text-white shrink-0">
             <PlusIcon className="h-4 w-4 mr-1.5" /> Nuevo
           </Button>
         </div>
@@ -138,16 +138,16 @@ export default function Scanners({}) {
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-gray-700 text-left">
-                <TableHead className="text-gray-300">Nombre</TableHead>
-                <TableHead className="text-gray-300 hidden sm:table-cell text-right">Acciones</TableHead>
+              <TableRow className="border-border text-left">
+                <TableHead className="text-muted-foreground">Nombre</TableHead>
+                <TableHead className="text-muted-foreground hidden sm:table-cell text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {scanners.map((scanner) => (
                 <TableRow
                   key={scanner.id}
-                  className="border-gray-700 cursor-pointer sm:cursor-default hover:bg-gray-700/30 transition-colors"
+                  className="border-border cursor-pointer sm:cursor-default hover:bg-secondary/30 transition-colors"
                   onClick={() => {
                     if (window.innerWidth < 640) {
                       setSelectedScanner(scanner);
@@ -160,7 +160,7 @@ export default function Scanners({}) {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 w-8 p-0 text-gray-400 hover:text-white"
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-white"
                         onClick={() => copyToClipboard(`${window.location.origin}/scanner/${scanner.uuid}`)}
                         title="Copiar enlace"
                       >
@@ -169,7 +169,7 @@ export default function Scanners({}) {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 w-8 p-0 text-gray-400 hover:text-white"
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-white"
                         onClick={() => handleEditEmployee(scanner)}
                         title="Editar"
                       >
@@ -178,7 +178,7 @@ export default function Scanners({}) {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 w-8 p-0 text-gray-400 hover:text-red-400"
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-red-400"
                         onClick={() => handleDeleteEmployee(scanner)}
                         title="Eliminar"
                       >

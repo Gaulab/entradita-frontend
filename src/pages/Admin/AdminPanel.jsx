@@ -66,9 +66,9 @@ const LOG_LEVEL_STYLE = {
   ERROR: 'text-red-400 bg-red-500/5',
   WARNING: 'text-amber-300 bg-amber-500/5',
   INFO: 'text-emerald-300/90 bg-emerald-500/5',
-  DEBUG: 'text-gray-400',
+  DEBUG: 'text-muted-foreground',
   CRITICAL: 'text-red-500',
-  UNKNOWN: 'text-gray-500',
+  UNKNOWN: 'text-muted-foreground',
 };
 
 const PIE_COLORS = { INFO: '#34d399', WARNING: '#fbbf24', ERROR: '#f87171' };
@@ -119,23 +119,23 @@ function logLevelClass(level) {
 function LogEntryRow({ entry }) {
   const rowClass = logLevelClass(entry.type);
   return (
-    <TableRow className="border-b border-gray-800/90">
+    <TableRow className="border-b border-border/90">
       <TableCell className={`font-mono text-[10px] sm:text-xs whitespace-nowrap ${rowClass}`}>
         {entry.timestamp || '—'}
       </TableCell>
       <TableCell className={`font-mono text-[10px] sm:text-xs font-semibold ${rowClass}`}>
         {entry.type}
       </TableCell>
-      <TableCell className="font-mono text-[10px] sm:text-xs text-gray-300 max-w-[140px] truncate" title={entry.reason}>
+      <TableCell className="font-mono text-[10px] sm:text-xs text-muted-foreground max-w-[140px] truncate" title={entry.reason}>
         {entry.reason || '—'}
       </TableCell>
-      <TableCell className="font-mono text-[10px] sm:text-xs text-gray-300 max-w-[100px] truncate" title={entry.payment_id || ''}>
+      <TableCell className="font-mono text-[10px] sm:text-xs text-muted-foreground max-w-[100px] truncate" title={entry.payment_id || ''}>
         {entry.payment_id || '—'}
       </TableCell>
-      <TableCell className="font-mono text-[10px] sm:text-xs text-gray-300 max-w-[100px] truncate" title={entry.order_id || ''}>
+      <TableCell className="font-mono text-[10px] sm:text-xs text-muted-foreground max-w-[100px] truncate" title={entry.order_id || ''}>
         {entry.order_id || '—'}
       </TableCell>
-      <TableCell className={`font-mono text-[10px] sm:text-xs text-gray-400 max-w-[min(100vw-8rem,28rem)] ${rowClass}`}>
+      <TableCell className={`font-mono text-[10px] sm:text-xs text-muted-foreground max-w-[min(100vw-8rem,28rem)] ${rowClass}`}>
         <span className="line-clamp-2 sm:line-clamp-none whitespace-pre-wrap break-all">{entry.message || entry.raw}</span>
       </TableCell>
     </TableRow>
@@ -246,8 +246,8 @@ function LogsTab({ token }) {
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs text-gray-400 sm:flex-1">
-          <span className="text-gray-300 font-medium">{total}</span>
+        <p className="text-xs text-muted-foreground sm:flex-1">
+          <span className="text-muted-foreground font-medium">{total}</span>
           {' '}coincidencias (archivo completo)
           {lastRefresh ? ` · ${lastRefresh}` : ''}
           {loading ? ' · cargando…' : ''}
@@ -257,33 +257,33 @@ function LogsTab({ token }) {
         </Button>
       </div>
 
-      <div className="rounded-xl border border-gray-700/80 bg-gray-900/40 p-3 sm:p-4 space-y-3">
-        <p className="text-[11px] uppercase tracking-wider text-gray-500 font-medium">Filtros (backend)</p>
+      <div className="rounded-xl border border-border/80 bg-background/40 p-3 sm:p-4 space-y-3">
+        <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">Filtros (backend)</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <label className="block space-y-1">
-            <span className="text-xs text-gray-500">Payment ID</span>
+            <span className="text-xs text-muted-foreground">Payment ID</span>
             <input
               value={draftPaymentId}
               onChange={(e) => setDraftPaymentId(e.target.value)}
               placeholder="Buscar en línea / campo parseado"
-              className="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-white placeholder:text-gray-600 min-h-[44px] sm:min-h-0"
+              className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-white placeholder:text-gray-600 min-h-[44px] sm:min-h-0"
             />
           </label>
           <label className="block space-y-1">
-            <span className="text-xs text-gray-500">Order ID</span>
+            <span className="text-xs text-muted-foreground">Order ID</span>
             <input
               value={draftOrderId}
               onChange={(e) => setDraftOrderId(e.target.value)}
               placeholder="Buscar en línea / campo parseado"
-              className="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-white placeholder:text-gray-600 min-h-[44px] sm:min-h-0"
+              className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-white placeholder:text-gray-600 min-h-[44px] sm:min-h-0"
             />
           </label>
           <label className="block space-y-1">
-            <span className="text-xs text-gray-500">Tipo (nivel)</span>
+            <span className="text-xs text-muted-foreground">Tipo (nivel)</span>
             <select
               value={draftType}
               onChange={(e) => setDraftType(e.target.value)}
-              className="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-white min-h-[44px] sm:min-h-0"
+              className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-white min-h-[44px] sm:min-h-0"
             >
               <option value="">Todos</option>
               <option value="INFO">INFO</option>
@@ -292,11 +292,11 @@ function LogsTab({ token }) {
             </select>
           </label>
           <label className="block space-y-1 sm:col-span-2 lg:col-span-1">
-            <span className="text-xs text-gray-500">Razón / código</span>
+            <span className="text-xs text-muted-foreground">Razón / código</span>
             <select
               value={draftReason}
               onChange={(e) => setDraftReason(e.target.value)}
-              className="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-white min-h-[44px] sm:min-h-0 max-h-40"
+              className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-white min-h-[44px] sm:min-h-0 max-h-40"
             >
               <option value="">Todas</option>
               {reasonOptions.map((r) => (
@@ -306,7 +306,7 @@ function LogsTab({ token }) {
           </label>
         </div>
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-          <Button type="button" size="sm" onClick={applyFilters} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white">
+          <Button type="button" size="sm" onClick={applyFilters} className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white">
             Aplicar filtros
           </Button>
           <Button type="button" variant="entraditaTertiary" size="sm" onClick={clearFilters} className="w-full sm:w-auto">
@@ -316,8 +316,8 @@ function LogsTab({ token }) {
       </div>
 
       {pieTotal > 0 && (
-        <div className="rounded-xl border border-gray-700/80 bg-gray-900/40 p-3 sm:p-4">
-          <p className="text-[11px] uppercase tracking-wider text-gray-500 font-medium mb-2">Distribución (resultados filtrados)</p>
+        <div className="rounded-xl border border-border/80 bg-background/40 p-3 sm:p-4">
+          <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-2">Distribución (resultados filtrados)</p>
           <div className="h-[220px] w-full min-w-0">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -350,28 +350,28 @@ function LogsTab({ token }) {
       {compactList ? (
         <div className="space-y-2">
           {entries.length === 0 ? (
-            <div className="rounded-xl border border-gray-700/80 bg-gray-950/40 px-4 py-8 text-center text-sm text-gray-500">
+            <div className="rounded-xl border border-border/80 bg-background/40 px-4 py-8 text-center text-sm text-muted-foreground">
               Sin resultados en esta página
             </div>
           ) : (
             entries.map((entry) => {
               const rowClass = logLevelClass(entry.type);
               return (
-                <article key={entry.line_index} className="rounded-xl border border-gray-700/80 bg-gray-950/40 p-3">
+                <article key={entry.line_index} className="rounded-xl border border-border/80 bg-background/40 p-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="font-mono text-[11px] text-gray-400 truncate">{entry.timestamp || '—'}</p>
+                      <p className="font-mono text-[11px] text-muted-foreground truncate">{entry.timestamp || '—'}</p>
                       <p className={`font-mono text-xs font-semibold mt-1 ${rowClass}`}>{entry.type}</p>
                     </div>
-                    <span className="rounded-md bg-gray-800/80 px-2 py-1 text-[10px] font-mono text-gray-300 max-w-[52vw] truncate" title={entry.reason || ''}>
+                    <span className="rounded-md bg-card/80 px-2 py-1 text-[10px] font-mono text-muted-foreground max-w-[52vw] truncate" title={entry.reason || ''}>
                       {entry.reason || 'sin razón'}
                     </span>
                   </div>
-                  <div className="mt-2 grid grid-cols-1 gap-1 text-[11px] text-gray-400 font-mono">
+                  <div className="mt-2 grid grid-cols-1 gap-1 text-[11px] text-muted-foreground font-mono">
                     <p className="truncate" title={entry.payment_id || ''}>payment_id: {entry.payment_id || '—'}</p>
                     <p className="truncate" title={entry.order_id || ''}>order_id: {entry.order_id || '—'}</p>
                   </div>
-                  <div className={`mt-3 rounded-lg bg-gray-900/60 p-2 font-mono text-[11px] leading-relaxed text-gray-300 ${rowClass}`}>
+                  <div className={`mt-3 rounded-lg bg-background/60 p-2 font-mono text-[11px] leading-relaxed text-muted-foreground ${rowClass}`}>
                     <p className="whitespace-pre-wrap break-all line-clamp-4">{entry.message || entry.raw}</p>
                   </div>
                 </article>
@@ -380,22 +380,22 @@ function LogsTab({ token }) {
           )}
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-gray-700/80 bg-gray-950/40 overscroll-x-contain touch-manipulation">
+        <div className="overflow-x-auto rounded-xl border border-border/80 bg-background/40 overscroll-x-contain touch-manipulation">
           <Table>
             <TableHeader>
-              <TableRow className="border-b border-gray-800 bg-gray-950/90 hover:bg-gray-950/90">
-                <TableHead className="text-gray-500 text-[10px] sm:text-xs whitespace-nowrap">Fecha</TableHead>
-                <TableHead className="text-gray-500 text-[10px] sm:text-xs whitespace-nowrap">Tipo</TableHead>
-                <TableHead className="text-gray-500 text-[10px] sm:text-xs whitespace-nowrap">Razón</TableHead>
-                <TableHead className="text-gray-500 text-[10px] sm:text-xs whitespace-nowrap">payment_id</TableHead>
-                <TableHead className="text-gray-500 text-[10px] sm:text-xs whitespace-nowrap">order_id</TableHead>
-                <TableHead className="text-gray-500 text-[10px] sm:text-xs min-w-[200px]">Mensaje</TableHead>
+              <TableRow className="border-b border-border bg-background/90 hover:bg-background/90">
+                <TableHead className="text-muted-foreground text-[10px] sm:text-xs whitespace-nowrap">Fecha</TableHead>
+                <TableHead className="text-muted-foreground text-[10px] sm:text-xs whitespace-nowrap">Tipo</TableHead>
+                <TableHead className="text-muted-foreground text-[10px] sm:text-xs whitespace-nowrap">Razón</TableHead>
+                <TableHead className="text-muted-foreground text-[10px] sm:text-xs whitespace-nowrap">payment_id</TableHead>
+                <TableHead className="text-muted-foreground text-[10px] sm:text-xs whitespace-nowrap">order_id</TableHead>
+                <TableHead className="text-muted-foreground text-[10px] sm:text-xs min-w-[200px]">Mensaje</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {entries.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-gray-500 py-8 text-sm">
+                  <TableCell colSpan={6} className="text-center text-muted-foreground py-8 text-sm">
                     Sin resultados en esta página
                   </TableCell>
                 </TableRow>
@@ -409,8 +409,8 @@ function LogsTab({ token }) {
 
       {totalPages > 1 && (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-gray-500">
-            Página <span className="text-gray-300">{page}</span> / {totalPages}
+          <p className="text-xs text-muted-foreground">
+            Página <span className="text-muted-foreground">{page}</span> / {totalPages}
           </p>
           <div className="flex gap-2 w-full sm:w-auto">
             <Button
@@ -497,24 +497,24 @@ function EventsTab({ token }) {
     return (
       <div className="space-y-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-gray-400 uppercase tracking-wider font-medium">
+          <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
             {count} evento{count !== 1 ? 's' : ''}
-            {count !== currentPageCount ? <span className="normal-case text-gray-500"> · mostrando {currentPageCount}</span> : null}
-            {loading ? <span className="normal-case text-gray-500"> · cargando…</span> : null}
+            {count !== currentPageCount ? <span className="normal-case text-muted-foreground"> · mostrando {currentPageCount}</span> : null}
+            {loading ? <span className="normal-case text-muted-foreground"> · cargando…</span> : null}
           </p>
           <Button variant="entraditaTertiary" size="sm" onClick={fetchEvents} className="w-full sm:w-auto shrink-0">
             ↻ Actualizar
           </Button>
         </div>
         {sortedGroups.length === 0 ? (
-          <div className="rounded-xl border border-gray-700/80 bg-gray-900/50 px-4 py-10 text-center text-sm text-gray-500">
+          <div className="rounded-xl border border-border/80 bg-background/50 px-4 py-10 text-center text-sm text-muted-foreground">
             Sin eventos
           </div>
         ) : (
           sortedGroups.map(([organizer, events]) => (
-            <div key={organizer} className="rounded-xl border border-gray-700/80 bg-gray-900/40 overflow-hidden">
-              <div className="sticky top-0 z-[1] flex items-center gap-2 border-b border-gray-700/80 bg-gray-800/95 px-4 py-3 backdrop-blur-sm">
-                <div className="h-8 w-8 shrink-0 rounded-lg bg-blue-500/15 flex items-center justify-center text-blue-300 text-xs font-bold">
+            <div key={organizer} className="rounded-xl border border-border/80 bg-background/40 overflow-hidden">
+              <div className="sticky top-0 z-[1] flex items-center gap-2 border-b border-border/80 bg-card/95 px-4 py-3 backdrop-blur-sm">
+                <div className="h-8 w-8 shrink-0 rounded-lg bg-primary/15 flex items-center justify-center text-primary text-xs font-bold">
                   {organizer.slice(0, 1).toUpperCase()}
                 </div>
                 <span className="font-semibold text-sm text-gray-100 leading-snug break-words">{organizer}</span>
@@ -527,28 +527,28 @@ function EventsTab({ token }) {
                   return (
                     <li
                       key={ev.id}
-                      className={`px-4 py-4 ${past ? 'bg-gray-950/80 opacity-75' : 'bg-gray-900/30'}`}
+                      className={`px-4 py-4 ${past ? 'bg-background/80 opacity-75' : 'bg-background/30'}`}
                     >
-                      <div className={`font-medium text-[15px] leading-snug ${past ? 'text-gray-400' : 'text-white'}`}>
+                      <div className={`font-medium text-[15px] leading-snug ${past ? 'text-muted-foreground' : 'text-white'}`}>
                         {ev.name}
                       </div>
-                      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-400">
-                        <span className={past ? 'text-gray-500' : 'text-gray-300'}>{ev.date}</span>
-                        {past && <span className="rounded-full bg-gray-800 px-2 py-0.5 text-[10px] uppercase tracking-wide text-gray-500">Finalizado</span>}
+                      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                        <span className={past ? 'text-muted-foreground' : 'text-muted-foreground'}>{ev.date}</span>
+                        {past && <span className="rounded-full bg-card px-2 py-0.5 text-[10px] uppercase tracking-wide text-muted-foreground">Finalizado</span>}
                       </div>
                       <div className="mt-3 grid grid-cols-2 gap-3">
-                        <div className="rounded-lg bg-gray-800/60 border border-gray-700/50 px-3 py-2">
-                          <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-1">Vendidos</p>
+                        <div className="rounded-lg bg-card/60 border border-border/50 px-3 py-2">
+                          <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Vendidos</p>
                           <Badge variant={ev.tickets_sold > 0 ? 'secondary' : 'default'} className="text-xs">
                             {ev.tickets_sold}
                           </Badge>
                         </div>
-                        <div className="rounded-lg bg-gray-800/60 border border-gray-700/50 px-3 py-2">
-                          <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-1">Total</p>
+                        <div className="rounded-lg bg-card/60 border border-border/50 px-3 py-2">
+                          <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Total</p>
                           {ev.tickets_sold > 0 ? (
                             <div>
                               <span className="text-sm font-semibold text-emerald-400">{formatPrice(subtotal)}</span>
-                              <p className="text-[10px] text-gray-500 mt-0.5">{tier.name}</p>
+                              <p className="text-[10px] text-muted-foreground mt-0.5">{tier.name}</p>
                             </div>
                           ) : (
                             <span className="text-sm text-gray-600">—</span>
@@ -565,8 +565,8 @@ function EventsTab({ token }) {
 
         {totalPages > 1 && (
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-xs text-gray-500">
-              Página <span className="text-gray-300">{page}</span> / {totalPages}
+            <p className="text-xs text-muted-foreground">
+              Página <span className="text-muted-foreground">{page}</span> / {totalPages}
             </p>
             <div className="flex gap-2 w-full sm:w-auto">
               <Button
@@ -625,8 +625,8 @@ function EventsTab({ token }) {
   return (
     <div className="min-w-0">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
-        <p className="text-xs text-gray-400 sm:flex-1">
-          <span className="text-gray-300 font-medium">{count}</span>
+        <p className="text-xs text-muted-foreground sm:flex-1">
+          <span className="text-muted-foreground font-medium">{count}</span>
           {' '}eventos
           {count !== allEvents.length ? <span> · mostrando {allEvents.length}</span> : null}
           {loading ? <span> · cargando…</span> : null}
@@ -636,12 +636,12 @@ function EventsTab({ token }) {
         </Button>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-gray-700/80 -mx-1 px-1 sm:mx-0 sm:px-0 overscroll-x-contain touch-manipulation">
+      <div className="overflow-x-auto rounded-xl border border-border/80 -mx-1 px-1 sm:mx-0 sm:px-0 overscroll-x-contain touch-manipulation">
         <Table>
           <TableHeader>
-            <TableRow className="border-b border-gray-800 bg-gray-950">
+            <TableRow className="border-b border-border bg-background">
               <TableHead
-                className="text-gray-500 bg-gray-950 whitespace-nowrap"
+                className="text-muted-foreground bg-background whitespace-nowrap"
                 colSpan={1}
               >
                 Organizador
@@ -657,7 +657,7 @@ function EventsTab({ token }) {
                   <TableHead
                     key={key}
                     onClick={() => handleSort(key)}
-                    className={`cursor-pointer select-none text-gray-500 bg-gray-950 whitespace-nowrap ${alignClass}`}
+                    className={`cursor-pointer select-none text-muted-foreground bg-background whitespace-nowrap ${alignClass}`}
                   >
                     {label}{arrow(key)}
                   </TableHead>
@@ -668,7 +668,7 @@ function EventsTab({ token }) {
           <TableBody>
             {sorted.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-gray-500 py-6 border-b border-gray-800">
+                <TableCell colSpan={5} className="text-center text-muted-foreground py-6 border-b border-border">
                   Sin eventos
                 </TableCell>
               </TableRow>
@@ -682,24 +682,24 @@ function EventsTab({ token }) {
                     {showOrg ? (
                       <td
                         rowSpan={sorted.filter(e2 => e2._organizer === ev._organizer).length}
-                        className="bg-gray-950 font-semibold text-gray-100 px-4 text-sm border-b border-gray-800 align-middle"
+                        className="bg-background font-semibold text-gray-100 px-4 text-sm border-b border-border align-middle"
                         style={{ verticalAlign: 'middle', minWidth: 120 }}
                       >
                         {ev._organizer}
                       </td>
                     ) : null}
-                    <td className={`border-b border-gray-800 px-4 py-2 ${past ? 'text-gray-500 italic' : 'text-gray-300'}`}>{ev.name}</td>
-                    <td className={`border-b border-gray-800 px-4 py-2 whitespace-nowrap ${past ? 'text-gray-500' : 'text-gray-300'}`}>{ev.date}</td>
-                    <td className="text-center border-b border-gray-800 px-4 py-2 align-middle">
+                    <td className={`border-b border-border px-4 py-2 ${past ? 'text-muted-foreground italic' : 'text-muted-foreground'}`}>{ev.name}</td>
+                    <td className={`border-b border-border px-4 py-2 whitespace-nowrap ${past ? 'text-muted-foreground' : 'text-muted-foreground'}`}>{ev.date}</td>
+                    <td className="text-center border-b border-border px-4 py-2 align-middle">
                       <Badge variant={ev.tickets_sold > 0 ? 'secondary' : 'default'}>
                         {ev.tickets_sold}
                       </Badge>
                     </td>
-                    <td className="text-center border-b border-gray-800 px-4 py-2 whitespace-nowrap">
+                    <td className="text-center border-b border-border px-4 py-2 whitespace-nowrap">
                       {ev.tickets_sold > 0 ? (
                         <span className="text-green-400 font-medium text-xs">
                           {formatPrice(ev.price_total)}
-                          <span className="block text-gray-500 font-normal">
+                          <span className="block text-muted-foreground font-normal">
                             {getTierForCount(ev.tickets_sold).name}
                           </span>
                         </span>
@@ -717,8 +717,8 @@ function EventsTab({ token }) {
 
       {totalPages > 1 && (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4">
-          <p className="text-xs text-gray-500">
-            Página <span className="text-gray-300">{page}</span> / {totalPages}
+          <p className="text-xs text-muted-foreground">
+            Página <span className="text-muted-foreground">{page}</span> / {totalPages}
           </p>
           <div className="flex gap-2 w-full sm:w-auto">
             <Button
@@ -791,8 +791,8 @@ function HistoricoTab({ token }) {
   return (
     <div>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
-        <p className="text-xs text-gray-400 sm:flex-1">
-          <span className="text-gray-300 font-medium">{total}</span>
+        <p className="text-xs text-muted-foreground sm:flex-1">
+          <span className="text-muted-foreground font-medium">{total}</span>
           {' '}tickets (12 meses)
           {loading ? <span> · cargando…</span> : null}
         </p>
@@ -801,7 +801,7 @@ function HistoricoTab({ token }) {
         </Button>
       </div>
 
-      <div className="w-full min-w-0 rounded-xl border border-gray-700/80 bg-gray-950/30 p-2 sm:p-0 sm:border-0 sm:bg-transparent" style={{ height: chartH }}>
+      <div className="w-full min-w-0 rounded-xl border border-border/80 bg-background/30 p-2 sm:p-0 sm:border-0 sm:bg-transparent" style={{ height: chartH }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={history} margin={chartMargin} barCategoryGap={compactChart ? '22%' : '30%'}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} />
@@ -839,9 +839,9 @@ function HistoricoTab({ token }) {
         </ResponsiveContainer>
       </div>
 
-      <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-6 mt-4 justify-center text-[11px] sm:text-xs text-gray-400 px-1">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-6 mt-4 justify-center text-[11px] sm:text-xs text-muted-foreground px-1">
         <span className="flex items-center gap-1.5 justify-center sm:justify-start">
-          <span className="inline-block w-3 h-3 rounded-sm bg-blue-500 shrink-0" />
+          <span className="inline-block w-3 h-3 rounded-sm bg-primary shrink-0" />
           Web (Mercado Pago)
         </span>
         <span className="flex items-center gap-1.5 justify-center sm:justify-start">
@@ -871,7 +871,7 @@ function requestStatusClass(status) {
   if (status === 'PENDING') return 'bg-amber-500/20 text-amber-200 ring-1 ring-amber-500/30';
   if (status === 'APPROVED') return 'bg-emerald-500/15 text-emerald-200 ring-1 ring-emerald-500/25';
   if (status === 'REJECTED') return 'bg-red-500/15 text-red-200 ring-1 ring-red-500/25';
-  return 'bg-gray-700 text-gray-300';
+  return 'bg-secondary text-muted-foreground';
 }
 
 function TicketRequestsTab({ token }) {
@@ -953,8 +953,8 @@ function TicketRequestsTab({ token }) {
   return (
     <div className="min-w-0">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
-        <p className="text-xs text-gray-400 sm:flex-1">
-          <span className="text-gray-300 font-medium">{count}</span>
+        <p className="text-xs text-muted-foreground sm:flex-1">
+          <span className="text-muted-foreground font-medium">{count}</span>
           {' '}solicitudes en total
           {loading ? <span> · cargando…</span> : null}
         </p>
@@ -964,7 +964,7 @@ function TicketRequestsTab({ token }) {
       </div>
 
       {requests.length === 0 && !loading ? (
-        <div className="rounded-xl border border-gray-700/80 bg-gray-900/50 px-4 py-10 text-center text-sm text-gray-500">
+        <div className="rounded-xl border border-border/80 bg-background/50 px-4 py-10 text-center text-sm text-muted-foreground">
           {count === 0 ? 'No hay solicitudes' : 'No hay ítems en esta página'}
         </div>
       ) : (
@@ -974,7 +974,7 @@ function TicketRequestsTab({ token }) {
             return (
               <div
                 key={req.id}
-                className="rounded-xl border border-gray-700/80 bg-gray-900/50 p-4 shadow-sm"
+                className="rounded-xl border border-border/80 bg-background/50 p-4 shadow-sm"
               >
                 <div className="flex flex-col gap-4">
                   <div className="space-y-2 min-w-0">
@@ -985,7 +985,7 @@ function TicketRequestsTab({ token }) {
                         {REQUEST_STATUS_LABEL[req.status] || req.status}
                       </span>
                     </div>
-                    <div className="flex flex-col gap-1.5 text-sm text-gray-400 sm:flex-row sm:flex-wrap sm:gap-x-4">
+                    <div className="flex flex-col gap-1.5 text-sm text-muted-foreground sm:flex-row sm:flex-wrap sm:gap-x-4">
                       <span>
                         Precio/u.:{' '}
                         <span className="text-white tabular-nums">${parseFloat(req.unit_price).toFixed(2)}</span>
@@ -997,7 +997,7 @@ function TicketRequestsTab({ token }) {
                         </span>
                       </span>
                     </div>
-                    <div className="text-xs text-gray-500 space-y-1">
+                    <div className="text-xs text-muted-foreground space-y-1">
                       <div>Creada: {new Date(req.created_at).toLocaleString('es-AR')}</div>
                       {req.resolved_at && (
                         <div>Resuelta: {new Date(req.resolved_at).toLocaleString('es-AR')}</div>
@@ -1052,8 +1052,8 @@ function TicketRequestsTab({ token }) {
 
       {totalPages > 1 && (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4">
-          <p className="text-xs text-gray-500">
-            Página <span className="text-gray-300">{page}</span> / {totalPages}
+          <p className="text-xs text-muted-foreground">
+            Página <span className="text-muted-foreground">{page}</span> / {totalPages}
           </p>
           <div className="flex gap-2 w-full sm:w-auto">
             <Button
@@ -1088,7 +1088,7 @@ function TicketRequestsTab({ token }) {
           role="presentation"
         >
           <div
-            className="relative flex h-[min(100dvh,100%)] w-full max-h-[100dvh] sm:max-h-[90vh] sm:max-w-4xl flex-col rounded-t-2xl sm:rounded-xl bg-gray-900 overflow-hidden border border-gray-700/80 sm:border shadow-2xl"
+            className="relative flex h-[min(100dvh,100%)] w-full max-h-[100dvh] sm:max-h-[90vh] sm:max-w-4xl flex-col rounded-t-2xl sm:rounded-xl bg-background overflow-hidden border border-border/80 sm:border shadow-2xl"
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
@@ -1097,7 +1097,7 @@ function TicketRequestsTab({ token }) {
             <button
               type="button"
               onClick={() => setViewUrl(null)}
-              className="absolute top-3 right-3 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-gray-800/95 ring-1 ring-gray-600/50 hover:bg-gray-700"
+              className="absolute top-3 right-3 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-card/95 ring-1 ring-gray-600/50 hover:bg-secondary"
               aria-label="Cerrar"
             >
               <X className="h-5 w-5 text-white" />
@@ -1121,7 +1121,7 @@ function TicketRequestsTab({ token }) {
           role="presentation"
         >
           <div
-            className="w-full max-w-md rounded-t-2xl sm:rounded-xl border border-gray-700/80 bg-gray-800 p-5 sm:p-6 shadow-2xl"
+            className="w-full max-w-md rounded-t-2xl sm:rounded-xl border border-border/80 bg-card p-5 sm:p-6 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
@@ -1134,7 +1134,7 @@ function TicketRequestsTab({ token }) {
               value={rejectReason}
               onChange={(e) => setRejectReason(e.target.value)}
               placeholder="Motivo del rechazo (opcional)"
-              className="w-full h-28 rounded-lg border border-gray-600 bg-gray-700 p-3 text-sm text-white resize-none focus:outline-none focus:ring-2 focus:ring-red-500/80"
+              className="w-full h-28 rounded-lg border border-border bg-secondary p-3 text-sm text-white resize-none focus:outline-none focus:ring-2 focus:ring-red-500/80"
             />
             <div className="mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
               <Button variant="entraditaTertiary" size="sm" onClick={() => setRejectModal(null)} className="w-full sm:w-auto min-h-[44px] sm:min-h-0">
@@ -1167,7 +1167,7 @@ export default function AdminPanel() {
 
   if (!user?.is_staff) {
     return (
-      <div className="min-h-dvh bg-gray-900 flex items-center justify-center px-6 py-10">
+      <div className="min-h-dvh bg-background flex items-center justify-center px-6 py-10">
         <p className="text-red-400 text-sm sm:text-base text-center max-w-md leading-relaxed">
           Acceso denegado. Se requieren permisos de staff.
         </p>
@@ -1178,12 +1178,12 @@ export default function AdminPanel() {
   const token = authToken?.access;
 
   return (
-    <div className="min-h-screen w-screen p-4 bg-gray-900 text-gray-100 pb-[env(safe-area-inset-bottom,0px)] overflow-x-hidden">
+    <div className="min-h-screen w-screen p-4 bg-background text-gray-100 pb-[env(safe-area-inset-bottom,0px)] overflow-x-hidden">
       <div className="max-w-6xl mx-auto w-full">
-        <header className="pt-[max(1rem,env(safe-area-inset-top,0px))] pb-4 sm:pb-6 border-b border-gray-800/90 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+        <header className="pt-[max(1rem,env(safe-area-inset-top,0px))] pb-4 sm:pb-6 border-b border-border/90 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <div className="min-w-0">
             <h1 className="text-xl sm:text-2xl font-bold text-gray-100 tracking-tight">Administración</h1>
-            <p className="text-xs text-gray-500 mt-1 hidden sm:block">Operaciones, cobros e historial</p>
+            <p className="text-xs text-muted-foreground mt-1 hidden sm:block">Operaciones, cobros e historial</p>
           </div>
           <Button
             variant="entraditaTertiary"
@@ -1195,7 +1195,7 @@ export default function AdminPanel() {
           </Button>
         </header>
 
-        <nav className="sticky top-0 z-20 border-b border-gray-800/90 bg-gray-900/95 backdrop-blur-md supports-[backdrop-filter]:bg-gray-900/80">
+        <nav className="sticky top-0 z-20 border-b border-border/90 bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/80">
           <div className="flex gap-1 py-2 overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch]">
             {TAB_ITEMS.map(({ key, icon, label }) => (
               <button
@@ -1205,8 +1205,8 @@ export default function AdminPanel() {
                 aria-label={label}
                 className={`shrink-0 rounded-lg px-3 py-2.5 md:px-4 text-sm font-medium transition-colors cursor-pointer border-0 min-h-[44px] flex items-center whitespace-nowrap gap-1.5 ${
                   tab === key
-                    ? 'bg-gray-800 text-gray-100 ring-1 ring-gray-600/50 shadow-sm'
-                    : 'bg-transparent text-gray-400 hover:text-gray-200 active:bg-gray-800/50'
+                    ? 'bg-card text-gray-100 ring-1 ring-gray-600/50 shadow-sm'
+                    : 'bg-transparent text-muted-foreground hover:text-gray-200 active:bg-card/50'
                 }`}
               >
                 <span aria-hidden="true">{icon}</span>
@@ -1217,7 +1217,7 @@ export default function AdminPanel() {
         </nav>
 
         <main className="py-4 sm:py-6 w-full">
-          <Card className="bg-gray-800/90 border-gray-700/80 shadow-lg rounded-xl">
+          <Card className="bg-card/90 border-border/80 shadow-lg rounded-xl">
             <CardContent className="p-4 sm:p-6 pt-4 sm:pt-6">
               {tab === TABS.LOGS && <LogsTab token={token} />}
               {tab === TABS.EVENTS && <EventsTab token={token} />}

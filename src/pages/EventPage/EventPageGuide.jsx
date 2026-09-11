@@ -4,9 +4,9 @@ import { FaPlay } from 'react-icons/fa';
 import { Button } from '../../components/ui/button';
 import { useNavigate } from 'react-router-dom';
 const Card = ({ title, children, icon: Icon }) => (
-  <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-6 border border-gray-700 transition-colors">
+  <div className="bg-card rounded-lg shadow-lg p-6 mb-6 border border-border transition-colors">
     <div className="flex items-center mb-4">
-      <Icon className="w-6 h-6 mr-2 text-blue-500" />
+      <Icon className="w-6 h-6 mr-2 text-primary" />
       <h2 className="text-2xl font-bold">{title}</h2>
     </div>
     {children}
@@ -21,7 +21,7 @@ const ExternalLinkButton = ({ href, children }) => (
 );
 
 const Tip = ({ children }) => (
-  <div className="bg-blue-900 text-white p-4 rounded-md my-4">
+  <div className="bg-primary/10 text-white p-4 rounded-md my-4">
     <h3 className="font-bold mb-2">💡 Consejo:</h3>
     <p>{children}</p>
   </div>
@@ -30,12 +30,12 @@ const Tip = ({ children }) => (
 const InteractiveExample = ({ title, children }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="border border-gray-700 rounded-md my-2">
-      <button className="w-full text-left p-4 bg-gray-700 hover:bg-gray-600 transition-colors flex justify-between items-center" onClick={() => setIsOpen(!isOpen)}>
+    <div className="border border-border rounded-md my-2">
+      <button className="w-full text-left p-4 bg-secondary hover:bg-secondary transition-colors flex justify-between items-center" onClick={() => setIsOpen(!isOpen)}>
         <span className="font-bold">{title}</span>
         <span>{isOpen ? '▲' : '▼'}</span>
       </button>
-      {isOpen && <div className="p-4 bg-gray-800">{children}</div>}
+      {isOpen && <div className="p-4 bg-card">{children}</div>}
     </div>
   );
 };
@@ -49,7 +49,7 @@ const EventPageGuide = () => {
     navigate(-1);
   };
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-background text-white p-4 sm:p-6 lg:p-8">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-4xl font-bold mb-4 text-center">Configuración de la página web</h1>
         <div className="flex max-sm:flex-col mb-4 justify-between items-center">
@@ -104,28 +104,28 @@ const EventPageGuide = () => {
             es obligatiorio.
           </p>
           <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <li className="bg-gray-700 p-4 rounded-md">
+            <li className="bg-secondary p-4 rounded-md">
               <strong>Título:</strong> Para el nombre principal y subtítulo de tu evento.
             </li>
-            <li className="bg-gray-700 p-4 rounded-md">
+            <li className="bg-secondary p-4 rounded-md">
               <strong>Texto:</strong> Para añadir descripciones o información detallada.
             </li>
-            <li className="bg-gray-700 p-4 rounded-md">
+            <li className="bg-secondary p-4 rounded-md">
               <strong>Imagen:</strong> Para incluir fotos o gráficos adicionales.
             </li>
-            <li className="bg-gray-700 p-4 rounded-md">
+            <li className="bg-secondary p-4 rounded-md">
               <strong>Cuenta Regresiva:</strong> Muestra el tiempo restante hasta el evento.
             </li>
-            <li className="bg-gray-700 p-4 rounded-md">
+            <li className="bg-secondary p-4 rounded-md">
               <strong>Botón:</strong> Para enlaces o llamadas a la acción.
             </li>
-            <li className="bg-gray-700 p-4 rounded-md">
+            <li className="bg-secondary p-4 rounded-md">
               <strong>Info Bancaria:</strong> Para detalles de pago por transferencia.
             </li>
-            <li className="bg-gray-700 p-4 rounded-md">
+            <li className="bg-secondary p-4 rounded-md">
               <strong>Mercado Pago:</strong> Para integrar pagos online.
             </li>
-            <li className="bg-gray-700 p-4 rounded-md">
+            <li className="bg-secondary p-4 rounded-md">
               <strong>Spotify:</strong> Para compartir una playlist del evento.
             </li>
           </ul>

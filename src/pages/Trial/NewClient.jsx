@@ -57,15 +57,15 @@ function NewClient() {
   const hasMinimumData = clientData.nombre && clientData.usuario;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+    <div className="min-h-screen bg-background text-white">
       {/* Header */}
-      <header className="bg-gray-800 shadow-md">
+      <header className="bg-card shadow-md">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center">
             <img src="/isotipoWhite.png" alt="entradita.com logo" className="h-8 w-auto mr-2 sm:h-12 sm:mr-4" />
             <h1 className="text-xl sm:text-2xl font-bold">entradita.com</h1>
           </div>
-          {clientData.nombre && <div className="bg-gray-700 px-3 py-1 rounded-full text-sm">{clientData.nombre}</div>}
+          {clientData.nombre && <div className="bg-secondary px-3 py-1 rounded-full text-sm">{clientData.nombre}</div>}
         </div>
       </header>
 
@@ -74,7 +74,7 @@ function NewClient() {
         {hasMinimumData ? (
           <div className="space-y-6">
             {/* Tarjeta de bienvenida con credenciales */}
-            <section className="bg-gray-800/30 p-6 rounded-lg shadow-lg border-l-4 border-green-500">
+            <section className="bg-card/30 p-6 rounded-lg shadow-lg border-l-4 border-green-500">
               <h2 className="text-2xl font-bold mb-3">¡Bienvenido {clientData.nombre} a entradita.com!</h2>
               <p className="mb-4">Hemos creado una cuenta para ti con tickets de prueba. Usa estas credenciales para ingresar:</p>
 
@@ -94,7 +94,7 @@ function NewClient() {
                   {copied ? 'Copiado!' : 'Copiar'}
                 </button>
               </div>
-              <p className="text-gray-300 text-sm mb-4">Antes de continuar, pegáte una leida de lo que dice más abajo</p>
+              <p className="text-muted-foreground text-sm mb-4">Antes de continuar, pegáte una leida de lo que dice más abajo</p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button size="lg" variant="entraditaSecondary" className="text-white">
                   <Link className="flex items-center hover:text-white text-white" to="/login">
@@ -106,7 +106,7 @@ function NewClient() {
             </section>
 
             {/* Banner de documentación destacado */}
-            <section className="bg-gray-800/30 p-6 rounded-lg shadow-lg border-l-4 border-purple-500">
+            <section className="bg-card/30 p-6 rounded-lg shadow-lg border-l-4 border-purple-500">
               <div className="bg-purple-800/50 p-3 rounded-full w-min mb-2">
                 <FileText className="h-6 w-6 text-purple-300" />
               </div>
@@ -126,7 +126,7 @@ function NewClient() {
                     El ingreso al evento se gestiona con un escáner integrado en la app: si el QR es válido, se muestra en verde; si ya fue utilizado, se indica en amarillo.
                   </p>
 
-                  <p className="text-gray-300 mb-3">Además, se encuentra disponible una guía completa con todos los pasos necesarios para comenzar a utilizar Entradita:</p>
+                  <p className="text-muted-foreground mb-3">Además, se encuentra disponible una guía completa con todos los pasos necesarios para comenzar a utilizar Entradita:</p>
 
                   <ul className="space-y-2 mb-4">
                     <li className="flex items-start gap-2">
@@ -159,47 +159,47 @@ function NewClient() {
             </section>
 
             {/* Resumen de características */}
-            <section className="bg-gray-800/30 p-6 rounded-lg shadow-lg border-l-4 border-blue-500">
+            <section className="bg-card/30 p-6 rounded-lg shadow-lg border-l-4 border-primary">
               <h2 className="text-xl font-bold mb-4">Entradita.com en pocas palabras:</h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-blue-400 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                   <p className="text-sm">
                     Crea <strong>eventos ilimitados</strong> y genera tickets con QR
                   </p>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-blue-400 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                   <p className="text-sm">
                     Vende directo o con <strong>tarjeteros</strong> (vendedores)
                   </p>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-blue-400 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                   <p className="text-sm">
                     Crea <strong>diferentes categorías</strong> de tickets (VIP, general, etc.)
                   </p>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-blue-400 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                   <p className="text-sm">
                     Visualiza <strong>ventas en tiempo real</strong> y por vendedor
                   </p>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-blue-400 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                   <p className="text-sm">
                     Usa el <strong>scanner de la app</strong> para validar entradas
                   </p>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-blue-400 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                   <p className="text-sm">
                     Los tickets no usados <strong>quedan guardados</strong> para otros eventos
                   </p>
@@ -219,32 +219,32 @@ function NewClient() {
 
             {/* Ventajas principales */}
             <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-gray-800/50 p-4 rounded-lg shadow-lg">
+              <div className="bg-card/50 p-4 rounded-lg shadow-lg">
                 <div className="text-2xl mb-2">📊</div>
                 <h3 className="font-bold mb-1">Control total</h3>
-                <p className="text-gray-300 text-sm">Visualiza ventas, ingresos y estadísticas en tiempo real desde cualquier dispositivo.</p>
+                <p className="text-muted-foreground text-sm">Visualiza ventas, ingresos y estadísticas en tiempo real desde cualquier dispositivo.</p>
               </div>
 
-              <div className="bg-gray-800/50 p-4 rounded-lg shadow-lg">
+              <div className="bg-card/50 p-4 rounded-lg shadow-lg">
                 <div className="text-2xl mb-2">⚡</div>
                 <h3 className="font-bold mb-1">Rápido y simple</h3>
-                <p className="text-gray-300 text-sm">Crea eventos en minutos y empieza a vender inmediatamente.</p>
+                <p className="text-muted-foreground text-sm">Crea eventos en minutos y empieza a vender inmediatamente.</p>
               </div>
 
-              <div className="bg-gray-800/50 p-4 rounded-lg shadow-lg">
+              <div className="bg-card/50 p-4 rounded-lg shadow-lg">
                 <div className="text-2xl mb-2">✅</div>
                 <h3 className="font-bold mb-1">Seguro</h3>
-                <p className="text-gray-300 text-sm">Cada ticket tiene un QR único que evita duplicados y fraudes.</p>
+                <p className="text-muted-foreground text-sm">Cada ticket tiene un QR único que evita duplicados y fraudes.</p>
               </div>
             </section>
 
             {/* Nota informativa */}
-            <section className="bg-gray-800/50 p-5 rounded-lg shadow-lg border border-gray-700">
+            <section className="bg-card/50 p-5 rounded-lg shadow-lg border border-border">
               <div className="flex items-start gap-3">
-                <Info className="h-5 w-5 text-blue-400 mt-1 flex-shrink-0" />
+                <Info className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
                 <div>
                   <h3 className="font-bold mb-1">¿Nuevo en Entradita.com?</h3>
-                  <p className="text-gray-300 text-sm">
+                  <p className="text-muted-foreground text-sm">
                     Te recomendamos comenzar revisando nuestra documentación completa para familiarizarte con todas las funciones. Si tienes alguna duda específica, no dudes en contactarnos
                     directamente.
                   </p>
@@ -253,17 +253,17 @@ function NewClient() {
             </section>
 
             {/* Llamada a la acción */}
-            <section className="bg-gray-900/50 p-6 rounded-lg shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">
+            <section className="bg-background/50 p-6 rounded-lg shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">
               <h3 className="text-xl font-bold mb-3">¿Necesitas más ayuda?</h3>
               <p className="mb-4">
                 Si tienes dudas adicionales o necesitas asistencia personalizada, no dudes en contactarnos. Estamos aquí para ayudarte a sacar el máximo provecho de Entradita.com.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a
-                  href="https://wa.me/543482586525"
+                  href="https://wa.me/5493482275737"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block bg-gray-800 text-green-600 font-bold py-3 px-6 rounded-lg hover:bg-gray-100 hover:text-green-700 transition-colors"
+                  className="inline-block bg-card text-green-600 font-bold py-3 px-6 rounded-lg hover:bg-gray-100 hover:text-green-700 transition-colors"
                 >
                   Contactar por WhatsApp
                 </a>
@@ -271,37 +271,37 @@ function NewClient() {
             </section>
           </div>
         ) : (
-          <div className="bg-gray-800/50 p-6 rounded-lg text-center">
+          <div className="bg-card/50 p-6 rounded-lg text-center">
             <h2 className="text-2xl font-bold mb-4">Información no disponible</h2>
             <p>No se encontraron los datos necesarios en la URL.</p>
-            <p className="text-sm text-gray-400 mt-2">Formato esperado: /new-client/nombre=Nico/usuario=nicomuzzin/contrasenia=nicom123</p>
+            <p className="text-sm text-muted-foreground mt-2">Formato esperado: /new-client/nombre=Nico/usuario=nicomuzzin/contrasenia=nicom123</p>
           </div>
         )}
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-900 border-t border-gray-800 py-4">
+      <footer className="bg-background border-t border-border py-4">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-2 md:mb-0">
               <img src="/isotipoWhite.png" alt="entradita.com logo" className="h-8 w-auto mr-2 hidden sm:block" />
               <div>
                 <h3 className="font-bold text-center sm:text-left">entradita.com</h3>
-                <p className="text-xs text-gray-400 ">Transformando la gestión de eventos</p>
+                <p className="text-xs text-muted-foreground ">Transformando la gestión de eventos</p>
               </div>
             </div>
 
             <div className="flex flex-col md:flex-row items-center space-y-1 md:space-y-0 md:space-x-6">
-              <Link to="/documentacion" className="text-gray-300 hover:text-white text-sm">
+              <Link to="/documentacion" className="text-muted-foreground hover:text-white text-sm">
                 Documentación
               </Link>
-              <Link to="/contact" className="text-gray-300 hover:text-white text-sm">
+              <Link to="/contact" className="text-muted-foreground hover:text-white text-sm">
                 Contacto
               </Link>
             </div>
           </div>
 
-          <div className="border-t border-gray-800 mt-6 pt-6 text-center text-gray-400">
+          <div className="border-t border-border mt-6 pt-6 text-center text-muted-foreground">
             <p className="text-sm">© 2026 entradita.com todos los derechos reservados.</p>
           </div>
         </div>

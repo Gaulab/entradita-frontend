@@ -38,7 +38,7 @@ const PopoverTrigger = ({ children, ...props }) => {
 
 const PopoverContent = ({ children }) => {
   return (
-    <div className="absolute z-10 w-64 p-4 mt-2 bg-white dark:bg-gray-800 rounded-md shadow-lg">
+    <div className="absolute z-10 w-64 p-4 mt-2 bg-white dark:bg-card rounded-md shadow-lg">
       {children}
     </div>
   );

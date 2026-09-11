@@ -60,7 +60,7 @@ export default function Tickets() {
   );
 
   return (
-    <Card className="bg-gray-800 border-gray-700">
+    <Card className="bg-card border-border">
       <CardHeader className="pb-3 space-y-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-white">Tickets</CardTitle>
@@ -74,7 +74,7 @@ export default function Tickets() {
 
         <div className="flex items-center gap-2">
           <div className="relative flex-1 max-w-sm">
-            <SearchIcon className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <SearchIcon className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               type="text"
               placeholder="Buscar..."
@@ -83,14 +83,14 @@ export default function Tickets() {
                 setSearchTerm(e.target.value);
                 setCurrentPage(1);
               }}
-              className="pl-9 bg-gray-700 border-gray-600 text-white placeholder-gray-400 h-9 text-sm"
+              className="pl-9 bg-secondary border-border text-white placeholder-gray-400 h-9 text-sm"
             />
           </div>
           <Button
             onClick={() => handleGenerarTicket(true)}
             disabled={!ticketSalesEnabled}
             size="sm"
-            className="bg-blue-600 hover:bg-blue-700 text-white shrink-0"
+            className="bg-primary hover:bg-primary/90 text-white shrink-0"
           >
             <PlusIcon className="h-4 w-4 mr-1.5" />
             Nuevo
@@ -103,20 +103,20 @@ export default function Tickets() {
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-gray-700 text-left">
-                <TableHead className="text-gray-300">Nombre</TableHead>
-                {event.dni_required && <TableHead className="text-gray-300">DNI</TableHead>}
-                <TableHead className="text-gray-300 hidden sm:table-cell">Tipo</TableHead>
-                <TableHead className="text-gray-300 hidden sm:table-cell">Vendedor</TableHead>
-                <TableHead className="text-gray-300 text-center w-24">Escaneado</TableHead>
-                <TableHead className="text-gray-300 hidden sm:table-cell text-right">Acciones</TableHead>
+              <TableRow className="border-border text-left">
+                <TableHead className="text-muted-foreground">Nombre</TableHead>
+                {event.dni_required && <TableHead className="text-muted-foreground">DNI</TableHead>}
+                <TableHead className="text-muted-foreground hidden sm:table-cell">Tipo</TableHead>
+                <TableHead className="text-muted-foreground hidden sm:table-cell">Vendedor</TableHead>
+                <TableHead className="text-muted-foreground text-center w-24">Escaneado</TableHead>
+                <TableHead className="text-muted-foreground hidden sm:table-cell text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {tickets.map((ticket) => (
                 <TableRow
                   key={ticket.id}
-                  className="border-gray-700 cursor-pointer sm:cursor-default hover:bg-gray-700/30 transition-colors"
+                  className="border-border cursor-pointer sm:cursor-default hover:bg-secondary/30 transition-colors"
                   onClick={() => {
                     if (window.innerWidth < 640) {
                       setSelectedTicket(ticket);
@@ -127,19 +127,19 @@ export default function Tickets() {
                     <span className="text-white truncate block max-w-[140px] sm:max-w-none">
                       {ticket.owner_name} {ticket.owner_lastname}
                     </span>
-                    <span className="text-xs text-gray-500 sm:hidden block mt-0.5">
+                    <span className="text-xs text-muted-foreground sm:hidden block mt-0.5">
                       {ticket.ticket_tag.name} · {ticket.seller_name === 'Unknown' ? 'Organizer' : ticket.seller_name}
                     </span>
                   </TableCell>
                   {event.dni_required && (
-                    <TableCell className="text-gray-300 truncate max-w-[80px]">{ticket.owner_dni || '—'}</TableCell>
+                    <TableCell className="text-muted-foreground truncate max-w-[80px]">{ticket.owner_dni || '—'}</TableCell>
                   )}
-                  <TableCell className="text-gray-300 hidden sm:table-cell">{ticket.ticket_tag.name}</TableCell>
-                  <TableCell className="text-gray-300 hidden sm:table-cell">{ticket.seller_name === 'Unknown' ? 'Organizer' : ticket.seller_name}</TableCell>
+                  <TableCell className="text-muted-foreground hidden sm:table-cell">{ticket.ticket_tag.name}</TableCell>
+                  <TableCell className="text-muted-foreground hidden sm:table-cell">{ticket.seller_name === 'Unknown' ? 'Organizer' : ticket.seller_name}</TableCell>
                   <TableCell className="text-center">
                     {ticket.scanned
                       ? <span className="text-xs font-medium text-green-400">✓ Sí</span>
-                      : <span className="text-xs font-medium text-gray-500">✗ No</span>
+                      : <span className="text-xs font-medium text-muted-foreground">✗ No</span>
                     }
                   </TableCell>
                   <TableCell className="hidden sm:table-cell text-right">
@@ -147,7 +147,7 @@ export default function Tickets() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 w-8 p-0 text-gray-400 hover:text-white"
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-white"
                         onClick={() => copyToClipboard(`¡Acá está tu ticket para el evento ${event.name} 🎟️!\n\n ${window.location.origin}/ticket/${ticket.uuid}`)}
                         title="Compartir"
                       >
@@ -156,7 +156,7 @@ export default function Tickets() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 w-8 p-0 text-gray-400 hover:text-white"
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-white"
                         onClick={() => copyToClipboard(`${window.location.origin}/ticket/${ticket.uuid}`)}
                         title="Copiar enlace"
                       >
@@ -165,7 +165,7 @@ export default function Tickets() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 w-8 p-0 text-gray-400 hover:text-white"
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-white"
                         onClick={() => window.open(`/ticket/${ticket.uuid}`, '_blank')}
                         title="Ver ticket"
                       >
@@ -174,7 +174,7 @@ export default function Tickets() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 w-8 p-0 text-gray-400 hover:text-red-400"
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-red-400"
                         onClick={() => {
                           handleDeleteTicket(ticket.id);
                           setCurrentPage(1);
@@ -192,23 +192,23 @@ export default function Tickets() {
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-700/50">
+        <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/50">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
-            className="text-gray-400 hover:text-white disabled:opacity-30"
+            className="text-muted-foreground hover:text-white disabled:opacity-30"
           >
             <ChevronLeft className="h-4 w-4 mr-1" /> Anterior
           </Button>
-          <span className="text-xs text-gray-500">Página {currentPage}</span>
+          <span className="text-xs text-muted-foreground">Página {currentPage}</span>
           <Button
             variant="ghost"
             size="sm"
             disabled={!hasMoreTickets}
             onClick={() => setCurrentPage((prev) => prev + 1)}
-            className="text-gray-400 hover:text-white disabled:opacity-30"
+            className="text-muted-foreground hover:text-white disabled:opacity-30"
           >
             Siguiente <ChevronRight className="h-4 w-4 ml-1" />
           </Button>
@@ -244,12 +244,12 @@ function MobileActionDialog({ ticket, onClose }) {
 
   return (
     <Dialog className="" open={!!ticket} onOpenChange={() => onClose()}>
-      <DialogContent className="sm:max-w-[425px] bg-gray-800 ">
+      <DialogContent className="sm:max-w-[425px] bg-card ">
         <DialogHeader>
           <DialogTitle className="text-white">Acciones para el ticket</DialogTitle>
         </DialogHeader>
-        <DialogDescription className="mb-0 m-0 text-gray-300">Selecciona una acción para realizar sobre el ticket de:</DialogDescription>
-        <div className="text-gray-300">
+        <DialogDescription className="mb-0 m-0 text-muted-foreground">Selecciona una acción para realizar sobre el ticket de:</DialogDescription>
+        <div className="text-muted-foreground">
           <p>
             <strong>Nombre:</strong> {ticket?.owner_name} {ticket?.owner_lastname}
           </p>

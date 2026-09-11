@@ -84,10 +84,10 @@ export default function DialogCreateEmployee() {
 
   return (
     <Dialog open={isCreateEmployeeDialogOpen} onOpenChange={setIsCreateEmployeeDialogOpen}>
-      <DialogContent className="bg-gray-800 text-white">
+      <DialogContent className="bg-card text-white">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center">Nuevo {isSellerEmployee ? 'Vendedor' : 'Scanner'}</DialogTitle>
-          <DialogDescription className="text-center text-gray-400">Ingrese los detalles para el nuevo {isSellerEmployee ? 'vendedor' : 'scanner'}.</DialogDescription>
+          <DialogDescription className="text-center text-muted-foreground">Ingrese los detalles para el nuevo {isSellerEmployee ? 'vendedor' : 'scanner'}.</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -102,7 +102,7 @@ export default function DialogCreateEmployee() {
               selectedValues={formData.ticket_tags}
               onChange={handleMultiSelectChange}
               placeholder="Seleccionar categorías"
-              className="bg-gray-700 border-gray-600 text-white"
+              className="bg-secondary border-border text-white"
             />
           </div>
           )}
@@ -117,7 +117,7 @@ export default function DialogCreateEmployee() {
               onChange={handleInputChange}
               placeholder="Nombre del empleado"
               maxLength="25"
-              className="bg-gray-700 border-gray-600 text-white"
+              className="bg-secondary border-border text-white"
               ref={firstInputRef}
             />
           </div>
@@ -128,7 +128,7 @@ export default function DialogCreateEmployee() {
                 <Label htmlFor="capacity" className="text-gray-200">
                   Capacidad de venta
                 </Label>
-                <Input id="capacity" name="capacity" type="number" value={formData.capacity} onChange={handleInputChange} placeholder="Sin limite" className="bg-gray-700 border-gray-600 text-white" />
+                <Input id="capacity" name="capacity" type="number" value={formData.capacity} onChange={handleInputChange} placeholder="Sin limite" className="bg-secondary border-border text-white" />
               </div>
             </>
           )}
@@ -140,10 +140,10 @@ export default function DialogCreateEmployee() {
           )}
 
           <DialogFooter>
-            <Button onClick={() => setIsCreateEmployeeDialogOpen(false)} variant="outline" className="bg-gray-700 text-white hover:bg-gray-600" type="button">
+            <Button onClick={() => setIsCreateEmployeeDialogOpen(false)} variant="outline" className="bg-secondary text-white hover:bg-secondary" type="button">
               Cancelar
             </Button>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button type="submit" className="bg-primary hover:bg-primary/90 text-white">
               Confirmar
             </Button>
           </DialogFooter>

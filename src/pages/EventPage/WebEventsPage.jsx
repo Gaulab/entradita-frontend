@@ -73,13 +73,13 @@ export default function WebEventsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="text-center">
           <div className="relative w-14 h-14 mx-auto mb-5">
-            <div className="absolute inset-0 rounded-full border-2 border-blue-500/20" />
+            <div className="absolute inset-0 rounded-full border-2 border-primary/20" />
             <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-blue-500 animate-spin" />
           </div>
-          <p className="text-slate-400 text-sm">Cargando eventos...</p>
+          <p className="text-muted-foreground text-sm">Cargando eventos...</p>
         </motion.div>
       </div>
     )
@@ -87,20 +87,20 @@ export default function WebEventsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="text-center p-8 max-w-sm w-full backdrop-blur-md bg-slate-800/40 border border-slate-700/50 rounded-2xl shadow-2xl"
+          className="text-center p-8 max-w-sm w-full backdrop-blur-md bg-card/40 border border-border/50 rounded-2xl shadow-2xl"
         >
           <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-4">
             <span className="text-red-400 text-xl font-bold">!</span>
           </div>
           <h2 className="text-lg font-semibold text-white mb-2">Algo salió mal</h2>
-          <p className="text-slate-400 text-sm mb-6">{error}</p>
+          <p className="text-muted-foreground text-sm mb-6">{error}</p>
           <button
             onClick={() => fetchPage(1)}
-            className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-medium rounded-xl hover:from-blue-500 hover:to-blue-600 transition-all"
+            className="px-6 py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:from-blue-500 hover:to-blue-600 transition-all"
           >
             Reintentar
           </button>
@@ -110,10 +110,10 @@ export default function WebEventsPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
+    <div className="flex flex-col min-h-screen bg-background">
 
       {/* Header */}
-      <header className="backdrop-blur-md bg-slate-900/80 border-b border-slate-700/50 sticky top-0 z-50">
+      <header className="backdrop-blur-md bg-background/80 border-b border-border/50 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-3 sm:py-4 flex items-center">
           <div className="flex items-center gap-2 sm:gap-3">
             <img src="/isotipoWhite.png" alt="Entradita" className="h-8 w-auto sm:h-9" />
@@ -133,16 +133,16 @@ export default function WebEventsPage() {
           transition={{ duration: 0.4 }}
           className="text-center mb-8 sm:mb-12"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 mb-5 sm:mb-6">
-            <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-blue-400" />
-            <span className="text-xs sm:text-sm text-blue-200">Entradas disponibles online</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-primary/20 mb-5 sm:mb-6">
+            <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+            <span className="text-xs sm:text-sm text-primary">Entradas disponibles online</span>
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight mb-3 sm:mb-4">
             <span className="bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent">
               Eventos con venta online
             </span>
           </h1>
-          <p className="text-slate-400 text-sm sm:text-base max-w-md mx-auto">
+          <p className="text-muted-foreground text-sm sm:text-base max-w-md mx-auto">
             Comprá tu entrada de forma rápida y segura con Mercado Pago.
           </p>
         </motion.section>
@@ -155,19 +155,19 @@ export default function WebEventsPage() {
           className="max-w-lg mx-auto mb-8 sm:mb-10"
         >
           <div className="relative mb-3">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
             <input
               type="text"
               placeholder="Buscar evento o lugar..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 backdrop-blur-md bg-slate-800/40 border border-slate-700/50 rounded-xl text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/30 transition-all"
+              className="w-full pl-11 pr-4 py-3 backdrop-blur-md bg-card/40 border border-border/50 rounded-xl text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-ring/30 transition-all"
             />
           </div>
           {!search && total > 0 && (
-            <p className="text-center text-xs text-slate-500">
-              Mostrando <span className="text-slate-400 font-medium">{events.length}</span> de{" "}
-              <span className="text-slate-400 font-medium">{total}</span> eventos
+            <p className="text-center text-xs text-muted-foreground">
+              Mostrando <span className="text-muted-foreground font-medium">{events.length}</span> de{" "}
+              <span className="text-muted-foreground font-medium">{total}</span> eventos
             </p>
           )}
         </motion.div>
@@ -182,10 +182,10 @@ export default function WebEventsPage() {
               exit={{ opacity: 0 }}
               className="text-center py-20"
             >
-              <div className="w-14 h-14 rounded-2xl backdrop-blur-md bg-slate-800/40 border border-slate-700/50 flex items-center justify-center mx-auto mb-4">
+              <div className="w-14 h-14 rounded-2xl backdrop-blur-md bg-card/40 border border-border/50 flex items-center justify-center mx-auto mb-4">
                 <Ticket className="w-6 h-6 text-slate-600" />
               </div>
-              <p className="text-slate-400 text-sm">
+              <p className="text-muted-foreground text-sm">
                 {search
                   ? "No se encontraron eventos con ese criterio."
                   : "No hay eventos disponibles por el momento."}
@@ -222,7 +222,7 @@ export default function WebEventsPage() {
             <button
               onClick={() => fetchPage(page + 1, true)}
               disabled={loadingMore}
-              className="flex items-center gap-2 px-7 py-3 backdrop-blur-md bg-slate-800/40 border border-slate-700/50 hover:border-blue-500/40 hover:bg-slate-800/60 text-slate-300 hover:text-white text-sm font-medium rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-7 py-3 backdrop-blur-md bg-card/40 border border-border/50 hover:border-primary/40 hover:bg-card/60 text-muted-foreground hover:text-white text-sm font-medium rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loadingMore ? (
                 <>
@@ -248,10 +248,10 @@ export default function WebEventsPage() {
       </main>
 
       {/* Footer */}
-      <footer className="backdrop-blur-md bg-slate-900/80 border-t border-slate-700/50 py-6 mt-8">
-        <p className="text-center text-slate-500 text-sm">
+      <footer className="backdrop-blur-md bg-background/80 border-t border-border/50 py-6 mt-8">
+        <p className="text-center text-muted-foreground text-sm">
           © {new Date().getFullYear()}{" "}
-          <span className="text-slate-400 font-medium">entradita.com</span>
+          <span className="text-muted-foreground font-medium">entradita.com</span>
         </p>
       </footer>
     </div>
@@ -272,8 +272,8 @@ function EventCard({ event, index, onClick }) {
         onClick={onClick}
         className={`
           group cursor-pointer overflow-hidden
-          backdrop-blur-md bg-slate-800/40 border-slate-700/50
-          hover:bg-slate-800/60 hover:border-blue-500/40
+          backdrop-blur-md bg-card/40 border-border/50
+          hover:bg-card/60 hover:border-primary/40
           hover:shadow-2xl hover:shadow-blue-500/10
           hover:-translate-y-1
           transition-all duration-300
@@ -304,8 +304,8 @@ function EventCard({ event, index, onClick }) {
           )}
 
           {past && (
-            <div className="absolute top-3 left-3 bg-slate-900/70 backdrop-blur-md border border-slate-600/50 rounded-lg px-2.5 py-1">
-              <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Pasado</span>
+            <div className="absolute top-3 left-3 bg-background/70 backdrop-blur-md border border-border/50 rounded-lg px-2.5 py-1">
+              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Pasado</span>
             </div>
           )}
 
@@ -313,24 +313,24 @@ function EventCard({ event, index, onClick }) {
         </div>
 
         <CardContent className="p-4 sm:p-5">
-          <h2 className="text-base sm:text-lg font-bold text-white leading-snug tracking-tight line-clamp-2 mb-3 group-hover:text-blue-100 transition-colors">
+          <h2 className="text-base sm:text-lg font-bold text-white leading-snug tracking-tight line-clamp-2 mb-3 group-hover:text-primary transition-colors">
             {event.name}
           </h2>
 
           <div className="space-y-1.5 mb-4">
             <div className="flex items-center gap-2">
-              <Calendar className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-              <span className="text-xs text-slate-400">{formatDate(event.date)}</span>
+              <Calendar className="w-3.5 h-3.5 text-primary shrink-0" />
+              <span className="text-xs text-muted-foreground">{formatDate(event.date)}</span>
             </div>
             <div className="flex items-center gap-2">
-              <MapPin className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-              <span className="text-xs text-slate-400 line-clamp-1">{event.place}</span>
+              <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
+              <span className="text-xs text-muted-foreground line-clamp-1">{event.place}</span>
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-3 border-t border-slate-700/50">
-            <span className="text-xs font-medium text-blue-400 uppercase tracking-wider">Comprá online</span>
-            <div className="flex items-center gap-1 text-blue-400">
+          <div className="flex items-center justify-between pt-3 border-t border-border/50">
+            <span className="text-xs font-medium text-primary uppercase tracking-wider">Comprá online</span>
+            <div className="flex items-center gap-1 text-primary">
               <span className="text-xs font-semibold">Ver evento</span>
               <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </div>

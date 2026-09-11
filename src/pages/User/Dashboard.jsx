@@ -96,7 +96,7 @@ export default function Dashboard() {
   );
 
   return (
-    <div className="min-h-screen w-screen p-4 bg-gray-900 text-gray-100 ">
+    <div className="min-h-screen w-screen p-4 bg-background text-gray-100 ">
       <div className="max-w-6xl mx-auto  w-full">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
           <Button onClick={logoutUser} variant="entraditaTertiary" className="w-full sm:w-auto">
@@ -111,14 +111,14 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
           {/* Bloque: Tickets disponibles */}
-          <Card className="bg-gray-800 border-gray-700 px-4 py-3 flex items-center justify-between gap-3">
+          <Card className="bg-card border-border px-4 py-3 flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="bg-blue-500/10 rounded-lg p-2 shrink-0">
+              <div className="bg-primary/10 rounded-lg p-2 shrink-0">
                 <img src='/isotipoWhite.png' alt="Ticket" className="w-6 h-6 object-contain" />
               </div>
               <div>
-                <p className="text-xs text-gray-400 uppercase tracking-wider font-medium leading-none mb-0.5">Tickets disponibles</p>
-                <p className="text-2xl font-bold text-blue-300 leading-tight">{ticket_limit}</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium leading-none mb-0.5">Tickets disponibles</p>
+                <p className="text-2xl font-bold text-primary leading-tight">{ticket_limit}</p>
               </div>
             </div>
             <Button className="shrink-0" variant="entraditaPrimary" onClick={() => navigate('/buy-tickets')}>
@@ -128,16 +128,16 @@ export default function Dashboard() {
           </Card>
 
           {/* Bloque: Mercado Pago */}
-          <Card className={`border px-4 py-3 flex items-center justify-between gap-3 ${mpSync ? 'bg-emerald-950/40 border-emerald-700/50' : 'bg-gray-800 border-gray-700'}`}>
+          <Card className={`border px-4 py-3 flex items-center justify-between gap-3 ${mpSync ? 'bg-emerald-950/40 border-emerald-700/50' : 'bg-card border-border'}`}>
             <div className="flex items-center gap-3">
-              <div className={`rounded-lg p-2 shrink-0 ${mpSync ? 'bg-emerald-500/10' : 'bg-gray-700/60'}`}>
+              <div className={`rounded-lg p-2 shrink-0 ${mpSync ? 'bg-emerald-500/10' : 'bg-secondary/60'}`}>
                 <img src="/mercadopago.png" alt="Mercado Pago" className="h-6 w-auto object-contain" />
               </div>
               <div>
-                <p className="text-xs text-gray-400 uppercase tracking-wider font-medium leading-none mb-0.5">Mercado Pago</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium leading-none mb-0.5">Mercado Pago</p>
                 <div className="flex items-center gap-1.5">
-                  <span className={`inline-block w-2 h-2 rounded-full shrink-0 ${mpSync ? 'bg-emerald-400' : 'bg-gray-500'}`} />
-                  <p className={`text-sm font-semibold ${mpSync ? 'text-emerald-400' : 'text-gray-400'}`}>
+                  <span className={`inline-block w-2 h-2 rounded-full shrink-0 ${mpSync ? 'bg-emerald-400' : 'bg-secondary'}`} />
+                  <p className={`text-sm font-semibold ${mpSync ? 'text-emerald-400' : 'text-muted-foreground'}`}>
                     {mpSync ? 'Vinculado' : 'Sin vincular'}
                   </p>
                 </div>
@@ -155,10 +155,10 @@ export default function Dashboard() {
           </Card>
         </div>
 
-        <Card className="bg-gray-800 border-gray-700 mb-8">
+        <Card className="bg-card border-border mb-8">
           <CardHeader>
             <CardTitle className="text-white">Tus eventos</CardTitle>
-            <CardDescription className="text-gray-400">Administra tus eventos</CardDescription>
+            <CardDescription className="text-muted-foreground">Administra tus eventos</CardDescription>
           </CardHeader>
           <CardContent>
             <Button variant="entraditaPrimary" to="/create-event" className="w-full sm:w-auto">
@@ -168,11 +168,11 @@ export default function Dashboard() {
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="border-gray-700 text-left">
-                    <TableHead className="text-gray-300">Nombre</TableHead>
-                    <TableHead className="text-gray-300 hidden sm:table-cell">Fecha</TableHead>
-                    <TableHead className="text-gray-300 hidden md:table-cell">Ubicación</TableHead>
-                    <TableHead className="text-gray-300 hidden md:table-cell">Tickets Vendidos</TableHead>
+                  <TableRow className="border-border text-left">
+                    <TableHead className="text-muted-foreground">Nombre</TableHead>
+                    <TableHead className="text-muted-foreground hidden sm:table-cell">Fecha</TableHead>
+                    <TableHead className="text-muted-foreground hidden md:table-cell">Ubicación</TableHead>
+                    <TableHead className="text-muted-foreground hidden md:table-cell">Tickets Vendidos</TableHead>
                     <TableHead className="w-8"></TableHead>
                   </TableRow>
                 </TableHeader>
@@ -180,18 +180,18 @@ export default function Dashboard() {
                   {paginatedEvents.map((event) => (
                     <TableRow
                       key={event.id}
-                      className="border-gray-700 text-left cursor-pointer hover:bg-gray-700/50 transition-colors"
+                      className="border-border text-left cursor-pointer hover:bg-secondary/50 transition-colors"
                       onClick={() => navigate(`/event/${event.id}/details/`)}
                     >
                       <TableCell>
                         <span className="text-white">{event.name}</span>
-                        <span className="block sm:hidden text-xs text-gray-400 mt-0.5">{formatDate(event.date)}</span>
+                        <span className="block sm:hidden text-xs text-muted-foreground mt-0.5">{formatDate(event.date)}</span>
                       </TableCell>
-                      <TableCell className="text-gray-300 hidden sm:table-cell">{formatDate(event.date)}</TableCell>
-                      <TableCell className="text-gray-300 hidden md:table-cell">{event.place}</TableCell>
-                      <TableCell className="text-gray-300 hidden md:table-cell">{event.tickets_counter}</TableCell>
+                      <TableCell className="text-muted-foreground hidden sm:table-cell">{formatDate(event.date)}</TableCell>
+                      <TableCell className="text-muted-foreground hidden md:table-cell">{event.place}</TableCell>
+                      <TableCell className="text-muted-foreground hidden md:table-cell">{event.tickets_counter}</TableCell>
                       <TableCell className="text-right">
-                        <ChevronRight className="h-4 w-4 text-gray-500" />
+                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -199,7 +199,7 @@ export default function Dashboard() {
               </Table>
             </div>
             {totalPages > 1 && (
-              <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
+              <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
                 <Button
                   variant="entraditaTertiary"
                   size="sm"
@@ -208,7 +208,7 @@ export default function Dashboard() {
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
-                <span className="text-sm text-gray-400">
+                <span className="text-sm text-muted-foreground">
                   {currentPage}/{totalPages}
                 </span>
                 <Button
