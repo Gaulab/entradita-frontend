@@ -56,13 +56,17 @@ const NAV = [
 function Documentacion() {
   return (
     <div className="min-h-screen scroll-smooth bg-background text-foreground">
-      {/* Glow de fondo */}
-      <div className="pointer-events-none fixed inset-0 z-0">
-        <div className="absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full bg-brand-from/15 blur-[130px]" />
-      </div>
+      {/* Glow de fondo (radial-gradient, sin filter:blur — barato en mobile) */}
+      <div
+        className="pointer-events-none fixed inset-0 z-0"
+        style={{
+          background:
+            'radial-gradient(55% 40% at 50% 0%, hsl(var(--brand-from) / 0.14), transparent 70%)',
+        }}
+      />
 
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/70 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
         <div className="container flex h-16 items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
             <img src="/isotipoWhite.png" alt="entradita" className="h-8 w-auto" />
