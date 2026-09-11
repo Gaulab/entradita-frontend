@@ -13,6 +13,7 @@ export default function TicketPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [logoLoaded, setLogoLoaded] = useState(false);
   const ticketRef = useRef(null);
 
   useEffect(() => {
@@ -142,6 +143,7 @@ export default function TicketPage() {
                       alt="Event Logo"
                       className="w-full h-full object-cover"
                       crossOrigin="anonymous"
+                      onLoad={() => setLogoLoaded(true)}
                     />
                   </div>
                 </div>
