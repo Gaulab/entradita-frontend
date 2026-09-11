@@ -25,7 +25,7 @@ export default function PaymentFailure() {
         </div>
 
         <h1 className="text-3xl font-bold text-white mb-2">Hubo un problema</h1>
-        <p className="text-gray-400 mb-6">
+        <p className="text-muted-foreground mb-6">
           No pudimos procesar tu pago.
         </p>
 
@@ -50,14 +50,14 @@ export default function PaymentFailure() {
           )}
           <Link
             to="/"
-            className="w-full block bg-blue-600 hover:bg-blue-500 text-gray-100 hover:text-white font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+            className="w-full block bg-primary hover:bg-primary/90 text-gray-100 hover:text-white font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
           >
             <Home className="w-5 h-5" />
             Inicio
           </Link>
         </div>
 
-        <p className="mt-6 text-xs text-gray-500">
+        <p className="mt-6 text-xs text-muted-foreground">
           Si el problema persiste, contacta con tu banco o con soporte.
         </p>
 

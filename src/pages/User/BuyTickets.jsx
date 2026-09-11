@@ -27,8 +27,8 @@ function CopyButton({ text }) {
     setTimeout(() => setCopied(false), 2000);
   };
   return (
-    <button onClick={handleCopy} className="ml-2 p-1 rounded hover:bg-gray-600 transition-colors" title="Copiar">
-      {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4 text-gray-400" />}
+    <button onClick={handleCopy} className="ml-2 p-1 rounded hover:bg-secondary transition-colors" title="Copiar">
+      {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4 text-muted-foreground" />}
     </button>
   );
 }
@@ -102,17 +102,17 @@ export default function BuyTickets() {
   const transfer = config?.transfer || {};
 
   return (
-    <div className="min-h-screen p-4 bg-gray-900 text-gray-100">
+    <div className="min-h-screen p-4 bg-background text-gray-100">
       <div className="max-w-3xl mx-auto">
         <Button onClick={() => navigate('/dashboard')} variant="entraditaTertiary" className="w-full mb-4">
           <ArrowLeftIcon className="mr-2 h-4 w-4" /> Volver al Dashboard
         </Button>
 
         {/* Transfer info */}
-        <Card className="bg-gray-800 border-gray-700 mb-4">
+        <Card className="bg-card border-border mb-4">
           <CardHeader className="pb-3">
             <CardTitle className="text-white text-lg">Datos para la transferencia</CardTitle>
-            <CardDescription className="text-gray-400">Realizá la transferencia y luego subí el comprobante abajo</CardDescription>
+            <CardDescription className="text-muted-foreground">Realizá la transferencia y luego subí el comprobante abajo</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             {[
@@ -120,9 +120,9 @@ export default function BuyTickets() {
               { label: 'CVU', value: transfer.cvu },
               { label: 'Alias', value: transfer.alias },
             ].map(({ label, value }) => (
-              <div key={label} className="flex items-center justify-between bg-gray-900/50 rounded-lg px-4 py-3 border border-gray-700">
+              <div key={label} className="flex items-center justify-between bg-background/50 rounded-lg px-4 py-3 border border-border">
                 <div>
-                  <span className="text-xs text-gray-500 uppercase tracking-wide">{label}</span>
+                  <span className="text-xs text-muted-foreground uppercase tracking-wide">{label}</span>
                   <p className="text-sm text-white font-mono mt-0.5">{value || '—'}</p>
                 </div>
                 {value && <CopyButton text={value} />}
@@ -132,7 +132,7 @@ export default function BuyTickets() {
         </Card>
 
         {/* Purchase form */}
-        <Card className="bg-gray-800 border-gray-700 mb-4">
+        <Card className="bg-card border-border mb-4">
           <CardHeader className="pb-3">
             <CardTitle className="text-white text-lg">Solicitar Tickets</CardTitle>
           </CardHeader>
@@ -146,22 +146,22 @@ export default function BuyTickets() {
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
                   placeholder="Ej: 500"
-                  className="bg-gray-700 border-gray-600 text-white"
+                  className="bg-secondary border-border text-white"
                 />
               </div>
 
               {parsedQty > 0 && currentTier && (
-                <div className="bg-gray-900/50 border border-gray-700 rounded-lg p-4 space-y-2">
+                <div className="bg-background/50 border border-border rounded-lg p-4 space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">Precio por ticket</span>
+                    <span className="text-muted-foreground">Precio por ticket</span>
                     <span className="text-white font-semibold">${currentTier.price.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">Cantidad</span>
+                    <span className="text-muted-foreground">Cantidad</span>
                     <span className="text-white">{parsedQty.toLocaleString()}</span>
                   </div>
-                  <div className="border-t border-gray-700 pt-2 flex justify-between">
-                    <span className="text-gray-300 font-medium">Total a transferir</span>
+                  <div className="border-t border-border pt-2 flex justify-between">
+                    <span className="text-muted-foreground font-medium">Total a transferir</span>
                     <span className="text-green-400 font-bold text-lg">${totalPrice.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</span>
                   </div>
                 </div>
@@ -169,9 +169,9 @@ export default function BuyTickets() {
 
               <div className="space-y-2">
                 <Label className="text-gray-200">Comprobante de transferencia</Label>
-                <label className="flex items-center gap-2 cursor-pointer bg-gray-700 border border-gray-600 rounded-md px-3 py-2 hover:bg-gray-600 transition-colors">
-                  <Upload className="w-4 h-4 text-blue-400" />
-                  <span className="text-sm text-gray-300">{file ? file.name : 'Seleccionar archivo (PDF, PNG o JPG)'}</span>
+                <label className="flex items-center gap-2 cursor-pointer bg-secondary border border-border rounded-md px-3 py-2 hover:bg-secondary transition-colors">
+                  <Upload className="w-4 h-4 text-primary" />
+                  <span className="text-sm text-muted-foreground">{file ? file.name : 'Seleccionar archivo (PDF, PNG o JPG)'}</span>
                   <input
                     type="file"
                     accept=".pdf,.png,.jpg,.jpeg"
@@ -184,7 +184,7 @@ export default function BuyTickets() {
               <Button
                 type="submit"
                 disabled={submitting || !parsedQty || !file}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                className="w-full bg-primary hover:bg-primary/90 text-white"
               >
                 {submitting ? 'Enviando...' : 'Enviar solicitud'}
               </Button>
@@ -193,38 +193,38 @@ export default function BuyTickets() {
         </Card>
 
         {/* Request history */}
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="bg-card border-border">
           <CardHeader className="pb-3">
             <CardTitle className="text-white text-lg">Historial de solicitudes</CardTitle>
           </CardHeader>
           <CardContent>
             {requests.length === 0 ? (
-              <p className="text-gray-500 text-center py-6 text-sm">No tenés solicitudes anteriores.</p>
+              <p className="text-muted-foreground text-center py-6 text-sm">No tenés solicitudes anteriores.</p>
             ) : (
               <div className="space-y-3">
                 {requests.map((req) => {
                   const statusCfg = STATUS_CONFIG[req.status];
                   const StatusIcon = statusCfg.icon;
                   return (
-                    <div key={req.id} className="bg-gray-900/50 border border-gray-700 rounded-lg p-4">
+                    <div key={req.id} className="bg-background/50 border border-border rounded-lg p-4">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <StatusIcon className={`w-4 h-4 ${statusCfg.color}`} />
                           <Badge variant={statusCfg.variant}>{statusCfg.label}</Badge>
                         </div>
-                        <span className="text-xs text-gray-500">{new Date(req.created_at).toLocaleDateString('es-AR')}</span>
+                        <span className="text-xs text-muted-foreground">{new Date(req.created_at).toLocaleDateString('es-AR')}</span>
                       </div>
                       <div className="grid grid-cols-3 gap-2 text-sm">
                         <div>
-                          <span className="text-gray-500 text-xs">Cantidad</span>
+                          <span className="text-muted-foreground text-xs">Cantidad</span>
                           <p className="text-white font-medium">{req.quantity}</p>
                         </div>
                         <div>
-                          <span className="text-gray-500 text-xs">Precio/ticket</span>
+                          <span className="text-muted-foreground text-xs">Precio/ticket</span>
                           <p className="text-white font-medium">${parseFloat(req.unit_price).toFixed(2)}</p>
                         </div>
                         <div>
-                          <span className="text-gray-500 text-xs">Total</span>
+                          <span className="text-muted-foreground text-xs">Total</span>
                           <p className="text-green-400 font-bold">${parseFloat(req.total_price).toLocaleString('es-AR')}</p>
                         </div>
                       </div>

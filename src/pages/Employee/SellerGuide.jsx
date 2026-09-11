@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/card';
 
 const Tip = ({ children }) => (
-  <div className="bg-blue-900 text-white p-4 rounded-md my-4">
+  <div className="bg-primary/10 text-white p-4 rounded-md my-4">
     <h3 className="font-bold mb-2">💡 Consejo:</h3>
     <p>{children}</p>
   </div>
@@ -31,10 +31,10 @@ const SellerGuide = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-background text-white p-4 sm:p-6 lg:p-8">
       <div className="max-w-3xl mx-auto">
 
-        <Card className="mb-4 bg-gray-800 border-gray-700">
+        <Card className="mb-4 bg-card border-border">
           <CardHeader>
             <CardTitle className="text-gray-100">
               <Rocket className="inline-block mr-2 text-gray-100" />Guía para Vendedores
@@ -45,20 +45,20 @@ const SellerGuide = () => {
               <img
                 src="https://i.imgur.com/0eGtnD6.png"
                 alt="Imagen del Evento"
-                className="w-full h-auto rounded-2xl bg-gray-900"
+                className="w-full h-auto rounded-2xl bg-background"
               />
             </div>
             <div className="w-full max-w-72 ml-2 max-sm:hidden">
               <img
                 src="https://i.imgur.com/idC7JtS.jpeg"
                 alt="Imagen del Evento"
-                className="w-full h-auto rounded-3xl bg-gray-900"
+                className="w-full h-auto rounded-3xl bg-background"
               />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="mb-4 bg-gray-800 border-gray-700">
+        <Card className="mb-4 bg-card border-border">
           <CardHeader>
             <CardTitle className="text-gray-100">
               <ListStartIcon className="inline-block mr-2 text-gray-100" /> Inicio
@@ -73,7 +73,7 @@ const SellerGuide = () => {
           </CardContent>
         </Card>
 
-        <Card className="mb-4 bg-gray-800 border-gray-700">
+        <Card className="mb-4 bg-card border-border">
           <CardHeader>
             <CardTitle className="text-gray-100">
               <Laptop className="inline-block mr-2 text-gray-100" />Interface
@@ -84,13 +84,13 @@ const SellerGuide = () => {
               <img
                 src="https://i.imgur.com/zaXxk87.png"
                 alt="Imagen del Evento"
-                className="w-full h-auto rounded-2xl bg-gray-900"
+                className="w-full h-auto rounded-2xl bg-background"
               />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="mb-4 bg-gray-800 border-gray-700">
+        <Card className="mb-4 bg-card border-border">
           <CardHeader>
             <CardTitle className="text-gray-100">
               <Ticket className="inline-block mr-2 text-gray-100" />¿Crear un ticket?
@@ -103,7 +103,7 @@ const SellerGuide = () => {
               <li>➕ Haz clic en "Nuevo Ticket".</li>
               <li>
                 ✏️ Completa la información requerida: tipo de ticket, nombre, apellido, y DNI
-                <span className="text-gray-400">(sin puntos ni espacios).</span>
+                <span className="text-muted-foreground">(sin puntos ni espacios).</span>
               </li>
               <li>💾 Cuando todo esté listo, haz clic en "Guardar".</li>
             </ol>
@@ -111,7 +111,7 @@ const SellerGuide = () => {
           </CardContent>
         </Card>
 
-        <Card className="mb-4 bg-gray-800 border-gray-700">
+        <Card className="mb-4 bg-card border-border">
           <CardHeader>
             <CardTitle className="text-gray-100">
               <ExternalLink className="inline-block mr-2 text-gray-100" />¿Compartir un ticket?
@@ -132,7 +132,7 @@ const SellerGuide = () => {
           </CardContent>
         </Card>
 
-        <Card className="mb-4 bg-gray-800 border-gray-700">
+        <Card className="mb-4 bg-card border-border">
           <CardHeader>
             <CardTitle className="text-gray-100">
               <Trash2 className="inline-block mr-2 text-gray-100" />¿Borrar un ticket?
@@ -150,7 +150,7 @@ const SellerGuide = () => {
           </CardContent>
         </Card>
 
-        <Card className="mb-4 bg-gray-800 border-gray-700">
+        <Card className="mb-4 bg-card border-border">
           <CardHeader>
             <CardTitle className="text-gray-100">
               <Info className="inline-block mr-2 text-gray-100" />Información del panel
@@ -169,7 +169,7 @@ const SellerGuide = () => {
           </CardContent>
         </Card>
 
-        <Card className="mb-4 bg-gray-800 border-gray-700">
+        <Card className="mb-4 bg-card border-border">
           <CardHeader>
             <CardTitle className="text-gray-100">
               <ShoppingCart className="inline-block mr-2 text-gray-100" /> ¿Venta deshabilitada?

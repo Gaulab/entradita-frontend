@@ -17,51 +17,51 @@ export default function MobileActionDialog({
 
   return (
     <Dialog open={!!ticket} onOpenChange={() => onClose()}>
-      <DialogContent className="sm:max-w-[400px] bg-gray-800 border-gray-700">
+      <DialogContent className="sm:max-w-[400px] bg-card border-border">
         <DialogHeader>
           <DialogTitle className="text-white">
             {ticket?.owner_name} {ticket?.owner_lastname}
           </DialogTitle>
-          <DialogDescription className="text-gray-300">
+          <DialogDescription className="text-muted-foreground">
             {ticket?.ticket_tag.name}
             {ticket?.owner_dni && ` · DNI: ${ticket.owner_dni}`}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-1.5">
           <Button
-            className="justify-start text-gray-200 hover:text-white hover:bg-gray-700"
+            className="justify-start text-gray-200 hover:text-white hover:bg-secondary"
             variant="ghost"
             onClick={() => { handleShare(ticket); onClose(); }}
           >
-            <Share2 className="mr-2.5 h-4 w-4 text-gray-400" />
+            <Share2 className="mr-2.5 h-4 w-4 text-muted-foreground" />
             Compartir ticket
           </Button>
           <Button
-            className="justify-start text-gray-200 hover:text-white hover:bg-gray-700"
+            className="justify-start text-gray-200 hover:text-white hover:bg-secondary"
             variant="ghost"
             onClick={() => {
               copyToClipboard(`${window.location.origin}/ticket/${ticket?.uuid}`)
               onClose()
             }}
           >
-            <LinkIcon className="mr-2.5 h-4 w-4 text-gray-400" />
+            <LinkIcon className="mr-2.5 h-4 w-4 text-muted-foreground" />
             Copiar enlace
           </Button>
           <Button
-            className="justify-start text-gray-200 hover:text-white hover:bg-gray-700"
+            className="justify-start text-gray-200 hover:text-white hover:bg-secondary"
             variant="ghost"
             onClick={() => { handleViewTicket(ticket?.uuid); onClose(); }}
           >
-            <EyeIcon className="mr-2.5 h-4 w-4 text-gray-400" />
+            <EyeIcon className="mr-2.5 h-4 w-4 text-muted-foreground" />
             Ver ticket
           </Button>
           {handlePrintTicket && (
             <Button
-              className="justify-start text-gray-200 hover:text-white hover:bg-gray-700"
+              className="justify-start text-gray-200 hover:text-white hover:bg-secondary"
               variant="ghost"
               onClick={() => { handlePrintTicket(ticket); onClose(); }}
             >
-              <Printer className="mr-2.5 h-4 w-4 text-gray-400" />
+              <Printer className="mr-2.5 h-4 w-4 text-muted-foreground" />
               Imprimir QR
             </Button>
           )}

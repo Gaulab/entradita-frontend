@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 
 export default function TermsOfService() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950">
-      <header className="bg-gray-800 text-white py-4">
+    <div className="min-h-screen bg-background">
+      <header className="bg-card text-white py-4">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold">entradita.com</h1>
@@ -83,7 +83,7 @@ export default function TermsOfService() {
         </section>
       </main>
 
-      <footer className="bg-gray-800 text-white py-4">
+      <footer className="bg-card text-white py-4">
         <div className="container mx-auto px-4 text-center">
           <p>&copy; 2026 entradita.com. Todos los derechos reservados.</p>
         </div>

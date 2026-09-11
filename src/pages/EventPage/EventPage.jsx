@@ -62,10 +62,10 @@ function EventPage() {
           className="text-center"
         >
           <div className="relative w-16 h-16 mx-auto mb-6">
-            <div className="absolute inset-0 rounded-full border-2 border-blue-500/20" />
+            <div className="absolute inset-0 rounded-full border-2 border-primary/20" />
             <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-blue-500 animate-spin" />
           </div>
-          <p className="text-gray-400 text-sm tracking-wide">Cargando evento...</p>
+          <p className="text-muted-foreground text-sm tracking-wide">Cargando evento...</p>
         </motion.div>
       </div>
     )
@@ -83,10 +83,10 @@ function EventPage() {
             <span className="text-red-400 text-2xl font-bold">!</span>
           </div>
           <h2 className="text-lg font-semibold text-white mb-2">Algo salió mal</h2>
-          <p className="text-gray-400 text-sm mb-6">{error}</p>
+          <p className="text-muted-foreground text-sm mb-6">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-6 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-500 transition-all"
+            className="px-6 py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary/90 transition-all"
           >
             Reintentar
           </button>
@@ -168,7 +168,7 @@ function EventPage() {
           {/* Purchase card */}
           <div className="bg-[#1a2433]/80 backdrop-blur-xl rounded-3xl border border-white/[0.06] p-6 sm:p-8 shadow-2xl shadow-black/20">
             <h2 className="text-lg font-semibold text-white mb-1">Conseguí tu entrada</h2>
-            <p className="text-sm text-gray-400 mb-6">Elegí tu método de compra preferido</p>
+            <p className="text-sm text-muted-foreground mb-6">Elegí tu método de compra preferido</p>
 
             <div className="space-y-3">
               {eventData.organizer_contact && (
@@ -211,7 +211,7 @@ function EventPage() {
           {/* Footer */}
           <p className="mt-8 text-center text-xs text-gray-600">
             <span>Powered by </span>
-            <span className="font-semibold text-gray-500">entradita.com</span>
+            <span className="font-semibold text-muted-foreground">entradita.com</span>
           </p>
         </motion.div>
       </div>
@@ -222,7 +222,7 @@ function EventPage() {
 function InfoChip({ icon: Icon, text }) {
   return (
     <div className="flex items-center gap-2 bg-[#1a2433]/90 backdrop-blur-md border border-white/5 rounded-full px-4 py-2.5">
-      <Icon className="w-4 h-4 text-blue-400 shrink-0" />
+      <Icon className="w-4 h-4 text-primary shrink-0" />
       <span className="text-sm text-gray-200">{text}</span>
     </div>
   )
@@ -234,7 +234,7 @@ InfoChip.propTypes = {
 }
 
 const TRUST_COLORS = {
-  blue: { bg: "bg-blue-500/10", text: "text-blue-400" },
+  blue: { bg: "bg-primary/10", text: "text-primary" },
   green: { bg: "bg-green-500/10", text: "text-green-400" },
   purple: { bg: "bg-purple-500/10", text: "text-purple-400" },
 }
@@ -246,7 +246,7 @@ function TrustBadge({ icon: Icon, label, color }) {
       <div className={`w-10 h-10 rounded-xl ${c.bg} flex items-center justify-center mx-auto mb-2`}>
         <Icon className={`w-5 h-5 ${c.text}`} />
       </div>
-      <p className="text-[11px] text-gray-400 leading-tight">{label}</p>
+      <p className="text-[11px] text-muted-foreground leading-tight">{label}</p>
     </div>
   )
 }

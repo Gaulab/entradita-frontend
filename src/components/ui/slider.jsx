@@ -105,7 +105,7 @@ export const Slider = ({
       {/* Track */}
       <div
         ref={sliderRef}
-        className={`relative flex-1 h-2 bg-slate-700 rounded-full cursor-pointer ${
+        className={`relative flex-1 h-2 bg-secondary rounded-full cursor-pointer ${
           disabled ? "opacity-50 cursor-not-allowed" : ""
         }`}
         onClick={handleTrackClick}
@@ -120,7 +120,7 @@ export const Slider = ({
         {/* Thumb */}
         <div
           ref={thumbRef}
-          className={`absolute top-1/2 w-5 h-5 bg-white border-2 border-blue-500 rounded-full shadow-lg transform -translate-y-1/2 -translate-x-1/2 cursor-grab transition-all duration-150 ${
+          className={`absolute top-1/2 w-5 h-5 bg-white border-2 border-primary rounded-full shadow-lg transform -translate-y-1/2 -translate-x-1/2 cursor-grab transition-all duration-150 ${
             isDragging ? "scale-110 cursor-grabbing shadow-xl" : "hover:scale-105"
           } ${disabled ? "cursor-not-allowed" : ""}`}
           style={{ left: `${percentage}%` }}

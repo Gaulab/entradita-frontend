@@ -2,15 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Design tokens (dark minimal) ──────────────────────────────────────────
+   Sistema de diseño de entradita. Los componentes de ui/ (Button, Card, etc.)
+   ya referencian estos tokens (bg-primary, bg-card, text-muted-foreground…);
+   antes no estaban definidos y por eso se usaba color hardcodeado.
+   Acento único de marca: indigo (--primary) → violeta (--accent-brand).      */
+@layer base {
+  :root {
+    --background: 240 10% 8%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 8% 12%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 9% 10%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 243 75% 59%;            /* indigo-500 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 6% 18%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 240 6% 16%;
+    --muted-foreground: 240 5% 65%;
+
+    --accent: 240 6% 18%;              /* superficies hover sutiles */
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 6% 20%;
+    --input: 240 6% 20%;
+    --ring: 243 75% 59%;
+
+    --radius: 0.75rem;
+
+    /* Gradiente de marca para el landing */
+    --brand-from: 243 75% 59%;         /* indigo-500 */
+    --brand-to: 270 91% 65%;           /* violet-500 */
+  }
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
   color-scheme: dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #111827;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -19,11 +58,8 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: inherit;
   text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
 }
 
 html {
@@ -32,35 +68,25 @@ html {
 
 body {
   margin: 0;
-  padding: 0%;
+  padding: 0;
   width: 100%;
   min-height: 100dvh;
-  background-color: #111827;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
   overscroll-behavior: none;
 }
 
 h1 {
-  font-size: 3.2em;
   line-height: 1.1;
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
 }
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
 }
 
 input[type="date"],

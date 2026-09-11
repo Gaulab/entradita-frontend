@@ -29,7 +29,7 @@ export function Tooltip({ children, content }) {
     <>
       <div className="relative inline-block" ref={triggerRef}>
         <div
-          className="text-gray-400 cursor-help"
+          className="text-muted-foreground cursor-help"
           onClick={isVisible ? hideTooltip : showTooltip}
           onMouseEnter={showTooltip}
           onMouseLeave={hideTooltip}
@@ -40,7 +40,7 @@ export function Tooltip({ children, content }) {
       {isVisible && (
         <div 
           ref={tooltipRef}
-          className="fixed top-0 left-0 right-0 z-50 p-4 bg-gray-900 text-white text-sm md:absolute md:top-auto md:left-1/2 md:right-auto md:transform md:-translate-x-1/2 md:translate-y-full md:bg-gray-900 md:rounded-lg md:shadow-lg md:p-2 md:w-max md:max-w-xs"
+          className="fixed top-0 left-0 right-0 z-50 p-4 bg-background text-white text-sm md:absolute md:top-auto md:left-1/2 md:right-auto md:transform md:-translate-x-1/2 md:translate-y-full md:bg-background md:rounded-lg md:shadow-lg md:p-2 md:w-max md:max-w-xs"
           style={{ whiteSpace: 'pre-wrap' }}
         >
           {content}

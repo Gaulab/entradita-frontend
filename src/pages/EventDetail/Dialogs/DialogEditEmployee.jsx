@@ -78,10 +78,10 @@ export default function DialogEditEmployee() {
 
   return (
     <Dialog open={isEditEmployeeDialogOpen} onOpenChange={setIsEditEmployeeDialogOpen}>
-      <DialogContent className="bg-gray-800 text-white">
+      <DialogContent className="bg-card text-white">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center">Editar {editingEmployee?.is_seller ? 'Vendedor' : 'Escáner'}</DialogTitle>
-          <DialogDescription className="text-center text-gray-400">Modifique los detalles del {editingEmployee?.is_seller ? 'vendedor' : 'escáner'}.</DialogDescription>
+          <DialogDescription className="text-center text-muted-foreground">Modifique los detalles del {editingEmployee?.is_seller ? 'vendedor' : 'escáner'}.</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -96,7 +96,7 @@ export default function DialogEditEmployee() {
                 selectedValues={formData.ticket_tags}
                 onChange={handleMultiSelectChange}
                 placeholder="Seleccionar categorías"
-                className="bg-gray-700 border-gray-600 text-white"
+                className="bg-secondary border-border text-white"
               />
             </div>
           )}
@@ -112,7 +112,7 @@ export default function DialogEditEmployee() {
               onChange={handleInputChange}
               placeholder="Nombre del empleado"
               maxLength="25"
-              className="bg-gray-700 border-gray-600 text-white"
+              className="bg-secondary border-border text-white"
               ref={firstInputRef}
             />
           </div>
@@ -122,7 +122,7 @@ export default function DialogEditEmployee() {
               <Label htmlFor="capacity" className="text-gray-200">
                 Capacidad de venta
               </Label>
-              <Input id="capacity" name="capacity" type="number" value={formData.capacity} onChange={handleInputChange} placeholder="Sin limite" className="bg-gray-700 border-gray-600 text-white" />
+              <Input id="capacity" name="capacity" type="number" value={formData.capacity} onChange={handleInputChange} placeholder="Sin limite" className="bg-secondary border-border text-white" />
             </div>
           )}
 
@@ -139,12 +139,12 @@ export default function DialogEditEmployee() {
                 setEditingEmployee(null);
               }}
               variant="outline"
-              className="bg-gray-700 text-white hover:bg-gray-600"
+              className="bg-secondary text-white hover:bg-secondary"
               type="button"
             >
               Cancelar
             </Button>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button type="submit" className="bg-primary hover:bg-primary/90 text-white">
               Guardar Cambios
             </Button>
           </DialogFooter>

@@ -53,11 +53,11 @@ export default function CreateTicket() {
 
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900 p-4 w-screen">
-      <Card className="w-full max-w-md bg-gray-800 border-gray-700">
+    <div className="flex items-center justify-center min-h-screen bg-background p-4 w-screen">
+      <Card className="w-full max-w-md bg-card border-border">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center text-white">Crear Ticket</CardTitle>
-          <CardDescription className="text-center text-gray-400">Ingrese los datos del asistente para el evento</CardDescription>
+          <CardDescription className="text-center text-muted-foreground">Ingrese los datos del asistente para el evento</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -95,7 +95,7 @@ export default function CreateTicket() {
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white">
               Crear Ticket
             </Button>
           </form>
