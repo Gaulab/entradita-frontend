@@ -138,11 +138,16 @@ export default function TicketPage() {
                   style={{ backgroundColor: '#FFFFFF' }} />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-[68px] h-[68px] rounded-full overflow-hidden border-[3px] border-border shadow-md bg-background">
+                    {/* TEMPORAL: se muestra el isotipo, NO la imagen del evento.
+                        El bucket S3 del evento no tiene CORS y, con crossOrigin, el
+                        navegador bloquea la imagen. Para reactivarla cuando el CORS
+                        esté aplicado, volver a:
+                          src={data.event_image || '/isotipoWhite.png'}
+                          + crossOrigin="anonymous" */}
                     <img
-                      src={data.event_image || '/isotipoWhite.png'}
+                      src="/isotipoWhite.png"
                       alt="Event Logo"
                       className="w-full h-full object-cover"
-                      crossOrigin="anonymous"
                       onLoad={() => setLogoLoaded(true)}
                     />
                   </div>
