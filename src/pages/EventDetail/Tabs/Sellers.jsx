@@ -45,6 +45,7 @@ export default function Sellers({}) {
     setIsCreateEmployeeDialogOpen,
     copyToClipboard,
     setIsEditEmployeeDialogOpen,
+    readOnly,
   } = useContext(EventDetailsContext);
 
   const handleChangeEmpleadoStatus = useCallback(
@@ -163,17 +164,19 @@ export default function Sellers({}) {
           </Button>
 
 
-          <Button
-            className="justify-start"
-            variant="entraditaSecondary"
-            onClick={() => {
-              handleEditEmpleado(seller);
-              onClose();
-            }}
-          >
-            <PencilIcon className="mr-2 h-4 w-4" />
-            Editar vendedor
-          </Button>
+          {!readOnly && (
+            <Button
+              className="justify-start"
+              variant="entraditaSecondary"
+              onClick={() => {
+                handleEditEmpleado(seller);
+                onClose();
+              }}
+            >
+              <PencilIcon className="mr-2 h-4 w-4" />
+              Editar vendedor
+            </Button>
+          )}
 
           <Button
             className="justify-start"
@@ -188,28 +191,32 @@ export default function Sellers({}) {
           </Button>
 
 
-          <Button
-            className="justify-start"
-            variant="entraditaSecondary"
-            onClick={() => {
-              handleChangeEmpleadoStatus(seller);
-              onClose();
-            }}
-          >
-            {seller?.status === true ? <TicketX className="h-4 w-4 mr-2" /> : <TicketCheck className="h-4 w-4 mr-2" />}
-            <span className="">{seller?.status === true ? 'Deshabilitar  vendedor' : 'Habilitar vendedor'}</span>
-          </Button>
-          <Button
-            className="justify-start"
-            variant="entraditaSecondary"
-            onClick={() => {
-              handleDeleteEmployee(seller);
-              onClose();
-            }}
-          >
-            <Trash2Icon className="mr-2 h-4 w-4" />
-            Eliminar vendedor
-          </Button>
+          {!readOnly && (
+            <>
+              <Button
+                className="justify-start"
+                variant="entraditaSecondary"
+                onClick={() => {
+                  handleChangeEmpleadoStatus(seller);
+                  onClose();
+                }}
+              >
+                {seller?.status === true ? <TicketX className="h-4 w-4 mr-2" /> : <TicketCheck className="h-4 w-4 mr-2" />}
+                <span className="">{seller?.status === true ? 'Deshabilitar  vendedor' : 'Habilitar vendedor'}</span>
+              </Button>
+              <Button
+                className="justify-start"
+                variant="entraditaSecondary"
+                onClick={() => {
+                  handleDeleteEmployee(seller);
+                  onClose();
+                }}
+              >
+                <Trash2Icon className="mr-2 h-4 w-4" />
+                Eliminar vendedor
+              </Button>
+            </>
+          )}
         </div>
       </DialogContent>
     </Dialog>
@@ -220,9 +227,11 @@ export default function Sellers({}) {
       <CardHeader className="pb-3 space-y-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-white">Vendedores</CardTitle>
-          <Button onClick={() => handleCreateEmployee(true)} size="sm" className="bg-primary hover:bg-primary/90 text-white shrink-0">
-            <PlusIcon className="h-4 w-4 mr-1.5" /> Nuevo
-          </Button>
+          {!readOnly && (
+            <Button onClick={() => handleCreateEmployee(true)} size="sm" className="bg-primary hover:bg-primary/90 text-white shrink-0">
+              <PlusIcon className="h-4 w-4 mr-1.5" /> Nuevo
+            </Button>
+          )}
         </div>
       </CardHeader>
 
@@ -276,33 +285,37 @@ export default function Sellers({}) {
                       >
                         <LinkIcon className="h-3.5 w-3.5" />
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 w-8 p-0 text-muted-foreground hover:text-white"
-                        onClick={() => handleEditEmpleado(vendedor)}
-                        title="Editar"
-                      >
-                        <PencilIcon className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 w-8 p-0 text-muted-foreground hover:text-red-400"
-                        onClick={() => handleDeleteEmployee(vendedor)}
-                        title="Eliminar"
-                      >
-                        <Trash2Icon className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={`h-8 w-8 p-0 ${vendedor.status ? 'text-green-400 hover:text-red-400' : 'text-red-400 hover:text-green-400'}`}
-                        onClick={() => handleChangeEmpleadoStatus(vendedor)}
-                        title={vendedor.status ? 'Deshabilitar' : 'Habilitar'}
-                      >
-                        {vendedor.status ? <TicketCheck className="h-3.5 w-3.5" /> : <TicketX className="h-3.5 w-3.5" />}
-                      </Button>
+                      {!readOnly && (
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0 text-muted-foreground hover:text-white"
+                            onClick={() => handleEditEmpleado(vendedor)}
+                            title="Editar"
+                          >
+                            <PencilIcon className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0 text-muted-foreground hover:text-red-400"
+                            onClick={() => handleDeleteEmployee(vendedor)}
+                            title="Eliminar"
+                          >
+                            <Trash2Icon className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className={`h-8 w-8 p-0 ${vendedor.status ? 'text-green-400 hover:text-red-400' : 'text-red-400 hover:text-green-400'}`}
+                            onClick={() => handleChangeEmpleadoStatus(vendedor)}
+                            title={vendedor.status ? 'Deshabilitar' : 'Habilitar'}
+                          >
+                            {vendedor.status ? <TicketCheck className="h-3.5 w-3.5" /> : <TicketX className="h-3.5 w-3.5" />}
+                          </Button>
+                        </>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>

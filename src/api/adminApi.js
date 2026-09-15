@@ -41,11 +41,13 @@ export const getLogs = async (token, params = {}) => {
  * @param {object} [params]
  * @param {number} [params.page] 1-based
  * @param {number} [params.page_size]
+ * @param {string} [params.scope] 'future' (default backend) | 'all'
  */
 export const getAdminEvents = async (token, params = {}) => {
   const search = new URLSearchParams();
   if (params.page != null) search.set('page', String(params.page));
   if (params.page_size != null) search.set('page_size', String(params.page_size));
+  if (params.scope) search.set('scope', params.scope);
   return apiRequest(mainAdminUrl('/api/v1/main/admin/events/', search), {
     method: 'GET',
     headers: {
@@ -53,6 +55,21 @@ export const getAdminEvents = async (token, params = {}) => {
       Authorization: `Bearer ${token}`,
     },
   }, 'Error al cargar los eventos');
+};
+
+/**
+ * Genera el flyer del evento y lo envía al grupo de Telegram (solo staff).
+ * @param {number} id id numérico del evento (AdminEventSerializer.id)
+ * @param {string} token
+ */
+export const sendEventFlyerToTelegram = async (id, token) => {
+  return apiRequest(mainAdminUrl(`/api/v1/main/admin/events/${id}/flyer-telegram/`), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  }, 'No se pudo enviar el flyer a Telegram');
 };
 
 export const getTicketHistory = async (token) => {
