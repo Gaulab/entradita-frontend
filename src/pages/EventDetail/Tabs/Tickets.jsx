@@ -36,6 +36,7 @@ export default function Tickets() {
     setItemToDelete,
     setIsDeleteConfirmDialogOpen,
     setIsCreateTicketDialogOpen,
+    readOnly,
   } = useContext(EventDetailsContext);
 
   const handleGenerarTicket = useCallback(() => {
@@ -68,7 +69,7 @@ export default function Tickets() {
             <span className="text-xs text-gray-200 font-medium">
               {ticketSalesEnabled ? 'Ventas habilitadas' : 'Ventas deshabilitadas'}
             </span>
-            <Switch checked={ticketSalesEnabled} onChange={() => handleUpdateTicketSales()} />
+            {!readOnly && <Switch checked={ticketSalesEnabled} onChange={() => handleUpdateTicketSales()} />}
           </div>
         </div>
 
@@ -86,15 +87,17 @@ export default function Tickets() {
               className="pl-9 bg-secondary border-border text-white placeholder-gray-400 h-9 text-sm"
             />
           </div>
-          <Button
-            onClick={() => handleGenerarTicket(true)}
-            disabled={!ticketSalesEnabled}
-            size="sm"
-            className="bg-primary hover:bg-primary/90 text-white shrink-0"
-          >
-            <PlusIcon className="h-4 w-4 mr-1.5" />
-            Nuevo
-          </Button>
+          {!readOnly && (
+            <Button
+              onClick={() => handleGenerarTicket(true)}
+              disabled={!ticketSalesEnabled}
+              size="sm"
+              className="bg-primary hover:bg-primary/90 text-white shrink-0"
+            >
+              <PlusIcon className="h-4 w-4 mr-1.5" />
+              Nuevo
+            </Button>
+          )}
         </div>
       </CardHeader>
 
@@ -171,18 +174,20 @@ export default function Tickets() {
                       >
                         <EyeIcon className="h-3.5 w-3.5" />
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 w-8 p-0 text-muted-foreground hover:text-red-400"
-                        onClick={() => {
-                          handleDeleteTicket(ticket.id);
-                          setCurrentPage(1);
-                        }}
-                        title="Eliminar"
-                      >
-                        <Trash2Icon className="h-3.5 w-3.5" />
-                      </Button>
+                      {!readOnly && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0 text-muted-foreground hover:text-red-400"
+                          onClick={() => {
+                            handleDeleteTicket(ticket.id);
+                            setCurrentPage(1);
+                          }}
+                          title="Eliminar"
+                        >
+                          <Trash2Icon className="h-3.5 w-3.5" />
+                        </Button>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>
@@ -233,7 +238,7 @@ const ticketShape = {
 };
 
 function MobileActionDialog({ ticket, onClose }) {
-  const { event, copyToClipboard, setItemToDelete, setIsDeleteConfirmDialogOpen } = useContext(EventDetailsContext);
+  const { event, copyToClipboard, setItemToDelete, setIsDeleteConfirmDialogOpen, readOnly } = useContext(EventDetailsContext);
   const handleDeleteTicket = useCallback(
     (id_ticket) => {
       setItemToDelete({ type: 'ticket', id: id_ticket });
@@ -309,17 +314,19 @@ function MobileActionDialog({ ticket, onClose }) {
             <EyeIcon className="mr-2 h-4 w-4" />
             Ver página de ticket
           </Button>
-          <Button
-            className="justify-start"
-            variant="entraditaSecondary"
-            onClick={() => {
-              handleDeleteTicket(ticket?.id);
-              onClose();
-            }}
-          >
-            <Trash2Icon className="mr-2 h-4 w-4" />
-            Eliminar ticket
-          </Button>
+          {!readOnly && (
+            <Button
+              className="justify-start"
+              variant="entraditaSecondary"
+              onClick={() => {
+                handleDeleteTicket(ticket?.id);
+                onClose();
+              }}
+            >
+              <Trash2Icon className="mr-2 h-4 w-4" />
+              Eliminar ticket
+            </Button>
+          )}
         </div>
       </DialogContent>
     </Dialog>

@@ -23,9 +23,9 @@ import {
 
 import PropTypes from 'prop-types';
 
-import { getLogs, getAdminEvents, getTicketHistory, getAdminTicketRequests, approveTicketRequest, rejectTicketRequest } from '../../api/adminApi.js';
+import { getLogs, getAdminEvents, getTicketHistory, getAdminTicketRequests, approveTicketRequest, rejectTicketRequest, sendEventFlyerToTelegram } from '../../api/adminApi.js';
 import { getTierForCount } from '../../config/pricingConfig.js';
-import { Eye, CheckCircle2, XCircle, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Eye, CheckCircle2, XCircle, X, ChevronLeft, ChevronRight, Send } from 'lucide-react';
 
 function formatPrice(amount) {
   return `$${amount.toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
@@ -453,6 +453,7 @@ function isEventPast(dateStr) {
 // ─── Events Tab ───────────────────────────────────────────────────────────────
 
 function EventsTab({ token }) {
+  const navigate = useNavigate();
   const [groups, setGroups] = useState({});
   const [count, setCount] = useState(0);
   const [page, setPage] = useState(1);
@@ -460,12 +461,65 @@ function EventsTab({ token }) {
   const [loading, setLoading] = useState(false);
   const [sortKey, setSortKey] = useState('organizer');
   const [sortAsc, setSortAsc] = useState(true);
+  // 'future' = solo eventos del futuro (hoy incluido, por defecto) · 'all' = todos
+  const [scope, setScope] = useState('future');
   const useCards = useEventsCardLayout();
+
+  // Estado del envío de flyer por evento: { [id]: 'sending' | 'sent' | 'error' }
+  const [flyerState, setFlyerState] = useState({});
+
+  const openEvent = useCallback((ev) => {
+    if (ev?.hash_id) navigate(`/event/${ev.hash_id}/details`);
+  }, [navigate]);
+
+  const handleSendFlyer = useCallback(async (ev, e) => {
+    if (e) e.stopPropagation();
+    const id = ev.id;
+    setFlyerState((s) => ({ ...s, [id]: 'sending' }));
+    try {
+      await sendEventFlyerToTelegram(id, token);
+      setFlyerState((s) => ({ ...s, [id]: 'sent' }));
+    } catch {
+      setFlyerState((s) => ({ ...s, [id]: 'error' }));
+    } finally {
+      setTimeout(() => setFlyerState((s) => {
+        const next = { ...s };
+        delete next[id];
+        return next;
+      }), 4000);
+    }
+  }, [token]);
+
+  const flyerBtn = (ev, extraClass = '') => {
+    const st = flyerState[ev.id];
+    const label = st === 'sending' ? 'Enviando…'
+      : st === 'sent' ? 'Enviado ✓'
+      : st === 'error' ? 'Error' : 'Flyer → Telegram';
+    return (
+      <Button
+        type="button"
+        size="sm"
+        variant="entraditaTertiary"
+        disabled={st === 'sending'}
+        onClick={(e) => handleSendFlyer(ev, e)}
+        title="Generar flyer y enviar a Telegram"
+        className={`shrink-0 ${st === 'error' ? 'text-red-400' : st === 'sent' ? 'text-emerald-400' : ''} ${extraClass}`}
+      >
+        <Send className="w-3.5 h-3.5 mr-1.5" />
+        {label}
+      </Button>
+    );
+  };
+
+  const changeScope = useCallback((next) => {
+    setScope(next);
+    setPage(1);
+  }, []);
 
   const fetchEvents = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await getAdminEvents(token, { page, page_size: 20 });
+      const data = await getAdminEvents(token, { page, page_size: 20, scope });
       let nextPage = page;
       if (data.total_pages >= 1 && page > data.total_pages) {
         nextPage = data.total_pages;
@@ -482,7 +536,7 @@ function EventsTab({ token }) {
     } finally {
       setLoading(false);
     }
-  }, [token, page]);
+  }, [token, page, scope]);
 
   useEffect(() => { fetchEvents(); }, [fetchEvents]);
 
@@ -492,6 +546,28 @@ function EventsTab({ token }) {
 
   const currentPageCount = sortedGroups.reduce((acc, [, evs]) => acc + evs.length, 0);
 
+  const scopeToggle = (
+    <div className="inline-flex rounded-lg border border-border/80 bg-background/40 p-0.5 shrink-0" role="group" aria-label="Filtro de eventos">
+      {[
+        ['future', 'Próximos'],
+        ['all', 'Todos'],
+      ].map(([key, label]) => (
+        <button
+          key={key}
+          type="button"
+          onClick={() => changeScope(key)}
+          className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer border-0 min-h-[36px] ${
+            scope === key
+              ? 'bg-card text-gray-100 ring-1 ring-gray-600/50 shadow-sm'
+              : 'bg-transparent text-muted-foreground hover:text-gray-200'
+          }`}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  );
+
   // Tablet / mobile: card list (alineado con tarjetas del dashboard)
   if (useCards) {
     return (
@@ -499,12 +575,16 @@ function EventsTab({ token }) {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
             {count} evento{count !== 1 ? 's' : ''}
+            {scope === 'future' ? <span className="normal-case text-muted-foreground"> · próximos</span> : null}
             {count !== currentPageCount ? <span className="normal-case text-muted-foreground"> · mostrando {currentPageCount}</span> : null}
             {loading ? <span className="normal-case text-muted-foreground"> · cargando…</span> : null}
           </p>
-          <Button variant="entraditaTertiary" size="sm" onClick={fetchEvents} className="w-full sm:w-auto shrink-0">
-            ↻ Actualizar
-          </Button>
+          <div className="flex items-center gap-2 shrink-0">
+            {scopeToggle}
+            <Button variant="entraditaTertiary" size="sm" onClick={fetchEvents} className="shrink-0">
+              ↻ Actualizar
+            </Button>
+          </div>
         </div>
         {sortedGroups.length === 0 ? (
           <div className="rounded-xl border border-border/80 bg-background/50 px-4 py-10 text-center text-sm text-muted-foreground">
@@ -527,7 +607,12 @@ function EventsTab({ token }) {
                   return (
                     <li
                       key={ev.id}
-                      className={`px-4 py-4 ${past ? 'bg-background/80 opacity-75' : 'bg-background/30'}`}
+                      onClick={() => openEvent(ev)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openEvent(ev); } }}
+                      title="Ver detalle del evento"
+                      className={`px-4 py-4 cursor-pointer transition-colors hover:bg-secondary/30 ${past ? 'bg-background/80 opacity-75' : 'bg-background/30'}`}
                     >
                       <div className={`font-medium text-[15px] leading-snug ${past ? 'text-muted-foreground' : 'text-white'}`}>
                         {ev.name}
@@ -554,6 +639,9 @@ function EventsTab({ token }) {
                             <span className="text-sm text-gray-600">—</span>
                           )}
                         </div>
+                      </div>
+                      <div className="mt-3">
+                        {flyerBtn(ev, 'w-full justify-center')}
                       </div>
                     </li>
                   );
@@ -628,12 +716,16 @@ function EventsTab({ token }) {
         <p className="text-xs text-muted-foreground sm:flex-1">
           <span className="text-muted-foreground font-medium">{count}</span>
           {' '}eventos
+          {scope === 'future' ? <span> · próximos</span> : null}
           {count !== allEvents.length ? <span> · mostrando {allEvents.length}</span> : null}
           {loading ? <span> · cargando…</span> : null}
         </p>
-        <Button variant="entraditaTertiary" size="sm" onClick={fetchEvents} className="w-full sm:w-auto shrink-0">
-          ↻ Actualizar
-        </Button>
+        <div className="flex items-center gap-2 shrink-0">
+          {scopeToggle}
+          <Button variant="entraditaTertiary" size="sm" onClick={fetchEvents} className="shrink-0">
+            ↻ Actualizar
+          </Button>
+        </div>
       </div>
 
       <div className="overflow-x-auto rounded-xl border border-border/80 -mx-1 px-1 sm:mx-0 sm:px-0 overscroll-x-contain touch-manipulation">
@@ -663,12 +755,15 @@ function EventsTab({ token }) {
                   </TableHead>
                 );
               })}
+              <TableHead className="text-muted-foreground bg-background whitespace-nowrap text-right">
+                Acciones
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {sorted.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground py-6 border-b border-border">
+                <TableCell colSpan={6} className="text-center text-muted-foreground py-6 border-b border-border">
                   Sin eventos
                 </TableCell>
               </TableRow>
@@ -678,7 +773,12 @@ function EventsTab({ token }) {
                 const past = isEventPast(ev.date);
                 const rowBase = past ? 'opacity-60' : '';
                 return (
-                  <tr key={ev.id} className={rowBase}>
+                  <tr
+                    key={ev.id}
+                    onClick={() => openEvent(ev)}
+                    title="Ver detalle del evento"
+                    className={`cursor-pointer transition-colors hover:bg-secondary/30 ${rowBase}`}
+                  >
                     {showOrg ? (
                       <td
                         rowSpan={sorted.filter(e2 => e2._organizer === ev._organizer).length}
@@ -706,6 +806,9 @@ function EventsTab({ token }) {
                       ) : (
                         <span className="text-gray-600 text-xs">—</span>
                       )}
+                    </td>
+                    <td className="text-right border-b border-border px-4 py-2 whitespace-nowrap">
+                      {flyerBtn(ev)}
                     </td>
                   </tr>
                 );

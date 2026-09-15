@@ -13,10 +13,11 @@ import PropTypes from 'prop-types';
 
 export default function Event({ event }) {
   const { authToken } = useContext(AuthContext);
-  const { 
+  const {
     setIsResetDialogOpen,
     webSalesEnabled,
-    setWebSalesEnabled
+    setWebSalesEnabled,
+    readOnly,
    } = useContext(EventDetailsContext);
   
   const [errorDialog, setErrorDialog] = useState({
@@ -103,7 +104,7 @@ export default function Event({ event }) {
           <Button size="sm" onClick={navigateToEconomy} className="font-semibold bg-green-600 hover:bg-green-700 text-white border-0 flex-1 sm:flex-none">
             <DollarSign className="h-4 w-4 mr-1.5" /> Economía
           </Button>
-          {event.is_periodic && (
+          {event.is_periodic && !readOnly && (
             <Button size="sm" onClick={() => handleResetEvent(true)} className="font-semibold bg-red-600 hover:bg-red-700 text-white border-0 flex-1 sm:flex-none">
               <RotateCcw className="h-4 w-4 mr-1.5" /> Reiniciar
             </Button>
@@ -111,7 +112,13 @@ export default function Event({ event }) {
         </div>
         <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/50">
           <span className="text-sm text-muted-foreground">Venta web del evento</span>
-          <Switch checked={webSalesEnabled} onChange={() => handleUpdateWebSale()} />
+          {readOnly ? (
+            <span className={`text-sm font-medium ${webSalesEnabled ? 'text-green-400' : 'text-muted-foreground'}`}>
+              {webSalesEnabled ? 'Habilitada' : 'Deshabilitada'}
+            </span>
+          ) : (
+            <Switch checked={webSalesEnabled} onChange={() => handleUpdateWebSale()} />
+          )}
         </div>
       </CardContent>
 
