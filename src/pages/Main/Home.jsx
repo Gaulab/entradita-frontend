@@ -17,15 +17,20 @@ export default function ModernHome() {
 
   return (
     <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
-      {/* Glow de fondo único (indigo → violeta), estático y sutil */}
-      <div className="pointer-events-none fixed inset-0 z-0">
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-[520px] w-[820px] rounded-full bg-brand-from/20 blur-[130px]" />
-        <div className="absolute top-1/3 right-0 h-[380px] w-[380px] rounded-full bg-brand-to/10 blur-[120px]" />
-      </div>
+      {/* Glow de fondo indigo → violeta. Radial-gradient en vez de divs con
+          filter:blur (que en GPU de celular es carísimo y frenaba la carga). */}
+      <div
+        className="pointer-events-none fixed inset-0 z-0"
+        style={{
+          background:
+            'radial-gradient(60% 45% at 50% 0%, hsl(var(--brand-from) / 0.18), transparent 70%),' +
+            'radial-gradient(45% 45% at 100% 30%, hsl(var(--brand-to) / 0.10), transparent 70%)',
+        }}
+      />
 
       <div className="relative z-10 flex flex-col min-h-screen">
         {/* Header */}
-        <header className="sticky top-0 z-50 border-b border-border/60 bg-background/70 backdrop-blur-xl">
+        <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
           <div className="container flex h-16 items-center justify-between">
             <Link to="/" className="flex items-center gap-2 group">
               <img
@@ -62,7 +67,7 @@ export default function ModernHome() {
           </div>
 
           {isMenuOpen && (
-            <div className="lg:hidden border-t border-border/60 bg-background/95 backdrop-blur-xl">
+            <div className="lg:hidden border-t border-border/60 bg-background">
               <div className="container flex flex-col py-2">
                 <Link to="/login" onClick={() => setIsMenuOpen(false)} className="px-2 py-3 text-base font-semibold hover:text-primary transition-colors">
                   Iniciar sesión

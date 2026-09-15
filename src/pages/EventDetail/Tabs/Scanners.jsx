@@ -35,6 +35,7 @@ export default function Scanners({}) {
     setIsSellerEmployee,
     setIsCreateEmployeeDialogOpen,
     copyToClipboard,
+    readOnly,
   } = useContext(EventDetailsContext);
 
   const handleEditEmployee = useCallback((employee) => {
@@ -97,28 +98,32 @@ export default function Scanners({}) {
             <EyeIcon className="mr-2 h-4 w-4" />
             Ver página de scanner
           </Button>
-          <Button
-            className="justify-start"
-            variant="entraditaSecondary"
-            onClick={() => {
-              handleEditEmployee(scanner);
-              onClose();
-            }}
-          >
-            <PencilIcon className="mr-2 h-4 w-4" />
-            Editar scanner
-          </Button>
-          <Button
-            className="justify-start"
-            variant="entraditaSecondary"
-            onClick={() => {
-              handleDeleteEmployee(scanner);
-              onClose();
-            }}
-          >
-            <Trash2Icon className="mr-2 h-4 w-4" />
-            Eliminar scanner
-          </Button>
+          {!readOnly && (
+            <>
+              <Button
+                className="justify-start"
+                variant="entraditaSecondary"
+                onClick={() => {
+                  handleEditEmployee(scanner);
+                  onClose();
+                }}
+              >
+                <PencilIcon className="mr-2 h-4 w-4" />
+                Editar scanner
+              </Button>
+              <Button
+                className="justify-start"
+                variant="entraditaSecondary"
+                onClick={() => {
+                  handleDeleteEmployee(scanner);
+                  onClose();
+                }}
+              >
+                <Trash2Icon className="mr-2 h-4 w-4" />
+                Eliminar scanner
+              </Button>
+            </>
+          )}
         </div>
       </DialogContent>
     </Dialog>
@@ -128,9 +133,11 @@ export default function Scanners({}) {
       <CardHeader className="pb-3 space-y-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-white">Scanners</CardTitle>
-          <Button onClick={() => handleCreateEmployee(false)} size="sm" className="bg-primary hover:bg-primary/90 text-white shrink-0">
-            <PlusIcon className="h-4 w-4 mr-1.5" /> Nuevo
-          </Button>
+          {!readOnly && (
+            <Button onClick={() => handleCreateEmployee(false)} size="sm" className="bg-primary hover:bg-primary/90 text-white shrink-0">
+              <PlusIcon className="h-4 w-4 mr-1.5" /> Nuevo
+            </Button>
+          )}
         </div>
       </CardHeader>
 
@@ -166,24 +173,28 @@ export default function Scanners({}) {
                       >
                         <LinkIcon className="h-3.5 w-3.5" />
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 w-8 p-0 text-muted-foreground hover:text-white"
-                        onClick={() => handleEditEmployee(scanner)}
-                        title="Editar"
-                      >
-                        <PencilIcon className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 w-8 p-0 text-muted-foreground hover:text-red-400"
-                        onClick={() => handleDeleteEmployee(scanner)}
-                        title="Eliminar"
-                      >
-                        <Trash2Icon className="h-3.5 w-3.5" />
-                      </Button>
+                      {!readOnly && (
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0 text-muted-foreground hover:text-white"
+                            onClick={() => handleEditEmployee(scanner)}
+                            title="Editar"
+                          >
+                            <PencilIcon className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0 text-muted-foreground hover:text-red-400"
+                            onClick={() => handleDeleteEmployee(scanner)}
+                            title="Eliminar"
+                          >
+                            <Trash2Icon className="h-3.5 w-3.5" />
+                          </Button>
+                        </>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>

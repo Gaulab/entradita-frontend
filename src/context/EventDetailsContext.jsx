@@ -214,6 +214,9 @@ export const EventDetailsProvider = ({ children }) => {
       value={{
         // Loading status
         isLoading,
+        // Solo lectura: true cuando un admin/staff mira un evento ajeno.
+        // El backend marca event.can_manage=false en ese caso.
+        readOnly: event?.can_manage === false,
         // main states
         event, setEvent,
         tickets, setTickets,

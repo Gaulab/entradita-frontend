@@ -27,7 +27,7 @@ import DialogResetEvent from './Dialogs/DialogResetEvent';
 export default function EventDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { event, copyMessage, activeTab, setActiveTab, isLoading } = useContext(EventDetailsContext);
+  const { event, copyMessage, activeTab, setActiveTab, isLoading, readOnly } = useContext(EventDetailsContext);
 
   const nextDate = event?.date
     ? new Date(new Date(`${event.date}T00:00:00`).getTime() + 7 * 24 * 60 * 60 * 1000)
@@ -44,13 +44,21 @@ export default function EventDetails() {
     <div className="flex justify-center space-y-6 pb-8 bg-background text-white p-4 min-h-screen">
       <div className="max-w-6xl mx-auto w-full">
         <div className="flex flex-row sm:flex-row justify-between sm:justify-normal items-center mb-4 gap-4">
-          <Button onClick={() => navigate('/dashboard')} variant="entraditaTertiary" className="w-full sm:w-auto">
+          <Button onClick={() => navigate(readOnly ? '/admin' : '/dashboard')} variant="entraditaTertiary" className="w-full sm:w-auto">
             <ArrowLeftIcon className="mr-2 h-4 w-4" /> Volver
           </Button>
-          <Button onClick={() => navigate(`/edit-event/${id}`)} variant="entraditaTertiary" className="w-full sm:w-auto">
-            <EditIcon className="mr-2 h-4 w-4" /> Editar Evento
-          </Button>
+          {!readOnly && (
+            <Button onClick={() => navigate(`/edit-event/${id}`)} variant="entraditaTertiary" className="w-full sm:w-auto">
+              <EditIcon className="mr-2 h-4 w-4" /> Editar Evento
+            </Button>
+          )}
         </div>
+
+        {readOnly && (
+          <div className="mb-4 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-2.5 text-sm text-amber-200">
+            Estás viendo este evento como administrador (solo lectura). No podés editarlo ni gestionar tickets, vendedores o scanners.
+          </div>
+        )}
 
         <Event event={event} />
 
